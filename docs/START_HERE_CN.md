@@ -1,57 +1,58 @@
-# 从这里开始
+# 项目说明与文件索引
 
-这是独立的本地发布候选目录，不是旧工程的快捷方式。原工程、历史实验和原始证据没有移动或删除；目前没有上传 GitHub，也没有选定项目许可证。
+本仓库实现面向 PYNQ-Z2 的 ML-KEM 多项式乘法加速系统，包含 HLS 源码、生成 RTL、PicoRV32 固件、仿真测试及实验记录。代码已公开托管于 [GitHub](https://github.com/yttting/mlkem-polymul-rv32i-fpga)。项目级许可证尚未确定，第三方组件的声明及使用条件见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
 
-## 1. 当前推荐的是哪一版
+## 1. 系统配置
 
-固定主线为：PYNQ-Z2 板级顶层 + PicoRV32 RV32I + BRAM AXI4-Lite wrapper + 共享运算单元 PolyMul 核心 + 输入/输出循环均展开四次的固件。VIO 仅用于观察状态和计数。
+默认配置采用 PicoRV32 RV32I 处理器、BRAM AXI4-Lite wrapper 和共享运算单元 PolyMul 核心。固件的输入写入与输出读取循环均采用四次展开（mode 3）。系统运行于 Zynq 的可编程逻辑（PL），不使用 ARM 处理系统（PS）；可选的 Virtual Input/Output（VIO）模块用于只读调试。
 
 ```text
-板载 125 MHz 时钟 -> MMCM 100 MHz
-                       |
-PicoRV32 <-> 4 KiB 程序/数据 RAM
-    |
-    +-- AXI4-Lite -> 地址译码 -> BRAM wrapper -> PolyMul 核心
-    |
-    +-- 状态/周期寄存器 -> LED / 只读 VIO
+时钟：板载 125 MHz -> MMCM + BUFG -> 系统 100 MHz
+
+互连：PicoRV32 -> AXI4-Lite 地址译码
+                    +-- 4 KiB 程序/数据 RAM
+                    +-- BRAM wrapper <-> PolyMul 核心
+                    +-- 状态/周期寄存器 -> LED / 只读 VIO
 ```
 
-直观地说，CPU 执行固件、搬入两个多项式、通知加速器开始、等待完成，再读回和核对结果。wrapper 负责让 CPU 和核心按规则访问输入/输出存储；它不是另一份 NTT 算法。计算目标是模 3329、模 `x^256+1` 的两个 256 系数多项式乘法，不是完整 ML-KEM。
+CPU 将本地 RAM 中的两个输入多项式写入加速器，写启动寄存器，轮询完成状态，随后读回结果。BRAM wrapper 实现控制寄存器、AXI 事务处理和 CPU/核心之间的存储端口仲裁。
 
-## 2. 怎么打开和运行
+计算范围为环 `Z_3329[x]/(x^256+1)` 中两个 256 系数多项式的乘法，执行顺序为 `FNTT(A) -> FNTT(B) -> BaseMul -> INTT -> FinalScale`。本仓库不包含完整 ML-KEM 的密钥生成、封装和解封装流程。
 
-最推荐先使用 Vivado 命令行，从项目根目录执行：
+## 2. 工程构建与仿真
+
+安装 Vivado 2025.2 及 Zynq-7000 器件支持后，在已配置 Vivado 环境的终端中进入仓库根目录，执行：
 
 ```text
 vivado -mode batch -source scripts/run.tcl -tclargs vio
 ```
 
-脚本会建立 `build/vio_<时间戳>_<进程号>/mlkem.xpr` 并运行仿真。已有本次迁移验证工程的位置见 [迁移验证记录](MIGRATION_VALIDATION.md)，可直接在 Vivado 的 **File > Project > Open** 中选择该 `.xpr`。
+脚本在本地生成 `build/vio_<时间戳>_<进程号>/mlkem.xpr` 并运行仿真。生成后可通过 Vivado 的 **File > Project > Open** 打开该 `.xpr`。仓库不包含预生成的 `.xpr`，首次克隆后需要先执行构建脚本。
 
-不要把 `.v`、`.sv`、`.tcl`、`.cfg` 当成 Vivado 工程打开。它们分别是 RTL、仿真代码、脚本和 HLS 配置。GitHub 候选文件保留这些源文件及建工程脚本，而不依赖某台电脑已经生成的工程缓存。
+`.v`、`.sv`、`.tcl` 和 `.cfg` 分别用于 RTL、SystemVerilog 测试、自动化脚本和 HLS 配置，不是 Vivado 工程文件。
 
-成功标志为 `BOARD VIO SIM PASS` 和 `CANDIDATE_REGRESSION_PASS`，不是只看波形有变化。此仿真不要求连接板子。
+正常结束时，日志包含 `BOARD VIO SIM PASS` 和 `CANDIDATE_REGRESSION_PASS`，且无错误或超时。该测试重复复位三次，对同一组确定性输入的 256 个输出系数进行独立参考计算检查，同时验证周期计数和 VIO 连接。仿真不需要连接开发板。
 
-HLS 入口是 `hls/hls_config.cfg`，顶层函数仍为 `mlkem_poly_mul256_v39e_true_one_dsp`。为不破坏模块引用、自动生成 RTL 和层次观察器，这次只整理目录，不批量重命名历史模块。
+HLS 配置文件为 `hls/hls_config.cfg`，顶层函数为 `mlkem_poly_mul256_v39e_true_one_dsp`。源码和生成 RTL 保留历史模块名，以维持模块引用及层次观察器的兼容性。
 
-其他命令、固件重建和上板准备见 [BUILD.md](BUILD.md)。本次没有重新下载到板子。
+固件重建、HLS C 仿真及 implementation 命令见 [BUILD.md](BUILD.md)。已执行的验证及其范围见 [迁移验证记录](MIGRATION_VALIDATION.md)。
 
 ## 3. 核心文件用途
 
-| 路径 | 专业作用 | 直观理解 |
-|---|---|---|
-| `rtl/board/mlkem_polymul_pynqz2_top.v` | 板级时钟、复位、LED、可选 VIO 和系统例化 | 连接板子引脚的最外层 |
-| `rtl/system/mlkem_polymul_rv32i_profile_top.v` | CPU、4 KiB RAM、地址译码、加速器、计数输出 | 把 CPU、内存和加速器接在一起 |
-| `rtl/cpu/picorv32.v` | 第三方 PicoRV32 CPU 及 AXI 适配逻辑 | 执行固件指令 |
-| `rtl/axi/mlkem_polymul_axi_wrapper.v` | 推荐的 BRAM wrapper，处理 AXI 寄存器和存储端口所有权 | 接收 CPU 命令，协调谁可以访问 A/B/OUT |
-| `rtl/axi/mlkem_coeff_tdp_ram.v` | wrapper 使用的双端口系数 RAM | 存放输入和结果 |
-| `rtl/accelerator/mlkem_poly_mul256_v39e_true_one_dsp.v` | HLS 生成的核心顶层 | 安排完整乘法计算链 |
-| `hls/src/mlkem_poly_mul256_v39e_true_one_dsp.cpp` | 当前 HLS 核心源码 | 核心设计的 C++ 描述 |
-| `hls/src/mlkem_poly_mul256_v39e_unified_stream_support.cpp` | 被主源码 include 的运算/流处理支持实现 | 主文件必需的辅助逻辑，不要另设为 top |
-| `hls/tb/tb_mlkem_poly_mul256_v39e.cpp` | 独立朴素负循环卷积 oracle | 用另一种算法检查结果，而非复用 DUT 算法 |
-| `hls/hls_config.cfg` | 器件、时钟、顶层、源码和测试入口 | HLS 的构建配方 |
+| 路径 | 职责 |
+|---|---|
+| `rtl/board/mlkem_polymul_pynqz2_top.v` | 板级顶层，实例化时钟管理、复位同步、系统、LED 和可选 VIO |
+| `rtl/system/mlkem_polymul_rv32i_profile_top.v` | 集成 CPU、4 KiB RAM、地址译码、加速器及状态寄存器 |
+| `rtl/cpu/picorv32.v` | 第三方 PicoRV32 CPU 及 AXI 适配逻辑 |
+| `rtl/axi/mlkem_polymul_axi_wrapper.v` | AXI 控制接口、A/B/OUT 存储访问和端口仲裁 |
+| `rtl/axi/mlkem_coeff_tdp_ram.v` | 256 x 16-bit 双端口 RAM，支持同步读写及字节写使能 |
+| `rtl/accelerator/mlkem_poly_mul256_v39e_true_one_dsp.v` | HLS 生成的 PolyMul 核心顶层 |
+| `hls/src/mlkem_poly_mul256_v39e_true_one_dsp.cpp` | PolyMul 核心的 HLS C++ 实现 |
+| `hls/src/mlkem_poly_mul256_v39e_unified_stream_support.cpp` | 由主源码 include 的运算与流处理实现，不作为独立翻译单元编译 |
+| `hls/tb/tb_mlkem_poly_mul256_v39e.cpp` | 采用独立 O(N^2) 负循环卷积的 C 功能测试 |
+| `hls/hls_config.cfg` | HLS 器件、时钟、顶层函数、源码和 testbench 配置 |
 
-`rtl/accelerator/` 的生成模块需要整体保留：`batch39d` 调用共享流水运算；`issue39d` 发出任务；`pe39c` 计算；`write39d` 写回；`Pipeline_load/save/pack` 搬运或重排数据；`ant/bnt/ping/bm` 等 RAM 模块存中间结果；`fifo`、`start_for` 和 `flow_control` 协调流水线；`mul/sub/sparsemux` 是运算和选择逻辑；`zetas*.dat` 是旋转因子 ROM 初始化数据。文件很多不意味着每个都是独立设计方案，也不应因名字陌生而删除。
+`rtl/accelerator/` 包含一个核心的完整生成模块集合。`batch39d` 调用共享流水运算，`issue39d` 发出任务，`pe39c` 计算，`write39d` 写回；`Pipeline_load/save/pack` 负责搬运和重排。`ant/bnt/ping/bm` 等模块存储中间结果，`fifo/start_for/flow_control` 协调流水线，`mul/sub/sparsemux` 实现运算和选择逻辑。名称含 `zetas` 的 `.dat` 文件提供旋转因子 ROM 初值。构建脚本将这些模块作为一个整体加入工程。
 
 ## 4. 固件、测试和约束
 
@@ -76,37 +77,35 @@ HLS 入口是 `hls/hls_config.cfg`，顶层函数仍为 `mlkem_poly_mul256_v39e_
 | `constraints/pynqz2_bram_reset.xdc` | 按钮异步复位及 LED 相关的板级时序例外 |
 | `constraints/system_ooc_10ns.xdc`、`v39e_ooc_10ns.xdc` | 历史系统/裸核心 OOC 的 10 ns 约束，不加入板级默认入口 |
 
-## 5. 这次新增或调整的管理文件
+## 5. 构建脚本与文档
 
 | 文件 | 作用 |
 |---|---|
 | `README.md` | 英文首页，范围、入口和目录总览 |
 | `docs/START_HERE_CN.md` | 本中文文件说明 |
 | `docs/BUILD.md` | 工具前提和复现命令 |
-| `docs/RESULTS.md` | 历史性能与资源结果，以及不能越过的结论边界 |
-| `docs/MIGRATION_VALIDATION.md` | 本次实际重建和仿真的结果、失败与未验证项 |
-| `docs/architecture.svg` | 从原工程复制的架构图；不是新增测量证据 |
-| `scripts/run.tcl` | 新建唯一推荐 Vivado 入口，全部源码从新目录选取，拒绝外部工程源码 |
-| `scripts/build_memory_transfer_compare.ps1` | 原构建脚本改为参数化工具路径，不改变固件算法 |
-| `scripts/read_board_vio.tcl` | 原读板脚本，采样输出改存 `build/hardware/` |
+| `docs/RESULTS.md` | 性能、资源、测量范围及对应日志 |
+| `docs/MIGRATION_VALIDATION.md` | 2026-09-21 迁移回归的结果、环境问题与未验证项 |
+| `docs/architecture.svg` | 系统及核心架构图 |
+| `scripts/run.tcl` | Vivado 建工程和回归入口；检查工程源码均位于仓库目录内 |
+| `scripts/build_memory_transfer_compare.ps1` | 构建四种搬运循环固件，支持指定 RISC-V 工具链目录 |
+| `scripts/read_board_vio.tcl` | 读取实板 VIO，采样结果保存到 `build/hardware/` |
 | `.gitignore` | 排除可重建工程、二进制、缓存等；有意保留 evidence 日志 |
 | `.gitattributes` | 禁止 Git 自动转换换行，保证下载后的文件字节与 SHA256 清单一致 |
 | `SOURCE_MANIFEST.csv` | 最初导入的逐文件 SHA256 和来源类别 |
-| `FINAL_MANIFEST.csv` | 整理后候选文件的 SHA256；不包含本机 build 缓存 |
+| `FINAL_MANIFEST.csv` | 当前版本文件的 SHA256；不包含清单自身和构建产物 |
 | `evidence/REDACTION_MANIFEST.csv` | 证据副本脱敏前后的 SHA256，便于追溯 |
-| `THIRD_PARTY_NOTICES.md` | 第三方声明、许可证和公开发布前待确认的问题 |
+| `THIRD_PARTY_NOTICES.md` | 第三方声明、许可状态和代码来源待核实项 |
 | `experiments/README.md` | 说明历史对照不属于默认入口 |
 
-`experiments/register_wrapper/` 保留旧寄存器 wrapper 和原六阶段/输入准备/循环对照 testbench。它与 `rtl/axi/` 存在同名模块，不能一起加入同一工程。旧版本移入候选目录的隔离区域，不代表原工程文件被移动。
+`experiments/register_wrapper/` 保留寄存器实现的 wrapper，以及六阶段计时、输入准备和循环展开实验的 testbench。它与 `rtl/axi/` 定义同名模块，不能同时编译。默认构建脚本仅使用 `rtl/axi/`。
 
-`evidence/historical/` 保存精选历史利用率、时序、DRC、仿真和一次实板 VIO 数值快照。`evidence/migration/` 保存本次整理后的回归日志。两者分开，避免把旧报告冒充本次结果；仅对副本中的本地路径和主机名脱敏。
+`evidence/historical/` 保存归档的利用率、时序、DRC、仿真报告和一次实板 VIO 数值快照。`evidence/migration/` 保存 2026-09-21 的迁移回归日志。报告副本中的本地路径和主机名已脱敏，测量数值保持不变。
 
-`build/` 和 `firmware/build/` 是本机可重建产物，可用于自己打开工程和查日志，但不应整目录上传。所有候选文件的精确清单见 `FINAL_MANIFEST.csv`。
+`build/` 和 `firmware/build/` 存放本地构建产物，已由 `.gitignore` 排除。仓库文件清单见 `FINAL_MANIFEST.csv`。
 
-父目录中的 `prepare_mlkem_release.ps1` 是本次使用的一次性复制整理工具，不属于候选仓库，也不参与后续构建；目标目录已存在时它会拒绝覆盖。正常使用只需要当前新项目目录及已安装的开发工具。
+## 6. 验证范围与许可
 
-## 6. 发布前仍要做什么
+默认配置已完成迁移后的固件重建、RTL 系统回归和 HLS C 仿真。归档的所有对照实验未逐一重跑；重新生成 RTL 后的协同仿真、布局布线和实板测试也不属于该次迁移验证。资源与实板数值的来源详见 [RESULTS.md](RESULTS.md)。
 
-目前主线 RTL 系统可以从新目录建立并仿真。历史实验源码的保留不等于每个旧实验都已在新目录重跑。HLS 源码 C 仿真、重新综合生成 RTL、C/RTL 协同仿真、布局布线、实板执行是不同层级，不能互相代替。
-
-公开前需要确认实习/合作项目的公开权限、选择自己的代码许可证，并审查第三方及生成代码的再分发条件。本次没有替你作出这些决定。
+维护者已确认项目允许公开托管。项目级许可证尚未确定，代码公开不构成对所有文件的统一再分发授权；第三方组件仍适用各自的许可条件。

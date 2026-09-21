@@ -1,10 +1,10 @@
 # ML-KEM PolyMul RV32I FPGA Accelerator
 
-**Research source release. No project-wide license has been granted yet.** Public visibility is not an open-source license; see [third-party notices](THIRD_PARTY_NOTICES.md) before reuse or redistribution.
+This repository implements polynomial multiplication in `Z_3329[x]/(x^256+1)` using a shared HLS arithmetic engine controlled by PicoRV32 over AXI4-Lite. It targets PYNQ-Z2 (`xc7z020clg400-1`) at a 100 MHz PL clock, without using the Zynq PS.
 
-Exact multiplication in `Z_3329[x]/(x^256+1)`, implemented using a shared HLS arithmetic engine and called by PicoRV32 over AXI4-Lite. The target is PYNQ-Z2 (`xc7z020clg400-1`), with a 100 MHz PL clock. This is a polynomial multiplier, **not a complete ML-KEM implementation** and not a side-channel-hardened cryptographic product.
+The implemented operation is `FNTT(A) -> FNTT(B) -> BaseMul -> INTT -> FinalScale`. The repository does not implement complete ML-KEM key generation, encapsulation or decapsulation, and has not been evaluated for side-channel resistance.
 
-The sole recommended configuration uses the BRAM wrapper in `rtl/axi/`, the mode-3 transfer firmware, and optional read-only VIO. The old register-based wrapper is isolated under `experiments/` and never included by the main script.
+The default configuration uses the BRAM wrapper in `rtl/axi/`, mode-3 firmware with both transfer loops unrolled four times, and optional read-only VIO. The register-based comparison implementation is isolated under `experiments/` and excluded from the default build.
 
 ![Architecture](docs/architecture.svg)
 
@@ -13,14 +13,14 @@ The sole recommended configuration uses the BRAM wrapper in `rtl/axi/`, the mode
 - [中文目录与文件说明](docs/START_HERE_CN.md)
 - [Build and verification](docs/BUILD.md)
 - [Results and measurement boundaries](docs/RESULTS.md)
-- [Third-party notices and release blockers](THIRD_PARTY_NOTICES.md)
+- [License status and third-party notices](THIRD_PARTY_NOTICES.md)
 - [Migration verification](docs/MIGRATION_VALIDATION.md)
 - `SOURCE_MANIFEST.csv`: original imported hashes and relative source categories.
-- `FINAL_MANIFEST.csv`: final candidate file inventory and SHA256 hashes (excludes generated builds).
+- `FINAL_MANIFEST.csv`: current file inventory and SHA256 hashes, excluding itself and generated builds.
 
 ## Quick simulation
 
-Requires Vivado 2025.2 with Zynq-7000 device support. No physical board, ARM software or Jupyter is needed.
+Simulation requires Vivado 2025.2 with Zynq-7000 device support, but does not require a physical board.
 
 From this directory in a Vivado-enabled shell:
 
@@ -29,7 +29,9 @@ vivado -mode batch -source scripts/run.tcl -tclargs vio
 vivado -mode batch -source scripts/run.tcl -tclargs protocol
 ```
 
-`vio` checks three reset trials, all 256 coefficients against an independent oracle, profile values and VIO connections. `protocol` checks AXI transactions and arithmetic edge cases. Every run creates a new `build/<mode>_<timestamp>_<pid>/mlkem.xpr`; the script rejects project source dependencies outside this directory. Generated build files may contain local paths and must not be published.
+`vio` repeats the same deterministic input pair across three resets, checking all 256 output coefficients against an independent convolution reference. It also checks cycle counts and VIO connections. `protocol` tests AXI transactions and arithmetic edge cases.
+
+Each run creates `build/<mode>_<timestamp>_<pid>/mlkem.xpr`; generated projects are not tracked in Git. The script requires project sources to reside within the repository root. See [BUILD.md](docs/BUILD.md) for command locations, expected outputs and tool dependencies.
 
 ## Layout
 
@@ -42,11 +44,13 @@ sim/          Core, board, protocol, software and observer test sources
 constraints/  Device pin and clock/reset constraints
 scripts/      Portable project creation, simulation and firmware entrypoints
 experiments/  Isolated old-wrapper comparison sources
-evidence/     Historical reports, with local paths/hostnames redacted
+evidence/     Historical reports and migration logs, with local paths redacted
 docs/         Usage, measurement scopes, file map and migration checks
 build/        Regenerated local projects and logs (ignored)
 ```
 
 Legacy `v39e` names inside HLS/generated RTL are intentionally preserved to avoid changing module references or invalidating hierarchy-based observers. HLS C simulation does not establish equivalence between regenerated RTL and the archived RTL snapshot. Run synthesis, co-simulation and implementation before updating that snapshot.
 
-No old Vivado project tree, cache, third-party tool installation, presentation, academic PDF or historical bitstream is included. The owner authorized public hosting on 2026-09-21. Project licensing and third-party redistribution terms are separate matters; existing notices are preserved.
+## License status
+
+The source is publicly hosted, but no project-wide license has been selected. Existing third-party notices remain applicable; public access does not grant a blanket license to reuse or redistribute all files. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for component-level provenance and outstanding license questions.

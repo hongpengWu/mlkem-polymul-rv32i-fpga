@@ -2,9 +2,11 @@
 
 日期：2026-09-21。工具：AMD Vivado/Vitis 2025.2，本机 AMD 随附 RISC-V GCC。
 
+本文记录工程整理后的迁移回归，不代表每次文档更新均重新执行硬件验证。仓库已于 2026-09-21 公开发布，初始提交为 `bff6d92`；项目级许可证尚未确定。
+
 ## 整理范围
 
-- 原工程不移动、不删除、不改写；新目录是独立副本。
+- 迁移采用独立副本，未修改原工程。
 - 默认入口改为实际使用的 BRAM wrapper；旧寄存器 wrapper 及其对照 testbench 隔离到 `experiments/register_wrapper/`。
 - 从历史 HLS 源码补齐主文件 include 的 `mlkem_poly_mul256_v39e_unified_stream_support.cpp`，保持内容不变。
 - HLS 数学实现、RTL、固件算法和断言预期值均未为了迁移而修改。
@@ -18,7 +20,7 @@
 |---|---|---|
 | 四模式固件重新编译 | PASS，RV32I / ILP32 / -O2；静态 RAM 检查及无 M 指令检查通过 | `evidence/migration/firmware_build.csv`；本机 `firmware/build/*.dump`、`*.map`、`*.size.txt` |
 | 重新编译与归档镜像比较 | 四个 `.mem` 的逐 word 内容全部一致 | baseline 310、write 335、read 346、both 370 words |
-| 带 VIO 完整系统仿真 | PASS，使用本次重新编译的 mode-3 固件，三次复位均通过独立 256 系数 oracle 和计数检查 | `evidence/migration/vio_simulate.log` |
+| 带 VIO 完整系统仿真 | PASS，使用重新编译的 mode-3 固件；同一输入对重复复位三次，每次通过独立 256 系数参考计算和计数检查 | `evidence/migration/vio_simulate.log` |
 | BRAM wrapper 协议仿真 | PASS，16 种字节掩码、分离 AW/W、背压、并发通道、忙时访问、重复执行、复位及环边界 | `evidence/migration/protocol_simulate.log` |
 | 不带 VIO 的板级 RTL 仿真 | PASS，归档 mode-3 固件，LED=0101，按钮复位重启 | `evidence/migration/board_simulate.log` |
 | HLS C 仿真 | PASS，三种输入均通过独立负循环卷积与输出规范区间检查 | `evidence/migration/hls_csim.log` |
@@ -54,13 +56,13 @@ Vivado 自带器件库、UNISIM、VIO 和 Vitis 头文件仍是必要的工具�
 
 ## 遇到的失败与警告
 
-第一次 HLS C 仿真未进入算法执行，GNU Make 报 `/dev/null:1: missing separator`。本机 D 盘的 `dev/null` 是已有普通文件，内容不是 Makefile。保持该文件不变，在 C 盘新建临时构建目录、继续引用候选目录的同一份源码和配置后，C 仿真通过。第一次失败日志也保存为 `evidence/migration/hls_csim_first_attempt.log`，不能将其隐藏或当作功能失败。复现方法见 BUILD.md。
+第一次 HLS C 仿真在编译前终止，GNU Make 报 `/dev/null:1: missing separator`。验证机器的 D 盘存在普通文件 `dev/null`，其内容导致 Make 解析失败。改用 C 盘临时构建目录并保持源码和配置不变后，C 仿真通过。首次失败日志保留为 `evidence/migration/hls_csim_first_attempt.log`，复现及处理方法见 [BUILD.md](BUILD.md)。
 
-HLS 编译有来自 AMD 头文件的 `__GMP_LIBGMP_DLL` 重定义警告；最终为 `CSim done with 0 errors`。固件链接有 RWX LOAD 段警告，源于裸机统一程序/数据 RAM 的链接布局；编译成功。此处没有通过屏蔽警告或改测试预期来得到 PASS。
+HLS 编译报告 AMD 头文件中 `__GMP_LIBGMP_DLL` 的重定义警告，最终结果为 `CSim done with 0 errors`。固件链接报告 RWX LOAD 段警告，对应裸机统一程序/数据 RAM 的链接布局；四种固件均完成构建。验证过程中未修改测试预期或屏蔽这些警告。
 
-## 在本机直接打开
+## 构建产物
 
-推荐使用第一个工程。在 Vivado 的 Open Project 中选择：
+迁移回归在验证机器上生成了以下工程，路径相对于仓库根目录：
 
 ```text
 build/vio_1789989635_50392/mlkem.xpr
@@ -68,7 +70,7 @@ build/protocol_1789989767_50084/mlkem.xpr
 build/board_1789990031_26528/mlkem.xpr
 ```
 
-以上均相对于新项目根目录。这些 `.xpr` 是本次真实生成的本地产物；发布候选文件不包含 build 缓存，其他电脑运行 `scripts/run.tcl` 重建即可。迁移项目路径后也应重建，不继续依赖生成工程内部保存的旧绝对路径。
+这些目录不随 Git 仓库分发。首次克隆或更换项目路径后，应按照 [BUILD.md](BUILD.md) 运行 `scripts/run.tcl`，再打开本次生成的 `.xpr`。上述时间戳仅用于追溯原迁移回归。
 
 ## 尚未验证或不属于本轮
 
@@ -77,10 +79,10 @@ build/board_1789990031_26528/mlkem.xpr
 - `implement` 是提供的显式后续入口，不表示本轮已执行或已验证它的整个后端流程。
 - 保留的所有旧实验没有逐一重跑，尤其软件 compute audit 的 PC 地址不能直接用于任意重编译的固件。
 - 没有进行安全认证、功耗测试、完整 ML-KEM 测试或抗侧信道验证。
-- 没有 GitHub 上传，没有选择许可证；第三方和机构公开权限仍需确认。
+- 代码已公开托管；项目级许可证和第三方许可来源的补充说明仍待完成。
 
 ## 文件追溯
 
-`SOURCE_MANIFEST.csv` 记录导入时的哈希；`evidence/REDACTION_MANIFEST.csv` 记录证据副本脱敏前后的哈希；`FINAL_MANIFEST.csv` 记录整理后的候选文件。最终清单不包含自身、`build/`、`firmware/build/`、本机日志缓存或临时 HLS 工程。
+`SOURCE_MANIFEST.csv` 记录导入时的哈希；`evidence/REDACTION_MANIFEST.csv` 记录证据副本脱敏前后的哈希；`FINAL_MANIFEST.csv` 记录当前版本文件的哈希。最终清单不包含自身、`build/`、`firmware/build/`、本机日志缓存或临时 HLS 工程。
 
-导入文件哈希复核显示：所有导入的 HLS/RTL、固件、测试、约束和架构图保持原内容。预期差异仅为两个路径调整后的脚本和八份脱敏历史证据。候选源码/文档/证据扫描未发现旧工程绝对路径、用户目录路径或所检查的常见 GitHub token / 私钥头标记；这不替代完整的公开发布审查。
+迁移时的哈希复核显示，导入的 HLS/RTL、固件、测试、约束和架构图均保持原内容。导入文件的差异仅涉及两个路径调整后的脚本和八份脱敏历史证据。发布前的路径及常见凭据标记扫描未检出匹配项；该检查不构成完整安全审计。后续文档修订由 Git 提交记录追踪，不改写归档实验日志。
