@@ -1,0 +1,1 @@
+CPU_BASELINE_PASS cases=8 checks=4096 mul=1 fast_mul=0 div=1 expect_m=1 cycles=15366611 m_total=225280 min_sp=0x00003f50 stack_used=160

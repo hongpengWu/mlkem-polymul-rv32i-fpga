@@ -1,6 +1,9 @@
 `timescale 1ns/1ps
 module mlkem_polymul_pynqz2_top #(
-  parameter ENABLE_VIO = 0
+  parameter ENABLE_VIO = 0,
+  parameter CPU_ENABLE_MUL = 0,
+  parameter CPU_ENABLE_FAST_MUL = 0,
+  parameter CPU_ENABLE_DIV = 0
 )(
   input wire sys_clk,
   input wire btn0,
@@ -32,7 +35,10 @@ module mlkem_polymul_pynqz2_top #(
   wire [31:0] status;
   wire [383:0] profile_words;
   mlkem_polymul_rv32i_profile_top #(
-    .FIRMWARE_INIT_FILE("transfer_both_unroll4.mem")
+    .FIRMWARE_INIT_FILE("transfer_both_unroll4.mem"),
+    .CPU_ENABLE_MUL(CPU_ENABLE_MUL),
+    .CPU_ENABLE_FAST_MUL(CPU_ENABLE_FAST_MUL),
+    .CPU_ENABLE_DIV(CPU_ENABLE_DIV)
   ) system_i (
     .clk(clk100), .resetn(reset_sync[3]), .trap(trap),
     .trace_valid(), .trace_data(), .accel_interrupt(done), .status_out(status),

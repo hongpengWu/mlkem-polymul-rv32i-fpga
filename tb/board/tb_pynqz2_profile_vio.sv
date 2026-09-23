@@ -1,7 +1,11 @@
 `timescale 1ns/1ps
 `define CORE dut.system_i.accel.core
 `define BATCH dut.system_i.accel.core.grp_batch39d_fu_172
-module tb_pynqz2_profile_vio;
+module tb_pynqz2_profile_vio #(
+  parameter CPU_ENABLE_MUL = 0,
+  parameter CPU_ENABLE_FAST_MUL = 0,
+  parameter CPU_ENABLE_DIV = 0
+);
   reg sys_clk=0, btn0=1;
   wire [3:0] led;
   integer trial, i, j, index;
@@ -11,7 +15,10 @@ module tb_pynqz2_profile_vio;
   reg [255:0] seen=0;
   integer output_count=0;
   always #4 sys_clk=~sys_clk;
-  mlkem_polymul_pynqz2_top #(.ENABLE_VIO(1)) dut(.sys_clk(sys_clk),.btn0(btn0),.led(led));
+  mlkem_polymul_pynqz2_top #(
+    .ENABLE_VIO(1), .CPU_ENABLE_MUL(CPU_ENABLE_MUL),
+    .CPU_ENABLE_FAST_MUL(CPU_ENABLE_FAST_MUL), .CPU_ENABLE_DIV(CPU_ENABLE_DIV)
+  ) dut(.sys_clk(sys_clk),.btn0(btn0),.led(led));
   mlkem_core_cycle_observer observer(
     .clk(dut.clk100),.resetn(dut.reset_sync[3]),.busy(dut.system_i.accel.busy),
     .reported_cycles(dut.system_i.accel.cycle_count),.fsm(`CORE.ap_CS_fsm),

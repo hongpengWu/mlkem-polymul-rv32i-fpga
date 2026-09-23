@@ -10,10 +10,36 @@
 !/vivado/project/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/
 /vivado/project/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/*
 !/vivado/project/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/mlkem_profile_vio.xci
+/vivado/project_rv32im_iterative/*
+!/vivado/project_rv32im_iterative/*.xpr
+!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/
+/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/*
+!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/
+/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/*
+!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/
+/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/*
+!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/
+/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/*
+!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/mlkem_profile_vio.xci
+# CPU-only Vivado projects: keep the reproducible project entry point and
+# firmware image; caches, generated simulation data and implementation runs
+# are recreated by scripts/cpu_baseline/run.tcl.
+/vivado/cpu_baseline_rv32i/*
+!/vivado/cpu_baseline_rv32i/cpu_baseline.xpr
+!/vivado/cpu_baseline_rv32i/cpu_baseline.mem
+/vivado/cpu_baseline_rv32im_iterative/*
+!/vivado/cpu_baseline_rv32im_iterative/cpu_baseline.xpr
+!/vivado/cpu_baseline_rv32im_iterative/cpu_baseline.mem
+/vivado/cpu_baseline_rv32im_fast/*
+!/vivado/cpu_baseline_rv32im_fast/cpu_baseline.xpr
+!/vivado/cpu_baseline_rv32im_fast/cpu_baseline.mem
 /hls/.Xil/
 /.Xil/
 *.jou
 *.log
+!/results/cpu_baseline/rv32i/simulate.log
+!/results/cpu_baseline/rv32im_iterative/simulate.log
+!/results/cpu_baseline/rv32im_fast/simulate.log
 *.backup.*
 *.str
 *.wdb
@@ -21,6 +47,10 @@
 *.dcp
 *.bit
 !/release/*.bit
+!/release/rv32im_iterative/*.bit
+!/release/cpu_baseline_rv32i/*.bit
+!/release/cpu_baseline_rv32im_iterative/*.bit
+!/release/cpu_baseline_rv32im_fast/*.bit
 *.bin
 *.elf
 __pycache__/

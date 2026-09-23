@@ -1,0 +1,47 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Wed Sep 23 20:35:56 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_drc -file E:/pqc/mlkem-polymul-rv32i-fpga/results/cpu_baseline/rv32im_iterative/drc.rpt
+| Design       : cpu_benchmark_pynqz2_top
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Fully Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Report DRC
+
+Table of Contents
+-----------------
+1. REPORT SUMMARY
+2. REPORT DETAILS
+
+1. REPORT SUMMARY
+-----------------
+            Netlist: netlist
+          Floorplan: impl_1
+      Design limits: <entire design considered>
+           Ruledeck: default
+             Max checks: <unlimited>
+             Checks found: 2
++----------+----------+----------------------------+--------+
+| Rule     | Severity | Description                | Checks |
++----------+----------+----------------------------+--------+
+| PDRC-132 | Warning  | SLICE_PairEqSame_A6A5_WARN | 1      |
+| ZPS7-1   | Warning  | PS7 block required         | 1      |
++----------+----------+----------------------------+--------+
+
+2. REPORT DETAILS
+-----------------
+PDRC-132#1 Warning
+SLICE_PairEqSame_A6A5_WARN  
+Luts A6LUT and A5LUT in use in site SLICE_X65Y41 with different equations without A6 pin connected to Global Logic High.
+Related violations: <none>
+
+ZPS7-1#1 Warning
+PS7 block required  
+The PS7 cell must be used in this Zynq design in order to enable correct default configuration.
+Related violations: <none>
+
+

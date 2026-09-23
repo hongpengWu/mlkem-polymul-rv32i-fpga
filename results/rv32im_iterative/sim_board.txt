@@ -1,0 +1,3 @@
+Time resolution is 1 ps
+PYNQZ2 BOARD SIM PASS: LED=0101, call=13952 core=4789, button restart verified
+$finish called at time : 782046 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/board/tb_pynqz2_bram_board.sv" Line 26

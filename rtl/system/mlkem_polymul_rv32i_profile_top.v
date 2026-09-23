@@ -2,7 +2,10 @@
 
 // Standalone RV32I profiling system for the ML-KEM polynomial multiplier.
 module mlkem_polymul_rv32i_profile_top #(
-    parameter FIRMWARE_INIT_FILE = "profile_firmware.mem"
+    parameter FIRMWARE_INIT_FILE = "profile_firmware.mem",
+    parameter CPU_ENABLE_MUL = 0,
+    parameter CPU_ENABLE_FAST_MUL = 0,
+    parameter CPU_ENABLE_DIV = 0
 ) (
     input  wire        clk,
     input  wire        resetn,
@@ -43,7 +46,9 @@ module mlkem_polymul_rv32i_profile_top #(
   picorv32_axi #(
       .ENABLE_COUNTERS(1),
       .ENABLE_COUNTERS64(0),
-      .ENABLE_MUL(0),
+      .ENABLE_MUL(CPU_ENABLE_MUL),
+      .ENABLE_FAST_MUL(CPU_ENABLE_FAST_MUL),
+      .ENABLE_DIV(CPU_ENABLE_DIV),
       .ENABLE_TRACE(1),
       .REGS_INIT_ZERO(1),
       .STACKADDR(32'h0000_0ff0)

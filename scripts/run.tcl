@@ -1,15 +1,19 @@
-# vivado -mode batch -source scripts/run.tcl -tclargs project|vio|board|protocol|core|implement ?firmware_dir?
+# vivado -mode batch -source scripts/run.tcl -tclargs project|vio|board|protocol|core|cpu|implement ?firmware_dir? ?rv32i|rv32im_iterative?
 set root [file normalize [file join [file dirname [info script]] ..]]
 set mode [lindex $argv 0]
 if {$mode eq ""} {set mode project}
-if {$mode ni {project vio board protocol core implement}} {
-    error "Expected project, vio, board, protocol, core or implement"
+if {$mode ni {project vio board protocol core cpu implement}} {
+    error "Expected project, vio, board, protocol, core, cpu or implement"
 }
 set firmware [file join $root firmware images]
 if {[llength $argv] > 1} {set firmware [file normalize [lindex $argv 1]]}
+set cpu_config rv32i
+if {[llength $argv] > 2} {set cpu_config [lindex $argv 2]}
+if {$mode eq "cpu" && $cpu_config ne "rv32im_iterative"} {error "CPU M-extension test requires rv32im_iterative"}
 source [file join $root vivado project.tcl]
-mlkem_create_project $root $firmware
+mlkem_create_project $root $firmware $cpu_config
 if {$mode eq "implement"} {
+    if {$cpu_config eq "rv32im_iterative"} {mlkem_simulate cpu}
     foreach suite {core protocol board vio} {mlkem_simulate $suite}
     set_property strategy Flow_PerfOptimized_high [get_runs synth_1]
     set_property strategy Performance_Explore [get_runs impl_1]
@@ -21,8 +25,10 @@ if {$mode eq "implement"} {
     if {[get_property PROGRESS [get_runs impl_1]] ne "100%"} {error "Implementation failed"}
     open_run impl_1
     set reports [file join $root build reports]
+    if {$cpu_config ne "rv32i"} {set reports [file join $reports $cpu_config]}
     file mkdir $reports
     report_utilization -file [file join $reports utilization_routed.rpt]
+    report_utilization -hierarchical -file [file join $reports utilization_hierarchical.rpt]
     report_timing_summary -report_unconstrained -file [file join $reports timing_routed.rpt]
     report_bus_skew -file [file join $reports bus_skew_routed.rpt]
     report_drc -file [file join $reports drc_routed.rpt]
@@ -33,6 +39,7 @@ if {$mode eq "implement"} {
         }
     }
     set release [file join $root release]
+    if {$cpu_config ne "rv32i"} {set release [file join $release $cpu_config]}
     file mkdir $release
     write_debug_probes -force [file join $release mlkem_pynqz2.ltx]
     set bit [file join [get_property DIRECTORY [get_runs impl_1]] mlkem_polymul_pynqz2_top.bit]

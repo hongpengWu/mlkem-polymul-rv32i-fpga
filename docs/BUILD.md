@@ -35,6 +35,21 @@ vivado/project/mlkem_pynqz2.xpr
 | `sim_protocol` | `tb_bram_wrapper_protocol` | AXI/BRAM 协议与边界用例 |
 | `sim_core` | `tb_v39e_true_one_dsp` | 加速核独立算术验证 |
 
+通过第三个位置参数选择 RV32IM 迭代乘法配置：
+
+```text
+vivado -mode batch -source scripts/run.tcl -tclargs project firmware/images rv32im_iterative
+```
+
+完整参数顺序为 `模式 固件目录 CPU配置`，配置可选 `rv32i`（默认）或 `rv32im_iterative`。迭代配置将 `CPU_ENABLE_MUL=1`、`CPU_ENABLE_FAST_MUL=0`、`CPU_ENABLE_DIV=1` 传至原版 PicoRV32；默认配置三者均为 0。板级 RAM 仍为 4 KiB。
+
+| 配置 | 完整工程 | 烧录产物 | 本地实现报告 |
+|---|---|---|---|
+| `rv32i` | `vivado/project/mlkem_pynqz2.xpr` | `release/` | `build/reports/` |
+| `rv32im_iterative` | `vivado/project_rv32im_iterative/mlkem_pynqz2.xpr` | `release/rv32im_iterative/` | `build/reports/rv32im_iterative/` |
+
+迭代配置另外包含 `sim_cpu` 仿真集，顶层为 `tb_picorv32_rv32im`。两种配置分别保存 XPR 和 VIO XCI，运行结果互不覆盖。
+
 生成工程引用仓库内的源文件。移动或复制工程时应包含整个仓库；换机器后可重新运行 Tcl 创建工程。Git 保存源文件、Tcl、`.xpr` 和同一工程树中的 VIO `.xci` 配置；完整运行目录保存在本机，缓存、运行数据库和日志由 Git 忽略。
 
 首次打开克隆后的 XPR 时，Vivado 可能提示未找到已忽略的缓存和旧运行记录；IP 输出可由 Vivado 重新生成。Tcl 入口会重建固定目录中的工程配置，请先保存自行修改的工程设置；它不修改 `rtl/`、`hls/`、固件或 TB 源码。
@@ -55,7 +70,16 @@ vivado -mode batch -source scripts/run.tcl -tclargs vio
 | `board` | 固件自检、LED、按钮重新启动 | `PYNQZ2 BOARD SIM PASS` |
 | `vio` | 三次复位、独立 256 系数参考计算、周期计数与 VIO 连接 | `BOARD VIO SIM PASS` |
 
-各模式均根据 Tcl 创建 `vivado/project/` 工程，再选择对应仿真集运行。仿真日志位于 `vivado/project/mlkem_pynqz2.sim/<simset>/behav/xsim/simulate.log`；运行目录由 Git 忽略。周期断言对应仓库原有 RTL 和预编译固件；重新编译固件后，编译器差异可能改变周期数。
+各模式均根据 Tcl 创建所选配置的工程，再选择对应仿真集运行。仿真日志位于对应工程目录的 `mlkem_pynqz2.sim/<simset>/behav/xsim/simulate.log`；运行目录由 Git 忽略。周期断言对应仓库原有加速器 RTL 和预编译固件；重新编译固件后，编译器差异可能改变周期数。
+
+RV32IM 指令仿真与板级回归示例：
+
+```text
+vivado -mode batch -source scripts/run.tcl -tclargs cpu firmware/images rv32im_iterative
+vivado -mode batch -source scripts/run.tcl -tclargs vio firmware/images rv32im_iterative
+```
+
+`cpu` 仅适用于 `rv32im_iterative`，成功标记为 `RV32IM_ISA_PASS tests=4096 pcpi=4096`。TB 在真实 CPU 中执行全部 8 种 M 指令，每种覆盖 512 对操作数，并记录 `rdcycle` 与 PCPI 时间。其指令 ROM 和 native memory 握手仅用于仿真，测得的指令周期不能直接替代板级 AXI/RAM 应用周期。覆盖范围、计时边界和独立运行方式见 [CPU 测试说明](../tb/cpu/README.md)。
 
 ## 综合、实现与烧录文件
 
@@ -65,6 +89,19 @@ vivado -mode batch -source scripts/run.tcl -tclargs implement
 
 该模式使用 `vivado/project/` 工程，通过 `core`、`protocol`、`board`、`vio` 四组仿真后完成综合、布局布线和 bitstream 生成。匹配的 `mlkem_pynqz2.bit`、`mlkem_pynqz2.ltx` 导出至 `release/` 并纳入 Git；资源、时序、bus-skew 与 DRC 报告保存在 `build/reports/`。完成后执行 `./scripts/update_release_checksums.ps1` 更新产物校验文件。实际结果见 [验证记录](VALIDATION.md)。
 
+构建迭代配置并归档测量证据：
+
+```text
+vivado -mode batch -source scripts/run.tcl -tclargs implement firmware/images rv32im_iterative
+```
+
+```powershell
+./scripts/update_release_checksums.ps1 -CpuConfig rv32im_iterative
+./scripts/collect_rv32im_measurements.ps1
+```
+
+迭代配置先通过 `cpu` 和原四组仿真，再综合、布局布线并导出独立目录中的 BIT/LTX。采集脚本将仿真结果、指令周期 CSV、实现报告和输入哈希保存至 `results/rv32im_iterative/`；汇总表见 [BENCHMARKS.md](BENCHMARKS.md)。本轮保留相同的 RV32I transfer 镜像检查兼容性，尚未编译运行 RV32IM 软件 NTT 基准，不能据此计算多项式软件/硬件加速比。
+
 连接 PYNQ-Z2 的 JTAG 后，可在 Hardware Manager 中加载同次构建的 BIT/LTX，或显式执行：
 
 ```text
@@ -72,6 +109,8 @@ vivado -mode batch -source scripts/program_board.tcl
 ```
 
 **上述烧录命令会配置已连接的开发板。** 它使用 `release/` 的烧录文件；创建工程和实现命令均不会自动调用它。
+
+`program_board.tcl` 仍默认加载原始 RV32I 产物。后续若需烧录 RV32IM 配置，请在 Hardware Manager 中手动选择 `release/rv32im_iterative/` 下同次构建的 BIT 和 LTX。本轮按要求仅完成仿真与实现，未烧录实体板。
 
 固件上电后运行自检。`BTN0` 复位并重新启动系统；成功时 `LED[3:0] = 0101`，即 PASS 与 done 置位，error 与 trap 清零。在 GUI Hardware Manager 中连接并加载 BIT/LTX 后，可在 Tcl Console 运行：
 
@@ -83,7 +122,7 @@ source scripts/read_board_vio.tcl
 
 ## 固件
 
-运行 `./scripts/verify_sources.ps1` 可核对本次保留的 52 个源码、约束和初始化文件是否仍与整理前一致。
+运行 `./scripts/verify_sources.ps1` 可核对历史清单中的 52 个源码、约束和初始化文件。阶段 2 有 48 项保持原始内容，4 项封装/TB 的 CPU 参数透传变更通过 `docs/source_changes.csv` 中的原始及当前哈希核对；CPU 内核、加速器、固件、约束和原回归断言未修改。
 
 ```powershell
 ./scripts/build_memory_transfer_compare.ps1 -ToolDir 'YOUR_RISCV_BIN_DIRECTORY'

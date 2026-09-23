@@ -1,9 +1,16 @@
 `timescale 1ns/1ps
-module tb_pynqz2_bram_board;
+module tb_pynqz2_bram_board #(
+  parameter CPU_ENABLE_MUL = 0,
+  parameter CPU_ENABLE_FAST_MUL = 0,
+  parameter CPU_ENABLE_DIV = 0
+);
   reg sys_clk=0, btn0=1;
   wire [3:0] led;
   always #4 sys_clk=~sys_clk;
-  mlkem_polymul_pynqz2_top dut(.sys_clk(sys_clk),.btn0(btn0),.led(led));
+  mlkem_polymul_pynqz2_top #(
+    .CPU_ENABLE_MUL(CPU_ENABLE_MUL), .CPU_ENABLE_FAST_MUL(CPU_ENABLE_FAST_MUL),
+    .CPU_ENABLE_DIV(CPU_ENABLE_DIV)
+  ) dut(.sys_clk(sys_clk),.btn0(btn0),.led(led));
   initial begin
     #2000; btn0=0;
     wait(led[0] || led[1] || led[3]);

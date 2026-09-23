@@ -1,0 +1,42 @@
+[
+  {
+    "case": 0,
+    "name": "zero",
+    "checksum": "811c9dc5"
+  },
+  {
+    "case": 1,
+    "name": "identity",
+    "checksum": "3b73945a"
+  },
+  {
+    "case": 2,
+    "name": "ring_wrap",
+    "checksum": "811c9dad"
+  },
+  {
+    "case": 3,
+    "name": "all_q_minus_1",
+    "checksum": "811c90c4"
+  },
+  {
+    "case": 4,
+    "name": "alternating",
+    "checksum": "811c91c4"
+  },
+  {
+    "case": 5,
+    "name": "dense",
+    "checksum": "ba1876c7"
+  },
+  {
+    "case": 6,
+    "name": "random_c0dec0de",
+    "checksum": "a289798c"
+  },
+  {
+    "case": 7,
+    "name": "random_6d6c6b65",
+    "checksum": "94cdc32c"
+  }
+]

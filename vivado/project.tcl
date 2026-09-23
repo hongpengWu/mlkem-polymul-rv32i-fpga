@@ -1,8 +1,14 @@
 # Common Vivado 2024.2 project definition. Called by scripts/run.tcl.
 # Source files use repository paths. Only XPR/XCI are tracked from the generated tree.
-proc mlkem_create_project {root firmware} {
+proc mlkem_create_project {root firmware {cpu_config rv32i}} {
     if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2 for this project"}
+    if {$cpu_config ni {rv32i rv32im_iterative}} {error "Expected rv32i or rv32im_iterative"}
     set project_dir [file join $root vivado project]
+    set cpu_generics {CPU_ENABLE_MUL=0 CPU_ENABLE_FAST_MUL=0 CPU_ENABLE_DIV=0}
+    if {$cpu_config eq "rv32im_iterative"} {
+        set project_dir [file join $root vivado project_rv32im_iterative]
+        set cpu_generics {CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=0 CPU_ENABLE_DIV=1}
+    }
     file mkdir $project_dir
     create_project -force mlkem_pynqz2 $project_dir -part xc7z020clg400-1
     set_property target_language Verilog [current_project]
@@ -23,7 +29,7 @@ proc mlkem_create_project {root firmware} {
         add_files -fileset constrs_1 -norecurse [file join $root constraints $f]
     }
     set_property top mlkem_polymul_pynqz2_top [get_filesets sources_1]
-    set_property generic {ENABLE_VIO=1} [get_filesets sources_1]
+    set_property generic "ENABLE_VIO=1 $cpu_generics" [get_filesets sources_1]
     set ip_dir [file join $project_dir mlkem_pynqz2.srcs sources_1 ip]
     file mkdir $ip_dir
     create_ip -force -dir $ip_dir \
@@ -45,8 +51,16 @@ proc mlkem_create_project {root firmware} {
         if {$suite ne "vio"} {create_fileset -simset $name}
         foreach f $files {add_files -fileset $name -norecurse [file join $root $f]}
         set_property top $top [get_filesets $name]
+        if {$suite in {vio board}} {set_property generic $cpu_generics [get_filesets $name]}
         set_property xsim.simulate.runtime all [get_filesets $name]
         update_compile_order -fileset $name
+    }
+    if {$cpu_config eq "rv32im_iterative"} {
+        create_fileset -simset sim_cpu
+        add_files -fileset sim_cpu -norecurse [file join $root tb cpu tb_picorv32_rv32im.sv]
+        set_property top tb_picorv32_rv32im [get_filesets sim_cpu]
+        set_property xsim.simulate.runtime all [get_filesets sim_cpu]
+        update_compile_order -fileset sim_cpu
     }
     current_fileset -simset [get_filesets sim_1]
     update_compile_order -fileset sources_1
@@ -61,7 +75,7 @@ proc mlkem_create_project {root firmware} {
 
 proc mlkem_simulate {suite} {
     set markers [dict create vio "BOARD VIO SIM PASS" board "PYNQZ2 BOARD SIM PASS" \
-        protocol "BRAM PROTOCOL PASS" core "V39-E MANUAL RTL COSIM PASS"]
+        protocol "BRAM PROTOCOL PASS" core "V39-E MANUAL RTL COSIM PASS" cpu "RV32IM_ISA_PASS"]
     set name [expr {$suite eq "vio" ? "sim_1" : "sim_$suite"}]
     current_fileset -simset [get_filesets $name]
     launch_simulation -simset $name

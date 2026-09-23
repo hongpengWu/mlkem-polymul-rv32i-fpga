@@ -1,0 +1,95 @@
+[
+  {
+    "config": "rv32i",
+    "cases": 8,
+    "raw_total_min": 2604377,
+    "raw_total_mean": 2838815.875,
+    "raw_total_max": 2896797,
+    "profiled_total_min": 2604380,
+    "profiled_total_mean": 2838818.875,
+    "profiled_total_max": 2896800,
+    "empty_cycles": [
+      4
+    ],
+    "phase_means": {
+      "prepare": 6543,
+      "ntt_a": 763907,
+      "ntt_b": 763911,
+      "basemul": 412097.875,
+      "invntt": 855464,
+      "canonical": 36896
+    },
+    "m_instructions_per_window": [
+      0
+    ],
+    "mul_per_window": [
+      0
+    ],
+    "min_sp": [
+      "0x00003f20"
+    ],
+    "pass_line": "CPU_BASELINE_PASS cases=8 checks=4096 mul=0 fast_mul=0 div=0 expect_m=0 cycles=47655193 m_total=0 min_sp=0x00003f20 stack_used=208"
+  },
+  {
+    "config": "rv32im_iterative",
+    "cases": 8,
+    "raw_total_min": 912319,
+    "raw_total_mean": 912319,
+    "raw_total_max": 912319,
+    "profiled_total_min": 912325,
+    "profiled_total_mean": 912325,
+    "profiled_total_max": 912325,
+    "empty_cycles": [
+      4
+    ],
+    "phase_means": {
+      "prepare": 6543,
+      "ntt_a": 216981,
+      "ntt_b": 216981,
+      "basemul": 101885,
+      "invntt": 328160,
+      "canonical": 41775
+    },
+    "m_instructions_per_window": [
+      14080
+    ],
+    "mul_per_window": [
+      14080
+    ],
+    "min_sp": [
+      "0x00003f50"
+    ],
+    "pass_line": "CPU_BASELINE_PASS cases=8 checks=4096 mul=1 fast_mul=0 div=1 expect_m=1 cycles=15366611 m_total=225280 min_sp=0x00003f50 stack_used=160"
+  },
+  {
+    "config": "rv32im_fast",
+    "cases": 8,
+    "raw_total_min": 433599,
+    "raw_total_mean": 433599,
+    "raw_total_max": 433599,
+    "profiled_total_min": 433605,
+    "profiled_total_mean": 433605,
+    "profiled_total_max": 433605,
+    "empty_cycles": [
+      4
+    ],
+    "phase_means": {
+      "prepare": 6543,
+      "ntt_a": 108181,
+      "ntt_b": 108181,
+      "basemul": 36605,
+      "invntt": 149728,
+      "canonical": 24367
+    },
+    "m_instructions_per_window": [
+      14080
+    ],
+    "mul_per_window": [
+      14080
+    ],
+    "min_sp": [
+      "0x00003f50"
+    ],
+    "pass_line": "CPU_BASELINE_PASS cases=8 checks=4096 mul=1 fast_mul=1 div=1 expect_m=1 cycles=7654867 m_total=225280 min_sp=0x00003f50 stack_used=160"
+  }
+]
