@@ -58,9 +58,23 @@ build/        本地编译结果与报告（Git 忽略）
 - [性能与资源数据表](docs/BENCHMARKS.md)
 - [竞赛路线图与阶段门](docs/COMPETITION_ROADMAP.md)
 - [CPU baseline 协议](docs/CPU_BENCHMARK_PROTOCOL.md)
+- [官方 FIPS 203/ACVP 向量来源](vectors/official_kat/acvp/SOURCES.md)
 - [保留源码哈希清单](docs/source_integrity.csv)
 - [后续配置变更清单](docs/source_changes.csv)
 - [第三方组件说明](THIRD_PARTY_NOTICES.md)
+
+主机端 FIPS 203/ACVP 参考验证使用固定的 `mlkem-native` 源码快照和仓库内的官方 JSON
+向量。先做结构与哈希检查，再运行三组 ML-KEM-512/768/1024 的 keyGen、encapsulation、
+decapsulation 和 key-check 用例：
+
+```powershell
+python scripts/kat/validate_acvp_json.py
+./scripts/kat/run_host_acvp.ps1
+```
+
+该流程只验证主机参考实现，不把官方 JSON 直接当作 PicoRV32 固件，也不改变现有 RTL、HLS
+或固件源码。通过记录位于 `results/official_reference/`；将其移植到 PicoRV32 以及接入
+多项式加速器属于后续阶段。
 
 CPU-only 软件 baseline 的三组仿真、Vivado 2024.2 实现和 bitstream 由以下入口复现；它们不连接 PQC 加速器：
 

@@ -14,6 +14,29 @@
 
 如果已经设置 Vivado 环境，直接使用下文的 `vivado` 命令。
 
+## 主机端 FIPS 203/ACVP 参考验证
+
+仓库保存 ACVP-Server 固定提交导出的正式 FIPS 203 向量，并将 `FIPS203-tr1` 过渡向量单独
+保存。来源、提交、文件哈希和采集日期见
+[vectors/official_kat/acvp/SOURCES.md](../vectors/official_kat/acvp/SOURCES.md)。校验向量结构：
+
+```powershell
+python scripts/kat/validate_acvp_json.py
+```
+
+主机参考实现使用忽略目录 `build/kat_sources/mlkem-native/` 中固定提交的 `mlkem-native`。
+Windows 下需要 Git for Windows 的 Bash、GCC、Make 和 Python；脚本会自动选择常见的 Bash
+路径，也可以显式指定：
+
+```powershell
+./scripts/kat/run_host_acvp.ps1 -BashPath 'D:\Git\bin\bash.exe'
+```
+
+脚本在需要时用 `make SHELL=<git-bash>/sh.exe CC=gcc OPT=0 Q= acvp` 构建三个参数集，随后
+运行正式 FIPS 203 和过渡 `FIPS203-tr1` 的全部向量。日志与元数据保存到
+`results/official_reference/`。当前通过结果为 75 + 165 + 195 = 435 个用例；这只是主机
+参考实现证据，不能代替 PicoRV32 固件仿真、CPU+加速器集成或实体板验证。
+
 ## 创建完整工程
 
 ```text

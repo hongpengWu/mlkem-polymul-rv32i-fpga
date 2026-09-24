@@ -43,12 +43,16 @@ mlkem-polymul-rv32i-fpga/
 │   ├── collect_rv32im_measurements.ps1  仿真与实现证据采集
 │   ├── cpu_baseline/      生成 baseline 镜像、运行三组 XSim 与收集结果
 │   ├── program_board.tcl  显式 JTAG 烧录入口
-│   └── read_board_vio.tcl  只读状态采集
+│   ├── read_board_vio.tcl  只读状态采集
+│   └── kat/                ACVP JSON 检查与主机参考回归入口
+├── vectors/
+│   └── official_kat/acvp/  FIPS 203/ACVP 官方 prompt/expected 向量、来源和哈希
 ├── docs/                  使用说明、竞赛路线图、结构图、验证记录、BENCHMARKS.md 与源码哈希
 ├── results/               纳入 Git 的测量证据与哈希
 │   ├── rv32i_baseline/    原始 RV32I 实现报告
 │   ├── rv32im_iterative/  指令/系统仿真、实现报告、输入及结果哈希
-│   └── cpu_baseline/      RV32I、RV32IM 迭代与 RV32IM 快速软件对照结果
+│   ├── cpu_baseline/      RV32I、RV32IM 迭代与 RV32IM 快速软件对照结果
+│   └── official_reference/ 主机端 ACVP 回归日志和运行元数据
 ├── release/               默认 RV32I 的 BIT、匹配 LTX 与校验文件
 │   └── rv32im_iterative/  RV32IM 迭代配置的独立烧录产物
 └── build/                 本地生成目录，Git 忽略
@@ -62,6 +66,10 @@ mlkem-polymul-rv32i-fpga/
 CPU-only 工程的源码与测试输入仍由 `scripts/cpu_baseline/run.tcl` 从仓库根目录引用；Vivado 目录只保存可打开的 `.xpr` 及对应 `cpu_baseline.mem`。`cpu_baseline.sim/`、`cpu_baseline.cache/`、`cpu_baseline.runs/` 等目录属于本地生成物，不纳入版本库。
 
 `COMPETITION_ROADMAP.md` 只记录目标、阶段门、创新主线和证据要求；实际测量数据归档在 `results/` 并登记到 `BENCHMARKS.md`，不把规划数字当作实测结果。
+
+`vectors/official_kat/` 保存标准输入和预期结果，`scripts/kat/` 只负责结构检查、哈希复核和
+主机参考实现回归。官方 KAT 通过不等于 PicoRV32 或 FPGA 加速器已经通过；后两者必须在
+后续独立的固件和 CPU+加速器阶段逐字节检查。
 
 ## 源码一致性
 

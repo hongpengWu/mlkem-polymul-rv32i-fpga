@@ -1,0 +1,15 @@
+﻿{
+    "reference":  "mlkem-native",
+    "source":  "build/kat_sources/mlkem-native",
+    "mlkem_native_commit":  "b3ba7b32773e657dd37f6f87bce82528459ad8a4",
+    "acvp_server_commit":  "975de31eb83d87039ec88934fdc47d8c312b892d",
+    "vector_root":  "vectors/official_kat/acvp",
+    "vector_manifest":  "vectors/official_kat/acvp/SHA256SUMS",
+    "generated_utc":  "2026-09-24T08:28:34.1598751Z",
+    "build_command":  "make SHELL=\u003cgit-bash\u003e/sh.exe CC=gcc OPT=0 Q= acvp",
+    "runs":  [
+                 "keygen_fips203",
+                 "encap_decap_fips203",
+                 "encap_decap_fips203_tr1"
+             ]
+}

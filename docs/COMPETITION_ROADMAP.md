@@ -313,8 +313,8 @@ Core 周期不包含 CPU 搬运；Call 周期不应再次加上与其重叠的�
 
 ## 8. 当前执行队列
 
-- [ ] 固定 FIPS 203/ACVP 官方 KAT 来源和哈希；
-- [ ] 完成主机端 ML-KEM-512/768/1024 KAT；
+- [x] 固定 FIPS 203/ACVP 官方 KAT 来源和哈希；
+- [x] 完成主机端 ML-KEM-512/768/1024 KAT；
 - [ ] 评估完整软件实现的 RAM、代码和栈需求；
 - [ ] 移植 RV32I/RV32IM 完整软件 baseline；
 - [ ] 建立官方 KAT 的多项式操作数 trace；
@@ -329,3 +329,8 @@ Core 周期不包含 CPU 搬运；Call 周期不应再次加上与其重叠的�
 - [ ] 固化最终报告、视频和可复现工程。
 
 路线图只记录目标、阶段门和待测字段；实际测量数值写入 [BENCHMARKS.md](BENCHMARKS.md)，构建命令写入 [BUILD.md](BUILD.md)，验证证据写入 [VALIDATION.md](VALIDATION.md)，目录规则写入 [STRUCTURE.md](STRUCTURE.md)。
+
+M0/M1 的主机端交付物已经落地：官方向量位于
+`vectors/official_kat/acvp/`，结构检查入口为 `scripts/kat/validate_acvp_json.py`，参考
+回归入口为 `scripts/kat/run_host_acvp.ps1`，435 个用例的日志位于
+`results/official_reference/`。这一步仍不宣称 PicoRV32 或 FPGA 系统通过标准 KAT。

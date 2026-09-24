@@ -53,3 +53,21 @@
 本轮没有通过修改源码或约束消除警告。DRC 共 23 个 Warning，涉及单 DSP 的 MREG 流水建议、调试核 LUT/布线检查，以及纯 PL 设计的 `ZPS7-1`（未实例化 PS7）。时序方法检查另提示异步复位 LUT 和 RAM 优化建议。BTN0 和四个 LED 按原有 XDC 设置时序例外。固件链接的 RWX 段警告符合原统一程序/数据 RAM 布局；HLS 编译还报告 AMD `gmp.h` 宏重定义。上述信息保留供后续维护，本次不改变设计实现。
 
 VIO 有 13 个输入端口；生成 LTX 将最后一个两位端口拆为 `done`、`trap`，共 14 个探针条目，与现有读回脚本一致。
+
+## 主机端 FIPS 203/ACVP 参考验证
+
+在 2026-09-23 固定的 ACVP-Server 提交和 `mlkem-native` 参考实现上，结构检查与主机端
+回归均通过：
+
+| 向量集 | 用例数 | 结果 |
+|---|---:|---|
+| ML-KEM-keyGen-FIPS203 | 75 | PASS |
+| ML-KEM-encapDecap-FIPS203 | 165 | PASS |
+| ML-KEM-encapDecap-FIPS203-tr1 | 195 | PASS |
+| 合计 | 435 | PASS |
+
+可复现入口为 `python scripts/kat/validate_acvp_json.py` 和
+`scripts/kat/run_host_acvp.ps1`。原始运行日志和元数据保存在
+`results/official_reference/`，向量来源和 SHA-256 见
+`vectors/official_kat/acvp/SOURCES.md`。该验证只证明主机参考实现与这些 ACVP 结果一致，
+尚未证明 PicoRV32 固件、现有多项式加速器或实体 PYNQ-Z2 通过完整 ML-KEM KAT。

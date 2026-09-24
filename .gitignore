@@ -40,6 +40,7 @@
 !/results/cpu_baseline/rv32i/simulate.log
 !/results/cpu_baseline/rv32im_iterative/simulate.log
 !/results/cpu_baseline/rv32im_fast/simulate.log
+!/results/official_reference/*.log
 *.backup.*
 *.str
 *.wdb
