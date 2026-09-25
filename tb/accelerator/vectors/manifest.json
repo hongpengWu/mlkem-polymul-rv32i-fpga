@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "parameter_set": "ML-KEM-512",
+  "k": 2,
+  "n": 256,
+  "q": 3329,
+  "seed": 85113550,
+  "cases": [
+    {
+      "index": 0,
+      "name": "zero",
+      "files": {
+        "a0": "case_000_a0.mem",
+        "a1": "case_000_a1.mem",
+        "b0": "case_000_b0.mem",
+        "b1": "case_000_b1.mem",
+        "cache0": "case_000_cache0.mem",
+        "cache1": "case_000_cache1.mem",
+        "expected": "case_000_expected.mem"
+      },
+      "sha256": {
+        "a0": "532dd13c8826d7f26fb504c86c97e1bd743e8e1e31ee050911b5f05511736d2e",
+        "a1": "532dd13c8826d7f26fb504c86c97e1bd743e8e1e31ee050911b5f05511736d2e",
+        "b0": "532dd13c8826d7f26fb504c86c97e1bd743e8e1e31ee050911b5f05511736d2e",
+        "b1": "532dd13c8826d7f26fb504c86c97e1bd743e8e1e31ee050911b5f05511736d2e",
+        "cache0": "b42fbc5ea41d16a6a435ffc12848ab85d9e0a672dc3b06836567b9ecc7ed6d0e",
+        "cache1": "b42fbc5ea41d16a6a435ffc12848ab85d9e0a672dc3b06836567b9ecc7ed6d0e",
+        "expected": "532dd13c8826d7f26fb504c86c97e1bd743e8e1e31ee050911b5f05511736d2e"
+      },
+      "max_abs_a": 0,
+      "max_abs_b": 0
+    },
+    {
+      "index": 1,
+      "name": "signed_boundary",
+      "files": {
+        "a0": "case_001_a0.mem",
+        "a1": "case_001_a1.mem",
+        "b0": "case_001_b0.mem",
+        "b1": "case_001_b1.mem",
+        "cache0": "case_001_cache0.mem",
+        "cache1": "case_001_cache1.mem",
+        "expected": "case_001_expected.mem"
+      },
+      "sha256": {
+        "a0": "9863f1ecd0e4533df8635df15cdd088dd576bca4b102597f1b13eebfdf926337",
+        "a1": "9863f1ecd0e4533df8635df15cdd088dd576bca4b102597f1b13eebfdf926337",
+        "b0": "6ff1d0631b1cb8c35ceea3bc4d766ad2dc57ad3e50ca0f74837300dd85e5481d",
+        "b1": "6ff1d0631b1cb8c35ceea3bc4d766ad2dc57ad3e50ca0f74837300dd85e5481d",
+        "cache0": "9f06d9f08526d807315ef7835330136e0083436acb8ffc13f8b6090ce4014f82",
+        "cache1": "9f06d9f08526d807315ef7835330136e0083436acb8ffc13f8b6090ce4014f82",
+        "expected": "015b4a6845a311c9c7649a3a630518b471ed27d0168ae32e15d410602c241b26"
+      },
+      "max_abs_a": 4095,
+      "max_abs_b": 26631
+    },
+    {
+      "index": 2,
+      "name": "deterministic_random",
+      "files": {
+        "a0": "case_002_a0.mem",
+        "a1": "case_002_a1.mem",
+        "b0": "case_002_b0.mem",
+        "b1": "case_002_b1.mem",
+        "cache0": "case_002_cache0.mem",
+        "cache1": "case_002_cache1.mem",
+        "expected": "case_002_expected.mem"
+      },
+      "sha256": {
+        "a0": "7e859230701c7267ee644e685ace076613a3f5c307703ee93e06ddce5e090e1a",
+        "a1": "bd9f2fc096829957960d2090bd564a8cc09aec409d34b2e4540c88c24a991e6f",
+        "b0": "958d947151526ca2ad0bd1af1410f418f09195ddf4b257e86990ae894007523e",
+        "b1": "2e26c9e16c4c7c6359f890d817ca1741b8cb1eb04f254190523b157a4428a7fa",
+        "cache0": "3ff155b57a09449f648f411b7cb3a1291ee8fa1758bd071e0cb7ec982b51fd02",
+        "cache1": "69ec6c8a2fa5a871795549fb4d249e910a9d615de5e71a02b74b266f46e8f3bb",
+        "expected": "628f38ee334ae0d29186d1ce56c5397553edc4345ff192c83e15a71dcc3420d7"
+      },
+      "max_abs_a": 4094,
+      "max_abs_b": 26430
+    }
+  ]
+}

@@ -116,7 +116,9 @@ def main() -> None:
             "pipeline_granularity": "one coefficient pair",
             "k_unrolled": 2,
             "direct_drop_in": False,
-            "requires_axilite_or_axi_adapter": True,
+            "native_mmio_adapter": "rtl/accelerator/mlkem512_basemul_k2_mmio_adapter.sv",
+            "native_mmio_base": "0x50001000",
+            "requires_picorv32_integration": True,
         },
         "standard_mlkem512_contract": {
             "parameter_set": "ML-KEM-512",
@@ -133,7 +135,7 @@ def main() -> None:
         "integration_decision": {
             "direct_drop_in": False,
             "reason": "The maintained HLS block consumes NTT-domain operands and an explicit mulcache; it does not perform NTT, inverse NTT, compression, or scaling.",
-            "next_boundary": "stage_oracle_then_axi_bram_adapter",
+            "next_boundary": "stage_oracle_then_picorv32_mmio_integration",
             "legacy_complete_polymul_removed": True,
         },
         "source_sha256": {path: sha(ROOT / path) for path in paths},

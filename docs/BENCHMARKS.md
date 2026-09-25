@@ -59,8 +59,27 @@ ML-KEM-512 固定版本 145 条记录；这不是三个参数集各 145 条。
 | DSP / LUT / FF / BRAM | 12 / 310 / 599 / 0 |
 
 证据：[`results/accelerator_interface/hls_synthesis/`](../results/accelerator_interface/hls_synthesis/)、
-[`hls/mlkem512_basemul_k2/ip/`](../hls/mlkem512_basemul_k2/ip/)。这些数字只覆盖 HLS 核心；
-AXI/BRAM 搬运、CPU API 和完整 KEM 仍待新 Vivado 顶层完成后单独测量。
+[`hls/mlkem512_basemul_k2/ip/`](../hls/mlkem512_basemul_k2/ip/)。HLS 数字只覆盖核心；
+独立 MMIO/BRAM 验证的额外数据如下：
+
+| 独立硬件指标 | 结果 |
+|---|---:|
+| RTL 核心周期/组 | 136 cycles |
+| 输入写事务/组 | 640 |
+| 结果读事务/组 | 128 |
+| 首次写入到最末结果字读请求被接受（含首尾） | 1800 cycles |
+| RTL 回归 | 3 组、768 个系数逐项 PASS |
+| 板级 BIST RTL | 2 次 PASS、256 个结果字检查、1 次故障注入检测 |
+| Vivado WNS / WHS | 0.732 ns / 0.129 ns |
+| BRAM / DSP 原语 | 8 / 12 |
+| LUT / FF | 566 / 386 |
+| BRAM 细分 | 7 × RAMB18 + 1 × RAMB36（4.5 tiles） |
+
+证据：[`results/accelerator_interface/rtl_sim/`](../results/accelerator_interface/rtl_sim/)、
+[`results/accelerator_interface/vivado_impl/`](../results/accelerator_interface/vivado_impl/)。
+1800 cycles 来自当前 TB 的请求间隔，未包含最末读响应与调用方检查，不是 CPU 驱动开销。
+资源包含 BIST 控制器/ROM；未用到的诊断计数等逻辑可能在独立顶层综合中被裁剪，不能
+直接当成 CPU 接入后的完整 adapter 资源。CPU API 和完整 KEM 周期仍待系统集成后测量。
 
 ## 后续统一计时口径
 

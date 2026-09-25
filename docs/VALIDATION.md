@@ -14,9 +14,11 @@
 | RV32IM 指令配置 | PASS，迭代和快速乘法配置均在软件回归中使用 | [`tb/cpu/`](../tb/cpu/) |
 | 新 HLS C 仿真 | PASS，103/103 | [`results/accelerator_interface/basemul_k2_csim.txt`](../results/accelerator_interface/basemul_k2_csim.txt) |
 | 新 HLS 2024.2 综合 | PASS，II=1，估算 137 cycles、150.83 MHz | [`results/accelerator_interface/hls_synthesis/`](../results/accelerator_interface/hls_synthesis/) |
-| 新 HLS Vivado 顶层 | 待完成 | 需要新 AXI/BRAM adapter 和 CPU 顶层 |
-| CPU+PQC 官方 KAT | 待完成 | 新硬件接口尚未接入 |
-| PYNQ-Z2 实板烧录 | 待完成 | 新顶层 bitstream 尚未生成 |
+| 新 HLS MMIO/BRAM Vivado 顶层 | PASS，3 组 × 256 个系数逐项通过；协议检查覆盖字节使能、busy 保护、非法访问、重复启动和复位中止 | [`results/accelerator_interface/rtl_sim/simulate.log`](../results/accelerator_interface/rtl_sim/simulate.log) |
+| PYNQ-Z2 BIST 顶层 RTL | PASS，两次完整运行、256 个结果字检查和一次故障注入；时钟/按钮复位测试通过 | [`results/accelerator_interface/rtl_sim/board_simulate.log`](../results/accelerator_interface/rtl_sim/board_simulate.log) |
+| Vivado 2024.2 独立实现 | PASS，WNS=0.732 ns、WHS=0.129 ns、BRAM=8、DSP=12 @ 100 MHz | [`results/accelerator_interface/vivado_impl/`](../results/accelerator_interface/vivado_impl/) |
+| CPU+PQC 官方 KAT | 待完成 | 新 adapter 尚未接入 PicoRV32，当前结果只覆盖独立硬件路径 |
+| PYNQ-Z2 实板烧录 | 待完成 | 已生成 [`mlkem512_basemul_k2_validation.bit`](../release/mlkem512_basemul_k2/mlkem512_basemul_k2_validation.bit)，尚未上板 |
 
 ## 官方数据口径
 
@@ -26,9 +28,17 @@ ML-KEM-512，每种 CPU 145 条。PicoRV32 的通过结果证明固定软件、�
 
 ## HLS 证据边界
 
-新 HLS 只验证标准库 K=2 NTT 域 cached BaseMul。C 仿真和 HLS 综合不验证 AXI 时序、
-CPU 地址映射、完整 NTT/INTT 或端到端 KEM；这些必须在后续独立 Vivado 工程中验证。
-137 cycles 是 HLS 核心估算，不能直接换算系统加速比。
+新 HLS 只验证标准库 K=2 NTT 域 cached BaseMul。C 仿真、HLS 综合和独立 native
+MMIO/BRAM RTL 已通过，但仍不验证 PicoRV32 总线接入、完整 NTT/INTT 或端到端 KEM。
+HLS 报告的 137 cycles 与 adapter RTL 实测核心 136 cycles 都只属于核心边界，不能直接
+换算系统加速比。
+
+本轮修正了 C testbench 的 zeta 表漏项（`-1103, 430`），并重跑 103 个用例。历史
+`hls_synthesis/summary.json` 保留当时综合和 C 仿真的源码哈希；计算核源码没有改动，
+当前 C 验证使用修正后的 TB，证据为 `basemul_k2_csim.txt`。综合报告中的历史 TB 哈希
+不应当作本轮 C 回归的哈希。
+本轮源码、TB、XPR、日志、报告与 bitstream 的 SHA-256 见
+[`delivery_manifest.json`](../results/accelerator_interface/delivery_manifest.json)。
 
 ## 可重复性要求
 

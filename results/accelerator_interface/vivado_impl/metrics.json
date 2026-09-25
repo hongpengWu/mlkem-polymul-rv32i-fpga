@@ -1,0 +1,1 @@
+{"setup_wns_ns":0.732,"hold_whs_ns":0.129,"bram_primitives":8,"dsp_primitives":12,"clock_mhz":100,"scope":"PYNQ-Z2 standalone BIST+MMIO+BRAM+HLS; not CPU"}

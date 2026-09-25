@@ -1,7 +1,8 @@
 # 构建、仿真与实现
 
-当前仓库的可复现入口分为三类：CPU-only Vivado 工程、ML-KEM 官方软件回归和新 HLS。
-旧完整加速器的根级 `run.tcl/project.tcl`、板级烧录脚本和 transfer 工程已经删除。
+当前仓库的可复现入口分为四类：CPU-only Vivado 工程、ML-KEM 官方软件回归、新 HLS，
+以及独立的 BaseMul MMIO/BRAM/PYNQ-Z2 验证工程。旧完整加速器的根级
+`run.tcl/project.tcl`、板级烧录脚本和 transfer 工程已经删除。
 
 ## 工具版本
 
@@ -93,8 +94,24 @@ vitis_hls -f run_hls.tcl
 生成的本地 HLS 工程目录不提交。源文件、TB、配置、Tcl 和导出的 IP 位于
 `hls/mlkem512_basemul_k2/`；综合证据位于 `results/accelerator_interface/hls_synthesis/`。
 
-## 后续硬件集成边界
+## 独立 MMIO/BRAM 与 Vivado 验证
 
-新 HLS 是 `ap_ctrl_hs + ap_memory` 接口，尚无 AXI wrapper、CPU 地址映射或完整 Vivado
-顶层。后续必须新建 adapter，先做阶段向量 oracle，再做少量官方记录的 CPU+PL 仿真，最后
-才进行 64 KiB 实现和实体板烧录。旧的板级脚本、旧 bitstream 和旧 XPR 不再作为入口。
+新 HLS 通过 `rtl/accelerator/mlkem512_basemul_k2_mmio_adapter.sv` 接入双口 BRAM，
+MMIO 基址为 `0x50001000`。当前工程先验证独立硬件数据路径，不包含 PicoRV32 或完整 KEM：
+
+```powershell
+python scripts/mlkem512_basemul_k2/generate_vectors.py
+vivado -mode batch -source scripts/mlkem512_basemul_k2/run.tcl
+vivado -mode batch -source scripts/mlkem512_basemul_k2/implement.tcl
+```
+
+`run.tcl` 在 `build/basemul_rtl/` 运行仿真，避免覆盖已实现的工程；执行 3 组、768 个系数
+的 MMIO RTL 回归，并运行两次 PYNQ-Z2 BIST/时钟复位
+测试和一次结果故障注入；`implement.tcl` 生成 Vivado 2024.2 工程、布局布线报告和
+`release/mlkem512_basemul_k2/mlkem512_basemul_k2_validation.bit`。缓存、`.runs`、`.sim`
+和 `.cache` 目录由 `.gitignore` 排除，入口工程为
+`vivado/mlkem512_basemul_k2/basemul.xpr`。
+
+当前验证结果位于 `results/accelerator_interface/rtl_sim/` 和
+`results/accelerator_interface/vivado_impl/`。下一阶段才接入未插桩 RV32IM-fast 软件，
+再做 CPU+PQC 官方向量回归和统一端到端计时；不能把独立 BIST 结果称为完整 KEM 验证。

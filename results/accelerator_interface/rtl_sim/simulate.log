@@ -1,0 +1,11 @@
+Time resolution is 1 ps
+MMIO_TB_START vec_dir=.
+CASE_BEGIN index=0
+CASE_PASS index=0 core_cycles=136 total_cycles=1800 load_cycles=1279 launch_cycles=2 drain_to_read=1 store_cycles=382 loads=640 stores=128
+CASE_BEGIN index=1
+CASE_PASS index=1 core_cycles=136 total_cycles=1800 load_cycles=1279 launch_cycles=2 drain_to_read=1 store_cycles=382 loads=640 stores=128
+CASE_BEGIN index=2
+CASE_PASS index=2 core_cycles=136 total_cycles=1800 load_cycles=1279 launch_cycles=2 drain_to_read=1 store_cycles=382 loads=640 stores=128
+MMIO_PROTOCOL_PASS byte_enables=1 busy_protection=1 illegal_access=1 repeat=1 reset_abort=1 extra_coefficients=512
+MLKEM512_BASEMUL_MMIO_RTL_PASS cases=3 checks=768
+$finish called at time : 65060 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/accelerator/tb_mlkem512_basemul_k2_mmio.sv" Line 271

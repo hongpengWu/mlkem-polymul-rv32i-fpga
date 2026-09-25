@@ -4,7 +4,13 @@
 [BENCHMARKS.md](BENCHMARKS.md) 和对应原始日志为准，长期阶段门见
 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 
-## 最新执行状态：512 基线与快速 CPU 全量阶段测量完成
+## 最新执行状态：独立 BaseMul 硬件验证完成，准备接入快速 CPU
+
+2026-09-25 完成新 K=2 BaseMul 的独立 MMIO/BRAM/BIST 路径：3 组、768 个系数的 RTL
+核对及接口异常检查通过，BIST 两次完整运行和结果故障注入通过。Vivado 2024.2 在
+100 MHz 下实现通过，WNS/WHS 为 **0.732/0.129 ns**，使用 **8 个 BRAM 原语、12 个 DSP**，
+已保存 XPR、bitstream 和报告。当前尚未接 PicoRV32 或官方 KAT，下一步接入未插桩
+RV32IM-fast 软件，建立同一官方输入和计时边界的 CPU-only/CPU+PQC 对照。
 
 2026-09-25 新增 RV32IM 快速乘法独立 profiling：**145/145 条记录、19/19 个批次通过**。
 各阶段独占周期之和逐例等于 API 总周期，官方输出、返回值、M 指令和内存边界核验通过。
@@ -13,8 +19,8 @@ KeyGen / Encaps / 展开私钥 Decaps 的 Keccak 占比分别为 **80.69% / 72.9
 原基线保持不变。完整表、测量方法与接口任务见 [阶段分析报告](MLKEM512_PROFILE.md)。
 
 主线固定为 RV32IM 快速乘法＋软件与相同 CPU＋PQC 硬件对照；标准库与旧核的
-运算域、缩放和缓存向量乘加接口已经审计，并已按标准接口新建独立的 K=2 BaseMul
-HLS 原型，下一步再接通完整 KEM。
+运算域、缩放和缓存向量乘加接口已经审计，新 K=2 BaseMul HLS 及独立 MMIO/BRAM
+路径已验证，下一步接通快速 CPU 的完整 KEM。
 根据本轮实测，后续同时评估 Keccak 与多项式加速范围；另外两种 CPU 硬件消融后补。
 
 2026-09-24 已完成三组 PicoRV32 CPU 配置的 145 条固定版本官方 ACVP 记录。每组均逐字节核对输入、输出和 API 返回值，并核对实际 `rdcycle` 区间、动态 M 指令计数、栈边界和工程输入哈希；错误输出负向检查也通过。结果是 RTL 仿真证据，不是实板数据或正式 CAVP 认证。
@@ -30,9 +36,9 @@ HLS 原型，下一步再接通完整 KEM。
 ## 1. 已确认的项目方向
 
 **ML-KEM-512 做主要优化和展示，ML-KEM-768/1024 验证正确性与扩展能力。**
-目前先完善纯 CPU 软件 baseline，在 Vivado 中用真实 PicoRV32＋BRAM RTL 执行固件。
-旧完整板级加速链已清理；下一步为新 HLS 建立独立 AXI/BRAM adapter，再进行仿真、综合、
-布局布线、时序检查和最后的实板验证。
+纯 CPU 软件 baseline 已在 Vivado 中由真实 PicoRV32＋BRAM RTL 执行固件验证。
+旧完整板级加速链已清理；新 HLS 的独立 MMIO/BRAM adapter、BIST 仿真和实现已通过。
+下一步接入 RV32IM-fast 并运行官方 KAT，随后完成同配置软件/硬件实现对照，实板仍放到最后。
 
 | 工作范围 | ML-KEM-512 | ML-KEM-768 / 1024 |
 |---|---|---|
@@ -52,7 +58,7 @@ HLS 原型，下一步再接通完整 KEM。
 
 | 工作项 | 当前状态 | 证据或入口 |
 |---|---|---|
-| 仓库整理与 Vivado 2024.2 重建入口 | 已完成；保留 CPU-only 源码、HLS、必要 TB/Tcl、XPR 和 CPU-only bitstream | [目录规则](STRUCTURE.md)、[构建说明](BUILD.md) |
+| 仓库整理与 Vivado 2024.2 重建入口 | 已完成；保留当前源码、必要 TB/Tcl、CPU-only 与独立加速器 XPR/bitstream | [目录规则](STRUCTURE.md)、[构建说明](BUILD.md) |
 | PicoRV32 迭代 M 扩展验证 | 已通过 8 类 M 指令共 4096 项检查；三组 CPU baseline 回归通过 | [CPU baseline 证据](../results/cpu_baseline/) |
 | ML-KEM-512 baseline 与阶段分析 | 三组基线离线分析完成；快速乘法 profiling 全部 145 条通过 | [基线解释](MLKEM512_BASELINE_ANALYSIS.md)、[阶段分析](MLKEM512_PROFILE.md) |
 | 纯 CPU 多项式软件 baseline | RV32I、RV32IM 迭代、RV32IM 快速均完成 8 组输入检查及周期测量 | [CPU baseline 结果](../results/cpu_baseline/) |
@@ -63,8 +69,9 @@ HLS 原型，下一步再接通完整 KEM。
 | 输入、输出和执行真实性检查 | 每组核对 148,160 B 输入和 101,760 B 输出；检查实际 rdcycle、M 指令、栈和异常 | [验证记录](VALIDATION.md) |
 | 错误输出拒绝检查 | 临时预期公钥首字节翻转后，被全量 TB 准确拒绝 | [负向检查](../results/official_baseline/mlkem512/negative_check/README.md) |
 | 标准软件的完整 CPU baseline | 512 API 与快速 CPU 阶段分析已完成；768/1024 CPU 回归及 64 KiB 实现仍待做 | [M2 路线](COMPETITION_ROADMAP.md#m2picorv32-完整软件-baseline) |
-| 标准库接口审计与新 HLS 原型 | 已完成接口事实清单；C 仿真 103/103 通过，Vitis HLS 2024.2 综合通过（137 cycles、II=1、估算 Fmax 150.83 MHz），尚未接 CPU/AXI | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[新 HLS](../hls/mlkem512_basemul_k2/) |
-| PQC 加速器接入标准软件 | 待开始；旧完整乘法核已移除，新 BaseMul 原型尚未参与官方 KAT | [新 HLS 接口](MLKEM512_ACCELERATOR_INTERFACE.md) |
+| 标准库接口审计与新 HLS 原型 | C 仿真 103/103、HLS 综合通过；137 cycles 为核心估算，II=1、估算 Fmax 150.83 MHz | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[新 HLS](../hls/mlkem512_basemul_k2/) |
+| 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
+| PQC 加速器接入标准软件 | 下一步；独立 adapter 已完成，尚未连接 PicoRV32 或参与官方 KAT | [新 HLS 接口](MLKEM512_ACCELERATOR_INTERFACE.md) |
 | 新标准软件配置的实现与实板 | 64 KiB ML-KEM-512 工程已完成 RTL 回归；实现待做，实板放到最后 | [512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md) |
 
 ### 当前官方用例覆盖
@@ -111,6 +118,7 @@ HLS 原型，下一步再接通完整 KEM。
 | 2 | 补齐 ML-KEM-512 所选官方集 | KeyGen、Encaps、Decaps、key-check 和隐式拒绝记录通过 | 已完成，三组各 145 / 145 |
 | 3 | ML-KEM-512 快速 CPU 阶段分析 | 145 条阶段和 API 周期完整对应，量化插桩扰动 | 已完成 |
 | 4 | 标准库与加速核接口契约、阶段 oracle | 对齐 NTT 域、缩放、系数范围/顺序、缓存和向量累加 | 接口审计完成；新 BaseMul C 仿真通过 |
+| 4a | 独立 HLS＋BRAM＋MMIO 验证 | RTL、BIST、布局布线与匹配 XPR/bitstream | 已完成；尚未接 CPU |
 | 5 | 快速 CPU＋多项式加速器主线接通 | 完整 512 官方回归及未插桩 API 软件/硬件对照，计入搬运/等待 | 待执行 |
 | 6 | 主线 64 KiB 配置 Vivado 实现 | 同条件软件/硬件资源、时序与 bitstream；不沿用旧 16 KiB 报告 | 待执行 |
 | 7 | Keccak 加速及与多项式协同评估 | 软件、仅多项式、仅 Keccak、两者协同的周期和资源可比 | 待执行 |
@@ -128,8 +136,9 @@ HLS 原型，下一步再接通完整 KEM。
 
 > 固定版本参考实现在主机上通过 435 项 NIST ACVP 官方公开向量回归；三种 PicoRV32
 > 配置在 RTL 仿真中均通过全部 145 条固定版本 ML-KEM-512 官方记录，覆盖 KeyGen、Encaps、
-> 两种 Decaps 形式及密钥检查。快速乘法 CPU 的 512 全量阶段分析也已完成；
-> 768/1024 CPU 回归、64 KiB 实现及标准软件的硬件加速对照仍待完成。
+> 两种 Decaps 形式及密钥检查。快速乘法 CPU 的 512 全量阶段分析和新 BaseMul 的独立
+> MMIO/BRAM/BIST、Vivado 2024.2 实现已完成；PicoRV32 硬件接入、768/1024 CPU 回归、
+> 64 KiB 系统实现及标准软件的硬件加速对照仍待完成。
 
 全部对应回归完成后，可以描述所覆盖版本、参数集、操作和用例的结果一致性。
 公开向量离线回归不等于正式 CAVP 算法验证，也不等于 FIPS 140-3 / CMVP 密码模块认证；
@@ -141,6 +150,8 @@ HLS 原型，下一步再接通完整 KEM。
 - 目标、范围与长期验收门：[COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 - 性能/资源详细台账：[BENCHMARKS.md](BENCHMARKS.md)；原始证据在 `results/`。
 - 命令与操作：[BUILD.md](BUILD.md)；验证范围：[VALIDATION.md](VALIDATION.md)。
+
+以下记录保留各阶段完成时的范围；提交状态以 Git 为准。
 
 2026-09-24 决策：确定“512 重点优化、768/1024 正确性与扩展验证”，实板放在上板前工作之后。
 本次保留关机前 94 条记录，完成其余 341 次执行的 44 个批次，并经严格汇总确认三组各 145 条。
@@ -156,3 +167,8 @@ HLS 原型，下一步再接通完整 KEM。
 100 组确定性随机输入，C 仿真 103/103 通过；Vitis HLS 2024.2 短路径综合通过，得到
 137 cycles、II=1 和估算 Fmax 150.83 MHz；尚未进行完整 Vivado 工程接入、AXI 适配、CPU
 接入或官方 KAT 硬件回归。
+
+2026-09-25 后续：独立 MMIO/BRAM/BIST 验证与 Vivado 实现完成，保存
+`vivado/mlkem512_basemul_k2/basemul.xpr`、`release/mlkem512_basemul_k2/` 和
+`results/accelerator_interface/` 中的证据。现有 CPU baseline 保持不变；下一步接入
+RV32IM-fast，以官方 ML-KEM-512 KAT 验证完整 API 并计入搬运、等待和读回成本。

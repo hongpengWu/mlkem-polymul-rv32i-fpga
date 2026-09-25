@@ -1,0 +1,58 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Fri Sep 25 19:47:28 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file E:/pqc/mlkem-polymul-rv32i-fpga/results/accelerator_interface/vivado_impl/utilization_hierarchical.rpt
+| Design       : mlkem512_basemul_k2_pynqz2_top
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------------------------------------------------------+------------------------------------------------------------------+------------+------------+---------+------+-----+--------+--------+------------+
+|                                  Instance                                 |                              Module                              | Total LUTs | Logic LUTs | LUTRAMs | SRLs | FFs | RAMB36 | RAMB18 | DSP Blocks |
++---------------------------------------------------------------------------+------------------------------------------------------------------+------------+------------+---------+------+-----+--------+--------+------------+
+| mlkem512_basemul_k2_pynqz2_top                                            |                                                            (top) |        566 |        561 |       0 |    5 | 386 |      1 |      7 |         12 |
+|   (mlkem512_basemul_k2_pynqz2_top)                                        |                                                            (top) |          2 |          2 |       0 |    0 |   4 |      0 |      0 |          0 |
+|   bist_i                                                                  |                                         mlkem512_basemul_k2_bist |        564 |        559 |       0 |    5 | 382 |      1 |      7 |         12 |
+|     (bist_i)                                                              |                                         mlkem512_basemul_k2_bist |         27 |         27 |       0 |    0 |  48 |      1 |      0 |          0 |
+|     adapter_i                                                             |                                 mlkem512_basemul_k2_mmio_adapter |        541 |        536 |       0 |    5 | 334 |      0 |      7 |         12 |
+|       (adapter_i)                                                         |                                 mlkem512_basemul_k2_mmio_adapter |        120 |        120 |       0 |    0 | 182 |      0 |      0 |          0 |
+|       a_0_bram                                                            |                                                mlkem512_tdp_bram |         23 |         23 |       0 |    0 |   0 |      0 |      1 |          0 |
+|       a_1_bram                                                            |                                              mlkem512_tdp_bram_0 |         61 |         61 |       0 |    0 |   0 |      0 |      1 |          0 |
+|       b_0_bram                                                            |                                              mlkem512_tdp_bram_1 |         35 |         35 |       0 |    0 |   0 |      0 |      1 |          0 |
+|       b_1_bram                                                            |                                              mlkem512_tdp_bram_2 |         34 |         34 |       0 |    0 |   0 |      0 |      1 |          0 |
+|       b_cache_0_bram                                                      |                                mlkem512_tdp_bram__parameterized0 |         49 |         49 |       0 |    0 |   0 |      0 |      1 |          0 |
+|       b_cache_1_bram                                                      |                              mlkem512_tdp_bram__parameterized0_3 |         60 |         60 |       0 |    0 |   0 |      0 |      1 |          0 |
+|       hls_core                                                            |                                          mlkem512_basemul_acc_k2 |        140 |        135 |       0 |    5 | 152 |      0 |      0 |         12 |
+|         (hls_core)                                                        |                                          mlkem512_basemul_acc_k2 |         88 |         83 |       0 |    5 | 151 |      0 |      0 |          0 |
+|         flow_control_loop_pipe_U                                          |                   mlkem512_basemul_acc_k2_flow_control_loop_pipe |         28 |         28 |       0 |    0 |   1 |      0 |      0 |          0 |
+|         mac_muladd_16s_13s_32s_32_4_1_U11                                 |            mlkem512_basemul_acc_k2_mac_muladd_16s_13s_32s_32_4_1 |         13 |         13 |       0 |    0 |   0 |      0 |      0 |          1 |
+|           mlkem512_basemul_acc_k2_mac_muladd_16s_13s_32s_32_4_1_DSP48_0_U | mlkem512_basemul_acc_k2_mac_muladd_16s_13s_32s_32_4_1_DSP48_0_13 |         13 |         13 |       0 |    0 |   0 |      0 |      0 |          1 |
+|         mac_muladd_16s_13s_32s_32_4_1_U12                                 |          mlkem512_basemul_acc_k2_mac_muladd_16s_13s_32s_32_4_1_5 |         13 |         13 |       0 |    0 |   0 |      0 |      0 |          1 |
+|           mlkem512_basemul_acc_k2_mac_muladd_16s_13s_32s_32_4_1_DSP48_0_U |    mlkem512_basemul_acc_k2_mac_muladd_16s_13s_32s_32_4_1_DSP48_0 |         13 |         13 |       0 |    0 |   0 |      0 |      0 |          1 |
+|         mac_muladd_16s_16s_32s_32_4_1_U10                                 |            mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          2 |
+|           mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_DSP48_0_U | mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_DSP48_0_12 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          2 |
+|         mac_muladd_16s_16s_32s_32_4_1_U7                                  |          mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_6 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          2 |
+|           mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_DSP48_0_U | mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_DSP48_0_11 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          2 |
+|         mac_muladd_16s_16s_32s_32_4_1_U8                                  |          mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_7 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          2 |
+|           mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_DSP48_0_U | mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_DSP48_0_10 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          2 |
+|         mac_muladd_16s_16s_32s_32_4_1_U9                                  |          mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_8 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          2 |
+|           mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_DSP48_0_U |    mlkem512_basemul_acc_k2_mac_muladd_16s_16s_32s_32_4_1_DSP48_0 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          2 |
+|         mul_16s_13s_16_1_1_U5                                             |                       mlkem512_basemul_acc_k2_mul_16s_13s_16_1_1 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          1 |
+|         mul_16s_13s_16_1_1_U6                                             |                     mlkem512_basemul_acc_k2_mul_16s_13s_16_1_1_9 |          0 |          0 |       0 |    0 |   0 |      0 |      0 |          1 |
+|       result_bram                                                         |                                              mlkem512_tdp_bram_4 |         31 |         31 |       0 |    0 |   0 |      0 |      1 |          0 |
++---------------------------------------------------------------------------+------------------------------------------------------------------+------------+------------+---------+------+-----+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

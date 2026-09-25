@@ -179,7 +179,7 @@ INTT 分别占 9.52%、10.21%。缓存 BaseMul 累加本身分别占 KeyGen/Enca
 | 运算域 | [新 HLS 顶层](../hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.cpp) 只执行 NTT 域 K=2 cached BaseMul；标准库的公共矩阵直接生成在 NTT 域 | 明确独立 NTT、INTT、NTT 域乘加命令；新核不执行额外变换 |
 | 向量与复用 | [标准库 BaseMul](../third_party/mlkem-native/mlkem/src/poly_k.c) 执行 K=2 向量点积、32 位累加并使用可复用 mulcache；旧核只算一对多项式 | 定义缓存、累加、输出约减与存储驻留边界，先比较正确性再评估是否融合命令 |
 | 数值表示 | 标准库使用带符号系数、Montgomery 缩放及懒约减；新核保持 signed int16 和单次 Montgomery reduction | 逐阶段核对系数顺序、模 q 等价、缩放因子、输入界限；HLS C 仿真通过不能代替 RTL 检查 |
-| 搬运与并行 | 新 HLS 生成 `ap_ctrl_hs + ap_memory`，尚无 AXI wrapper | 先定义四个数组的 BRAM/AXI 地址、启动/完成和清零边界，再测写入、等待和读回 |
+| 搬运与并行 | 新 HLS 的 `ap_ctrl_hs + ap_memory` 已由 native MMIO/BRAM adapter 包装；当前尚未接 PicoRV32 | 先复用已验证的地址、启动/完成和清零边界，再测 CPU 总线写入、等待和读回 |
 | 存储容量 | 官方 KEM 软件基线使用 64 KiB RAM；新 HLS 只描述计算核心 | 在相同 64 KiB CPU 环境接入，保持计时和数据布局可比，并重新实现测资源/时序 |
 
 对接顺序：导出标准软件的真实中间操作数 → 阶段级 oracle → 接口/缩放适配 → 512 完整官方回归 → 未插桩完整 API 加速比 → 同约束资源与时序。硬件中的秘密数据也要纳入清零边界，保持软件基线包含清零的口径。

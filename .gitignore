@@ -43,6 +43,9 @@
 !/release/cpu_baseline_rv32im_iterative/*.bit
 !/release/cpu_baseline_rv32im_fast/*.bit
 *.bin
+!/release/mlkem512_basemul_k2/*.bit
+!/results/accelerator_interface/rtl_sim/*.log
+!/vivado/mlkem512_basemul_k2/basemul.xpr
 *.elf
 __pycache__/
 Thumbs.db

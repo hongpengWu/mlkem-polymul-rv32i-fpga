@@ -1,9 +1,10 @@
 # ML-KEM PolyMul · PicoRV32 · PYNQ-Z2
 
 本仓库保存一个面向 PYNQ-Z2 的 ML-KEM/CRYSTALS-Kyber 研究工程。当前可复现主线是
-PicoRV32 CPU 软件 baseline、FIPS 203/ACVP 官方向量回归，以及从标准库接口重新设计的
-ML-KEM-512 K=2 BaseMul HLS 原型。旧的完整时域多项式加速器和与之绑定的板级工程已移除，
-避免把失效的 AXI 地址映射、旧 bitstream 和新 HLS 混在一起。
+PicoRV32 CPU 软件 baseline、FIPS 203/ACVP 官方向量回归，以及从标准库接口重新设计并
+完成独立 MMIO/BRAM/板级 BIST 验证的 ML-KEM-512 K=2 BaseMul HLS 原型。旧的完整时域
+多项式加速器和与之绑定的板级工程已移除，避免把失效的 AXI 地址映射、旧 bitstream 和
+新接口混在一起。
 
 当前主线状态：
 
@@ -14,14 +15,17 @@ ML-KEM-512 K=2 BaseMul HLS 原型。旧的完整时域多项式加速器和与�
   [`docs/MLKEM512_PROFILE.md`](docs/MLKEM512_PROFILE.md)。
 - 新 HLS `mlkem512_basemul_acc_k2` C 仿真 103/103 通过，Vitis HLS 2024.2 综合通过，
   估算 II=1、137 cycles、150.83 MHz、DSP/LUT/FF/BRAM=12/310/599/0。
-- 新 HLS 尚未接入 AXI、PicoRV32 或完整 Vivado 顶层，因此 HLS 137 cycles 不能当作端到端
-  加速比；后续会分别记录核心、搬运和完整 KEM 周期。
+- 独立 MMIO/BRAM/板级 BIST RTL 仿真通过；Vivado 2024.2 PYNQ-Z2 工程实现通过，WNS/WHS
+  为 0.732/0.129 ns，使用 8 个 BRAM 原语和 12 个 DSP，并已导出 bitstream。
+- 新 HLS 尚未接入 PicoRV32 或完整 KEM，因此核心周期、搬运周期和完整 KEM 周期仍需分别
+  记录，不能把 137 cycles 当作端到端加速比。
 
 ## 目录
 
 ```text
 rtl/cpu/                 PicoRV32 RTL
 rtl/benchmark/           CPU-only 固件 RAM、时钟/复位和可配置 CPU wrapper
+rtl/accelerator/         HLS 生成 RTL、BRAM、MMIO adapter 和 PYNQ-Z2 BIST 顶层
 hls/mlkem512_basemul_k2/ K=2 NTT 域 cached BaseMul HLS、TB、Tcl、短路径脚本和 IP
 firmware/cpu_baseline/   CPU-only 多项式 baseline
 firmware/mlkem_baseline/ 官方 KeyGen 入口
@@ -30,19 +34,21 @@ firmware/mlkem512_profile/ 阶段 profiling 入口
 firmware/images/         可复现的 CPU/ML-KEM 固件镜像
 tb/cpu/                  RV32IM 指令验证
 tb/software/             多项式、KeyGen、完整 ML-KEM-512 软件 testbench
+tb/accelerator/          MMIO、BRAM、板级 BIST 仿真与确定性向量
 scripts/cpu_baseline/    三种 CPU 配置的构建、仿真、实现和汇总
 scripts/mlkem_baseline/  KeyGen 构建与仿真
 scripts/mlkem512_suite/  145 条官方记录的分批运行与恢复
 scripts/mlkem512_profile/阶段 profiling
 scripts/mlkem512_interface/接口审计和 BaseMul oracle
 scripts/kat/             ACVP JSON 检查和主机端参考回归
-vivado/                  可直接打开的 CPU-only/ML-KEM 软件仿真 XPR
-release/                 CPU-only baseline 的 bitstream
-results/                 官方回归、CPU 资源和 HLS 综合证据
+scripts/mlkem512_basemul_k2/ 独立加速器 Vivado 仿真、实现、报告和 bitstream 脚本
+vivado/                  可直接打开的 CPU-only/ML-KEM 软件和独立加速器 XPR
+release/                 CPU-only baseline 与独立加速器 bitstream
+results/                 官方回归、CPU 资源、HLS 综合和加速器实现证据
 vectors/official_kat/    固定版本 FIPS 203/ACVP 输入与预期结果
 third_party/             固定提交的 mlkem-native portable C 子集
 docs/                    构建、验证、性能和路线记录
-constraints/             PYNQ-Z2 板级约束，供后续新顶层工程使用
+constraints/             PYNQ-Z2 时钟、引脚及复位约束
 ```
 
 ## 软件 baseline
@@ -87,9 +93,10 @@ powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_hls_short.p
 
 ## 研究边界
 
-当前仓库不再声称存在可烧录的“旧完整加速器系统”。下一阶段应新建独立 AXI/BRAM adapter
-和 Vivado 顶层，把新 HLS 接入未插桩 RV32IM-fast 软件，再用同一官方向量和统一计时边界
-比较 CPU-only 与 CPU+PQC 硬件。完整计划见 [`docs/COMPETITION_ROADMAP.md`](docs/COMPETITION_ROADMAP.md)。
+当前仓库不再声称存在可烧录的“旧完整加速器系统”。新 HLS 已通过独立 MMIO/BRAM adapter、
+PYNQ-Z2 BIST 顶层和 Vivado 2024.2 实现验证；下一阶段才把它接入未插桩 RV32IM-fast 软件，
+再用同一官方向量和统一计时边界比较 CPU-only 与 CPU+PQC 硬件。完整计划见
+[`docs/COMPETITION_ROADMAP.md`](docs/COMPETITION_ROADMAP.md)。
 
 更多入口：
 

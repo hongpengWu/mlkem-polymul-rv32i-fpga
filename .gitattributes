@@ -2,3 +2,5 @@
 * -text whitespace=trailing-space,space-before-tab,cr-at-eol
 # Keep tool reports and raw simulation logs byte-for-byte, including padding.
 results/** -whitespace
+# Vitis HLS generated RTL is archived byte-for-byte with the exported IP.
+rtl/accelerator/mlkem512_basemul_k2/hls/hdl/verilog/*.v -whitespace

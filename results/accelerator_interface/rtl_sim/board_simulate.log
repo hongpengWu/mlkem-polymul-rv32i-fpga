@@ -1,0 +1,8 @@
+Time resolution is 1 ps
+BOARD_BIST_TB_START rom=basemul_bist.mem
+BOARD_BIST_CASE_PASS run=0 cycles=2699 core_cycles=136 loads=640 stores=128
+BOARD_TOP_CASE_PASS run=0 led=0001 core_cycles=136
+BOARD_BIST_CASE_PASS run=1 cycles=2699 core_cycles=136 loads=640 stores=128
+BOARD_TOP_CASE_PASS run=1 led=0001 core_cycles=136
+MLKEM512_BASEMUL_BOARD_BIST_RTL_PASS runs=2 checked_words=256 mismatch_detected=1 board_top_runs=2
+$finish called at time : 75400 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/accelerator/tb_mlkem512_basemul_k2_board.sv" Line 147
