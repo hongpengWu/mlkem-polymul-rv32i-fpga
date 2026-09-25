@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "case_count": 8,
+  "log_sha256": "3a2675335ca1caf4a157e1d9de87b5a8e5ffca09fce095254db894adc6508fce",
+  "run_inputs_sha256": "061b7c58af682a7f9995ca4c406f1cda695e2d102ecb8e83f5a24be269e54c35",
+  "batch_sha256": "e75acb29af3f034f56010d87f6b1c65e6c2882c18faaf188fc81cbf5e84b2c96",
+  "project_sha256": "9b190b3518200757430b1dba5cc6e5eecee715e727f6321ffd0b8fde9d10b771",
+  "staged_hashes_sha256": "8f523f9cd066c2c0b63365c236aa38a0512e119d96f656a467b648c3ce4bdaeb",
+  "finished_at": "2026-09-25T00:17:23.166504+08:00"
+}

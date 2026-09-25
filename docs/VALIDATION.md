@@ -71,3 +71,37 @@ VIO 有 13 个输入端口；生成 LTX 将最后一个两位端口拆为 `done`
 `results/official_reference/`，向量来源和 SHA-256 见
 `vectors/official_kat/acvp/SOURCES.md`。该验证只证明主机参考实现与这些 ACVP 结果一致，
 尚未证明 PicoRV32 固件、现有多项式加速器或实体 PYNQ-Z2 通过完整 ML-KEM KAT。
+
+## PicoRV32 官方 KeyGen 首例验证（2026-09-24）
+
+新增 freestanding `mlkem-native` 便携 C 固件在真实 PicoRV32/AXI/XPM RAM 的 Vivado 2024.2
+RTL 仿真中执行 ML-KEM-512 `keypair_derand(d || z)`。三组统一 64 KiB RAM 和 16 KiB 栈，
+原 RTL/HLS 与之前 16 KiB 多项式工程未改。
+
+| 检查 | 结果 | 证据 |
+|---|---|---|
+| RV32I 官方 tcId=1 | PASS，输入 64 B / 输出 2432 B 逐字节一致 | [日志](../results/official_baseline/keygen512_tc1/rv32i/simulate.log) |
+| RV32IM 迭代官方 tcId=1 | PASS，同一输入与 oracle | [日志](../results/official_baseline/keygen512_tc1/rv32im_iterative/simulate.log) |
+| RV32IM 快速官方 tcId=1 | PASS，与迭代共用同一固件 | [日志](../results/official_baseline/keygen512_tc1/rv32im_fast/simulate.log) |
+| 周期与 M 指令窗口 | PASS，实际 rdcycle 边沿与固件差值一致 | [汇总](../results/official_baseline/keygen512_tc1/summary.json) |
+| 固件/fixture/源码追溯 | PASS，来源 SHA、镜像 SHA 与构建清单一致 | [构建清单](../results/official_baseline/keygen512_tc1/build_manifest.json) |
+| 错误输出拒绝 | PASS，临时 ek[0] 翻转 1 bit，被准确定位拒绝 | [预期失败日志说明](../results/official_baseline/keygen512_tc1/negative_check/README.md) |
+| 新 64 KiB 配置实现、烧录、完整 KEM | 待执行 | 不复用原 16 KiB 资源或 BIT 作为新配置证据 |
+
+`KATP` 只是固件成功返回标记；只有 TB 完成全部输入输出对照并打印
+`MLKEM_KEYGEN_PASS` 才认定此例正确。计时排除启动、输入输出调试串流和 TB 检查，
+保留默认库内清零；官方种子预置，未测随机熵源。具体数值与边界见 [BENCHMARKS.md](BENCHMARKS.md)。
+
+## PicoRV32 ML-KEM-512 全量验证（2026-09-24）
+
+三组真实 CPU RTL 均通过 145 / 145 条固定版本官方 ACVP 记录，共保留 435 次执行。每组按原始编号覆盖 KeyGen 25、Encaps 50、Decaps 20、含种子展开 Decaps 10、公钥检查 20、私钥检查 20；合法/非法密钥返回值和 15 条隐式拒绝密钥全部与官方预期一致。
+
+| 检查 | 结果 | 证据 |
+|---|---|---|
+| RV32I / RV32IM 迭代 / 快速 | 各 145 / 145，原始编号完整且唯一 | [逐条结果](../results/official_baseline/mlkem512/cases.csv) |
+| 输入 / 输出逐字节对照 | 每组 148,160 / 101,760 B 全部一致 | [汇总](../results/official_baseline/mlkem512/summary.json) |
+| 实际 rdcycle、M 指令、栈和地址边界 | PASS；两种 IM 每例指令计数相同，最大观测栈 12,928 B | [统计](../results/official_baseline/mlkem512/summary.md) |
+| 断点、批次来源与工程参数 | 94 条旧记录 + 44 批；SHA、实际加载镜像与 fixture、XPR 参数均通过 | [批次证据](../results/official_baseline/mlkem512/batches/) |
+| 比较器负向检查 | 翻转 ek[0] 一位后精确拒绝：got=28 expected=29 | [负向检查](../results/official_baseline/mlkem512/negative_check/README.md) |
+
+运行 `python scripts/mlkem512_suite/collect_resumed.py --check` 可复验全部归档证据；`resume.py` 会校验并跳过通过批次。旧前缀没有最终 PASS，不伪造单次全套成功日志或全程总数。CPU/HLS 算法源码未因续跑修改，TB 仅增加批长参数。此结果为公开向量 RTL 回归；快速 CPU 的 512 阶段 profiling 已完成，64 KiB 配置实现、接口接入、768/1024 的 CPU 回归与实板仍待完成。

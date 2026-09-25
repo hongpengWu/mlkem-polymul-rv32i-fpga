@@ -1,5 +1,9 @@
 # 构建、仿真与烧录
 
+ML-KEM-512 的 RV32IM 快速乘法阶段分析使用独立镜像和仿真入口。首次构建、
+首批验证、全量续跑与暂停命令见 [分阶段测量说明](MLKEM512_PROFILE.md#重现与断点续跑)；
+原始未插桩的软件 baseline 仍使用下文的 `mlkem512_suite` 入口。
+
 ## 环境
 
 - Vivado 2024.2，包含 Zynq-7000 器件支持；构建脚本会检查版本。
@@ -36,6 +40,145 @@ Windows 下需要 Git for Windows 的 Bash、GCC、Make 和 Python；脚本会�
 运行正式 FIPS 203 和过渡 `FIPS203-tr1` 的全部向量。日志与元数据保存到
 `results/official_reference/`。当前通过结果为 75 + 165 + 195 = 435 个用例；这只是主机
 参考实现证据，不能代替 PicoRV32 固件仿真、CPU+加速器集成或实体板验证。
+
+## PicoRV32 官方 ML-KEM-512 KeyGen
+
+本阶段在 PicoRV32 RTL 上运行正式 FIPS 203/ACVP `keyGen` 的首个 ML-KEM-512
+用例（`vsId=42, tgId=1, tcId=1`）。程序使用固定提交的 mlkem-native portable C
+实现，输入为官方 32 字节 `d` 和 32 字节 `z`，调用确定性 `KeyGen_Internal` 接口。
+这一个历史里程碑的通过范围独立于主机端 435 个用例；后续 ML-KEM-512 全集回归
+使用下方的独立入口和结果目录，其他参数集仍需另行验证。
+
+从仓库根目录构建两份裸机固件并运行三组仿真：
+
+```text
+python scripts/mlkem_baseline/build.py
+vivado -mode batch -source scripts/mlkem_baseline/run.tcl -tclargs rv32i
+vivado -mode batch -source scripts/mlkem_baseline/run.tcl -tclargs rv32im_iterative
+vivado -mode batch -source scripts/mlkem_baseline/run.tcl -tclargs rv32im_fast
+python scripts/mlkem_baseline/collect.py
+```
+
+`build.py` 默认使用本机 Vivado 2024.2 附带的 GCC 13.3.0；换机器时用
+`--tool-dir YOUR_RISCV_BIN_DIRECTORY` 指定工具目录。脚本先检查上游源码与官方
+JSON 哈希，再从 JSON 生成 `tb/software/mlkem_keygen/` 中的输入头、输入 `.mem`、
+期望输出 `.mem` 和来源清单。编译目标为 `rv32i/ilp32` 与 `rv32im/ilp32`，其余选项
+一致，优化级别为 `-O3`；迭代和快速乘法 CPU 使用同一份 RV32IM 镜像。源码按多个
+独立 `.c` 编译单元构建，未使用原生指令集优化后端；配置和裸机运行库位于
+`firmware/mlkem_baseline/`，上游算法文件保持原样。
+
+| 配置 | Vivado 2024.2 仿真工程 | 固件 |
+|---|---|---|
+| RV32I | `vivado/mlkem_keygen_rv32i/mlkem_keygen.xpr` | `firmware/images/mlkem_keygen/rv32i.mem` |
+| RV32IM 迭代 | `vivado/mlkem_keygen_rv32im_iterative/mlkem_keygen.xpr` | `firmware/images/mlkem_keygen/rv32im.mem` |
+| RV32IM 快速 | `vivado/mlkem_keygen_rv32im_fast/mlkem_keygen.xpr` | 同一 RV32IM 镜像 |
+
+三组都使用现有 `cpu_benchmark_system` 的真实 PicoRV32、AXI 响应路径和 XPM 同步
+RAM，统一设置 `RAM_ADDR_BITS=14`（64 KiB）。链接脚本保留 16 KiB 栈，范围为
+`0xbff0..0xfff0`，并拒绝静态镜像与栈重叠。三组运行观察到的最低栈指针均为
+`0xdb80`，本用例使用 9,328 字节；这不是全部 ML-KEM 输入的最大栈使用证明。
+
+testbench 逐字节检查传给 KeyGen 的 64 字节输入及完整 `ek`（800 字节）和
+`dk`（1,632 字节）。期望输出只由 testbench 读取，不进入固件镜像。它还检查执行
+顺序、真实 `rdcycle` 差值、M 指令完成情况、栈边界、地址越界和 CPU trap。
+成功必须出现 `MLKEM_KEYGEN_PASS cases=1 input_bytes=64 output_bytes=2432`。
+
+测量区间仅包含完整 KeyGen 调用；输入准备和 MMIO 导出在区间之外。原始周期为
+RV32I 8,995,082、迭代 RV32IM 5,812,531、快速 RV32IM 5,194,547。按 100 MHz
+仿真时钟可换算时间；本阶段未测量布局布线后的最高频率。三组日志与构建哈希位于
+`results/official_baseline/keygen512_tc1/`，`collect.py` 生成同目录的
+`summary.json`、`summary.csv` 和 [summary.md](../results/official_baseline/keygen512_tc1/summary.md)。
+
+重现“错误预期输出必须被拒绝”的检查：
+
+```text
+vivado -mode batch -source scripts/mlkem_baseline/verify_rejection.tcl
+python scripts/mlkem_baseline/collect.py --check
+```
+
+该检查只改 `build/` 下的 expected 副本，翻转公钥首字节一个 bit。仿真应出现指定的
+`MLKEM_KEYGEN_FAIL byte mismatch`，外层脚本确认原因正确后输出
+`MLKEM_REJECTION_CHECK_PASS`；这份预期失败日志独立保存在 `negative_check/`。
+`collect.py --check` 校验当前镜像、官方 fixture、构建清单和三组结果，不重写汇总。
+
+上述 `.xpr` 可直接打开用于仿真。本阶段没有创建新的板级实现、资源/时序报告或
+烧录 bitstream；旧 16 KiB 多项式 baseline 的资源数字不能作为新 64 KiB 系统的
+实现结果。已有 RTL、HLS 和旧固件保持原状。后续依次扩展 Encaps/Decaps、完整
+官方用例，再进行相同 RAM 配置的实现和实体板验证。
+
+## PicoRV32 ML-KEM-512 完整公开向量集
+
+完整 512 回归包含 145 项 KeyGen、Encaps、Decaps、种子形式 Decaps 和密钥检查。
+三种 CPU 使用同一通用驱动，旧首例工程保留不变。
+
+```text
+python scripts/mlkem512_suite/build.py
+python scripts/mlkem512_suite/run.py
+python scripts/mlkem512_suite/collect.py
+```
+
+`run.py` 并行运行三配置，也可用 `--config rv32i|rv32im_iterative|rv32im_fast` 单独运行。
+默认工具路径沿用本机 2024.2，可通过 `build.py --tool-dir` 和 `run.py --vivado` 指定。
+工程为 `vivado/mlkem512_<config>/mlkem512.xpr`，结果目录为
+`results/official_baseline/mlkem512/`。原始输入由仿真邮箱逐例装入，预期值仅供 TB 使用；
+计时边界、操作区别及覆盖范围见 [512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md)。
+这是 CPU RTL 回归入口，未接入 PQC 加速器或板级输入通道。
+
+### 从关机断点继续
+
+2026-09-24 关机前保存了 RV32I 25 条、迭代 RV32IM 31 条、快速 RV32IM 38 条，
+共 94 条已完成记录；对应 CSV、原始控制台、输入哈希和文件快照保留于
+`results/official_baseline/mlkem512/checkpoint/`。这些是通过逐例检查的记录，
+三组原日志均没有完整 145 条的最终 PASS，不能据此认定全套已通过。
+
+恢复使用原固件、CPU RTL 和官方 fixture，不要重新构建固件或从头运行 `run.py`。
+在仓库根目录执行：
+
+```text
+python scripts/mlkem512_suite/collect_resumed.py --check-checkpoint
+python scripts/mlkem512_suite/resume.py --prepare-only
+python scripts/mlkem512_suite/resume.py --workers 4
+python scripts/mlkem512_suite/collect_resumed.py --archive-project-evidence
+python scripts/mlkem512_suite/collect_resumed.py
+```
+
+`resume.py` 默认每批最多 8 条，剩余 120／114／107 条形成 15／15／14 个批次，
+共 44 批。已有分批方案会复用，不会因后续改变 `--batch-size` 而重新分组。
+每批保留本地索引与原始 `case_index` 的映射，固件和计时方法不变；
+TB 用 `EXPECTED_CASES` 检查该批长度。默认使用 4 个并发工作进程；本次确认内存余量后
+以 `--workers 6` 完成，不应同时运行第二个恢复进程。
+工具位置可由 `resume.py --vivado` 指定。
+
+每批结果位于 `results/official_baseline/mlkem512/batches/<config>/batch_<首索引>_<末索引>/`，
+独立工程位于 `build/mlkem512_suite/batches/<config>/<batch>/mlkem512.xpr`。
+启动前冻结输入哈希，退出后复核；仅在真实批次 PASS、逐例及来源验证通过后保留
+`success.json`。再次运行会重新验证并跳过成功批次。若强制终止正在计算的批次，
+该批未完成前缀不会自动保存，下次需重跑该批；既有 checkpoint 和成功批次不受影响。
+
+`--archive-project-evidence` 会先完整校验已成功批次，再把原 `.xpr` 复制为结果目录中的
+`project.xpr`，并将实际暂存镜像、fixture 和日志的哈希保存到 `project_evidence.json`。
+该命令可重复执行；删除忽略的 `build/` 缓存前应完成归档，最终汇总也要求这些归档证据。
+本地缓存存在时仍检查实际暂存文件；缓存缺失时核对归档哈希和同样的 CPU／批长参数。
+归档 `.xpr` 用于来源核验；在 Vivado 打开主套件时仍使用 `vivado/mlkem512_<config>/mlkem512.xpr`。
+
+需要正常暂停时创建 STOP 文件，调度器停止派发新批次并等待已经启动的批次结束：
+
+```powershell
+New-Item -ItemType File -Path build/mlkem512_suite/STOP -Force
+```
+
+恢复前删除该文件，再执行 `resume.py`：
+
+```powershell
+Remove-Item -LiteralPath build/mlkem512_suite/STOP
+python scripts/mlkem512_suite/resume.py --workers 4
+```
+
+`collect_resumed.py` 只有在三组各 145 个原始身份唯一且齐全、字节总数和 M 指令计数
+交叉校验通过后才生成 `summary.json`、`cases.csv`、`summary.md`；`--check` 只验证。
+汇总明确区分已保存前缀与独立完成的批次，不拼造单次 145 条 PASS。
+旧前缀缺少结束记录，因此全程周期和 M 总数记为未知；续跑批次总数另列，
+全部 145 条的算法区间周期、M 计数和观测栈深仍可按原始身份统计。
 
 ## 创建完整工程
 
@@ -123,7 +266,7 @@ vivado -mode batch -source scripts/run.tcl -tclargs implement firmware/images rv
 ./scripts/collect_rv32im_measurements.ps1
 ```
 
-迭代配置先通过 `cpu` 和原四组仿真，再综合、布局布线并导出独立目录中的 BIT/LTX。采集脚本将仿真结果、指令周期 CSV、实现报告和输入哈希保存至 `results/rv32im_iterative/`；汇总表见 [BENCHMARKS.md](BENCHMARKS.md)。本轮保留相同的 RV32I transfer 镜像检查兼容性，尚未编译运行 RV32IM 软件 NTT 基准，不能据此计算多项式软件/硬件加速比。
+迭代配置先通过 `cpu` 和原四组仿真，再综合、布局布线并导出独立目录中的 BIT/LTX。采集脚本将仿真结果、指令周期 CSV、实现报告和输入哈希保存至 `results/rv32im_iterative/`；汇总表见 [BENCHMARKS.md](BENCHMARKS.md)。该 transfer 工程保留相同的 RV32I 镜像检查兼容性；软件 NTT 基准使用独立 `cpu_baseline` 工程，官方 KeyGen 使用上述 `mlkem_keygen` 工程，三者的测量边界不同。
 
 连接 PYNQ-Z2 的 JTAG 后，可在 Hardware Manager 中加载同次构建的 BIT/LTX，或显式执行：
 
@@ -185,3 +328,5 @@ v++ --mode hls --config hls_config.cfg --work_dir ../build/hls_synthesis
 ```
 
 这些命令不替换 `rtl/accelerator/`。现有加速核 RTL 来自 Vitis HLS 2025.2；C 仿真通过不能证明 HLS 2024.2 重新生成的 RTL 与现有快照等价。更新快照需要单独完成 RTL 仿真、协同仿真及实现验证。
+
+2026-09-24 全量执行完成：三组各 145 / 145 条通过，44 个续跑批次均有成功日志与工程证据。已完成的工作区直接运行 `collect_resumed.py --check` 即可核对，不必重建固件或重跑用例。2026-09-25 快速乘法阶段 profiling 也已完成 145 / 145 条，独立证据见 [阶段报告](MLKEM512_PROFILE.md)。

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "config": "rv32i",
+  "original_indices": [
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80
+  ],
+  "case_count": 8,
+  "input_words": 1704,
+  "expected_words": 104,
+  "input_bytes": 6400,
+  "output_bytes": 0
+}

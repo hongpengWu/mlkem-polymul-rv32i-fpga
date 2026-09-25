@@ -1,0 +1,80 @@
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\compress.c:75:6:pico_mlkem512_poly_compress_d4	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\compress.c:144:6:pico_mlkem512_poly_compress_d10	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\compress.c:195:6:pico_mlkem512_poly_decompress_d4	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\compress.c:260:6:pico_mlkem512_poly_decompress_d10	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\compress.c:630:6:pico_mlkem512_poly_tobytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\compress.c:683:6:pico_mlkem512_poly_frombytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\compress.c:709:6:pico_mlkem512_poly_frommsg	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\compress.c:751:6:pico_mlkem512_poly_tomsg	0	static
+
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202.c:54:13:mlk_keccak_absorb_once.constprop	48	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202.c:187:6:pico_mlkem512_shake128_absorb_once	48	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202.c:195:6:pico_mlkem512_shake128_squeezeblocks	32	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202.c:203:6:pico_mlkem512_shake128_init	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202.c:204:6:pico_mlkem512_shake128_release	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202.c:212:6:pico_mlkem512_shake256	288	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202.c:227:6:pico_mlkem512_sha3_256	240	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202.c:241:6:pico_mlkem512_sha3_512	240	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202x4.c:120:6:pico_mlkem512_shake128x4_absorb_once	64	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202x4.c:131:6:pico_mlkem512_shake128x4_squeezeblocks	48	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202x4.c:141:6:pico_mlkem512_shake128x4_init	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202x4.c:142:6:pico_mlkem512_shake128x4_release	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\fips202x4.c:168:6:pico_mlkem512_shake256x4	1472	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\indcpa.c:211:6:pico_mlkem512_gen_matrix	336	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\indcpa.c:438:5:pico_mlkem512_indcpa_keypair_derand	5824	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\indcpa.c:522:5:pico_mlkem512_indcpa_enc	8336	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\indcpa.c:604:5:pico_mlkem512_indcpa_dec	3664	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\keccakf1600.c:208:6:mlk_keccakf1600_permute_c	384	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\keccakf1600.c:36:6:pico_mlkem512_keccakf1600_extract_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\keccakf1600.c:59:6:pico_mlkem512_keccakf1600_xor_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\keccakf1600.c:113:6:pico_mlkem512_keccakf1600x4_extract_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\keccakf1600.c:161:6:pico_mlkem512_keccakf1600x4_xor_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\keccakf1600.c:179:6:pico_mlkem512_keccakf1600x4_permute	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\fips202\keccakf1600.c:479:6:pico_mlkem512_keccakf1600_permute	16	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\kem.c:44:5:pico_mlkem512_check_pk	1856	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\kem.c:82:5:pico_mlkem512_check_sk	96	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\kem.c:237:5:pico_mlkem512_keypair_derand	32	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\kem.c:321:5:pico_mlkem512_enc_derand	208	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\kem.c:411:5:pico_mlkem512_dec	1008	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly.c:132:6:pico_mlkem512_poly_tomont	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly.c:214:6:pico_mlkem512_poly_reduce	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly.c:235:6:pico_mlkem512_poly_add	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly.c:257:6:pico_mlkem512_poly_sub	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly.c:313:6:pico_mlkem512_poly_mulcache_compute	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly.c:470:6:pico_mlkem512_poly_ntt	32	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly.c:574:6:pico_mlkem512_poly_invntt_tomont	48	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:49:6:pico_mlkem512_polyvec_compress_du	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:65:6:pico_mlkem512_polyvec_decompress_du	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:85:6:pico_mlkem512_polyvec_tobytes	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:105:6:pico_mlkem512_polyvec_frombytes	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:119:6:pico_mlkem512_polyvec_ntt	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:137:6:pico_mlkem512_polyvec_invntt_tomont	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:202:6:pico_mlkem512_polyvec_basemul_acc_montgomery_cached	32	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:240:6:pico_mlkem512_polyvec_mulcache_compute	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:257:6:pico_mlkem512_polyvec_reduce	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:272:6:pico_mlkem512_polyvec_add	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:297:6:pico_mlkem512_polyvec_tomont	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:350:6:pico_mlkem512_poly_getnoise_eta1_4x	1136	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:437:6:pico_mlkem512_poly_getnoise_eta2	224	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\poly_k.c:471:6:pico_mlkem512_poly_getnoise_eta1122_4x	1136	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\profile_main.c:17:13:fail	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\profile_main.c:34:13:receive_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\profile_main.c:59:6:kat_main	160	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\runtime.c:7:7:memcpy	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\runtime.c:19:7:memset	0	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\sampling.c:115:17:mlk_rej_uniform.constprop	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\sampling.c:157:6:pico_mlkem512_poly_rej_uniform_x4	2976	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\sampling.c:221:6:pico_mlkem512_poly_rej_uniform	816	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\sampling.c:279:6:pico_mlkem512_poly_cbd2	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_profile\generated\mlkem\src\sampling.c:336:6:pico_mlkem512_poly_cbd3	0	static
+

@@ -9,6 +9,14 @@
 | VIO 与 FPGA 原语 | 由用户安装的 AMD 工具提供。工具安装文件、生成 IP 缓存及仿真库不随仓库分发。 |
 | HLS 与固件算法 | 使用 Kyber/ML-KEM 的变换与常数；参考实现的具体来源及适用许可仍需维护者补充确认。 |
 | `vectors/official_kat/acvp/` | NIST ACVP-Server 固定提交导出的 ML-KEM FIPS 203/FIPS203-tr1 JSON 测试向量；来源、提交和文件哈希见同目录 `SOURCES.md`。 |
-| 主机端 KAT 参考实现 | `mlkem-native` 固定提交仅作为本地 `build/` 下的验证输入，不随本仓库源码分发；其许可证和提交信息由该上游仓库维护。 |
+| `third_party/mlkem-native/` | [mlkem-native](https://github.com/pq-code-package/mlkem-native/tree/b3ba7b32773e657dd37f6f87bce82528459ad8a4) 固定提交 `b3ba7b32773e657dd37f6f87bce82528459ad8a4` 的 portable C 库子集，用于 PicoRV32 ML-KEM-512 KeyGen、Encaps、Decaps 和密钥检查。上游提供 **Apache-2.0 OR ISC OR MIT** 三选一许可，完整条款保存在 [`LICENSE`](third_party/mlkem-native/LICENSE)，逐文件 SPDX 与版权声明均保留。 |
+| 主机端 KAT 参考实现 | 同一固定提交的完整 `mlkem-native` 开发树仍在本地忽略目录 `build/kat_sources/mlkem-native/` 中，用于 435 项主机回归。该完整开发树不随仓库分发；PicoRV32 所需 portable 库子集按上一行说明分发。 |
+
+`third_party/mlkem-native/SOURCE_MANIFEST.json` 记录上游文件路径、大小、SHA-256 和
+Git blob SHA-1；导入文件保持上游 Git blob 的原始字节内容，没有修改密码算法。
+原生架构后端、证明、测试、示例和上游构建脚本未包含在该子集中。项目自己的裸机
+适配和构建配置位于 `firmware/mlkem_baseline/`、`firmware/mlkem512_suite/` 及对应 scripts 目录；这不改变
+第三方文件的许可或来源。PicoRV32 首个 KeyGen 用例通过只说明该次 RTL 仿真的功能
+结果，不继承上游形式化验证、认证或其他平台安全测试的结论。
 
 Vivado 2024.2 是本工程当前的创建与实现工具版本；该版本信息不改变原有 HLS 生成文件的来源记录。

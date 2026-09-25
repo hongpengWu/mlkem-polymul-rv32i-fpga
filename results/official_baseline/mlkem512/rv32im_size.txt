@@ -1,0 +1,9 @@
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_suite\rv32im\mlkem512.elf  :
+section              size    addr
+.text               25768       0
+.rodata               480   25792
+.bss                 5668   26272
+.riscv.attributes      42       0
+Total               31958
+
+

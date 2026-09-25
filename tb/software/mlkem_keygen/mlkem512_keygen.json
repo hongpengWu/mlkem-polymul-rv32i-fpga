@@ -1,0 +1,58 @@
+{
+  "algorithm": "ML-KEM",
+  "operation": "keyGen",
+  "revision": "FIPS203",
+  "parameterSet": "ML-KEM-512",
+  "vsId": 42,
+  "tgId": 1,
+  "source": {
+    "repository": "https://github.com/usnistgov/ACVP-Server",
+    "commit": "975de31eb83d87039ec88934fdc47d8c312b892d",
+    "manifest": "vectors/official_kat/acvp/SHA256SUMS",
+    "manifest_sha256": "a21aaec85be4c58996a7d801803c59f498d8223fb1d7fb727e9463eb342951d4",
+    "manifest_verified": true,
+    "files": [
+      {
+        "path": "vectors/official_kat/acvp/fips203/ML-KEM-keyGen/prompt.json",
+        "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/ML-KEM-keyGen-FIPS203/prompt.json",
+        "sha256": "3f9ce34f6c836c77958bad2729e837c3b213f44ac36c3065976e7acca6389523"
+      },
+      {
+        "path": "vectors/official_kat/acvp/fips203/ML-KEM-keyGen/expectedResults.json",
+        "url": "https://raw.githubusercontent.com/usnistgov/ACVP-Server/975de31eb83d87039ec88934fdc47d8c312b892d/gen-val/json-files/ML-KEM-keyGen-FIPS203/expectedResults.json",
+        "sha256": "a253d0ad91c95ebea5b409673defef0aa49d65d4ed72286399e2e798ddf073a4"
+      }
+    ]
+  },
+  "generator": {
+    "path": "scripts/kat/package_keygen.py",
+    "sha256": "dac9f4b59e37df265a42e4fce304241c463888b25b0f444ab668e647fcccf175"
+  },
+  "cases": [
+    {
+      "tcId": 1,
+      "dBytes": 32,
+      "zBytes": 32,
+      "ekBytes": 800,
+      "dkBytes": 1632
+    }
+  ],
+  "header": "mlkem512_keygen.h",
+  "inputMem": "mlkem512_keygen_input.mem",
+  "expectedMem": "mlkem512_keygen_expected.mem",
+  "endianness": "little-endian 32-bit words; C arrays preserve ACVP byte order",
+  "outputs": {
+    "mlkem512_keygen.h": {
+      "bytes": 969,
+      "sha256": "ecbf65aa49b1ede66544ef0cdeb0aeb8ed997bd744db952ba0351599e1e387ce"
+    },
+    "mlkem512_keygen_input.mem": {
+      "bytes": 225,
+      "sha256": "ee3998e17c5dce5b6ece43e5b9ebe027f3340f799d426ce4dd29353beda54f8c"
+    },
+    "mlkem512_keygen_expected.mem": {
+      "bytes": 5553,
+      "sha256": "ab7605e1881ba576c2c63a8c1966e4f9854ee620e5b57e7a015c26fa700e780a"
+    }
+  }
+}

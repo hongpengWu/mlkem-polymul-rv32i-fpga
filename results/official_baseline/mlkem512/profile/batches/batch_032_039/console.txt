@@ -1,0 +1,671 @@
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Thu Sep 24 23:37:40 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source {E:\pqc\mlkem-polymul-rv32i-fpga\scripts\mlkem512_profile\run.tcl}
+# set root [file normalize [file join [file dirname [info script]] ../..]]
+# if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2"}
+# if {[llength $argv] != 3} {error "Expected result_dir project_dir case_count"}
+# lassign $argv result_dir project_dir case_count
+# set result_dir [file normalize $result_dir]
+# set project_dir [file normalize $project_dir]
+# if {![string is integer -strict $case_count] || $case_count<1 || $case_count>145} {error "Invalid case count"}
+# file mkdir $project_dir
+# set image [file join $project_dir mlkem512.mem]
+# file copy -force [file join $root firmware images mlkem512_profile rv32im.mem] $image
+# create_project -force mlkem512 $project_dir -part xc7z020clg400-1
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 448.566 ; gain = 126.090
+# set_param general.maxThreads 1
+# set_property target_language Verilog [current_project]
+# set_property simulator_language Mixed [current_project]
+# set_property XPM_LIBRARIES {XPM_MEMORY} [current_project]
+# foreach name {rtl/cpu/picorv32.v rtl/benchmark/cpu_benchmark_system.v} {add_files -norecurse [file join $root $name]}
+# add_files -norecurse $image
+# set_property file_type {Memory Initialization Files} [get_files $image]
+# set_property top cpu_benchmark_system [get_filesets sources_1]
+# set_property generic {FIRMWARE_INIT_FILE=mlkem512.mem RAM_ADDR_BITS=14 CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=1 CPU_ENABLE_DIV=1} [get_filesets sources_1]
+# add_files -fileset sim_1 -norecurse [file join $root tb software tb_mlkem512_profile.sv]
+# foreach name {mlkem512_input.mem mlkem512_expected.mem} {
+#     set path [file join $result_dir $name]
+#     add_files -fileset sim_1 -norecurse $path
+#     set_property file_type {Memory Initialization Files} [get_files $path]
+# }
+# set_property top tb_mlkem512_profile [get_filesets sim_1]
+# set_property generic "CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=1 CPU_ENABLE_DIV=1 EXPECT_M=1 EXPECTED_CASES=$case_count PROFILE_PHASES=64" [get_filesets sim_1]
+# set_property xsim.elaborate.debug_level off [get_filesets sim_1]
+# set_property xsim.simulate.custom_tcl [file join $root scripts mlkem512_suite sim.tcl] [get_filesets sim_1]
+# set_property xsim.simulate.runtime all [get_filesets sim_1]
+# update_compile_order -fileset sources_1
+# update_compile_order -fileset sim_1
+# launch_simulation -simset sim_1
+Command: launch_simulation  -simset sim_1
+INFO: [Vivado 12-12493] Simulation top is 'tb_mlkem512_profile'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'E:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'E:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_mlkem512_profile' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim/mlkem512.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim/mlkem512_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim/mlkem512_expected.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim/mlkem512_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim/mlkem512_expected.mem'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -L uvm -prj tb_mlkem512_profile_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/rtl/benchmark/cpu_benchmark_system.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cpu_benchmark_system
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/rtl/cpu/picorv32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module picorv32
+INFO: [VRFC 10-311] analyzing module picorv32_regs
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_fast_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_div
+INFO: [VRFC 10-311] analyzing module picorv32_axi
+INFO: [VRFC 10-311] analyzing module picorv32_axi_adapter
+INFO: [VRFC 10-311] analyzing module picorv32_wb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem512_profile.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_mlkem512_profile
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim'
+"xelab --incr --debug off --relax --mt auto -generic_top "CPU_ENABLE_MUL=1" -generic_top "CPU_ENABLE_FAST_MUL=1" -generic_top "CPU_ENABLE_DIV=1" -generic_top "EXPECT_M=1" -generic_top "EXPECTED_CASES=8" -generic_top "PROFILE_PHASES=64" -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem512_profile_behav xil_defaultlib.tb_mlkem512_profile xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: E:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug off --relax --mt auto -generic_top CPU_ENABLE_MUL=1 -generic_top CPU_ENABLE_FAST_MUL=1 -generic_top CPU_ENABLE_DIV=1 -generic_top EXPECT_M=1 -generic_top EXPECTED_CASES=8 -generic_top PROFILE_PHASES=64 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem512_profile_behav xil_defaultlib.tb_mlkem512_profile xil_defaultlib.glbl -log elaborate.log 
+Multi-threading is on. Using 14 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3532] module 'glbl' does not have a parameter named 'CPU_ENABLE_MUL' to override [E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim/glbl.v:6]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.picorv32_axi_adapter
+Compiling module xil_defaultlib.picorv32_pcpi_fast_mul
+Compiling module xil_defaultlib.picorv32_pcpi_div
+Compiling module xil_defaultlib.picorv32(ENABLE_COUNTERS=1'b1,EN...
+Compiling module xil_defaultlib.picorv32_axi(ENABLE_COUNTERS64=1...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=524...
+Compiling module xil_defaultlib.cpu_benchmark_system(FIRMWARE_IN...
+Compiling module xil_defaultlib.tb_mlkem512_profile(EXPECTED_CAS...
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_mlkem512_profile_behav
+run_program: Time (s): cpu = 00:00:00 ; elapsed = 00:00:06 . Memory (MB): peak = 453.594 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '6' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem512_profile/batches/batch_032_039/mlkem512.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_mlkem512_profile_behav -key {Behavioral:sim_1:Functional:tb_mlkem512_profile} -tclbatch {E:/pqc/mlkem-polymul-rv32i-fpga/scripts/mlkem512_suite/sim.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source E:/pqc/mlkem-polymul-rv32i-fpga/scripts/mlkem512_suite/sim.tcl
+## run all
+MLKEM512_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+PROFILE_HEADER,index,phase,exclusive_cycles,inclusive_cycles,calls
+PROFILE_CASE_HEADER,index,cycles,accounted,enters,exits,max_depth
+MLKEM512_START cases=8 ram_bytes=65536 stack_bytes=16384 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+PROFILE_ROW,0,0,319,319,0
+PROFILE_ROW,0,1,0,0,0
+PROFILE_ROW,0,2,1051,5538073,1
+PROFILE_ROW,0,3,0,0,0
+PROFILE_ROW,0,4,8598,129272,1
+PROFILE_ROW,0,5,0,0,0
+PROFILE_ROW,0,6,0,0,0
+PROFILE_ROW,0,7,3948,4306466,1
+PROFILE_ROW,0,8,0,0,0
+PROFILE_ROW,0,9,1664,1991921,1
+PROFILE_ROW,0,10,92933,92933,4
+PROFILE_ROW,0,11,0,0,0
+PROFILE_ROW,0,12,469,175187,1
+PROFILE_ROW,0,13,1489,1014813,1
+PROFILE_ROW,0,14,43428,43428,3
+PROFILE_ROW,0,15,31320,31320,2
+PROFILE_ROW,0,16,4028351,4028351,26
+PROFILE_ROW,0,17,0,0,0
+PROFILE_ROW,0,18,0,0,0
+PROFILE_ROW,0,19,15563,1105821,5
+PROFILE_ROW,0,20,10663,941326,1
+PROFILE_ROW,0,21,2512,158480,1
+PROFILE_ROW,0,22,6255,6255,1
+PROFILE_ROW,0,23,16207,1875412,1
+PROFILE_ROW,0,24,0,0,0
+PROFILE_ROW,0,25,204898,204898,2
+PROFILE_ROW,0,26,532143,532143,3
+PROFILE_ROW,0,27,103080,103080,3
+PROFILE_ROW,0,28,22536,22536,2
+PROFILE_ROW,0,29,165360,165360,5
+PROFILE_ROW,0,30,0,0,0
+PROFILE_ROW,0,31,41072,41072,4
+PROFILE_ROW,0,32,0,0,0
+PROFILE_ROW,0,33,9740,9740,1
+PROFILE_ROW,0,34,38984,38984,2
+PROFILE_ROW,0,35,0,0,0
+PROFILE_ROW,0,36,0,0,0
+PROFILE_ROW,0,37,26168,26168,2
+PROFILE_ROW,0,38,40080,40080,4
+PROFILE_ROW,0,39,10268,10268,1
+PROFILE_ROW,0,40,0,0,0
+PROFILE_ROW,0,41,75429,75429,28
+PROFILE_ROW,0,42,3864,3864,12
+PROFILE_ROW,0,43,0,0,0
+PROFILE_ROW,0,44,0,0,0
+PROFILE_ROW,0,45,0,0,0
+PROFILE_ROW,0,46,0,0,0
+PROFILE_ROW,0,47,0,0,0
+PROFILE_ROW,0,48,0,0,0
+PROFILE_ROW,0,49,0,0,0
+PROFILE_ROW,0,50,0,0,0
+PROFILE_ROW,0,51,0,0,0
+PROFILE_ROW,0,52,0,0,0
+PROFILE_ROW,0,53,0,0,0
+PROFILE_ROW,0,54,0,0,0
+PROFILE_ROW,0,55,0,0,0
+PROFILE_ROW,0,56,0,0,0
+PROFILE_ROW,0,57,0,0,0
+PROFILE_ROW,0,58,0,0,0
+PROFILE_ROW,0,59,0,0,0
+PROFILE_ROW,0,60,0,0,0
+PROFILE_ROW,0,61,0,0,0
+PROFILE_ROW,0,62,0,0,0
+PROFILE_ROW,0,63,0,0,0
+PROFILE_CASE,0,5538392,5538392,119,119,5
+MLKEM512_ROW,0,2,42,1,2,2,0,5538392,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000cf40
+PROFILE_ROW,1,0,319,319,0
+PROFILE_ROW,1,1,0,0,0
+PROFILE_ROW,1,2,1051,5538792,1
+PROFILE_ROW,1,3,0,0,0
+PROFILE_ROW,1,4,8598,129272,1
+PROFILE_ROW,1,5,0,0,0
+PROFILE_ROW,1,6,0,0,0
+PROFILE_ROW,1,7,3948,4307185,1
+PROFILE_ROW,1,8,0,0,0
+PROFILE_ROW,1,9,1664,1992640,1
+PROFILE_ROW,1,10,93652,93652,4
+PROFILE_ROW,1,11,0,0,0
+PROFILE_ROW,1,12,469,175187,1
+PROFILE_ROW,1,13,1489,1014813,1
+PROFILE_ROW,1,14,43428,43428,3
+PROFILE_ROW,1,15,31320,31320,2
+PROFILE_ROW,1,16,4028351,4028351,26
+PROFILE_ROW,1,17,0,0,0
+PROFILE_ROW,1,18,0,0,0
+PROFILE_ROW,1,19,15563,1105821,5
+PROFILE_ROW,1,20,10663,941326,1
+PROFILE_ROW,1,21,2512,158480,1
+PROFILE_ROW,1,22,6255,6255,1
+PROFILE_ROW,1,23,16207,1875412,1
+PROFILE_ROW,1,24,0,0,0
+PROFILE_ROW,1,25,204898,204898,2
+PROFILE_ROW,1,26,532143,532143,3
+PROFILE_ROW,1,27,103080,103080,3
+PROFILE_ROW,1,28,22536,22536,2
+PROFILE_ROW,1,29,165360,165360,5
+PROFILE_ROW,1,30,0,0,0
+PROFILE_ROW,1,31,41072,41072,4
+PROFILE_ROW,1,32,0,0,0
+PROFILE_ROW,1,33,9740,9740,1
+PROFILE_ROW,1,34,38984,38984,2
+PROFILE_ROW,1,35,0,0,0
+PROFILE_ROW,1,36,0,0,0
+PROFILE_ROW,1,37,26168,26168,2
+PROFILE_ROW,1,38,40080,40080,4
+PROFILE_ROW,1,39,10268,10268,1
+PROFILE_ROW,1,40,0,0,0
+PROFILE_ROW,1,41,75429,75429,28
+PROFILE_ROW,1,42,3864,3864,12
+PROFILE_ROW,1,43,0,0,0
+PROFILE_ROW,1,44,0,0,0
+PROFILE_ROW,1,45,0,0,0
+PROFILE_ROW,1,46,0,0,0
+PROFILE_ROW,1,47,0,0,0
+PROFILE_ROW,1,48,0,0,0
+PROFILE_ROW,1,49,0,0,0
+PROFILE_ROW,1,50,0,0,0
+PROFILE_ROW,1,51,0,0,0
+PROFILE_ROW,1,52,0,0,0
+PROFILE_ROW,1,53,0,0,0
+PROFILE_ROW,1,54,0,0,0
+PROFILE_ROW,1,55,0,0,0
+PROFILE_ROW,1,56,0,0,0
+PROFILE_ROW,1,57,0,0,0
+PROFILE_ROW,1,58,0,0,0
+PROFILE_ROW,1,59,0,0,0
+PROFILE_ROW,1,60,0,0,0
+PROFILE_ROW,1,61,0,0,0
+PROFILE_ROW,1,62,0,0,0
+PROFILE_ROW,1,63,0,0,0
+PROFILE_CASE,1,5539111,5539111,119,119,5
+MLKEM512_ROW,1,2,42,1,3,2,0,5539111,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000cf40
+PROFILE_ROW,2,0,319,319,0
+PROFILE_ROW,2,1,0,0,0
+PROFILE_ROW,2,2,1051,5538142,1
+PROFILE_ROW,2,3,0,0,0
+PROFILE_ROW,2,4,8598,129272,1
+PROFILE_ROW,2,5,0,0,0
+PROFILE_ROW,2,6,0,0,0
+PROFILE_ROW,2,7,3948,4306535,1
+PROFILE_ROW,2,8,0,0,0
+PROFILE_ROW,2,9,1664,1991990,1
+PROFILE_ROW,2,10,93002,93002,4
+PROFILE_ROW,2,11,0,0,0
+PROFILE_ROW,2,12,469,175187,1
+PROFILE_ROW,2,13,1489,1014813,1
+PROFILE_ROW,2,14,43428,43428,3
+PROFILE_ROW,2,15,31320,31320,2
+PROFILE_ROW,2,16,4028351,4028351,26
+PROFILE_ROW,2,17,0,0,0
+PROFILE_ROW,2,18,0,0,0
+PROFILE_ROW,2,19,15563,1105821,5
+PROFILE_ROW,2,20,10663,941326,1
+PROFILE_ROW,2,21,2512,158480,1
+PROFILE_ROW,2,22,6255,6255,1
+PROFILE_ROW,2,23,16207,1875412,1
+PROFILE_ROW,2,24,0,0,0
+PROFILE_ROW,2,25,204898,204898,2
+PROFILE_ROW,2,26,532143,532143,3
+PROFILE_ROW,2,27,103080,103080,3
+PROFILE_ROW,2,28,22536,22536,2
+PROFILE_ROW,2,29,165360,165360,5
+PROFILE_ROW,2,30,0,0,0
+PROFILE_ROW,2,31,41072,41072,4
+PROFILE_ROW,2,32,0,0,0
+PROFILE_ROW,2,33,9740,9740,1
+PROFILE_ROW,2,34,38984,38984,2
+PROFILE_ROW,2,35,0,0,0
+PROFILE_ROW,2,36,0,0,0
+PROFILE_ROW,2,37,26168,26168,2
+PROFILE_ROW,2,38,40080,40080,4
+PROFILE_ROW,2,39,10268,10268,1
+PROFILE_ROW,2,40,0,0,0
+PROFILE_ROW,2,41,75429,75429,28
+PROFILE_ROW,2,42,3864,3864,12
+PROFILE_ROW,2,43,0,0,0
+PROFILE_ROW,2,44,0,0,0
+PROFILE_ROW,2,45,0,0,0
+PROFILE_ROW,2,46,0,0,0
+PROFILE_ROW,2,47,0,0,0
+PROFILE_ROW,2,48,0,0,0
+PROFILE_ROW,2,49,0,0,0
+PROFILE_ROW,2,50,0,0,0
+PROFILE_ROW,2,51,0,0,0
+PROFILE_ROW,2,52,0,0,0
+PROFILE_ROW,2,53,0,0,0
+PROFILE_ROW,2,54,0,0,0
+PROFILE_ROW,2,55,0,0,0
+PROFILE_ROW,2,56,0,0,0
+PROFILE_ROW,2,57,0,0,0
+PROFILE_ROW,2,58,0,0,0
+PROFILE_ROW,2,59,0,0,0
+PROFILE_ROW,2,60,0,0,0
+PROFILE_ROW,2,61,0,0,0
+PROFILE_ROW,2,62,0,0,0
+PROFILE_ROW,2,63,0,0,0
+PROFILE_CASE,2,5538461,5538461,119,119,5
+MLKEM512_ROW,2,2,42,1,4,2,0,5538461,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000cf40
+PROFILE_ROW,3,0,319,319,0
+PROFILE_ROW,3,1,0,0,0
+PROFILE_ROW,3,2,1051,5539262,1
+PROFILE_ROW,3,3,0,0,0
+PROFILE_ROW,3,4,8598,129272,1
+PROFILE_ROW,3,5,0,0,0
+PROFILE_ROW,3,6,0,0,0
+PROFILE_ROW,3,7,3948,4307655,1
+PROFILE_ROW,3,8,0,0,0
+PROFILE_ROW,3,9,1664,1993110,1
+PROFILE_ROW,3,10,94122,94122,4
+PROFILE_ROW,3,11,0,0,0
+PROFILE_ROW,3,12,469,175187,1
+PROFILE_ROW,3,13,1489,1014813,1
+PROFILE_ROW,3,14,43428,43428,3
+PROFILE_ROW,3,15,31320,31320,2
+PROFILE_ROW,3,16,4028351,4028351,26
+PROFILE_ROW,3,17,0,0,0
+PROFILE_ROW,3,18,0,0,0
+PROFILE_ROW,3,19,15563,1105821,5
+PROFILE_ROW,3,20,10663,941326,1
+PROFILE_ROW,3,21,2512,158480,1
+PROFILE_ROW,3,22,6255,6255,1
+PROFILE_ROW,3,23,16207,1875412,1
+PROFILE_ROW,3,24,0,0,0
+PROFILE_ROW,3,25,204898,204898,2
+PROFILE_ROW,3,26,532143,532143,3
+PROFILE_ROW,3,27,103080,103080,3
+PROFILE_ROW,3,28,22536,22536,2
+PROFILE_ROW,3,29,165360,165360,5
+PROFILE_ROW,3,30,0,0,0
+PROFILE_ROW,3,31,41072,41072,4
+PROFILE_ROW,3,32,0,0,0
+PROFILE_ROW,3,33,9740,9740,1
+PROFILE_ROW,3,34,38984,38984,2
+PROFILE_ROW,3,35,0,0,0
+PROFILE_ROW,3,36,0,0,0
+PROFILE_ROW,3,37,26168,26168,2
+PROFILE_ROW,3,38,40080,40080,4
+PROFILE_ROW,3,39,10268,10268,1
+PROFILE_ROW,3,40,0,0,0
+PROFILE_ROW,3,41,75429,75429,28
+PROFILE_ROW,3,42,3864,3864,12
+PROFILE_ROW,3,43,0,0,0
+PROFILE_ROW,3,44,0,0,0
+PROFILE_ROW,3,45,0,0,0
+PROFILE_ROW,3,46,0,0,0
+PROFILE_ROW,3,47,0,0,0
+PROFILE_ROW,3,48,0,0,0
+PROFILE_ROW,3,49,0,0,0
+PROFILE_ROW,3,50,0,0,0
+PROFILE_ROW,3,51,0,0,0
+PROFILE_ROW,3,52,0,0,0
+PROFILE_ROW,3,53,0,0,0
+PROFILE_ROW,3,54,0,0,0
+PROFILE_ROW,3,55,0,0,0
+PROFILE_ROW,3,56,0,0,0
+PROFILE_ROW,3,57,0,0,0
+PROFILE_ROW,3,58,0,0,0
+PROFILE_ROW,3,59,0,0,0
+PROFILE_ROW,3,60,0,0,0
+PROFILE_ROW,3,61,0,0,0
+PROFILE_ROW,3,62,0,0,0
+PROFILE_ROW,3,63,0,0,0
+PROFILE_CASE,3,5539581,5539581,119,119,5
+MLKEM512_ROW,3,2,42,1,5,2,0,5539581,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000cf40
+PROFILE_ROW,4,0,319,319,0
+PROFILE_ROW,4,1,0,0,0
+PROFILE_ROW,4,2,1051,5537924,1
+PROFILE_ROW,4,3,0,0,0
+PROFILE_ROW,4,4,8598,129272,1
+PROFILE_ROW,4,5,0,0,0
+PROFILE_ROW,4,6,0,0,0
+PROFILE_ROW,4,7,3948,4306317,1
+PROFILE_ROW,4,8,0,0,0
+PROFILE_ROW,4,9,1664,1991772,1
+PROFILE_ROW,4,10,92784,92784,4
+PROFILE_ROW,4,11,0,0,0
+PROFILE_ROW,4,12,469,175187,1
+PROFILE_ROW,4,13,1489,1014813,1
+PROFILE_ROW,4,14,43428,43428,3
+PROFILE_ROW,4,15,31320,31320,2
+PROFILE_ROW,4,16,4028351,4028351,26
+PROFILE_ROW,4,17,0,0,0
+PROFILE_ROW,4,18,0,0,0
+PROFILE_ROW,4,19,15563,1105821,5
+PROFILE_ROW,4,20,10663,941326,1
+PROFILE_ROW,4,21,2512,158480,1
+PROFILE_ROW,4,22,6255,6255,1
+PROFILE_ROW,4,23,16207,1875412,1
+PROFILE_ROW,4,24,0,0,0
+PROFILE_ROW,4,25,204898,204898,2
+PROFILE_ROW,4,26,532143,532143,3
+PROFILE_ROW,4,27,103080,103080,3
+PROFILE_ROW,4,28,22536,22536,2
+PROFILE_ROW,4,29,165360,165360,5
+PROFILE_ROW,4,30,0,0,0
+PROFILE_ROW,4,31,41072,41072,4
+PROFILE_ROW,4,32,0,0,0
+PROFILE_ROW,4,33,9740,9740,1
+PROFILE_ROW,4,34,38984,38984,2
+PROFILE_ROW,4,35,0,0,0
+PROFILE_ROW,4,36,0,0,0
+PROFILE_ROW,4,37,26168,26168,2
+PROFILE_ROW,4,38,40080,40080,4
+PROFILE_ROW,4,39,10268,10268,1
+PROFILE_ROW,4,40,0,0,0
+PROFILE_ROW,4,41,75429,75429,28
+PROFILE_ROW,4,42,3864,3864,12
+PROFILE_ROW,4,43,0,0,0
+PROFILE_ROW,4,44,0,0,0
+PROFILE_ROW,4,45,0,0,0
+PROFILE_ROW,4,46,0,0,0
+PROFILE_ROW,4,47,0,0,0
+PROFILE_ROW,4,48,0,0,0
+PROFILE_ROW,4,49,0,0,0
+PROFILE_ROW,4,50,0,0,0
+PROFILE_ROW,4,51,0,0,0
+PROFILE_ROW,4,52,0,0,0
+PROFILE_ROW,4,53,0,0,0
+PROFILE_ROW,4,54,0,0,0
+PROFILE_ROW,4,55,0,0,0
+PROFILE_ROW,4,56,0,0,0
+PROFILE_ROW,4,57,0,0,0
+PROFILE_ROW,4,58,0,0,0
+PROFILE_ROW,4,59,0,0,0
+PROFILE_ROW,4,60,0,0,0
+PROFILE_ROW,4,61,0,0,0
+PROFILE_ROW,4,62,0,0,0
+PROFILE_ROW,4,63,0,0,0
+PROFILE_CASE,4,5538243,5538243,119,119,5
+MLKEM512_ROW,4,2,42,1,6,2,0,5538243,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000cf40
+PROFILE_ROW,5,0,319,319,0
+PROFILE_ROW,5,1,0,0,0
+PROFILE_ROW,5,2,1051,5538388,1
+PROFILE_ROW,5,3,0,0,0
+PROFILE_ROW,5,4,8598,129272,1
+PROFILE_ROW,5,5,0,0,0
+PROFILE_ROW,5,6,0,0,0
+PROFILE_ROW,5,7,3948,4306781,1
+PROFILE_ROW,5,8,0,0,0
+PROFILE_ROW,5,9,1664,1992236,1
+PROFILE_ROW,5,10,93248,93248,4
+PROFILE_ROW,5,11,0,0,0
+PROFILE_ROW,5,12,469,175187,1
+PROFILE_ROW,5,13,1489,1014813,1
+PROFILE_ROW,5,14,43428,43428,3
+PROFILE_ROW,5,15,31320,31320,2
+PROFILE_ROW,5,16,4028351,4028351,26
+PROFILE_ROW,5,17,0,0,0
+PROFILE_ROW,5,18,0,0,0
+PROFILE_ROW,5,19,15563,1105821,5
+PROFILE_ROW,5,20,10663,941326,1
+PROFILE_ROW,5,21,2512,158480,1
+PROFILE_ROW,5,22,6255,6255,1
+PROFILE_ROW,5,23,16207,1875412,1
+PROFILE_ROW,5,24,0,0,0
+PROFILE_ROW,5,25,204898,204898,2
+PROFILE_ROW,5,26,532143,532143,3
+PROFILE_ROW,5,27,103080,103080,3
+PROFILE_ROW,5,28,22536,22536,2
+PROFILE_ROW,5,29,165360,165360,5
+PROFILE_ROW,5,30,0,0,0
+PROFILE_ROW,5,31,41072,41072,4
+PROFILE_ROW,5,32,0,0,0
+PROFILE_ROW,5,33,9740,9740,1
+PROFILE_ROW,5,34,38984,38984,2
+PROFILE_ROW,5,35,0,0,0
+PROFILE_ROW,5,36,0,0,0
+PROFILE_ROW,5,37,26168,26168,2
+PROFILE_ROW,5,38,40080,40080,4
+PROFILE_ROW,5,39,10268,10268,1
+PROFILE_ROW,5,40,0,0,0
+PROFILE_ROW,5,41,75429,75429,28
+PROFILE_ROW,5,42,3864,3864,12
+PROFILE_ROW,5,43,0,0,0
+PROFILE_ROW,5,44,0,0,0
+PROFILE_ROW,5,45,0,0,0
+PROFILE_ROW,5,46,0,0,0
+PROFILE_ROW,5,47,0,0,0
+PROFILE_ROW,5,48,0,0,0
+PROFILE_ROW,5,49,0,0,0
+PROFILE_ROW,5,50,0,0,0
+PROFILE_ROW,5,51,0,0,0
+PROFILE_ROW,5,52,0,0,0
+PROFILE_ROW,5,53,0,0,0
+PROFILE_ROW,5,54,0,0,0
+PROFILE_ROW,5,55,0,0,0
+PROFILE_ROW,5,56,0,0,0
+PROFILE_ROW,5,57,0,0,0
+PROFILE_ROW,5,58,0,0,0
+PROFILE_ROW,5,59,0,0,0
+PROFILE_ROW,5,60,0,0,0
+PROFILE_ROW,5,61,0,0,0
+PROFILE_ROW,5,62,0,0,0
+PROFILE_ROW,5,63,0,0,0
+PROFILE_CASE,5,5538707,5538707,119,119,5
+MLKEM512_ROW,5,2,42,1,7,2,0,5538707,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000cf40
+PROFILE_ROW,6,0,319,319,0
+PROFILE_ROW,6,1,0,0,0
+PROFILE_ROW,6,2,1051,6164587,1
+PROFILE_ROW,6,3,0,0,0
+PROFILE_ROW,6,4,8598,129272,1
+PROFILE_ROW,6,5,0,0,0
+PROFILE_ROW,6,6,0,0,0
+PROFILE_ROW,6,7,3948,4932980,1
+PROFILE_ROW,6,8,0,0,0
+PROFILE_ROW,6,9,2048,2618435,1
+PROFILE_ROW,6,10,93893,93893,8
+PROFILE_ROW,6,11,0,0,0
+PROFILE_ROW,6,12,469,175187,1
+PROFILE_ROW,6,13,1489,1014813,1
+PROFILE_ROW,6,14,43428,43428,3
+PROFILE_ROW,6,15,31320,31320,2
+PROFILE_ROW,6,16,4648086,4648086,30
+PROFILE_ROW,6,17,0,0,0
+PROFILE_ROW,6,18,0,0,0
+PROFILE_ROW,6,19,15563,1105821,5
+PROFILE_ROW,6,20,10663,941326,1
+PROFILE_ROW,6,21,2512,158480,1
+PROFILE_ROW,6,22,6255,6255,1
+PROFILE_ROW,6,23,21642,2500582,2
+PROFILE_ROW,6,24,0,0,0
+PROFILE_ROW,6,25,204898,204898,2
+PROFILE_ROW,6,26,532143,532143,3
+PROFILE_ROW,6,27,103080,103080,3
+PROFILE_ROW,6,28,22536,22536,2
+PROFILE_ROW,6,29,165360,165360,5
+PROFILE_ROW,6,30,0,0,0
+PROFILE_ROW,6,31,41072,41072,4
+PROFILE_ROW,6,32,0,0,0
+PROFILE_ROW,6,33,9740,9740,1
+PROFILE_ROW,6,34,38984,38984,2
+PROFILE_ROW,6,35,0,0,0
+PROFILE_ROW,6,36,0,0,0
+PROFILE_ROW,6,37,26168,26168,2
+PROFILE_ROW,6,38,40080,40080,4
+PROFILE_ROW,6,39,10268,10268,1
+PROFILE_ROW,6,40,0,0,0
+PROFILE_ROW,6,41,75429,75429,28
+PROFILE_ROW,6,42,3864,3864,12
+PROFILE_ROW,6,43,0,0,0
+PROFILE_ROW,6,44,0,0,0
+PROFILE_ROW,6,45,0,0,0
+PROFILE_ROW,6,46,0,0,0
+PROFILE_ROW,6,47,0,0,0
+PROFILE_ROW,6,48,0,0,0
+PROFILE_ROW,6,49,0,0,0
+PROFILE_ROW,6,50,0,0,0
+PROFILE_ROW,6,51,0,0,0
+PROFILE_ROW,6,52,0,0,0
+PROFILE_ROW,6,53,0,0,0
+PROFILE_ROW,6,54,0,0,0
+PROFILE_ROW,6,55,0,0,0
+PROFILE_ROW,6,56,0,0,0
+PROFILE_ROW,6,57,0,0,0
+PROFILE_ROW,6,58,0,0,0
+PROFILE_ROW,6,59,0,0,0
+PROFILE_ROW,6,60,0,0,0
+PROFILE_ROW,6,61,0,0,0
+PROFILE_ROW,6,62,0,0,0
+PROFILE_ROW,6,63,0,0,0
+PROFILE_CASE,6,6164906,6164906,128,128,5
+MLKEM512_ROW,6,2,42,1,8,2,0,6164906,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000cf40
+PROFILE_ROW,7,0,319,319,0
+PROFILE_ROW,7,1,0,0,0
+PROFILE_ROW,7,2,1051,5539674,1
+PROFILE_ROW,7,3,0,0,0
+PROFILE_ROW,7,4,8598,129272,1
+PROFILE_ROW,7,5,0,0,0
+PROFILE_ROW,7,6,0,0,0
+PROFILE_ROW,7,7,3948,4308067,1
+PROFILE_ROW,7,8,0,0,0
+PROFILE_ROW,7,9,1664,1993522,1
+PROFILE_ROW,7,10,94534,94534,4
+PROFILE_ROW,7,11,0,0,0
+PROFILE_ROW,7,12,469,175187,1
+PROFILE_ROW,7,13,1489,1014813,1
+PROFILE_ROW,7,14,43428,43428,3
+PROFILE_ROW,7,15,31320,31320,2
+PROFILE_ROW,7,16,4028351,4028351,26
+PROFILE_ROW,7,17,0,0,0
+PROFILE_ROW,7,18,0,0,0
+PROFILE_ROW,7,19,15563,1105821,5
+PROFILE_ROW,7,20,10663,941326,1
+PROFILE_ROW,7,21,2512,158480,1
+PROFILE_ROW,7,22,6255,6255,1
+PROFILE_ROW,7,23,16207,1875412,1
+PROFILE_ROW,7,24,0,0,0
+PROFILE_ROW,7,25,204898,204898,2
+PROFILE_ROW,7,26,532143,532143,3
+PROFILE_ROW,7,27,103080,103080,3
+PROFILE_ROW,7,28,22536,22536,2
+PROFILE_ROW,7,29,165360,165360,5
+PROFILE_ROW,7,30,0,0,0
+PROFILE_ROW,7,31,41072,41072,4
+PROFILE_ROW,7,32,0,0,0
+PROFILE_ROW,7,33,9740,9740,1
+PROFILE_ROW,7,34,38984,38984,2
+PROFILE_ROW,7,35,0,0,0
+PROFILE_ROW,7,36,0,0,0
+PROFILE_ROW,7,37,26168,26168,2
+PROFILE_ROW,7,38,40080,40080,4
+PROFILE_ROW,7,39,10268,10268,1
+PROFILE_ROW,7,40,0,0,0
+PROFILE_ROW,7,41,75429,75429,28
+PROFILE_ROW,7,42,3864,3864,12
+PROFILE_ROW,7,43,0,0,0
+PROFILE_ROW,7,44,0,0,0
+PROFILE_ROW,7,45,0,0,0
+PROFILE_ROW,7,46,0,0,0
+PROFILE_ROW,7,47,0,0,0
+PROFILE_ROW,7,48,0,0,0
+PROFILE_ROW,7,49,0,0,0
+PROFILE_ROW,7,50,0,0,0
+PROFILE_ROW,7,51,0,0,0
+PROFILE_ROW,7,52,0,0,0
+PROFILE_ROW,7,53,0,0,0
+PROFILE_ROW,7,54,0,0,0
+PROFILE_ROW,7,55,0,0,0
+PROFILE_ROW,7,56,0,0,0
+PROFILE_ROW,7,57,0,0,0
+PROFILE_ROW,7,58,0,0,0
+PROFILE_ROW,7,59,0,0,0
+PROFILE_ROW,7,60,0,0,0
+PROFILE_ROW,7,61,0,0,0
+PROFILE_ROW,7,62,0,0,0
+PROFILE_ROW,7,63,0,0,0
+PROFILE_CASE,7,5539993,5539993,119,119,5
+MLKEM512_ROW,7,2,42,1,9,2,0,5539993,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000cf40
+MLKEM512_PASS cases=8 input_bytes=6656 output_bytes=6400 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=46224651 all_m=242688 min_sp=0x0000cf40 stack_used=12464
+$finish called at time : 462246825 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem512_profile.sv" Line 399
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:11:41 . Memory (MB): peak = 459.273 ; gain = 0.000
+xsim: Time (s): cpu = 00:00:00 ; elapsed = 00:11:44 . Memory (MB): peak = 459.273 ; gain = 5.680
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_mlkem512_profile_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for all
+launch_simulation: Time (s): cpu = 00:00:00 ; elapsed = 00:11:54 . Memory (MB): peak = 459.273 ; gain = 10.707
+# close_sim
+INFO: xsimkernel Simulation Memory Usage: 30732 KB (Peak: 30732 KB), Simulation CPU Usage: 683968 ms
+INFO: [Simtcl 6-16] Simulation closed
+# set logpath [file join $project_dir mlkem512.sim sim_1 behav xsim simulate.log]
+# set f [open $logpath r]
+# set log [read $f]
+# close $f
+# if {![regexp "MLKEM512_PASS cases=$case_count " $log] || [regexp -nocase {fatal:|\$fatal|ERROR:|MLKEM512_FAIL|PROFILE_FAIL} $log]} {
+#     error "Profiling batch failed: $logpath"
+# }
+# file copy -force $logpath [file join $result_dir simulate.log]
+# close_project
+# file copy -force [file join $project_dir mlkem512.xpr] [file join $result_dir project.xpr]
+# puts "MLKEM512_PROFILE_BATCH_PASS cases=$case_count results=$result_dir"
+MLKEM512_PROFILE_BATCH_PASS cases=8 results=E:/pqc/mlkem-polymul-rv32i-fpga/results/official_baseline/mlkem512/profile/batches/batch_032_039
+INFO: [Common 17-206] Exiting Vivado at Thu Sep 24 23:49:47 2026...

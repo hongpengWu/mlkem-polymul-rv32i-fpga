@@ -1,0 +1,40 @@
+{
+  "config": "rv32im_fast",
+  "simulator": "Vivado/XSim 2024.2",
+  "ram_bytes": 65536,
+  "command": [
+    "E:\\Xilinx\\Vivado\\2024.2\\bin\\vivado.bat",
+    "-mode",
+    "batch",
+    "-source",
+    "E:\\pqc\\mlkem-polymul-rv32i-fpga\\scripts\\mlkem512_suite\\run_batch.tcl",
+    "-log",
+    "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\mlkem512_suite\\batches\\rv32im_fast\\batch_054_061\\vivado.log",
+    "-journal",
+    "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\mlkem512_suite\\batches\\rv32im_fast\\batch_054_061\\vivado.jou",
+    "-tclargs",
+    "rv32im_fast",
+    "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\official_baseline\\mlkem512\\batches\\rv32im_fast\\batch_054_061",
+    "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\mlkem512_suite\\batches\\rv32im_fast\\batch_054_061",
+    "8"
+  ],
+  "input_sha256": {
+    "rtl/cpu/picorv32.v": "fd142889e8178ef67f1cff17cb2d18b3adae56fcae2badf7cbcc4c4f5ac7960e",
+    "rtl/benchmark/cpu_benchmark_system.v": "eb0e2bc113242f6a5760a6a11b34caa6d73c9df3317403279ec7529ab0c567b3",
+    "tb/software/tb_mlkem512_suite.sv": "372dac63b670ccc8fa806c7944b7cd0b43ac2457c9dfae6703ef7b5452006874",
+    "scripts/mlkem512_suite/run_batch.tcl": "6945afb050618942e1961b27da2957d486bb24adfa1df19649ded8de599d586c",
+    "scripts/mlkem512_suite/sim.tcl": "3979baeb16a37a5f23c04be7e8e963fd6b4d7f908f17b1fcf4fb96a5b48487c6",
+    "scripts/mlkem512_suite/resume.py": "853cd18b18b89718d0f37f5afc449af22d9334570a9fd1e0a057d620cf8c1fe2",
+    "scripts/kat/package_mlkem512.py": "8ba02b9c7b1fd2636a1c3ea2f76833fc4d477096fc0ca3619c17463240316d4c",
+    "results/official_baseline/mlkem512/build_manifest.json": "fcf09954e28e1af86fb3fad77d29b2777ed7e6c1edd30a03dfcce4c46ca09527",
+    "tb/software/mlkem512_suite/cases.json": "79c6356246062f68503d3650e903755dec13f949bc4075aa8bc3b9c7dd4c2f31",
+    "tb/software/mlkem512_suite/mlkem512_expected.mem": "e461adec30d2d7c4d68a3371e476374b71e83ac1dadee60428ffcd8a2b62d83c",
+    "tb/software/mlkem512_suite/mlkem512_input.mem": "4f84436a3c19ca6e8c791ff782d3b94a24eb1a674aabe3307861f204995578e2",
+    "firmware/images/mlkem512_suite/rv32i.mem": "fc99eadb03b987fc73dab09985ab9e30febfab5dd1e30af76c773b91666856c4",
+    "firmware/images/mlkem512_suite/rv32im.mem": "2f6af97cefc8372ceaa617104efecf2dd6c0adf2f89a8d1b66fced2c48848cac",
+    "results/official_baseline/mlkem512/batches/rv32im_fast/batch_054_061/batch.json": "294f221f47bb77a88c91b46c2774f04cb73f543376691718f843f8e70684836a",
+    "results/official_baseline/mlkem512/batches/rv32im_fast/batch_054_061/mlkem512_input.mem": "9a188fcd76c53b85a5042f7abdd9b774a1117bdb454dd4e957d3579e7c7488be",
+    "results/official_baseline/mlkem512/batches/rv32im_fast/batch_054_061/mlkem512_expected.mem": "4c309767e556fd738787aee3d0c6913b92bd218302dec571b7bf151c89551e58"
+  },
+  "started_at": "2026-09-24T21:09:26.491457+08:00"
+}

@@ -1,0 +1,32 @@
+{
+  "config": "rv32im_fast",
+  "simulator": "Vivado/XSim 2024.2",
+  "ram_bytes": 65536,
+  "command": [
+    "E:\\Xilinx\\Vivado\\2024.2\\bin\\vivado.bat",
+    "-mode",
+    "batch",
+    "-source",
+    "scripts/mlkem512_suite/run.tcl",
+    "-log",
+    "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\mlkem512_suite\\rv32im_fast.log",
+    "-journal",
+    "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\mlkem512_suite\\rv32im_fast.jou",
+    "-tclargs",
+    "rv32im_fast"
+  ],
+  "input_sha256": {
+    "rtl/cpu/picorv32.v": "fd142889e8178ef67f1cff17cb2d18b3adae56fcae2badf7cbcc4c4f5ac7960e",
+    "rtl/benchmark/cpu_benchmark_system.v": "eb0e2bc113242f6a5760a6a11b34caa6d73c9df3317403279ec7529ab0c567b3",
+    "tb/software/tb_mlkem512_suite.sv": "b974195e78c6abc9641d730c22ab2a4e922805f02547c80872eadb22bec8dd08",
+    "scripts/mlkem512_suite/run.tcl": "1c4c745c3efc7f6dcf3a7a3ebe04a6fe717d8bd7a730649ff258c9b607a6064e",
+    "scripts/mlkem512_suite/sim.tcl": "3979baeb16a37a5f23c04be7e8e963fd6b4d7f908f17b1fcf4fb96a5b48487c6",
+    "scripts/mlkem512_suite/run.py": "6b4a36ed3fa38eeba1fc91070da8f8b43479763a9e8af09ce46f4be6b09a4290",
+    "results/official_baseline/mlkem512/build_manifest.json": "fcf09954e28e1af86fb3fad77d29b2777ed7e6c1edd30a03dfcce4c46ca09527",
+    "tb/software/mlkem512_suite/cases.json": "79c6356246062f68503d3650e903755dec13f949bc4075aa8bc3b9c7dd4c2f31",
+    "tb/software/mlkem512_suite/mlkem512_expected.mem": "e461adec30d2d7c4d68a3371e476374b71e83ac1dadee60428ffcd8a2b62d83c",
+    "tb/software/mlkem512_suite/mlkem512_input.mem": "4f84436a3c19ca6e8c791ff782d3b94a24eb1a674aabe3307861f204995578e2",
+    "firmware/images/mlkem512_suite/rv32i.mem": "fc99eadb03b987fc73dab09985ab9e30febfab5dd1e30af76c773b91666856c4",
+    "firmware/images/mlkem512_suite/rv32im.mem": "2f6af97cefc8372ceaa617104efecf2dd6c0adf2f89a8d1b66fced2c48848cac"
+  }
+}

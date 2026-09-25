@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "config": "rv32im_iterative",
+  "original_indices": [
+    143,
+    144
+  ],
+  "case_count": 2,
+  "input_words": 432,
+  "expected_words": 32,
+  "input_bytes": 1600,
+  "output_bytes": 0
+}

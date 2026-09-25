@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "config": "rv32im_fast",
+  "case_count": 8,
+  "batch_sha256": "0ef5e234a18dd3a878aadae722b57c8c3ffe9b23320981eb4a692abb2eba5a73",
+  "log_sha256": "358acc38f2e8fe435a8583a2b8c789d220545feb23d9a86e994340a3c2735bdf",
+  "run_inputs_sha256": "a9a67c6f533ad3d8907287953a5d71ce7929d92e6008169ec15ebd6d5e4c6831",
+  "finished_at": "2026-09-24T22:03:20.624953+08:00"
+}

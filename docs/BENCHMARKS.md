@@ -2,9 +2,131 @@
 
 本文件集中记录可用于竞赛报告的实测数据。每组数据必须注明配置、计时边界和证据；未测项写“待测”，不得用理论估计或仿真数据代替实板结果。周期来自 RTL 仿真，资源与时序来自 Vivado 布线后报告。
 
-竞赛目标、阶段门和创新路线见 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)；本文件只登记已经测量或明确标记为待测的数据。
+竞赛目标、阶段门和创新路线见 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)；CPU baseline 的解释见 [MLKEM512_BASELINE_ANALYSIS.md](MLKEM512_BASELINE_ANALYSIS.md)。本文件只登记已经测量或明确标记为待测的数据。
 
-## 0. CPU 软件 baseline（本轮）
+2026-09-24 确定的测量范围：512 重点进行阶段分析、架构优化和资源/性能权衡；
+768/1024 完成所选官方向量回归、CPU 基本周期/内存测量，并在最终加速架构上复验。
+该范围是后续计划，尚未测量的参数集仍标为待测。当前覆盖与执行顺序见 [项目进度](PROJECT_STATUS.md)。
+
+## 新标准接口 HLS C 仿真（2026-09-25）
+
+新建的 `hls/mlkem512_basemul_k2/` 只实现标准库 K=2 NTT 域 cached BaseMul，
+不包含 NTT、逆 NTT、1441 缩放或 AXI 搬运。独立 testbench 使用直接
+`BaseCaseMultiply` oracle，覆盖零输入、规范输入、signed lazy 边界和 100 组确定性随机输入。
+
+| 项目 | 结果 |
+|---|---:|
+| C 仿真用例 | 103 / 103 PASS |
+| 参数 | ML-KEM-512，K=2，N=256，q=3329 |
+| 输出比较 | signed lazy 输出的模 q 等价性 |
+| Vitis HLS 2024.2 综合 | 已完成：137 cycles、II=1、估算 Fmax 150.83 MHz |
+| HLS 资源估算 | DSP 12、LUT 310、FF 599、BRAM 0 |
+| Vivado 综合/布局布线 | 待新 IP 接入完整 Vivado 工程后执行 |
+| AXI/CPU 接入、官方 KAT | 待执行 |
+
+证据：[C 仿真日志](../results/accelerator_interface/basemul_k2_csim.txt)、
+[HLS 综合报告](../results/accelerator_interface/hls_synthesis/summary.json)、
+[接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)。HLS 估算不能替代完整 Vivado 综合、RTL 仿真或
+CPU＋加速器官方 KAT；旧完整时域 HLS 仍单独作为历史基线。
+
+## ML-KEM-512 快速 CPU 阶段测量（2026-09-25）
+
+RV32IM 快速乘法的独立 profiling 已通过全部 145 条记录、19 个批次。
+各行占比按该类操作的阶段独占周期总和 / API 周期总和计算。
+
+| 操作 | N | Keccak 置换 | 多项式算术六类合计 | 插桩相对正式基线的周期增幅 |
+|---|---:|---:|---:|---:|
+| KeyGen | 25 | 80.69% | 13.08% | +0.132% |
+| Encaps | 50 | 72.96% | 19.13% | +0.150% |
+| Decaps（展开私钥） | 20 | 71.36% | 21.38% | +0.146% |
+| Decaps（含种子展开） | 10 | 75.24% | 17.91% | +0.140% |
+
+多项式算术六类为 NTT、INTT、BaseMul 累加、mulcache、显式约减/转换、加减，
+函数内的模约减归属对应函数。此表省略的 SHAKE/SHA3 外围、采样、编码等仍保留在完整表。
+每条记录阶段周期之和等于 API 总周期，145 条的 M 指令计数逐条与正式基线一致。
+插桩固件有效镜像 31,456 B、静态区结束地址 37,128，最大观测算法栈 13,264 B；
+RAM / 预留栈仍为 64 KiB / 16 KiB。原基线镜像与数据未改变。
+
+这是用于选择加速范围的诊断数据；正式加速比仍比较未插桩软件/硬件 API。
+结论、测量限制及下一步接口任务见 [阶段分析报告](MLKEM512_PROFILE.md)，
+完整表与逐例证据见 [profile/summary.md](../results/official_baseline/mlkem512/profile/summary.md)。
+
+## 官方 ML-KEM-512 全量 CPU baseline（2026-09-24）
+
+RV32I、RV32IM 迭代、RV32IM 快速各完成 **145 / 145** 条固定版本公开 ACVP 记录。每组包括 KeyGen 25、Encaps 50、展开私钥 Decaps 20、种子私钥 Decaps 10、公钥检查 20、私钥检查 20。后两类均包含合法与非法各 10 条；30 条解封装中有 15 条官方输出符合隐式拒绝密钥 `J(z || c)`，全部逐字节一致。
+
+下表为同一批记录的 **平均算法调用时间**（RTL 周期按 100 MHz 换算），不是实板计时或完整通信会话耗时。
+
+| 操作 | N / CPU | RV32I ms | RV32IM 迭代 ms | RV32IM 快速 ms | 迭代 / 快速相对 RV32I 加速比 |
+|---|---:|---:|---:|---:|---:|
+| KeyGen | 25 | 90.63344 | 58.87388 | 52.69404 | 1.539× / 1.720× |
+| Encaps | 50 | 117.98692 | 66.28905 | 55.81097 | 1.780× / 2.114× |
+| Decaps（展开私钥） | 20 | 157.40996 | 84.42507 | 69.37739 | 1.864× / 2.269× |
+| Decaps（含种子展开） | 10 | 247.31958 | 142.54837 | 121.32085 | 1.735× / 2.039× |
+
+三组统一 64 KiB RAM、16 KiB 栈预留。RV32I / RV32IM 有效镜像为 27,808 / 26,272 B，静态区含 BSS 的结束地址为 33,476 / 31,940；最大观测栈深均为 12,928 B（不是最坏输入上界）。两种 RV32IM 使用同一镜像，各用例的八类动态 M 指令计数完全一致；145 条算法区间总 M 数均为 3,486,720，RV32I 为 0。
+
+计时包含操作分派、完整 API 调用和库内清零，排除启动、mailbox 输入输出、TB 比对和熵源采集；空区间 4 周期保留、不扣除。种子私钥解封装包含 KeyGen 展开，独立统计。各记录执行一次，最小／平均／中位数／P95／最大值反映所选输入差异，不是重复运行抖动。修订间可能有相同输入，记录数不等于独立随机样本数。
+
+迭代乘法并非所有操作都更快：合法公钥检查为 163,748 周期，RV32I 为 154,004，快速乘法为 128,932；私钥检查的三组周期相同。完整表保留这些结果，避免只选择有利加速比。当前尚未测量此 64 KiB 配置的布线后资源和时序，不能引用旧 16 KiB 工程数字替代。
+
+结果合并关机前 94 条已验证记录与 44 个独立续跑批次，每组原始索引 0..144 恰好一次。没有单次全套最终 PASS，因此整套启动总周期和全程 M 不作推断；完整算法区间统计有效。来源哈希、批次成功日志、工程参数和运行实际加载文件均已验证并归档。
+
+证据：[完整统计表](../results/official_baseline/mlkem512/summary.md)、[逐条 CSV](../results/official_baseline/mlkem512/cases.csv)、[机器可读统计](../results/official_baseline/mlkem512/summary.json)、[测量协议](MLKEM512_BENCHMARK_PROTOCOL.md)。这是公开向量 RTL 回归，不能等同于正式 CAVP 认证；768/1024、加速器和实板覆盖分别登记。
+
+## 官方 ML-KEM-512 KeyGen：历史首个 PicoRV32 KAT（2026-09-24）
+
+三组真实 PicoRV32 RTL 均通过 **ACVP FIPS203 / keyGen / tgId=1 / tcId=1**。
+输入是官方 `d || z` 两段各 32 字节种子，CPU 执行固定版本 `mlkem-native` 的便携 C
+`keypair_derand()`，产生 800 字节公钥 `ek` 和 1632 字节私钥 `dk`。TB 逐字节核对全部
+64 字节输入与 2432 字节输出；预期密钥仅在 TB fixture 中，未链接进 CPU 程序。
+这是此前单用例里程碑，固件不同于全量通用驱动；当前完整 512 结果以上一节为准。
+
+| CPU 配置 | KeyGen 原始周期 | 时间换算 @100 MHz (ms) | 相对 RV32I | 算法内动态 MUL | KAT |
+|---|---:|---:|---:|---:|---|
+| RV32I | 8,995,082 | 89.95082 | 1.0000× | 0 | PASS |
+| RV32IM 迭代 | 5,812,531 | 58.12531 | 1.5475× | 18,176 | PASS |
+| RV32IM 快速 | 5,194,547 | 51.94547 | 1.7316× | 18,176 | PASS |
+
+三组均用 GCC 13.3.0、`-O3`、ILP32、同一份 C 源码和输入，ISA 编译选项分别为
+`-march=rv32i/rv32im`。两种 RV32IM 共用同一个 `.mem`；CPU 参数依次为
+`MUL/FAST_MUL/DIV=0/0/0、1/0/1、1/1/1`。本用例 RV32IM 动态 M 指令全部是 `MUL`，
+高位乘法与除余指令计数均为 0；镜像静态 M 指令数分别为 0 和 26。
+迭代与快速配置的周期差为 617,984，恰好等于 `18,176 × 34`；这是本次两种
+乘法实现每条动态 `MUL` 相差 34 周期的交叉印证。
+
+计时为官方种子已在 RAM 就绪后，两次 `rdcycle` 包围一次 KeyGen API 的原始差值，
+包含库内默认临时数据清零，不包含启动、种子准备、输入输出调试传输、TB 校验和熵源采集。
+TB 直接检查 CPU 采样 `rdcycle` 的边沿与固件上报完全一致；空区间 4 周期独立记录、不扣除。
+这三个数都是 **单用例、单次算法调用**，不报告平均/P95，也不据此声称恒定时间。
+
+| 配置 | 镜像有效字节 | 静态区结束地址（十进制，含 BSS） | 统一 RAM | 栈预留 / 本用例观测使用 |
+|---|---:|---:|---:|---:|
+| RV32I | 19,424 B | 21,920 | 64 KiB | 16 KiB / 9,328 B |
+| RV32IM 迭代 | 18,848 B | 21,344 | 64 KiB | 16 KiB / 9,328 B |
+| RV32IM 快速 | 18,848 B | 21,344 | 64 KiB | 16 KiB / 9,328 B |
+
+原 16 KiB RAM 无法容纳这份标准软件。新仿真统一采用现有 CPU/AXI/XPM 壳的
+`RAM_ADDR_BITS=14`，没有修改原 RTL、PQC 加速器或原多项式工程。链接器静态区边界
+不得越过 `0xbff0`，栈顶 `0xfff0`，三组最低 SP 均为 `0xdb80`；该栈观测不是最坏情况上界。
+新 64 KiB 配置尚未做综合/布局布线或导出烧录产物，LUT/FF/BRAM/DSP/WNS 均待测；
+不能沿用下节 16 KiB 工程资源，也不能把 100 MHz 周期换算称为新工程实板达成频率。
+
+相比局部多项式测试，本次 KeyGen 还含 SHAKE/Keccak、采样及其他处理，乘法收益被其余
+工作稀释；该历史首例未测阶段占比。后续全量快速 CPU profiling 结果见本页首表，不能从该首例
+总周期臆测 SHAKE 的占比，更不能除以旧加速核的 4,789 周期当作完整 KEM 加速比。
+
+负向测试把临时 expected 副本首个 `ek` 字节从 `0x28` 改成 `0x29`，TB 准确拒绝并定位
+`tcId=1 / event=0x103 / byte=0`；正式向量和固件保持不变。
+
+证据：[自动汇总表](../results/official_baseline/keygen512_tc1/summary.md)、
+[CSV](../results/official_baseline/keygen512_tc1/summary.csv)、
+[来源与 SHA-256](../results/official_baseline/keygen512_tc1/summary.json)、
+[构建清单](../results/official_baseline/keygen512_tc1/build_manifest.json)、
+[负向检查](../results/official_baseline/keygen512_tc1/negative_check/README.md)。
+复现方法见 [BUILD.md](BUILD.md)。主机端此前 435 用例通过的结果保持独立，不能计入本次 PicoRV32 覆盖数。
+
+## 0. CPU 多项式软件 baseline（前一阶段）
 
 本轮首先解决 CPU 对照问题：三组使用同一份普通 C 软件 NTT/BaseMul/INTT 实现、同一组 8 个输入、同一独立直接卷积 oracle、同一 16 KiB CPU RAM 和同一 `-O3` 编译约束。PQC 硬件加速器没有接入这组测试。每个配置完成 8 个多项式、两次计时运行和 4096 个输出系数检查；输入生成、校验和输出串流均在计时区间外。完整协议见 [CPU_BENCHMARK_PROTOCOL.md](CPU_BENCHMARK_PROTOCOL.md)，原始日志和逐 case CSV 见 [CPU baseline results](../results/cpu_baseline/)。
 
@@ -26,7 +148,7 @@
 
 三组均观测到栈指针处于预留范围 `0x37f0..0x3ff0`；最低值分别为 `0x3f20`（RV32I，栈使用 208 B）和 `0x3f50`（两种 RV32IM，栈使用 160 B）。RV32IM 反汇编在 `sw_ntt`、`sw_basemul` 和 `sw_invntt` 中均存在实际 `MUL`；RV32I 窗口内 M 指令为 0。所有地址请求、trap、事件顺序、输入/输出系数均通过检查。
 
-固件构建统计：RV32I 镜像 5,024 B，RV32IM 镜像 3,468 B；两者静态数据区 2,560 B，链接器为栈保留 2 KiB。镜像、编译器、源码/镜像/libgcc SHA256 记录在 [CPU 构建清单](../results/cpu_baseline/cpu_baseline_build_manifest.json)；反汇编、ELF、map 和详细构建日志仍在 [build/cpu_baseline/firmware](../build/cpu_baseline/firmware)（本地生成目录）。
+固件构建统计：RV32I 镜像 5,024 B，RV32IM 镜像 3,468 B；两者静态数据区 2,560 B，链接器为栈保留 2 KiB。镜像、编译器、源码/镜像/libgcc SHA256 记录在 [CPU 构建清单](../results/cpu_baseline/cpu_baseline_build_manifest.json)；反汇编、ELF、map 和详细构建日志仍在 本机生成目录 `build/cpu_baseline/firmware/`（不纳入版本库）。
 
 当前 CPU 仿真使用 XSim 的 100 MHz 等效时钟和真实 PicoRV32 AXI/XPM RAM 通路；CPU-only PYNQ-Z2 实板烧录仍未执行。三组 CPU-only top 已在相同 PYNQ-Z2 器件、约束和 100 MHz 时钟下完成综合/布局布线，并导出独立 bitstream。不能把本节周期直接和原加速器 `Core=4789` 周期混称为同一计时边界。
 

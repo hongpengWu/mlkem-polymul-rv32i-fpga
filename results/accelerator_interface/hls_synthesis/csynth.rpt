@@ -1,0 +1,182 @@
+
+
+================================================================
+== Synthesis Summary Report of 'mlkem512_basemul_acc_k2'
+================================================================
++ General Information: 
+    * Date:           Fri Sep 25 10:12:38 2026
+    * Version:        2024.2 (Build 5238294 on Nov  8 2024)
+    * Project:        mlkem512_basemul_k2_vivado
+    * Solution:       solution1 (Vivado IP Flow Target)
+    * Product family: zynq
+    * Target device:  xc7z020-clg400-1
+    
+
++ Performance & Resource Estimates: 
+    
+    PS: '+' for module; 'o' for loop; '*' for dataflow
+    +---------------------------+------+------+---------+-----------+----------+---------+------+----------+------+---------+-----------+-----------+-----+
+    |          Modules          | Issue|      | Latency |  Latency  | Iteration|         | Trip |          |      |         |           |           |     |
+    |          & Loops          | Type | Slack| (cycles)|    (ns)   |  Latency | Interval| Count| Pipelined| BRAM |   DSP   |     FF    |    LUT    | URAM|
+    +---------------------------+------+------+---------+-----------+----------+---------+------+----------+------+---------+-----------+-----------+-----+
+    |+ mlkem512_basemul_acc_k2  |    II|  0.67|      137|  1.370e+03|         -|      128|     -|    rewind|     -|  12 (5%)|  599 (~0%)|  310 (~0%)|    -|
+    | o VITIS_LOOP_33_1         |     -|  7.30|      135|  1.350e+03|         9|        1|   128|       yes|     -|        -|          -|          -|    -|
+    +---------------------------+------+------+---------+-----------+----------+---------+------+----------+------+---------+-----------+-----------+-----+
+
+
+================================================================
+== HW Interfaces
+================================================================
+* AP_MEMORY
++--------------------+-----------+----------+
+| Port               | Direction | Bitwidth |
++--------------------+-----------+----------+
+| a_0_address0       | out       | 8        |
+| a_0_address1       | out       | 8        |
+| a_0_q0             | in        | 16       |
+| a_0_q1             | in        | 16       |
+| a_1_address0       | out       | 8        |
+| a_1_address1       | out       | 8        |
+| a_1_q0             | in        | 16       |
+| a_1_q1             | in        | 16       |
+| b_0_address0       | out       | 8        |
+| b_0_address1       | out       | 8        |
+| b_0_q0             | in        | 16       |
+| b_0_q1             | in        | 16       |
+| b_1_address0       | out       | 8        |
+| b_1_address1       | out       | 8        |
+| b_1_q0             | in        | 16       |
+| b_1_q1             | in        | 16       |
+| b_cache_0_address0 | out       | 7        |
+| b_cache_0_q0       | in        | 16       |
+| b_cache_1_address0 | out       | 7        |
+| b_cache_1_q0       | in        | 16       |
+| result_address0    | out       | 8        |
+| result_address1    | out       | 8        |
+| result_d0          | out       | 16       |
+| result_d1          | out       | 16       |
++--------------------+-----------+----------+
+
+* TOP LEVEL CONTROL
++-----------+------------+-----------------------------------+
+| Interface | Type       | Ports                             |
++-----------+------------+-----------------------------------+
+| ap_clk    | clock      | ap_clk                            |
+| ap_rst    | reset      | ap_rst                            |
+| ap_ctrl   | ap_ctrl_hs | ap_done ap_idle ap_ready ap_start |
++-----------+------------+-----------------------------------+
+
+
+================================================================
+== SW I/O Information
+================================================================
+* Top Function Arguments
++----------+-----------+---------------+
+| Argument | Direction | Datatype      |
++----------+-----------+---------------+
+| a        | in        | short const * |
+| b        | in        | short const * |
+| b_cache  | in        | short const * |
+| result   | out       | short*        |
++----------+-----------+---------------+
+
+* SW-to-HW Mapping
++----------+--------------------+---------+----------+
+| Argument | HW Interface       | HW Type | HW Usage |
++----------+--------------------+---------+----------+
+| a        | a_0_address0       | port    | offset   |
+| a        | a_0_ce0            | port    |          |
+| a        | a_0_q0             | port    |          |
+| a        | a_0_address1       | port    | offset   |
+| a        | a_0_ce1            | port    |          |
+| a        | a_0_q1             | port    |          |
+| a        | a_1_address0       | port    | offset   |
+| a        | a_1_ce0            | port    |          |
+| a        | a_1_q0             | port    |          |
+| a        | a_1_address1       | port    | offset   |
+| a        | a_1_ce1            | port    |          |
+| a        | a_1_q1             | port    |          |
+| b        | b_0_address0       | port    | offset   |
+| b        | b_0_ce0            | port    |          |
+| b        | b_0_q0             | port    |          |
+| b        | b_0_address1       | port    | offset   |
+| b        | b_0_ce1            | port    |          |
+| b        | b_0_q1             | port    |          |
+| b        | b_1_address0       | port    | offset   |
+| b        | b_1_ce0            | port    |          |
+| b        | b_1_q0             | port    |          |
+| b        | b_1_address1       | port    | offset   |
+| b        | b_1_ce1            | port    |          |
+| b        | b_1_q1             | port    |          |
+| b_cache  | b_cache_0_address0 | port    | offset   |
+| b_cache  | b_cache_0_ce0      | port    |          |
+| b_cache  | b_cache_0_q0       | port    |          |
+| b_cache  | b_cache_1_address0 | port    | offset   |
+| b_cache  | b_cache_1_ce0      | port    |          |
+| b_cache  | b_cache_1_q0       | port    |          |
+| result   | result_address0    | port    | offset   |
+| result   | result_ce0         | port    |          |
+| result   | result_we0         | port    |          |
+| result   | result_d0          | port    |          |
+| result   | result_address1    | port    | offset   |
+| result   | result_ce1         | port    |          |
+| result   | result_we1         | port    |          |
+| result   | result_d1          | port    |          |
++----------+--------------------+---------+----------+
+
+
+================================================================
+== Bind Op Report
+================================================================
++-------------------------------------+-----+--------+-------------+-------+-----------+---------+
+| Name                                | DSP | Pragma | Variable    | Op    | Impl      | Latency |
++-------------------------------------+-----+--------+-------------+-------+-----------+---------+
+| + mlkem512_basemul_acc_k2           | 12  |        |             |       |           |         |
+|   mac_muladd_16s_16s_32s_32_4_1_U7  | 1   |        | mul_ln47    | mul   | dsp_slice | 3       |
+|   mul_16s_16s_32_1_1_U1             | 1   |        | mul_ln47_1  | mul   | auto      | 0       |
+|   mac_muladd_16s_16s_32s_32_4_1_U8  | 1   |        | mul_ln47_2  | mul   | dsp_slice | 3       |
+|   mul_16s_16s_32_1_1_U2             | 1   |        | mul_ln47_3  | mul   | auto      | 0       |
+|   mac_muladd_16s_16s_32s_32_4_1_U7  | 1   |        | add_ln47    | add   | dsp_slice | 3       |
+|   mac_muladd_16s_16s_32s_32_4_1_U8  | 1   |        | add_ln47_1  | add   | dsp_slice | 3       |
+|   even_fu_343_p2                    |     |        | even        | add   | fabric    | 0       |
+|   mac_muladd_16s_16s_32s_32_4_1_U9  | 1   |        | mul_ln49    | mul   | dsp_slice | 3       |
+|   mul_16s_16s_32_1_1_U3             | 1   |        | mul_ln49_1  | mul   | auto      | 0       |
+|   mac_muladd_16s_16s_32s_32_4_1_U10 | 1   |        | mul_ln49_2  | mul   | dsp_slice | 3       |
+|   mul_16s_16s_32_1_1_U4             | 1   |        | mul_ln49_3  | mul   | auto      | 0       |
+|   mac_muladd_16s_16s_32s_32_4_1_U9  | 1   |        | add_ln49    | add   | dsp_slice | 3       |
+|   mac_muladd_16s_16s_32s_32_4_1_U10 | 1   |        | add_ln49_1  | add   | dsp_slice | 3       |
+|   odd_fu_347_p2                     |     |        | odd         | add   | fabric    | 0       |
+|   mul_16s_13s_16_1_1_U5             | 1   |        | inverse     | mul   | auto      | 0       |
+|   mac_muladd_16s_13s_32s_32_4_1_U11 | 1   |        | mul_ln17    | mul   | dsp_slice | 3       |
+|   mac_muladd_16s_13s_32s_32_4_1_U11 | 1   |        | sext_ln17_1 | sext  | dsp_slice | 3       |
+|   mac_muladd_16s_13s_32s_32_4_1_U11 | 1   |        | lifted      | add   | dsp_slice | 3       |
+|   mul_16s_13s_16_1_1_U6             | 1   |        | inverse_1   | mul   | auto      | 0       |
+|   mac_muladd_16s_13s_32s_32_4_1_U12 | 1   |        | mul_ln17_1  | mul   | dsp_slice | 3       |
+|   mac_muladd_16s_13s_32s_32_4_1_U12 | 1   |        | sext_ln17_3 | sext  | dsp_slice | 3       |
+|   mac_muladd_16s_13s_32s_32_4_1_U12 | 1   |        | lifted_1    | add   | dsp_slice | 3       |
+|   i_fu_267_p2                       |     |        | i           | add   | fabric    | 0       |
+|   icmp_ln33_fu_273_p2               |     |        | icmp_ln33   | seteq | auto      | 0       |
++-------------------------------------+-----+--------+-------------+-------+-----------+---------+
+
+
+================================================================
+== Storage Report
+================================================================
+  No bind storage info in design
+
+================================================================
+== Pragma Report
+================================================================
+* Valid Pragma Syntax
++-----------------+---------------------------------+------------------------------------------------------------------------+
+| Type            | Options                         | Location                                                               |
++-----------------+---------------------------------+------------------------------------------------------------------------+
+| inline          | off                             | src/mlkem512_basemul_acc_k2.cpp:26 in mlkem512_basemul_acc_k2          |
+| array_partition | variable=a complete dim=1       | src/mlkem512_basemul_acc_k2.cpp:27 in mlkem512_basemul_acc_k2, a       |
+| array_partition | variable=b complete dim=1       | src/mlkem512_basemul_acc_k2.cpp:28 in mlkem512_basemul_acc_k2, b       |
+| array_partition | variable=b_cache complete dim=1 | src/mlkem512_basemul_acc_k2.cpp:29 in mlkem512_basemul_acc_k2, b_cache |
+| pipeline        | II=1                            | src/mlkem512_basemul_acc_k2.cpp:34 in mlkem512_basemul_acc_k2          |
+| unroll          |                                 | src/mlkem512_basemul_acc_k2.cpp:39 in mlkem512_basemul_acc_k2          |
++-----------------+---------------------------------+------------------------------------------------------------------------+
+
+

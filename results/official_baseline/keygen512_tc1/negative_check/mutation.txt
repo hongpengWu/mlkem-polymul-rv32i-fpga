@@ -1,0 +1,9 @@
+operation=ML-KEM-512 KeyGen tcId=1
+configuration=CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=1 CPU_ENABLE_DIV=1 EXPECT_M=1
+fixture_word=9
+ek_byte=0
+original_word=086a2628
+mutated_word=086a2629
+expected_rejection=MLKEM_KEYGEN_FAIL byte mismatch tcId=1 event=00000103 byte=0 got=28 expected=29
+official_input_expected_and_firmware_unchanged=PASS
+result=MLKEM_REJECTION_CHECK_PASS

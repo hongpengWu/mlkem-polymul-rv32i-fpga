@@ -1,0 +1,7 @@
+Time resolution is 1 ps
+MLKEM512_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM512_START cases=145 ram_bytes=65536 stack_bytes=16384 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+Fatal: MLKEM512_FAIL byte mismatch case=0 output=1 byte=0 got=28 expected=29
+Time: 52844875 ns  Iteration: 0  Process: /tb_mlkem512_suite(CPU_ENABLE_MUL=1,CPU_ENABLE_FAST_MUL=1,CPU_ENABLE_DIV=1,EXPECT_M=1)/check_stream  Scope: tb_mlkem512_suite(CPU_ENABLE_MUL=1,CPU_ENABLE_FAST_MUL=1,CPU_ENABLE_DIV=1,EXPECT_M=1).check_stream  File: E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem512_suite.sv Line: 87
+$finish called at time : 52844875 ns
+INFO: xsimkernel Simulation Memory Usage: 30708 KB (Peak: 30708 KB), Simulation CPU Usage: 44624 ms

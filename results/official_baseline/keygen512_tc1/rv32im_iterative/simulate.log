@@ -1,0 +1,13 @@
+Time resolution is 1 ps
+MLKEM_KEYGEN_HEADER,tcId,param,cpu_mul,cpu_fast_mul,cpu_div,expect_m,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM_KEYGEN_START cases=1 ram_bytes=65536 stack_bytes=16384 clock_mhz=100 mul=1 fast_mul=0 div=1 expect_m=1
+MLKEM_KEYGEN_PROGRESS begin_tcId=1 cycle=12233
+MLKEM_KEYGEN_PROGRESS cycle=1000000 tcId=1 state=4 m_total=0 sp=0000db80
+MLKEM_KEYGEN_PROGRESS cycle=2000000 tcId=1 state=4 m_total=0 sp=0000db90
+MLKEM_KEYGEN_PROGRESS cycle=3000000 tcId=1 state=4 m_total=0 sp=0000e1c0
+MLKEM_KEYGEN_PROGRESS cycle=4000000 tcId=1 state=4 m_total=7082 sp=0000e8a0
+MLKEM_KEYGEN_PROGRESS cycle=5000000 tcId=1 state=4 m_total=18176 sp=0000fd00
+MLKEM_KEYGEN_ROW,1,512,1,0,1,1,5812531,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db80
+MLKEM_KEYGEN_PASS cases=1 input_bytes=64 output_bytes=2432 cpu_mul=1 cpu_fast_mul=0 cpu_div=1 expect_m=1 cycles=5895833 all_m=18176 min_sp=0x0000db80 stack_used=9328
+$finish called at time : 58958645 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem_keygen.sv" Line 301
+INFO: xsimkernel Simulation Memory Usage: 37672 KB (Peak: 37672 KB), Simulation CPU Usage: 119718 ms

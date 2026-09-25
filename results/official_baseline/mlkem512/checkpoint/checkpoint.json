@@ -1,0 +1,25 @@
+{
+  "status": "paused_for_shutdown",
+  "saved_at": "2026-09-24T20:14:23",
+  "total_cases_per_config": 145,
+  "configs": {
+    "rv32i": {
+      "completed": 25,
+      "next_case_index": 25,
+      "remaining": 120,
+      "rows_sha256": "446370343dcd71b7c1f105539e60938da40739dc117a48956e85442db2eb01d2"
+    },
+    "rv32im_iterative": {
+      "completed": 31,
+      "next_case_index": 31,
+      "remaining": 114,
+      "rows_sha256": "24ef936f56ec0efbb3efc2ceb4761b329260ce7e334dde81b8d6d88a49cf9d8c"
+    },
+    "rv32im_fast": {
+      "completed": 38,
+      "next_case_index": 38,
+      "remaining": 107,
+      "rows_sha256": "ce81b9108616c88d703fad69f6b8c7e655d9bc146f7a8be90d3f3780cc0e2c80"
+    }
+  }
+}

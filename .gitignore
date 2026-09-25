@@ -34,6 +34,14 @@
 !/vivado/cpu_baseline_rv32im_fast/cpu_baseline.xpr
 !/vivado/cpu_baseline_rv32im_fast/cpu_baseline.mem
 /hls/.Xil/
+/hls/mlkem512_basemul_k2/build/
+/hls/mlkem512_basemul_k2/mlkem512_basemul_k2_vivado/
+/vivado/mlkem_keygen_*/*
+!/vivado/mlkem_keygen_*/*.xpr
+!/vivado/mlkem_keygen_*/mlkem_keygen.mem
+/vivado/mlkem512_*/*
+!/vivado/mlkem512_*/*.xpr
+!/vivado/mlkem512_*/mlkem512.mem
 /.Xil/
 *.jou
 *.log
@@ -41,6 +49,11 @@
 !/results/cpu_baseline/rv32im_iterative/simulate.log
 !/results/cpu_baseline/rv32im_fast/simulate.log
 !/results/official_reference/*.log
+!/results/official_baseline/keygen512_tc1/*/simulate.log
+!/results/official_baseline/mlkem512/*/simulate.log
+!/results/official_baseline/mlkem512/batches/**/simulate.log
+!/results/official_baseline/mlkem512/profile/batches/**/simulate.log
+!/results/accelerator_interface/hls_synthesis/*.log
 *.backup.*
 *.str
 *.wdb

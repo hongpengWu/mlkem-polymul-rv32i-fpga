@@ -1,0 +1,9 @@
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem_baseline\rv32i\mlkem_keygen.elf  :
+section              size    addr
+.text               18952       0
+.rodata               448   18976
+.bss                 2496   19424
+.riscv.attributes      28       0
+Total               21924
+
+

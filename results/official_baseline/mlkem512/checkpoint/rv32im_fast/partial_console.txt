@@ -1,0 +1,196 @@
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Thu Sep 24 19:25:34 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source scripts/mlkem512_suite/run.tcl
+# set root [file normalize [file join [file dirname [info script]] ../..]]
+# if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2"}
+# set config [lindex $argv 0]
+# switch -- $config {
+#     rv32i {set parameters {CPU_ENABLE_MUL=0 CPU_ENABLE_FAST_MUL=0 CPU_ENABLE_DIV=0}; set isa rv32i; set expect_m 0}
+#     rv32im_iterative {set parameters {CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=0 CPU_ENABLE_DIV=1}; set isa rv32im; set expect_m 1}
+#     rv32im_fast {set parameters {CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=1 CPU_ENABLE_DIV=1}; set isa rv32im; set expect_m 1}
+#     default {error "Expected rv32i, rv32im_iterative or rv32im_fast"}
+# }
+# set project_dir [file join $root vivado mlkem512_$config]
+# file mkdir $project_dir
+# set image [file join $project_dir mlkem512.mem]
+# file copy -force [file join $root firmware images mlkem512_suite $isa.mem] $image
+# create_project -force mlkem512 $project_dir -part xc7z020clg400-1
+# set_property target_language Verilog [current_project]
+# set_property simulator_language Mixed [current_project]
+# set_property XPM_LIBRARIES {XPM_MEMORY} [current_project]
+# foreach f {rtl/cpu/picorv32.v rtl/benchmark/cpu_benchmark_system.v} {add_files -norecurse [file join $root $f]}
+# add_files -norecurse $image
+# set_property file_type {Memory Initialization Files} [get_files $image]
+# set_property top cpu_benchmark_system [get_filesets sources_1]
+# set_property generic [concat {FIRMWARE_INIT_FILE=mlkem512.mem RAM_ADDR_BITS=14} $parameters] [get_filesets sources_1]
+# add_files -fileset sim_1 -norecurse [file join $root tb software tb_mlkem512_suite.sv]
+# foreach name {mlkem512_input.mem mlkem512_expected.mem} {
+#     set path [file join $root tb software mlkem512_suite $name]
+#     add_files -fileset sim_1 -norecurse $path
+#     set_property file_type {Memory Initialization Files} [get_files $path]
+# }
+# set_property top tb_mlkem512_suite [get_filesets sim_1]
+# set_property generic [concat $parameters EXPECT_M=$expect_m] [get_filesets sim_1]
+# set_property xsim.elaborate.debug_level off [get_filesets sim_1]
+# set_property xsim.simulate.custom_tcl [file join $root scripts mlkem512_suite sim.tcl] [get_filesets sim_1]
+# set_property xsim.simulate.runtime all [get_filesets sim_1]
+# update_compile_order -fileset sources_1
+# update_compile_order -fileset sim_1
+# launch_simulation -simset sim_1
+Command: launch_simulation  -simset sim_1
+INFO: [Vivado 12-12493] Simulation top is 'tb_mlkem512_suite'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'E:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'E:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_mlkem512_suite' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim/mlkem512.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim/mlkem512_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim/mlkem512_expected.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim/mlkem512_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim/mlkem512_expected.mem'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -L uvm -prj tb_mlkem512_suite_vlog.prj"
+
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/rtl/benchmark/cpu_benchmark_system.v" into library xil_defaultlib
+
+INFO: [VRFC 10-311] analyzing module cpu_benchmark_system
+
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/rtl/cpu/picorv32.v" into library xil_defaultlib
+
+INFO: [VRFC 10-311] analyzing module picorv32
+
+INFO: [VRFC 10-311] analyzing module picorv32_regs
+
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_mul
+
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_fast_mul
+
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_div
+
+INFO: [VRFC 10-311] analyzing module picorv32_axi
+
+INFO: [VRFC 10-311] analyzing module picorv32_axi_adapter
+
+INFO: [VRFC 10-311] analyzing module picorv32_wb
+
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem512_suite.sv" into library xil_defaultlib
+
+INFO: [VRFC 10-311] analyzing module tb_mlkem512_suite
+
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+
+INFO: [VRFC 10-311] analyzing module glbl
+
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim'
+"xelab --incr --debug off --relax --mt 2 -generic_top "CPU_ENABLE_MUL=1" -generic_top "CPU_ENABLE_FAST_MUL=1" -generic_top "CPU_ENABLE_DIV=1" -generic_top "EXPECT_M=1" -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem512_suite_behav xil_defaultlib.tb_mlkem512_suite xil_defaultlib.glbl -log elaborate.log"
+
+Vivado Simulator v2024.2.0
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+Running: E:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug off --relax --mt 2 -generic_top CPU_ENABLE_MUL=1 -generic_top CPU_ENABLE_FAST_MUL=1 -generic_top CPU_ENABLE_DIV=1 -generic_top EXPECT_M=1 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem512_suite_behav xil_defaultlib.tb_mlkem512_suite xil_defaultlib.glbl -log elaborate.log 
+
+Using 2 slave threads.
+
+Starting static elaboration
+
+Pass Through NonSizing Optimizer
+
+WARNING: [VRFC 10-3532] module 'glbl' does not have a parameter named 'CPU_ENABLE_MUL' to override [E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim/glbl.v:6]
+
+Completed static elaboration
+
+Starting simulation data flow analysis
+
+Completed simulation data flow analysis
+
+Time Resolution for simulation is 1ps
+
+Compiling module xil_defaultlib.picorv32_axi_adapter
+
+Compiling module xil_defaultlib.picorv32_pcpi_fast_mul
+
+Compiling module xil_defaultlib.picorv32_pcpi_div
+
+Compiling module xil_defaultlib.picorv32(ENABLE_COUNTERS=1'b1,EN...
+
+Compiling module xil_defaultlib.picorv32_axi(ENABLE_COUNTERS64=1...
+
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=524...
+
+Compiling module xil_defaultlib.cpu_benchmark_system(FIRMWARE_IN...
+
+Compiling module xil_defaultlib.tb_mlkem512_suite(CPU_ENABLE_MUL...
+
+Compiling module xil_defaultlib.glbl
+
+Built simulation snapshot tb_mlkem512_suite_behav
+
+INFO: [USF-XSim-69] 'elaborate' step finished in '5' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/vivado/mlkem512_rv32im_fast/mlkem512.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_mlkem512_suite_behav -key {Behavioral:sim_1:Functional:tb_mlkem512_suite} -tclbatch {E:/pqc/mlkem-polymul-rv32i-fpga/scripts/mlkem512_suite/sim.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source E:/pqc/mlkem-polymul-rv32i-fpga/scripts/mlkem512_suite/sim.tcl
+## run all
+MLKEM512_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM512_START cases=145 ram_bytes=65536 stack_bytes=16384 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+MLKEM512_ROW,0,1,42,1,1,1,0,5194599,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,1,2,42,1,1,2,0,5530291,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000d0a0
+MLKEM512_ROW,2,2,42,4,76,3,0,6938822,4,2400,32,43776,43264,0,0,512,0,0,0,0,0x0000cd70
+MLKEM512_ROW,3,3,42,4,76,4,0,12134490,4,832,32,61952,61440,0,0,512,0,0,0,0,0x0000cd70
+MLKEM512_ROW,4,2,42,8,116,5,0,128932,4,800,0,1024,1024,0,0,0,0,0,0,0,0x0000f810
+MLKEM512_ROW,5,2,42,7,106,6,-5,941452,4,1632,0,0,0,0,0,0,0,0,0,0,0x0000fc70
+MLKEM512_ROW,6,2,42,8,117,5,-4,128943,4,800,0,1024,1024,0,0,0,0,0,0,0,0x0000f810
+MLKEM512_ROW,7,2,42,7,108,6,0,941441,4,1632,0,0,0,0,0,0,0,0,0,0,0x0000fc70
+MLKEM512_ROW,8,1,42,1,2,1,0,5195808,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,9,1,42,1,3,1,0,5193117,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,10,1,42,1,4,1,0,5192830,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,11,1,42,1,5,1,0,5194563,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,12,1,42,1,6,1,0,5193138,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,13,1,42,1,7,1,0,5820559,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,14,1,42,1,8,1,0,5194990,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,15,1,42,1,9,1,0,5192604,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,16,1,42,1,10,1,0,5194133,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,17,1,42,1,11,1,0,5193366,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,18,1,42,1,12,1,0,5193804,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,19,1,42,1,13,1,0,5193329,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,20,1,42,1,14,1,0,5195790,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,21,1,42,1,15,1,0,5194159,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,22,1,42,1,16,1,0,5194835,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,23,1,42,1,17,1,0,5195789,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,24,1,42,1,18,1,0,5193711,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,25,1,42,1,19,1,0,5195020,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,26,1,42,1,20,1,0,5819550,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,27,1,42,1,21,1,0,5194732,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,28,1,42,1,22,1,0,5195322,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,29,1,42,1,23,1,0,5193635,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,30,1,42,1,24,1,0,5821023,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,31,1,42,1,25,1,0,5194693,4,64,2432,18176,18176,0,0,0,0,0,0,0,0x0000db20
+MLKEM512_ROW,32,2,42,1,2,2,0,5530076,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000d0a0
+MLKEM512_ROW,33,2,42,1,3,2,0,5530795,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000d0a0
+MLKEM512_ROW,34,2,42,1,4,2,0,5530145,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000d0a0
+MLKEM512_ROW,35,2,42,1,5,2,0,5531265,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000d0a0
+MLKEM512_ROW,36,2,42,1,6,2,0,5529927,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000d0a0
+MLKEM512_ROW,37,2,42,1,7,2,0,5530391,4,832,800,30336,29824,0,0,512,0,0,0,0,0x0000d0a0

@@ -1,0 +1,303 @@
+[
+  {
+    "id": 0,
+    "name": "unclassified",
+    "category": "unclassified",
+    "source": "",
+    "function": ""
+  },
+  {
+    "id": 1,
+    "name": "kem_keypair_derand",
+    "category": "api_control",
+    "source": "third_party/mlkem-native/mlkem/src/kem.c",
+    "function": "mlk_kem_keypair_derand"
+  },
+  {
+    "id": 2,
+    "name": "kem_enc_derand",
+    "category": "api_control",
+    "source": "third_party/mlkem-native/mlkem/src/kem.c",
+    "function": "mlk_kem_enc_derand"
+  },
+  {
+    "id": 3,
+    "name": "kem_dec",
+    "category": "api_control",
+    "source": "third_party/mlkem-native/mlkem/src/kem.c",
+    "function": "mlk_kem_dec"
+  },
+  {
+    "id": 4,
+    "name": "kem_check_pk",
+    "category": "api_control",
+    "source": "third_party/mlkem-native/mlkem/src/kem.c",
+    "function": "mlk_kem_check_pk"
+  },
+  {
+    "id": 5,
+    "name": "kem_check_sk",
+    "category": "api_control",
+    "source": "third_party/mlkem-native/mlkem/src/kem.c",
+    "function": "mlk_kem_check_sk"
+  },
+  {
+    "id": 6,
+    "name": "indcpa_keypair_derand",
+    "category": "kpke_control",
+    "source": "third_party/mlkem-native/mlkem/src/indcpa.c",
+    "function": "mlk_indcpa_keypair_derand"
+  },
+  {
+    "id": 7,
+    "name": "indcpa_enc",
+    "category": "kpke_control",
+    "source": "third_party/mlkem-native/mlkem/src/indcpa.c",
+    "function": "mlk_indcpa_enc"
+  },
+  {
+    "id": 8,
+    "name": "indcpa_dec",
+    "category": "kpke_control",
+    "source": "third_party/mlkem-native/mlkem/src/indcpa.c",
+    "function": "mlk_indcpa_dec"
+  },
+  {
+    "id": 9,
+    "name": "gen_matrix",
+    "category": "matrix_control",
+    "source": "third_party/mlkem-native/mlkem/src/indcpa.c",
+    "function": "mlk_gen_matrix"
+  },
+  {
+    "id": 10,
+    "name": "rej_uniform",
+    "category": "rejection_sampling",
+    "source": "third_party/mlkem-native/mlkem/src/sampling.c",
+    "function": "mlk_rej_uniform"
+  },
+  {
+    "id": 11,
+    "name": "poly_getnoise_eta1_4x",
+    "category": "noise_control",
+    "source": "third_party/mlkem-native/mlkem/src/poly_k.c",
+    "function": "mlk_poly_getnoise_eta1_4x"
+  },
+  {
+    "id": 12,
+    "name": "poly_getnoise_eta2",
+    "category": "noise_control",
+    "source": "third_party/mlkem-native/mlkem/src/poly_k.c",
+    "function": "mlk_poly_getnoise_eta2"
+  },
+  {
+    "id": 13,
+    "name": "poly_getnoise_eta1122_4x",
+    "category": "noise_control",
+    "source": "third_party/mlkem-native/mlkem/src/poly_k.c",
+    "function": "mlk_poly_getnoise_eta1122_4x"
+  },
+  {
+    "id": 14,
+    "name": "poly_cbd2",
+    "category": "noise_cbd",
+    "source": "third_party/mlkem-native/mlkem/src/sampling.c",
+    "function": "mlk_poly_cbd2"
+  },
+  {
+    "id": 15,
+    "name": "poly_cbd3",
+    "category": "noise_cbd",
+    "source": "third_party/mlkem-native/mlkem/src/sampling.c",
+    "function": "mlk_poly_cbd3"
+  },
+  {
+    "id": 16,
+    "name": "keccakf1600_permute",
+    "category": "keccak_permutation",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/keccakf1600.c",
+    "function": "mlk_keccakf1600_permute"
+  },
+  {
+    "id": 17,
+    "name": "shake128_absorb_once",
+    "category": "sha_sponge",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/fips202.c",
+    "function": "mlk_shake128_absorb_once"
+  },
+  {
+    "id": 18,
+    "name": "shake128_squeezeblocks",
+    "category": "sha_sponge",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/fips202.c",
+    "function": "mlk_shake128_squeezeblocks"
+  },
+  {
+    "id": 19,
+    "name": "shake256",
+    "category": "sha_sponge",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/fips202.c",
+    "function": "mlk_shake256"
+  },
+  {
+    "id": 20,
+    "name": "sha3_256",
+    "category": "sha_sponge",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/fips202.c",
+    "function": "mlk_sha3_256"
+  },
+  {
+    "id": 21,
+    "name": "sha3_512",
+    "category": "sha_sponge",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/fips202.c",
+    "function": "mlk_sha3_512"
+  },
+  {
+    "id": 22,
+    "name": "shake128x4_absorb_once",
+    "category": "sha_sponge",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/fips202x4.c",
+    "function": "mlk_shake128x4_absorb_once"
+  },
+  {
+    "id": 23,
+    "name": "shake128x4_squeezeblocks",
+    "category": "sha_sponge",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/fips202x4.c",
+    "function": "mlk_shake128x4_squeezeblocks"
+  },
+  {
+    "id": 24,
+    "name": "shake256x4",
+    "category": "sha_sponge",
+    "source": "third_party/mlkem-native/mlkem/src/fips202/fips202x4.c",
+    "function": "mlk_shake256x4"
+  },
+  {
+    "id": 25,
+    "name": "poly_ntt",
+    "category": "ntt",
+    "source": "third_party/mlkem-native/mlkem/src/poly.c",
+    "function": "mlk_poly_ntt"
+  },
+  {
+    "id": 26,
+    "name": "poly_invntt_tomont",
+    "category": "intt",
+    "source": "third_party/mlkem-native/mlkem/src/poly.c",
+    "function": "mlk_poly_invntt_tomont"
+  },
+  {
+    "id": 27,
+    "name": "polyvec_basemul_acc_montgomery_cached",
+    "category": "basemul_acc",
+    "source": "third_party/mlkem-native/mlkem/src/poly_k.c",
+    "function": "mlk_polyvec_basemul_acc_montgomery_cached"
+  },
+  {
+    "id": 28,
+    "name": "poly_mulcache_compute",
+    "category": "mulcache",
+    "source": "third_party/mlkem-native/mlkem/src/poly.c",
+    "function": "mlk_poly_mulcache_compute"
+  },
+  {
+    "id": 29,
+    "name": "poly_reduce",
+    "category": "explicit_reduce_convert",
+    "source": "third_party/mlkem-native/mlkem/src/poly.c",
+    "function": "mlk_poly_reduce"
+  },
+  {
+    "id": 30,
+    "name": "poly_tomont",
+    "category": "explicit_reduce_convert",
+    "source": "third_party/mlkem-native/mlkem/src/poly.c",
+    "function": "mlk_poly_tomont"
+  },
+  {
+    "id": 31,
+    "name": "poly_add",
+    "category": "poly_add_sub",
+    "source": "third_party/mlkem-native/mlkem/src/poly.c",
+    "function": "mlk_poly_add"
+  },
+  {
+    "id": 32,
+    "name": "poly_sub",
+    "category": "poly_add_sub",
+    "source": "third_party/mlkem-native/mlkem/src/poly.c",
+    "function": "mlk_poly_sub"
+  },
+  {
+    "id": 33,
+    "name": "poly_compress_d4",
+    "category": "compression",
+    "source": "third_party/mlkem-native/mlkem/src/compress.c",
+    "function": "mlk_poly_compress_d4"
+  },
+  {
+    "id": 34,
+    "name": "poly_compress_d10",
+    "category": "compression",
+    "source": "third_party/mlkem-native/mlkem/src/compress.c",
+    "function": "mlk_poly_compress_d10"
+  },
+  {
+    "id": 35,
+    "name": "poly_decompress_d4",
+    "category": "decompression",
+    "source": "third_party/mlkem-native/mlkem/src/compress.c",
+    "function": "mlk_poly_decompress_d4"
+  },
+  {
+    "id": 36,
+    "name": "poly_decompress_d10",
+    "category": "decompression",
+    "source": "third_party/mlkem-native/mlkem/src/compress.c",
+    "function": "mlk_poly_decompress_d10"
+  },
+  {
+    "id": 37,
+    "name": "poly_tobytes",
+    "category": "encoding",
+    "source": "third_party/mlkem-native/mlkem/src/compress.c",
+    "function": "mlk_poly_tobytes"
+  },
+  {
+    "id": 38,
+    "name": "poly_frombytes",
+    "category": "encoding",
+    "source": "third_party/mlkem-native/mlkem/src/compress.c",
+    "function": "mlk_poly_frombytes"
+  },
+  {
+    "id": 39,
+    "name": "poly_frommsg",
+    "category": "encoding",
+    "source": "third_party/mlkem-native/mlkem/src/compress.c",
+    "function": "mlk_poly_frommsg"
+  },
+  {
+    "id": 40,
+    "name": "poly_tomsg",
+    "category": "encoding",
+    "source": "third_party/mlkem-native/mlkem/src/compress.c",
+    "function": "mlk_poly_tomsg"
+  },
+  {
+    "id": 41,
+    "name": "zeroize",
+    "category": "zeroize",
+    "source": "third_party/mlkem-native/mlkem/src/verify.h",
+    "function": "mlk_zeroize"
+  },
+  {
+    "id": 42,
+    "name": "memcpy",
+    "category": "memory_copy",
+    "source": "firmware/mlkem_baseline/runtime.c",
+    "function": "memcpy"
+  }
+]

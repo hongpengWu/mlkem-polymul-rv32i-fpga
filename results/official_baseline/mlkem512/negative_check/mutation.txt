@@ -1,0 +1,9 @@
+operation=ML-KEM-512 KeyGen case_index=0 tcId=1
+configuration=CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=1 CPU_ENABLE_DIV=1 EXPECT_M=1
+fixture_word=20
+ek_byte=0
+original_word=086a2628
+mutated_word=086a2629
+expected_rejection=MLKEM512_FAIL byte mismatch case=0 output=1 byte=0 got=28 expected=29
+official_fixtures_firmware_RTL_TB_unchanged=PASS
+result=MLKEM512_REJECTION_CHECK_PASS

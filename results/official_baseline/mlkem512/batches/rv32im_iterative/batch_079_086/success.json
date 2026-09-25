@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "config": "rv32im_iterative",
+  "case_count": 8,
+  "batch_sha256": "5352c995b558b8ca80ef9d6a3899780e11a8319b588a170dd2bd879803324a0d",
+  "log_sha256": "cfa1766a30da13493bd13dfeedbc61c7c7fecf8eeca294c0abaa804c008e5269",
+  "run_inputs_sha256": "4ec1e8773c22b882dcc5a2394e9f7de6fbfdd4511e11735fbe0f9f213baa0fc3",
+  "finished_at": "2026-09-24T21:33:39.172347+08:00"
+}

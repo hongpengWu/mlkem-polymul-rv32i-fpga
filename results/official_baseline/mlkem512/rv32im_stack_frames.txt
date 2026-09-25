@@ -1,0 +1,79 @@
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\compress.c:75:6:pico_mlkem512_poly_compress_d4	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\compress.c:142:6:pico_mlkem512_poly_compress_d10	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\compress.c:191:6:pico_mlkem512_poly_decompress_d4	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\compress.c:254:6:pico_mlkem512_poly_decompress_d10	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\compress.c:622:6:pico_mlkem512_poly_tobytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\compress.c:673:6:pico_mlkem512_poly_frombytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\compress.c:697:6:pico_mlkem512_poly_frommsg	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\compress.c:737:6:pico_mlkem512_poly_tomsg	0	static
+
+
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202.c:54:13:mlk_keccak_absorb_once.constprop	48	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202.c:187:6:pico_mlkem512_shake128_absorb_once	48	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202.c:193:6:pico_mlkem512_shake128_squeezeblocks	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202.c:199:6:pico_mlkem512_shake128_init	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202.c:200:6:pico_mlkem512_shake128_release	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202.c:208:6:pico_mlkem512_shake256	288	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202.c:221:6:pico_mlkem512_sha3_256	224	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202.c:233:6:pico_mlkem512_sha3_512	240	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202x4.c:120:6:pico_mlkem512_shake128x4_absorb_once	48	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202x4.c:129:6:pico_mlkem512_shake128x4_squeezeblocks	32	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202x4.c:137:6:pico_mlkem512_shake128x4_init	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202x4.c:138:6:pico_mlkem512_shake128x4_release	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\fips202x4.c:164:6:pico_mlkem512_shake256x4	1472	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\indcpa.c:211:6:pico_mlkem512_gen_matrix	320	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\indcpa.c:436:5:pico_mlkem512_indcpa_keypair_derand	5824	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\indcpa.c:518:5:pico_mlkem512_indcpa_enc	8352	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\indcpa.c:598:5:pico_mlkem512_indcpa_dec	3648	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\firmware\mlkem512_suite\kat_suite.c:16:13:fail	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\firmware\mlkem512_suite\kat_suite.c:33:13:receive_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\firmware\mlkem512_suite\kat_suite.c:58:6:kat_main	160	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\keccakf1600.c:208:6:mlk_keccakf1600_permute_c	384	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\keccakf1600.c:36:6:pico_mlkem512_keccakf1600_extract_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\keccakf1600.c:59:6:pico_mlkem512_keccakf1600_xor_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\keccakf1600.c:113:6:pico_mlkem512_keccakf1600x4_extract_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\keccakf1600.c:161:6:pico_mlkem512_keccakf1600x4_xor_bytes	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\keccakf1600.c:179:6:pico_mlkem512_keccakf1600x4_permute	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\fips202\keccakf1600.c:479:6:pico_mlkem512_keccakf1600_permute	0	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\kem.c:44:5:pico_mlkem512_check_pk	1840	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\kem.c:80:5:pico_mlkem512_check_sk	80	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\kem.c:233:5:pico_mlkem512_keypair_derand	32	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\kem.c:315:5:pico_mlkem512_enc_derand	192	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\kem.c:403:5:pico_mlkem512_dec	1008	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly.c:132:6:pico_mlkem512_poly_tomont	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly.c:212:6:pico_mlkem512_poly_reduce	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly.c:231:6:pico_mlkem512_poly_add	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly.c:251:6:pico_mlkem512_poly_sub	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly.c:305:6:pico_mlkem512_poly_mulcache_compute	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly.c:460:6:pico_mlkem512_poly_ntt	32	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly.c:562:6:pico_mlkem512_poly_invntt_tomont	48	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:49:6:pico_mlkem512_polyvec_compress_du	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:65:6:pico_mlkem512_polyvec_decompress_du	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:85:6:pico_mlkem512_polyvec_tobytes	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:105:6:pico_mlkem512_polyvec_frombytes	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:119:6:pico_mlkem512_polyvec_ntt	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:137:6:pico_mlkem512_polyvec_invntt_tomont	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:202:6:pico_mlkem512_polyvec_basemul_acc_montgomery_cached	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:238:6:pico_mlkem512_polyvec_mulcache_compute	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:255:6:pico_mlkem512_polyvec_reduce	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:270:6:pico_mlkem512_polyvec_add	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:295:6:pico_mlkem512_polyvec_tomont	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:348:6:pico_mlkem512_poly_getnoise_eta1_4x	1136	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:433:6:pico_mlkem512_poly_getnoise_eta2	224	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\poly_k.c:465:6:pico_mlkem512_poly_getnoise_eta1122_4x	1136	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\firmware\mlkem_baseline\runtime.c:7:7:memcpy	0	static
+E:\pqc\mlkem-polymul-rv32i-fpga\firmware\mlkem_baseline\runtime.c:17:7:memset	0	static
+
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\sampling.c:155:6:pico_mlkem512_poly_rej_uniform_x4	2976	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\sampling.c:219:6:pico_mlkem512_poly_rej_uniform	816	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\sampling.c:277:6:pico_mlkem512_poly_cbd2	16	static
+E:\pqc\mlkem-polymul-rv32i-fpga\third_party\mlkem-native\mlkem\src\sampling.c:332:6:pico_mlkem512_poly_cbd3	0	static
+

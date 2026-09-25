@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "config": "rv32im_iterative",
+  "batch": "batch_071_078",
+  "case_count": 8,
+  "archive": "project.xpr",
+  "purpose": "Archived simulation project provenance; use normal vivado/mlkem512_* projects for opening the main suite in Vivado.",
+  "batch_sha256": "1d1e2e4cda574fdb7c27bfa32b5adcf1aaa9ad0db2c82cd30a06aa299be2da14",
+  "run_inputs_sha256": "a5ea8e0935a14ca2c47db71e50d6f85a8e6c0e86eff9415fb66c383f2d9f88de",
+  "success_sha256": "e45dd3fb7b595864571356a38d98985ec5f461d19e28aa2647262519be1633d1",
+  "log_sha256": "f537050168b6c81a5f39ca5155b5b0f662b5e645a8f7f1ee1a9ecce84617e5f2",
+  "xpr_sha256": "84ed4700a06afa4c28b7ea4b9d0fb12395cb808ee3efce52dd41a134173a916d",
+  "staged_sha256": {
+    "mlkem512.mem": "2f6af97cefc8372ceaa617104efecf2dd6c0adf2f89a8d1b66fced2c48848cac",
+    "mlkem512.sim/sim_1/behav/xsim/mlkem512.mem": "2f6af97cefc8372ceaa617104efecf2dd6c0adf2f89a8d1b66fced2c48848cac",
+    "mlkem512.sim/sim_1/behav/xsim/mlkem512_input.mem": "63df8199c8f2319089b7b2ccdc9fb76821ef442e90747ea313fdd969c53336bb",
+    "mlkem512.sim/sim_1/behav/xsim/mlkem512_expected.mem": "e8beab27892f1b817c32b9efda9935799dec9d3b0a9aed9f7d84cd7383298550",
+    "mlkem512.sim/sim_1/behav/xsim/simulate.log": "f537050168b6c81a5f39ca5155b5b0f662b5e645a8f7f1ee1a9ecce84617e5f2"
+  }
+}

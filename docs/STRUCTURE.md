@@ -7,7 +7,7 @@ mlkem-polymul-rv32i-fpga/
 ├── rtl/
 │   ├── accelerator/       HLS 生成的 Verilog 与 ROM 数据，整体维护
 │   ├── axi/               AXI4-Lite wrapper 与系数双口 RAM
-│   ├── benchmark/         CPU-only 系统、16 KiB RAM 与板级封装
+│   ├── benchmark/         CPU-only 可配置 RAM 系统与板级封装
 │   ├── board/             PYNQ-Z2 顶层、时钟、复位、LED 与 VIO 连接
 │   ├── cpu/               PicoRV32
 │   └── system/            CPU、固件 RAM、总线、加速器与监测寄存器
@@ -15,16 +15,21 @@ mlkem-polymul-rv32i-fpga/
 ├── hls/
 │   ├── src/               HLS C++ 算法及支持代码
 │   ├── tb/                独立 C 算术测试
-│   └── hls_config.cfg     器件、时钟、顶层及文件配置
+│   ├── hls_config.cfg     旧完整时域核的器件、时钟、顶层及文件配置
+│   └── mlkem512_basemul_k2/ 新标准库 K=2 NTT 域 cached BaseMul HLS、TB、Tcl 与 IP 包
 ├── firmware/
 │   ├── src/               transfer 固件
 │   ├── cpu_baseline/      CPU-only 软件多项式乘法 baseline 源码、启动文件与链接脚本
+│   ├── mlkem_baseline/    官方 KeyGen 裸机入口、portable 配置、运行库与 64 KiB 链接脚本
+│   ├── mlkem512_suite/    完整 512 确定性 API 通用入口，共用运行库和链接脚本
 │   ├── include/           expected_words.h
 │   ├── linker/            link.ld
-│   └── images/            transfer 镜像及 cpu_baseline/ 下的 RV32I/RV32IM 镜像
+│   └── images/            transfer 镜像及 cpu_baseline/、mlkem_keygen/、mlkem512_suite/ 独立镜像
 ├── tb/
 │   ├── cpu/               RV32IM 八类 M 指令验证与计时
-│   ├── software/          CPU-only 多项式输入、oracle 与 PicoRV32 系统仿真
+│   ├── software/          多项式与 ML-KEM KeyGen 的 PicoRV32 系统 testbench
+│   │   ├── mlkem_keygen/  首例输入头、输入/期望 .mem 和来源哈希
+│   │   └── mlkem512_suite/  官方 145 条记录、输入/期望 .mem 与来源哈希
 │   ├── core/              加速核独立 RTL 测试
 │   ├── board/             无 VIO 与带 VIO 的板级测试
 │   ├── protocol/          AXI/BRAM wrapper 协议测试
@@ -35,29 +40,40 @@ mlkem-polymul-rv32i-fpga/
 │   ├── project_rv32im_iterative/  迭代乘法完整工程，跟踪 .xpr 与 VIO .xci
 │   ├── cpu_baseline_rv32i/       RV32I CPU-only 仿真工程，跟踪 .xpr 与固件镜像
 │   ├── cpu_baseline_rv32im_iterative/  迭代乘法 CPU-only 工程
-│   └── cpu_baseline_rv32im_fast/      快速乘法 CPU-only 工程
+│   ├── cpu_baseline_rv32im_fast/      快速乘法 CPU-only 工程
+│   ├── mlkem_keygen_rv32i/           官方 KeyGen RV32I 仿真工程
+│   ├── mlkem_keygen_rv32im_iterative/ 官方 KeyGen 迭代乘法仿真工程
+│   └── mlkem_keygen_rv32im_fast/      官方 KeyGen 快速乘法仿真工程
 ├── scripts/
 │   ├── run.tcl            创建工程、仿真与实现入口
 │   ├── build_memory_transfer_compare.ps1
 │   ├── verify_sources.ps1 / update_release_checksums.ps1
 │   ├── collect_rv32im_measurements.ps1  仿真与实现证据采集
 │   ├── cpu_baseline/      生成 baseline 镜像、运行三组 XSim 与收集结果
+│   ├── mlkem_baseline/    官方 KeyGen 固件构建、三组 XSim 与 summary 汇总
+│   └── mlkem512_interface/ 接口事实审计脚本（只读，不修改原始算法）
 │   ├── program_board.tcl  显式 JTAG 烧录入口
 │   ├── read_board_vio.tcl  只读状态采集
-│   └── kat/                ACVP JSON 检查与主机参考回归入口
+│   └── kat/              ACVP JSON 检查、输入提取与主机参考回归入口
 ├── vectors/
 │   └── official_kat/acvp/  FIPS 203/ACVP 官方 prompt/expected 向量、来源和哈希
+├── third_party/
+│   └── mlkem-native/     固定上游提交的 portable C、许可证与逐文件来源哈希
 ├── docs/                  使用说明、竞赛路线图、结构图、验证记录、BENCHMARKS.md 与源码哈希
 ├── results/               纳入 Git 的测量证据与哈希
 │   ├── rv32i_baseline/    原始 RV32I 实现报告
 │   ├── rv32im_iterative/  指令/系统仿真、实现报告、输入及结果哈希
 │   ├── cpu_baseline/      RV32I、RV32IM 迭代与 RV32IM 快速软件对照结果
-│   └── official_reference/ 主机端 ACVP 回归日志和运行元数据
+│   ├── official_reference/ 主机端 435 项 ACVP 回归日志和运行元数据
+│   ├── official_baseline/keygen512_tc1/  PicoRV32 单个官方 KeyGen 用例的三组日志及汇总
+│   ├── official_baseline/mlkem512/       三种 CPU 的完整 512 回归与快速 CPU 阶段 profiling
+│   └── accelerator_interface/            AXI/HLS/标准库接口事实清单与新 HLS C 仿真证据
 ├── release/               默认 RV32I 的 BIT、匹配 LTX 与校验文件
 │   └── rv32im_iterative/  RV32IM 迭代配置的独立烧录产物
 └── build/                 本地生成目录，Git 忽略
     ├── reports/           默认报告及 rv32im_iterative/ 配置报告
     ├── firmware/          ELF、BIN、MEM、反汇编与布局报告
+    ├── mlkem_baseline/    官方 KeyGen 的 ELF、BIN、反汇编、静态内存与栈帧报告
     ├── hls_csim/          HLS C 仿真输出
     ├── hls_synthesis/     可选 HLS 综合输出
     └── hardware/          VIO 读回快照
@@ -65,11 +81,27 @@ mlkem-polymul-rv32i-fpga/
 
 CPU-only 工程的源码与测试输入仍由 `scripts/cpu_baseline/run.tcl` 从仓库根目录引用；Vivado 目录只保存可打开的 `.xpr` 及对应 `cpu_baseline.mem`。`cpu_baseline.sim/`、`cpu_baseline.cache/`、`cpu_baseline.runs/` 等目录属于本地生成物，不纳入版本库。
 
-`COMPETITION_ROADMAP.md` 只记录目标、阶段门、创新主线和证据要求；实际测量数据归档在 `results/` 并登记到 `BENCHMARKS.md`，不把规划数字当作实测结果。
+`scripts/mlkem_baseline/run.tcl` 生成独立的三组 `mlkem_keygen_*` 仿真工程，保存
+`.xpr` 和对应 `mlkem_keygen.mem`；仿真缓存仍留在本机。KeyGen 三组统一使用
+64 KiB RAM 和 16 KiB 栈；原多项式工程保持 16 KiB RAM。这一阶段没有新增
+KeyGen 板级实现或 `release/` bitstream。`collect.py` 将三组通过日志汇总为
+`results/official_baseline/keygen512_tc1/summary.{json,csv,md}`。
 
-`vectors/official_kat/` 保存标准输入和预期结果，`scripts/kat/` 只负责结构检查、哈希复核和
-主机参考实现回归。官方 KAT 通过不等于 PicoRV32 或 FPGA 加速器已经通过；后两者必须在
-后续独立的固件和 CPU+加速器阶段逐字节检查。
+`PROJECT_STATUS.md` 汇总当前进度、已确认范围和下一步；`COMPETITION_ROADMAP.md`
+记录目标、阶段门、创新主线和证据要求。实际测量数据归档在 `results/` 并登记到
+`BENCHMARKS.md`，不把规划数字当作实测结果。后续完成里程碑时同步更新进度表与路线图复选框。
+
+`vectors/official_kat/` 保存完整标准输入和预期结果。`scripts/kat/` 负责结构检查、
+`tb/software/mlkem_keygen/` 中的输入头只有 `tcId`、`d` 和 `z`，期望密钥 `.mem` 只供
+testbench 使用，不进入固件。历史 KeyGen 入口仍只覆盖 `tgId=1, tcId=1`；完整 512 通用套件
+另在 `tb/software/mlkem512_suite/` 和 `results/official_baseline/mlkem512/` 中归档，
+CPU+加速器集成仍待完成。
+
+`third_party/mlkem-native/` 是可复现构建所需的 portable 源码子集，来源固定到
+`b3ba7b32773e657dd37f6f87bce82528459ad8a4`。文件内容保持上游 Git blob 字节不变，
+`SOURCE_MANIFEST.json` 保存路径、字节数、SHA-256 和 Git blob SHA-1。
+项目配置位于 `firmware/mlkem_baseline/mlkem_config.h`；不得将目标平台配置直接
+改进第三方算法文件。许可证与导入范围见该目录的 `LICENSE` 和 `README.vendor.md`。
 
 ## 源码一致性
 
@@ -81,8 +113,13 @@ CPU-only 工程的源码与测试输入仍由 `scripts/cpu_baseline/run.tcl` 从
 
 ## 保留范围
 
-保留最终板级实现、HLS 源码、transfer 固件、CPU-only 软件基线、CPU 指令及系统/核心仿真、板级约束及构建/烧录工具。旧 register wrapper 实验、旧软件基线、输入准备对比、历史 OOC 约束和无关归档报告不属于当前维护目录；其历史版本仍可通过 Git 查询。本轮测量所需的原始日志与实现报告保存于 `results/`，用于核对 [性能数据表](BENCHMARKS.md)，不作为工程输入。
+保留最终板级实现、HLS 源码、transfer 固件、CPU-only 软件基线、官方 KAT 输入与 portable ML-KEM 实现、CPU 指令及系统/核心仿真、板级约束及构建/烧录工具。旧 register wrapper 实验、旧软件基线、输入准备对比、历史 OOC 约束和无关归档报告不属于当前维护目录；其历史版本仍可通过 Git 查询。本轮测量所需的原始日志与实现报告保存于 `results/`，用于核对 [性能数据表](BENCHMARKS.md)，不作为工程输入。
 
 版本库同时保存重建工程的输入、可直接打开的 `.xpr`、VIO `.xci` 和烧录文件。本机保留完整生成的工程树；`.cache`、`.runs`、`.sim` 等可生成内容不提交。
 
 `docs/source_integrity.csv` 保留初始整理时的 52 项 SHA-256；`docs/source_changes.csv` 明确记录其中 4 项 CPU 配置透传变更的原始哈希、当前哈希和原因。`scripts/verify_sources.ps1` 同时核对两份清单，当前应报告 48 项原始文件不变、4 项配置变更通过。新增 CPU TB 与工程脚本等构建输入的哈希另记录在 `results/rv32im_iterative/build_inputs.csv`。
+
+完整 512 回归入口位于 `scripts/mlkem512_suite/`；`results/official_baseline/mlkem512/`
+保存构建清单、原始断点、续跑批次与最终汇总。每批保存官方编号映射、输入/期望文件、
+原始日志和工程来源证据；批次 XPR 仅用于来源审计，重建由 `run_batch.tcl` 完成。
+`vivado/mlkem512_*/*.xpr` 保留完整 145 条套件的工程入口，运行缓存位于忽略目录。
