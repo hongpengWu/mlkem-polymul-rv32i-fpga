@@ -17,7 +17,7 @@ PicoRV32 CPU 软件 baseline、FIPS 203/ACVP 官方向量回归，以及从标�
   估算 II=1、137 cycles、150.83 MHz、DSP/LUT/FF/BRAM=12/310/599/0。
 - 独立 MMIO/BRAM/板级 BIST RTL 仿真通过；Vivado 2024.2 PYNQ-Z2 工程实现通过，WNS/WHS
   为 0.732/0.129 ns，使用 8 个 BRAM 原语和 12 个 DSP，并已导出 bitstream。
-- 新 HLS 尚未接入 PicoRV32 或完整 KEM，因此核心周期、搬运周期和完整 KEM 周期仍需分别
+- RV32IM-fast＋MMIO 驱动最小闭环通过 3 组、768 个系数；完整 KEM 尚未接入，因此核心周期、搬运周期和完整 KEM 周期仍需分别
   记录，不能把 137 cycles 当作端到端加速比。
 
 ## 目录
@@ -94,7 +94,7 @@ powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_hls_short.p
 ## 研究边界
 
 当前仓库不再声称存在可烧录的“旧完整加速器系统”。新 HLS 已通过独立 MMIO/BRAM adapter、
-PYNQ-Z2 BIST 顶层和 Vivado 2024.2 实现验证；下一阶段才把它接入未插桩 RV32IM-fast 软件，
+PYNQ-Z2 BIST 顶层和 Vivado 2024.2 实现验证；RV32IM-fast 驱动最小闭环也已通过，下一阶段接入标准 ML-KEM 软件，
 再用同一官方向量和统一计时边界比较 CPU-only 与 CPU+PQC 硬件。完整计划见
 [`docs/COMPETITION_ROADMAP.md`](docs/COMPETITION_ROADMAP.md)。
 

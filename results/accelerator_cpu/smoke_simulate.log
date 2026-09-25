@@ -1,0 +1,6 @@
+Time resolution is 1 ps
+CPU_ACCEL_CASE_PASS case=0 call_cycles=48632 core_cycles=136 cumulative_loads=640 cumulative_reads=128
+CPU_ACCEL_CASE_PASS case=1 call_cycles=48632 core_cycles=136 cumulative_loads=1280 cumulative_reads=256
+CPU_ACCEL_CASE_PASS case=2 call_cycles=48632 core_cycles=136 cumulative_loads=1920 cumulative_reads=384
+CPU_ACCEL_SMOKE_PASS cases=3 coefficients=768 cpu=rv32im_fast total_cycles=171945
+$finish called at time : 1719545 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/accelerator/tb_mlkem512_cpu_smoke.sv" Line 45

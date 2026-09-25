@@ -17,7 +17,8 @@
 | 新 HLS MMIO/BRAM Vivado 顶层 | PASS，3 组 × 256 个系数逐项通过；协议检查覆盖字节使能、busy 保护、非法访问、重复启动和复位中止 | [`results/accelerator_interface/rtl_sim/simulate.log`](../results/accelerator_interface/rtl_sim/simulate.log) |
 | PYNQ-Z2 BIST 顶层 RTL | PASS，两次完整运行、256 个结果字检查和一次故障注入；时钟/按钮复位测试通过 | [`results/accelerator_interface/rtl_sim/board_simulate.log`](../results/accelerator_interface/rtl_sim/board_simulate.log) |
 | Vivado 2024.2 独立实现 | PASS，WNS=0.732 ns、WHS=0.129 ns、BRAM=8、DSP=12 @ 100 MHz | [`results/accelerator_interface/vivado_impl/`](../results/accelerator_interface/vivado_impl/) |
-| CPU+PQC 官方 KAT | 待完成 | 新 adapter 尚未接入 PicoRV32，当前结果只覆盖独立硬件路径 |
+| CPU+PQC 局部接口 | PASS，RV32IM-fast 执行 C 驱动，3 组、768 个系数 | [接口验证](MLKEM512_CPU_ACCEL_SMOKE.md) |
+| CPU+PQC 官方 KAT | 待完成 | 仍需接入标准库并运行官方记录 |
 | PYNQ-Z2 实板烧录 | 待完成 | 已生成 [`mlkem512_basemul_k2_validation.bit`](../release/mlkem512_basemul_k2/mlkem512_basemul_k2_validation.bit)，尚未上板 |
 
 ## 官方数据口径
