@@ -30,3 +30,17 @@ vivado -mode batch -source scripts/mlkem512_accel/run_smoke.tcl
 BaseMul 调用接到此驱动，先跑官方 KeyGen/Encaps/Decaps 代表例，再扩展 145 条回归。
 当前驱动未擦除加速器 BRAM，正式安全边界和公平 API 对照须纳入敏感数据清零成本；
 本表不能直接与完整 KEM 软件周期计算加速比。
+
+## 标准库接入准备
+
+已新增 `native_basemul.h/.c`：通过独立编译参数启用标准库现有的 K=2 native hook，
+直接调用 MMIO 驱动。第三方源码和软件 baseline 均未改动，硬件错误直接报告失败，
+不会静默退回软件计算。结构大小以编译期断言核对。
+
+`python scripts/mlkem512_accel/build_kat.py` 已编译、链接完整官方套件驱动，生成
+`firmware/images/mlkem512_accel/kat.mem`（有效镜像 26,944 B）。已检查第三方源码哈希、
+native hook 的真实调用重定位及最终 ELF 符号。证据为
+[kat_build.json](../results/accelerator_cpu/kat_build.json)。
+
+**仅完成编译链接，官方 KAT 尚未运行。** 下一步让官方套件 TB 使用新 CPU 系统和镜像，
+补充 MMIO 地址白名单及硬件调用次数检查，先验证代表例。

@@ -7,8 +7,8 @@
 ## 最新执行状态：快速 CPU 与 BaseMul 最小闭环通过
 
 RV32IM-fast 已通过新总线桥执行 MMIO C 驱动，3 组输入的 768 个系数全部核对通过。
-调用周期均为 48,632，包含搬入、启动、等待及读回；核心为 136 周期。当前是局部接口
-验证，完整官方 KAT 尚未接入，CPU-only baseline 保持不变。详见
+调用周期均为 48,632，包含搬入、启动、等待及读回；核心为 136 周期。标准库 native hook
+及完整官方套件加速固件已编译链接通过，官方 KAT 尚未执行，CPU-only baseline 保持不变。详见
 [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)。以下独立实现数据不代表新 CPU 集成系统资源。
 
 2026-09-25 完成新 K=2 BaseMul 的独立 MMIO/BRAM/BIST 路径：3 组、768 个系数的 RTL
@@ -76,7 +76,7 @@ KeyGen / Encaps / 展开私钥 Decaps 的 Keccak 占比分别为 **80.69% / 72.9
 | 标准软件的完整 CPU baseline | 512 API 与快速 CPU 阶段分析已完成；768/1024 CPU 回归及 64 KiB 实现仍待做 | [M2 路线](COMPETITION_ROADMAP.md#m2picorv32-完整软件-baseline) |
 | 标准库接口审计与新 HLS 原型 | C 仿真 103/103、HLS 综合通过；137 cycles 为核心估算，II=1、估算 Fmax 150.83 MHz | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[新 HLS](../hls/mlkem512_basemul_k2/) |
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
-| PQC 加速器接入标准软件 | CPU+驱动最小闭环已通过 768 系数；标准库接入和官方 KAT 待做 | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md) |
+| PQC 加速器接入标准软件 | CPU+驱动已通过 768 系数；标准库 hook/官方固件编译链接通过，官方 KAT 待执行 | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md) |
 | 新标准软件配置的实现与实板 | 64 KiB ML-KEM-512 工程已完成 RTL 回归；实现待做，实板放到最后 | [512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md) |
 
 ### 当前官方用例覆盖

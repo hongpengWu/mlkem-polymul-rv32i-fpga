@@ -1,0 +1,712 @@
+
+E:\pqc\mlkem-polymul-rv32i-fpga\build\mlkem512_accel\kat\poly_k.o:     file format elf32-littleriscv
+
+
+Disassembly of section .text.pico_mlkem512_polyvec_compress_du:
+
+00000000 <pico_mlkem512_polyvec_compress_du>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00912223          	sw	s1,4(sp)
+   c:	00112623          	sw	ra,12(sp)
+  10:	00050413          	mv	s0,a0
+  14:	00058493          	mv	s1,a1
+  18:	00000097          	auipc	ra,0x0
+			18: R_RISCV_CALL_PLT	pico_mlkem512_poly_compress_d10
+			18: R_RISCV_RELAX	*ABS*
+  1c:	000080e7          	jalr	ra # 18 <pico_mlkem512_polyvec_compress_du+0x18>
+  20:	14040513          	addi	a0,s0,320
+  24:	00812403          	lw	s0,8(sp)
+  28:	00c12083          	lw	ra,12(sp)
+  2c:	20048593          	addi	a1,s1,512
+  30:	00412483          	lw	s1,4(sp)
+  34:	01010113          	addi	sp,sp,16
+  38:	00000317          	auipc	t1,0x0
+			38: R_RISCV_CALL_PLT	pico_mlkem512_poly_compress_d10
+			38: R_RISCV_RELAX	*ABS*
+  3c:	00030067          	jr	t1 # 38 <pico_mlkem512_polyvec_compress_du+0x38>
+
+Disassembly of section .text.pico_mlkem512_polyvec_decompress_du:
+
+00000000 <pico_mlkem512_polyvec_decompress_du>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00912223          	sw	s1,4(sp)
+   c:	00112623          	sw	ra,12(sp)
+  10:	00050413          	mv	s0,a0
+  14:	00058493          	mv	s1,a1
+  18:	00000097          	auipc	ra,0x0
+			18: R_RISCV_CALL_PLT	pico_mlkem512_poly_decompress_d10
+			18: R_RISCV_RELAX	*ABS*
+  1c:	000080e7          	jalr	ra # 18 <pico_mlkem512_polyvec_decompress_du+0x18>
+  20:	20040513          	addi	a0,s0,512
+  24:	00812403          	lw	s0,8(sp)
+  28:	00c12083          	lw	ra,12(sp)
+  2c:	14048593          	addi	a1,s1,320
+  30:	00412483          	lw	s1,4(sp)
+  34:	01010113          	addi	sp,sp,16
+  38:	00000317          	auipc	t1,0x0
+			38: R_RISCV_CALL_PLT	pico_mlkem512_poly_decompress_d10
+			38: R_RISCV_RELAX	*ABS*
+  3c:	00030067          	jr	t1 # 38 <pico_mlkem512_polyvec_decompress_du+0x38>
+
+Disassembly of section .text.pico_mlkem512_polyvec_tobytes:
+
+00000000 <pico_mlkem512_polyvec_tobytes>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00912223          	sw	s1,4(sp)
+   c:	00112623          	sw	ra,12(sp)
+  10:	00050413          	mv	s0,a0
+  14:	00058493          	mv	s1,a1
+  18:	00000097          	auipc	ra,0x0
+			18: R_RISCV_CALL_PLT	pico_mlkem512_poly_tobytes
+			18: R_RISCV_RELAX	*ABS*
+  1c:	000080e7          	jalr	ra # 18 <pico_mlkem512_polyvec_tobytes+0x18>
+  20:	18040513          	addi	a0,s0,384
+  24:	00812403          	lw	s0,8(sp)
+  28:	00c12083          	lw	ra,12(sp)
+  2c:	20048593          	addi	a1,s1,512
+  30:	00412483          	lw	s1,4(sp)
+  34:	01010113          	addi	sp,sp,16
+  38:	00000317          	auipc	t1,0x0
+			38: R_RISCV_CALL_PLT	pico_mlkem512_poly_tobytes
+			38: R_RISCV_RELAX	*ABS*
+  3c:	00030067          	jr	t1 # 38 <pico_mlkem512_polyvec_tobytes+0x38>
+
+Disassembly of section .text.pico_mlkem512_polyvec_frombytes:
+
+00000000 <pico_mlkem512_polyvec_frombytes>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00912223          	sw	s1,4(sp)
+   c:	00112623          	sw	ra,12(sp)
+  10:	00050413          	mv	s0,a0
+  14:	00058493          	mv	s1,a1
+  18:	00000097          	auipc	ra,0x0
+			18: R_RISCV_CALL_PLT	pico_mlkem512_poly_frombytes
+			18: R_RISCV_RELAX	*ABS*
+  1c:	000080e7          	jalr	ra # 18 <pico_mlkem512_polyvec_frombytes+0x18>
+  20:	20040513          	addi	a0,s0,512
+  24:	00812403          	lw	s0,8(sp)
+  28:	00c12083          	lw	ra,12(sp)
+  2c:	18048593          	addi	a1,s1,384
+  30:	00412483          	lw	s1,4(sp)
+  34:	01010113          	addi	sp,sp,16
+  38:	00000317          	auipc	t1,0x0
+			38: R_RISCV_CALL_PLT	pico_mlkem512_poly_frombytes
+			38: R_RISCV_RELAX	*ABS*
+  3c:	00030067          	jr	t1 # 38 <pico_mlkem512_polyvec_frombytes+0x38>
+
+Disassembly of section .text.pico_mlkem512_polyvec_ntt:
+
+00000000 <pico_mlkem512_polyvec_ntt>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00112623          	sw	ra,12(sp)
+   c:	00050413          	mv	s0,a0
+  10:	00000097          	auipc	ra,0x0
+			10: R_RISCV_CALL_PLT	pico_mlkem512_poly_ntt
+			10: R_RISCV_RELAX	*ABS*
+  14:	000080e7          	jalr	ra # 10 <pico_mlkem512_polyvec_ntt+0x10>
+  18:	20040513          	addi	a0,s0,512
+  1c:	00812403          	lw	s0,8(sp)
+  20:	00c12083          	lw	ra,12(sp)
+  24:	01010113          	addi	sp,sp,16
+  28:	00000317          	auipc	t1,0x0
+			28: R_RISCV_CALL_PLT	pico_mlkem512_poly_ntt
+			28: R_RISCV_RELAX	*ABS*
+  2c:	00030067          	jr	t1 # 28 <pico_mlkem512_polyvec_ntt+0x28>
+
+Disassembly of section .text.pico_mlkem512_polyvec_invntt_tomont:
+
+00000000 <pico_mlkem512_polyvec_invntt_tomont>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00112623          	sw	ra,12(sp)
+   c:	00050413          	mv	s0,a0
+  10:	00000097          	auipc	ra,0x0
+			10: R_RISCV_CALL_PLT	pico_mlkem512_poly_invntt_tomont
+			10: R_RISCV_RELAX	*ABS*
+  14:	000080e7          	jalr	ra # 10 <pico_mlkem512_polyvec_invntt_tomont+0x10>
+  18:	20040513          	addi	a0,s0,512
+  1c:	00812403          	lw	s0,8(sp)
+  20:	00c12083          	lw	ra,12(sp)
+  24:	01010113          	addi	sp,sp,16
+  28:	00000317          	auipc	t1,0x0
+			28: R_RISCV_CALL_PLT	pico_mlkem512_poly_invntt_tomont
+			28: R_RISCV_RELAX	*ABS*
+  2c:	00030067          	jr	t1 # 28 <pico_mlkem512_polyvec_invntt_tomont+0x28>
+
+Disassembly of section .text.pico_mlkem512_polyvec_basemul_acc_montgomery_cached:
+
+00000000 <pico_mlkem512_polyvec_basemul_acc_montgomery_cached>:
+   0:	fe010113          	addi	sp,sp,-32
+   4:	00812c23          	sw	s0,24(sp)
+   8:	00912a23          	sw	s1,20(sp)
+   c:	01212823          	sw	s2,16(sp)
+  10:	01312623          	sw	s3,12(sp)
+  14:	00112e23          	sw	ra,28(sp)
+  18:	00050413          	mv	s0,a0
+  1c:	00058993          	mv	s3,a1
+  20:	00060493          	mv	s1,a2
+  24:	00068913          	mv	s2,a3
+  28:	00000097          	auipc	ra,0x0
+			28: R_RISCV_CALL_PLT	mlk_polyvec_basemul_acc_montgomery_cached_k2_native
+			28: R_RISCV_RELAX	*ABS*
+  2c:	000080e7          	jalr	ra # 28 <pico_mlkem512_polyvec_basemul_acc_montgomery_cached+0x28>
+  30:	02051063          	bnez	a0,50 <.L22>
+			30: R_RISCV_BRANCH	.L22
+  34:	01c12083          	lw	ra,28(sp)
+  38:	01812403          	lw	s0,24(sp)
+  3c:	01412483          	lw	s1,20(sp)
+  40:	01012903          	lw	s2,16(sp)
+  44:	00c12983          	lw	s3,12(sp)
+  48:	02010113          	addi	sp,sp,32
+  4c:	00008067          	ret
+
+00000050 <.L22>:
+  50:	fffffe37          	lui	t3,0xfffff
+  54:	fffff337          	lui	t1,0xfffff
+  58:	00010eb7          	lui	t4,0x10
+  5c:	00098593          	mv	a1,s3
+  60:	00090893          	mv	a7,s2
+  64:	00048813          	mv	a6,s1
+  68:	00040513          	mv	a0,s0
+  6c:	20098f13          	addi	t5,s3,512
+  70:	301e0e13          	addi	t3,t3,769 # fffff301 <.L32+0xfffff115>
+  74:	2ff30313          	addi	t1,t1,767 # fffff2ff <.L32+0xfffff113>
+  78:	fffe8e93          	addi	t4,t4,-1 # ffff <.L32+0xfe13>
+
+0000007c <.L16>:
+  7c:	00259f83          	lh	t6,2(a1)
+  80:	00059903          	lh	s2,0(a1)
+  84:	00081483          	lh	s1,0(a6)
+  88:	00089603          	lh	a2,0(a7)
+  8c:	00281683          	lh	a3,2(a6)
+  90:	20259783          	lh	a5,514(a1)
+  94:	03f60633          	mul	a2,a2,t6
+  98:	20059703          	lh	a4,512(a1)
+  9c:	10089383          	lh	t2,256(a7)
+  a0:	20281283          	lh	t0,514(a6)
+  a4:	20081403          	lh	s0,512(a6)
+  a8:	00450513          	addi	a0,a0,4
+  ac:	00458593          	addi	a1,a1,4
+  b0:	00288893          	addi	a7,a7,2
+  b4:	00480813          	addi	a6,a6,4
+  b8:	029f8fb3          	mul	t6,t6,s1
+  bc:	032686b3          	mul	a3,a3,s2
+  c0:	029909b3          	mul	s3,s2,s1
+  c4:	01f686b3          	add	a3,a3,t6
+  c8:	02f383b3          	mul	t2,t2,a5
+  cc:	01360633          	add	a2,a2,s3
+  d0:	02e28fb3          	mul	t6,t0,a4
+  d4:	00760633          	add	a2,a2,t2
+  d8:	02870733          	mul	a4,a4,s0
+  dc:	01f686b3          	add	a3,a3,t6
+  e0:	028787b3          	mul	a5,a5,s0
+  e4:	00e60633          	add	a2,a2,a4
+  e8:	00f686b3          	add	a3,a3,a5
+  ec:	03c68733          	mul	a4,a3,t3
+  f0:	03c607b3          	mul	a5,a2,t3
+  f4:	01071713          	slli	a4,a4,0x10
+  f8:	41075713          	srai	a4,a4,0x10
+  fc:	01079793          	slli	a5,a5,0x10
+ 100:	4107d793          	srai	a5,a5,0x10
+ 104:	026787b3          	mul	a5,a5,t1
+ 108:	02670733          	mul	a4,a4,t1
+ 10c:	00c787b3          	add	a5,a5,a2
+ 110:	0107d793          	srli	a5,a5,0x10
+ 114:	01d7f7b3          	and	a5,a5,t4
+ 118:	00d70733          	add	a4,a4,a3
+ 11c:	01075713          	srli	a4,a4,0x10
+ 120:	01071713          	slli	a4,a4,0x10
+ 124:	00e7e7b3          	or	a5,a5,a4
+ 128:	fef52e23          	sw	a5,-4(a0)
+ 12c:	f5e598e3          	bne	a1,t5,7c <.L16>
+			12c: R_RISCV_BRANCH	.L16
+ 130:	01c12083          	lw	ra,28(sp)
+ 134:	01812403          	lw	s0,24(sp)
+ 138:	01412483          	lw	s1,20(sp)
+ 13c:	01012903          	lw	s2,16(sp)
+ 140:	00c12983          	lw	s3,12(sp)
+ 144:	02010113          	addi	sp,sp,32
+ 148:	00008067          	ret
+
+Disassembly of section .text.pico_mlkem512_polyvec_mulcache_compute:
+
+00000000 <pico_mlkem512_polyvec_mulcache_compute>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00912223          	sw	s1,4(sp)
+   c:	00112623          	sw	ra,12(sp)
+  10:	00050413          	mv	s0,a0
+  14:	00058493          	mv	s1,a1
+  18:	00000097          	auipc	ra,0x0
+			18: R_RISCV_CALL_PLT	pico_mlkem512_poly_mulcache_compute
+			18: R_RISCV_RELAX	*ABS*
+  1c:	000080e7          	jalr	ra # 18 <pico_mlkem512_polyvec_mulcache_compute+0x18>
+  20:	10040513          	addi	a0,s0,256
+  24:	00812403          	lw	s0,8(sp)
+  28:	00c12083          	lw	ra,12(sp)
+  2c:	20048593          	addi	a1,s1,512
+  30:	00412483          	lw	s1,4(sp)
+  34:	01010113          	addi	sp,sp,16
+  38:	00000317          	auipc	t1,0x0
+			38: R_RISCV_CALL_PLT	pico_mlkem512_poly_mulcache_compute
+			38: R_RISCV_RELAX	*ABS*
+  3c:	00030067          	jr	t1 # 38 <pico_mlkem512_polyvec_mulcache_compute+0x38>
+
+Disassembly of section .text.pico_mlkem512_polyvec_reduce:
+
+00000000 <pico_mlkem512_polyvec_reduce>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00112623          	sw	ra,12(sp)
+   c:	00050413          	mv	s0,a0
+  10:	00000097          	auipc	ra,0x0
+			10: R_RISCV_CALL_PLT	pico_mlkem512_poly_reduce
+			10: R_RISCV_RELAX	*ABS*
+  14:	000080e7          	jalr	ra # 10 <pico_mlkem512_polyvec_reduce+0x10>
+  18:	20040513          	addi	a0,s0,512
+  1c:	00812403          	lw	s0,8(sp)
+  20:	00c12083          	lw	ra,12(sp)
+  24:	01010113          	addi	sp,sp,16
+  28:	00000317          	auipc	t1,0x0
+			28: R_RISCV_CALL_PLT	pico_mlkem512_poly_reduce
+			28: R_RISCV_RELAX	*ABS*
+  2c:	00030067          	jr	t1 # 28 <pico_mlkem512_polyvec_reduce+0x28>
+
+Disassembly of section .text.pico_mlkem512_polyvec_add:
+
+00000000 <pico_mlkem512_polyvec_add>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00912223          	sw	s1,4(sp)
+   c:	00112623          	sw	ra,12(sp)
+  10:	00050413          	mv	s0,a0
+  14:	00058493          	mv	s1,a1
+  18:	00000097          	auipc	ra,0x0
+			18: R_RISCV_CALL_PLT	pico_mlkem512_poly_add
+			18: R_RISCV_RELAX	*ABS*
+  1c:	000080e7          	jalr	ra # 18 <pico_mlkem512_polyvec_add+0x18>
+  20:	20040513          	addi	a0,s0,512
+  24:	00812403          	lw	s0,8(sp)
+  28:	00c12083          	lw	ra,12(sp)
+  2c:	20048593          	addi	a1,s1,512
+  30:	00412483          	lw	s1,4(sp)
+  34:	01010113          	addi	sp,sp,16
+  38:	00000317          	auipc	t1,0x0
+			38: R_RISCV_CALL_PLT	pico_mlkem512_poly_add
+			38: R_RISCV_RELAX	*ABS*
+  3c:	00030067          	jr	t1 # 38 <pico_mlkem512_polyvec_add+0x38>
+
+Disassembly of section .text.pico_mlkem512_polyvec_tomont:
+
+00000000 <pico_mlkem512_polyvec_tomont>:
+   0:	ff010113          	addi	sp,sp,-16
+   4:	00812423          	sw	s0,8(sp)
+   8:	00112623          	sw	ra,12(sp)
+   c:	00050413          	mv	s0,a0
+  10:	00000097          	auipc	ra,0x0
+			10: R_RISCV_CALL_PLT	pico_mlkem512_poly_tomont
+			10: R_RISCV_RELAX	*ABS*
+  14:	000080e7          	jalr	ra # 10 <pico_mlkem512_polyvec_tomont+0x10>
+  18:	20040513          	addi	a0,s0,512
+  1c:	00812403          	lw	s0,8(sp)
+  20:	00c12083          	lw	ra,12(sp)
+  24:	01010113          	addi	sp,sp,16
+  28:	00000317          	auipc	t1,0x0
+			28: R_RISCV_CALL_PLT	pico_mlkem512_poly_tomont
+			28: R_RISCV_RELAX	*ABS*
+  2c:	00030067          	jr	t1 # 28 <pico_mlkem512_polyvec_tomont+0x28>
+
+Disassembly of section .text.pico_mlkem512_poly_getnoise_eta1_4x:
+
+00000000 <pico_mlkem512_poly_getnoise_eta1_4x>:
+   0:	b9010113          	addi	sp,sp,-1136
+   4:	46812423          	sw	s0,1128(sp)
+   8:	02f10413          	addi	s0,sp,47
+   c:	fe047413          	andi	s0,s0,-32
+  10:	47212023          	sw	s2,1120(sp)
+  14:	30040913          	addi	s2,s0,768
+  18:	45612823          	sw	s6,1104(sp)
+  1c:	45712623          	sw	s7,1100(sp)
+  20:	45812423          	sw	s8,1096(sp)
+  24:	00058b93          	mv	s7,a1
+  28:	00050c13          	mv	s8,a0
+  2c:	00070593          	mv	a1,a4
+  30:	00060b13          	mv	s6,a2
+  34:	00090513          	mv	a0,s2
+  38:	02000613          	li	a2,32
+  3c:	46112623          	sw	ra,1132(sp)
+  40:	46912223          	sw	s1,1124(sp)
+  44:	45312e23          	sw	s3,1116(sp)
+  48:	00070493          	mv	s1,a4
+  4c:	00068993          	mv	s3,a3
+  50:	45412c23          	sw	s4,1112(sp)
+  54:	45512a23          	sw	s5,1108(sp)
+  58:	00088a13          	mv	s4,a7
+  5c:	00080a93          	mv	s5,a6
+  60:	45912223          	sw	s9,1092(sp)
+  64:	45a12023          	sw	s10,1088(sp)
+  68:	00078c93          	mv	s9,a5
+  6c:	43b12e23          	sw	s11,1084(sp)
+  70:	00000097          	auipc	ra,0x0
+			70: R_RISCV_CALL_PLT	memcpy
+			70: R_RISCV_RELAX	*ABS*
+  74:	000080e7          	jalr	ra # 70 <pico_mlkem512_poly_getnoise_eta1_4x+0x70>
+  78:	34040d93          	addi	s11,s0,832
+  7c:	00048593          	mv	a1,s1
+  80:	02000613          	li	a2,32
+  84:	000d8513          	mv	a0,s11
+  88:	00000097          	auipc	ra,0x0
+			88: R_RISCV_CALL_PLT	memcpy
+			88: R_RISCV_RELAX	*ABS*
+  8c:	000080e7          	jalr	ra # 88 <pico_mlkem512_poly_getnoise_eta1_4x+0x88>
+  90:	38040d13          	addi	s10,s0,896
+  94:	00048593          	mv	a1,s1
+  98:	02000613          	li	a2,32
+  9c:	000d0513          	mv	a0,s10
+  a0:	00000097          	auipc	ra,0x0
+			a0: R_RISCV_CALL_PLT	memcpy
+			a0: R_RISCV_RELAX	*ABS*
+  a4:	000080e7          	jalr	ra # a0 <pico_mlkem512_poly_getnoise_eta1_4x+0xa0>
+  a8:	3c040793          	addi	a5,s0,960
+  ac:	00048593          	mv	a1,s1
+  b0:	00078513          	mv	a0,a5
+  b4:	02000613          	li	a2,32
+  b8:	00f12623          	sw	a5,12(sp)
+  bc:	00000097          	auipc	ra,0x0
+			bc: R_RISCV_CALL_PLT	memcpy
+			bc: R_RISCV_RELAX	*ABS*
+  c0:	000080e7          	jalr	ra # bc <pico_mlkem512_poly_getnoise_eta1_4x+0xbc>
+  c4:	47014703          	lbu	a4,1136(sp)
+  c8:	02100693          	li	a3,33
+  cc:	00090613          	mv	a2,s2
+  d0:	0c000593          	li	a1,192
+  d4:	00040513          	mv	a0,s0
+  d8:	3b440023          	sb	s4,928(s0)
+  dc:	3ee40023          	sb	a4,992(s0)
+  e0:	33940023          	sb	s9,800(s0)
+  e4:	37540023          	sb	s5,864(s0)
+  e8:	0c040a13          	addi	s4,s0,192
+  ec:	00000097          	auipc	ra,0x0
+			ec: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			ec: R_RISCV_RELAX	*ABS*
+  f0:	000080e7          	jalr	ra # ec <pico_mlkem512_poly_getnoise_eta1_4x+0xec>
+  f4:	02100693          	li	a3,33
+  f8:	000d8613          	mv	a2,s11
+  fc:	0c000593          	li	a1,192
+ 100:	000a0513          	mv	a0,s4
+ 104:	00000097          	auipc	ra,0x0
+			104: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			104: R_RISCV_RELAX	*ABS*
+ 108:	000080e7          	jalr	ra # 104 <pico_mlkem512_poly_getnoise_eta1_4x+0x104>
+ 10c:	18040493          	addi	s1,s0,384
+ 110:	02100693          	li	a3,33
+ 114:	000d0613          	mv	a2,s10
+ 118:	0c000593          	li	a1,192
+ 11c:	00048513          	mv	a0,s1
+ 120:	00000097          	auipc	ra,0x0
+			120: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			120: R_RISCV_RELAX	*ABS*
+ 124:	000080e7          	jalr	ra # 120 <pico_mlkem512_poly_getnoise_eta1_4x+0x120>
+ 128:	0c098263          	beqz	s3,1ec <.L32>
+			128: R_RISCV_BRANCH	.L32
+ 12c:	00c12603          	lw	a2,12(sp)
+ 130:	24040a93          	addi	s5,s0,576
+ 134:	02100693          	li	a3,33
+ 138:	0c000593          	li	a1,192
+ 13c:	000a8513          	mv	a0,s5
+ 140:	00000097          	auipc	ra,0x0
+			140: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			140: R_RISCV_RELAX	*ABS*
+ 144:	000080e7          	jalr	ra # 140 <pico_mlkem512_poly_getnoise_eta1_4x+0x140>
+ 148:	00040593          	mv	a1,s0
+ 14c:	000c0513          	mv	a0,s8
+ 150:	00000097          	auipc	ra,0x0
+			150: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			150: R_RISCV_RELAX	*ABS*
+ 154:	000080e7          	jalr	ra # 150 <pico_mlkem512_poly_getnoise_eta1_4x+0x150>
+ 158:	000a0593          	mv	a1,s4
+ 15c:	000b8513          	mv	a0,s7
+ 160:	00000097          	auipc	ra,0x0
+			160: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			160: R_RISCV_RELAX	*ABS*
+ 164:	000080e7          	jalr	ra # 160 <pico_mlkem512_poly_getnoise_eta1_4x+0x160>
+ 168:	00048593          	mv	a1,s1
+ 16c:	000b0513          	mv	a0,s6
+ 170:	00000097          	auipc	ra,0x0
+			170: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			170: R_RISCV_RELAX	*ABS*
+ 174:	000080e7          	jalr	ra # 170 <pico_mlkem512_poly_getnoise_eta1_4x+0x170>
+ 178:	000a8593          	mv	a1,s5
+ 17c:	00098513          	mv	a0,s3
+ 180:	00000097          	auipc	ra,0x0
+			180: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			180: R_RISCV_RELAX	*ABS*
+ 184:	000080e7          	jalr	ra # 180 <pico_mlkem512_poly_getnoise_eta1_4x+0x180>
+
+00000188 <.L33>:
+ 188:	30000613          	li	a2,768
+ 18c:	00000593          	li	a1,0
+ 190:	00040513          	mv	a0,s0
+ 194:	00000097          	auipc	ra,0x0
+			194: R_RISCV_CALL_PLT	memset
+			194: R_RISCV_RELAX	*ABS*
+ 198:	000080e7          	jalr	ra # 194 <.L33+0xc>
+ 19c:	10000613          	li	a2,256
+ 1a0:	00000593          	li	a1,0
+ 1a4:	00090513          	mv	a0,s2
+ 1a8:	00000097          	auipc	ra,0x0
+			1a8: R_RISCV_CALL_PLT	memset
+			1a8: R_RISCV_RELAX	*ABS*
+ 1ac:	000080e7          	jalr	ra # 1a8 <.L33+0x20>
+ 1b0:	46c12083          	lw	ra,1132(sp)
+ 1b4:	46812403          	lw	s0,1128(sp)
+ 1b8:	46412483          	lw	s1,1124(sp)
+ 1bc:	46012903          	lw	s2,1120(sp)
+ 1c0:	45c12983          	lw	s3,1116(sp)
+ 1c4:	45812a03          	lw	s4,1112(sp)
+ 1c8:	45412a83          	lw	s5,1108(sp)
+ 1cc:	45012b03          	lw	s6,1104(sp)
+ 1d0:	44c12b83          	lw	s7,1100(sp)
+ 1d4:	44812c03          	lw	s8,1096(sp)
+ 1d8:	44412c83          	lw	s9,1092(sp)
+ 1dc:	44012d03          	lw	s10,1088(sp)
+ 1e0:	43c12d83          	lw	s11,1084(sp)
+ 1e4:	47010113          	addi	sp,sp,1136
+ 1e8:	00008067          	ret
+
+000001ec <.L32>:
+ 1ec:	00040593          	mv	a1,s0
+ 1f0:	000c0513          	mv	a0,s8
+ 1f4:	00000097          	auipc	ra,0x0
+			1f4: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			1f4: R_RISCV_RELAX	*ABS*
+ 1f8:	000080e7          	jalr	ra # 1f4 <.L32+0x8>
+ 1fc:	000a0593          	mv	a1,s4
+ 200:	000b8513          	mv	a0,s7
+ 204:	00000097          	auipc	ra,0x0
+			204: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			204: R_RISCV_RELAX	*ABS*
+ 208:	000080e7          	jalr	ra # 204 <.L32+0x18>
+ 20c:	00048593          	mv	a1,s1
+ 210:	000b0513          	mv	a0,s6
+ 214:	00000097          	auipc	ra,0x0
+			214: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			214: R_RISCV_RELAX	*ABS*
+ 218:	000080e7          	jalr	ra # 214 <.L32+0x28>
+ 21c:	f6dff06f          	j	188 <.L33>
+			21c: R_RISCV_JAL	.L33
+
+Disassembly of section .text.pico_mlkem512_poly_getnoise_eta2:
+
+00000000 <pico_mlkem512_poly_getnoise_eta2>:
+   0:	f2010113          	addi	sp,sp,-224
+   4:	0c812c23          	sw	s0,216(sp)
+   8:	01f10413          	addi	s0,sp,31
+   c:	fe047413          	andi	s0,s0,-32
+  10:	0c912a23          	sw	s1,212(sp)
+  14:	08040493          	addi	s1,s0,128
+  18:	0d212823          	sw	s2,208(sp)
+  1c:	0d312623          	sw	s3,204(sp)
+  20:	00050913          	mv	s2,a0
+  24:	00060993          	mv	s3,a2
+  28:	00048513          	mv	a0,s1
+  2c:	02000613          	li	a2,32
+  30:	0c112e23          	sw	ra,220(sp)
+  34:	00000097          	auipc	ra,0x0
+			34: R_RISCV_CALL_PLT	memcpy
+			34: R_RISCV_RELAX	*ABS*
+  38:	000080e7          	jalr	ra # 34 <pico_mlkem512_poly_getnoise_eta2+0x34>
+  3c:	02100693          	li	a3,33
+  40:	00048613          	mv	a2,s1
+  44:	00040513          	mv	a0,s0
+  48:	08000593          	li	a1,128
+  4c:	0b340023          	sb	s3,160(s0)
+  50:	00000097          	auipc	ra,0x0
+			50: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			50: R_RISCV_RELAX	*ABS*
+  54:	000080e7          	jalr	ra # 50 <pico_mlkem512_poly_getnoise_eta2+0x50>
+  58:	00040593          	mv	a1,s0
+  5c:	00090513          	mv	a0,s2
+  60:	00000097          	auipc	ra,0x0
+			60: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd2
+			60: R_RISCV_RELAX	*ABS*
+  64:	000080e7          	jalr	ra # 60 <pico_mlkem512_poly_getnoise_eta2+0x60>
+  68:	08000613          	li	a2,128
+  6c:	00000593          	li	a1,0
+  70:	00040513          	mv	a0,s0
+  74:	00000097          	auipc	ra,0x0
+			74: R_RISCV_CALL_PLT	memset
+			74: R_RISCV_RELAX	*ABS*
+  78:	000080e7          	jalr	ra # 74 <pico_mlkem512_poly_getnoise_eta2+0x74>
+  7c:	02100613          	li	a2,33
+  80:	00000593          	li	a1,0
+  84:	00048513          	mv	a0,s1
+  88:	00000097          	auipc	ra,0x0
+			88: R_RISCV_CALL_PLT	memset
+			88: R_RISCV_RELAX	*ABS*
+  8c:	000080e7          	jalr	ra # 88 <pico_mlkem512_poly_getnoise_eta2+0x88>
+  90:	0dc12083          	lw	ra,220(sp)
+  94:	0d812403          	lw	s0,216(sp)
+  98:	0d412483          	lw	s1,212(sp)
+  9c:	0d012903          	lw	s2,208(sp)
+  a0:	0cc12983          	lw	s3,204(sp)
+  a4:	0e010113          	addi	sp,sp,224
+  a8:	00008067          	ret
+
+Disassembly of section .text.pico_mlkem512_poly_getnoise_eta1122_4x:
+
+00000000 <pico_mlkem512_poly_getnoise_eta1122_4x>:
+   0:	b9010113          	addi	sp,sp,-1136
+   4:	46812423          	sw	s0,1128(sp)
+   8:	02f10413          	addi	s0,sp,47
+   c:	fe047413          	andi	s0,s0,-32
+  10:	47212023          	sw	s2,1120(sp)
+  14:	30040913          	addi	s2,s0,768
+  18:	45412c23          	sw	s4,1112(sp)
+  1c:	45512a23          	sw	s5,1108(sp)
+  20:	45612823          	sw	s6,1104(sp)
+  24:	00058a93          	mv	s5,a1
+  28:	00050b13          	mv	s6,a0
+  2c:	00070593          	mv	a1,a4
+  30:	00060a13          	mv	s4,a2
+  34:	00090513          	mv	a0,s2
+  38:	02000613          	li	a2,32
+  3c:	46112623          	sw	ra,1132(sp)
+  40:	46912223          	sw	s1,1124(sp)
+  44:	45312e23          	sw	s3,1116(sp)
+  48:	45712623          	sw	s7,1100(sp)
+  4c:	45812423          	sw	s8,1096(sp)
+  50:	45912223          	sw	s9,1092(sp)
+  54:	45a12023          	sw	s10,1088(sp)
+  58:	43b12e23          	sw	s11,1084(sp)
+  5c:	00080c13          	mv	s8,a6
+  60:	00088b93          	mv	s7,a7
+  64:	00078c93          	mv	s9,a5
+  68:	00070493          	mv	s1,a4
+  6c:	00d12623          	sw	a3,12(sp)
+  70:	34040993          	addi	s3,s0,832
+  74:	00000097          	auipc	ra,0x0
+			74: R_RISCV_CALL_PLT	memcpy
+			74: R_RISCV_RELAX	*ABS*
+  78:	000080e7          	jalr	ra # 74 <pico_mlkem512_poly_getnoise_eta1122_4x+0x74>
+  7c:	00048593          	mv	a1,s1
+  80:	02000613          	li	a2,32
+  84:	00098513          	mv	a0,s3
+  88:	00000097          	auipc	ra,0x0
+			88: R_RISCV_CALL_PLT	memcpy
+			88: R_RISCV_RELAX	*ABS*
+  8c:	000080e7          	jalr	ra # 88 <pico_mlkem512_poly_getnoise_eta1122_4x+0x88>
+  90:	38040d93          	addi	s11,s0,896
+  94:	00048593          	mv	a1,s1
+  98:	02000613          	li	a2,32
+  9c:	000d8513          	mv	a0,s11
+  a0:	00000097          	auipc	ra,0x0
+			a0: R_RISCV_CALL_PLT	memcpy
+			a0: R_RISCV_RELAX	*ABS*
+  a4:	000080e7          	jalr	ra # a0 <pico_mlkem512_poly_getnoise_eta1122_4x+0xa0>
+  a8:	3c040d13          	addi	s10,s0,960
+  ac:	00048593          	mv	a1,s1
+  b0:	02000613          	li	a2,32
+  b4:	000d0513          	mv	a0,s10
+  b8:	00000097          	auipc	ra,0x0
+			b8: R_RISCV_CALL_PLT	memcpy
+			b8: R_RISCV_RELAX	*ABS*
+  bc:	000080e7          	jalr	ra # b8 <pico_mlkem512_poly_getnoise_eta1122_4x+0xb8>
+  c0:	47014703          	lbu	a4,1136(sp)
+  c4:	00090613          	mv	a2,s2
+  c8:	00040513          	mv	a0,s0
+  cc:	02100693          	li	a3,33
+  d0:	0c000593          	li	a1,192
+  d4:	3ee40023          	sb	a4,992(s0)
+  d8:	37840023          	sb	s8,864(s0)
+  dc:	3b740023          	sb	s7,928(s0)
+  e0:	0c040c13          	addi	s8,s0,192
+  e4:	33940023          	sb	s9,800(s0)
+  e8:	00000097          	auipc	ra,0x0
+			e8: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			e8: R_RISCV_RELAX	*ABS*
+  ec:	000080e7          	jalr	ra # e8 <pico_mlkem512_poly_getnoise_eta1122_4x+0xe8>
+  f0:	00098613          	mv	a2,s3
+  f4:	000c0513          	mv	a0,s8
+  f8:	02100693          	li	a3,33
+  fc:	0c000593          	li	a1,192
+ 100:	00000097          	auipc	ra,0x0
+			100: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			100: R_RISCV_RELAX	*ABS*
+ 104:	000080e7          	jalr	ra # 100 <pico_mlkem512_poly_getnoise_eta1122_4x+0x100>
+ 108:	18040b93          	addi	s7,s0,384
+ 10c:	000d8613          	mv	a2,s11
+ 110:	000b8513          	mv	a0,s7
+ 114:	02100693          	li	a3,33
+ 118:	08000593          	li	a1,128
+ 11c:	00000097          	auipc	ra,0x0
+			11c: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			11c: R_RISCV_RELAX	*ABS*
+ 120:	000080e7          	jalr	ra # 11c <pico_mlkem512_poly_getnoise_eta1122_4x+0x11c>
+ 124:	24040493          	addi	s1,s0,576
+ 128:	02100693          	li	a3,33
+ 12c:	000d0613          	mv	a2,s10
+ 130:	00048513          	mv	a0,s1
+ 134:	08000593          	li	a1,128
+ 138:	00000097          	auipc	ra,0x0
+			138: R_RISCV_CALL_PLT	pico_mlkem512_shake256
+			138: R_RISCV_RELAX	*ABS*
+ 13c:	000080e7          	jalr	ra # 138 <pico_mlkem512_poly_getnoise_eta1122_4x+0x138>
+ 140:	00040593          	mv	a1,s0
+ 144:	000b0513          	mv	a0,s6
+ 148:	00000097          	auipc	ra,0x0
+			148: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			148: R_RISCV_RELAX	*ABS*
+ 14c:	000080e7          	jalr	ra # 148 <pico_mlkem512_poly_getnoise_eta1122_4x+0x148>
+ 150:	000c0593          	mv	a1,s8
+ 154:	000a8513          	mv	a0,s5
+ 158:	00000097          	auipc	ra,0x0
+			158: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd3
+			158: R_RISCV_RELAX	*ABS*
+ 15c:	000080e7          	jalr	ra # 158 <pico_mlkem512_poly_getnoise_eta1122_4x+0x158>
+ 160:	000b8593          	mv	a1,s7
+ 164:	000a0513          	mv	a0,s4
+ 168:	00000097          	auipc	ra,0x0
+			168: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd2
+			168: R_RISCV_RELAX	*ABS*
+ 16c:	000080e7          	jalr	ra # 168 <pico_mlkem512_poly_getnoise_eta1122_4x+0x168>
+ 170:	00c12503          	lw	a0,12(sp)
+ 174:	00048593          	mv	a1,s1
+ 178:	00000097          	auipc	ra,0x0
+			178: R_RISCV_CALL_PLT	pico_mlkem512_poly_cbd2
+			178: R_RISCV_RELAX	*ABS*
+ 17c:	000080e7          	jalr	ra # 178 <pico_mlkem512_poly_getnoise_eta1122_4x+0x178>
+ 180:	30000613          	li	a2,768
+ 184:	00000593          	li	a1,0
+ 188:	00040513          	mv	a0,s0
+ 18c:	00000097          	auipc	ra,0x0
+			18c: R_RISCV_CALL_PLT	memset
+			18c: R_RISCV_RELAX	*ABS*
+ 190:	000080e7          	jalr	ra # 18c <pico_mlkem512_poly_getnoise_eta1122_4x+0x18c>
+ 194:	10000613          	li	a2,256
+ 198:	00000593          	li	a1,0
+ 19c:	00090513          	mv	a0,s2
+ 1a0:	00000097          	auipc	ra,0x0
+			1a0: R_RISCV_CALL_PLT	memset
+			1a0: R_RISCV_RELAX	*ABS*
+ 1a4:	000080e7          	jalr	ra # 1a0 <pico_mlkem512_poly_getnoise_eta1122_4x+0x1a0>
+ 1a8:	46c12083          	lw	ra,1132(sp)
+ 1ac:	46812403          	lw	s0,1128(sp)
+ 1b0:	46412483          	lw	s1,1124(sp)
+ 1b4:	46012903          	lw	s2,1120(sp)
+ 1b8:	45c12983          	lw	s3,1116(sp)
+ 1bc:	45812a03          	lw	s4,1112(sp)
+ 1c0:	45412a83          	lw	s5,1108(sp)
+ 1c4:	45012b03          	lw	s6,1104(sp)
+ 1c8:	44c12b83          	lw	s7,1100(sp)
+ 1cc:	44812c03          	lw	s8,1096(sp)
+ 1d0:	44412c83          	lw	s9,1092(sp)
+ 1d4:	44012d03          	lw	s10,1088(sp)
+ 1d8:	43c12d83          	lw	s11,1084(sp)
+ 1dc:	47010113          	addi	sp,sp,1136
+ 1e0:	00008067          	ret
