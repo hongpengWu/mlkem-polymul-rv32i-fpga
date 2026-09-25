@@ -54,8 +54,8 @@ PYNQ-Z2 不能运行 768/1024。当前阶段先做仿真与实现，实板放在
 | 主机 ML-KEM 官方回归 | results/official_reference/ | 三参数集 KeyGen/Encaps/Decaps 等 435 用例 | 已通过，CPU RTL 覆盖独立记录 |
 | PicoRV32 ML-KEM-512 官方全集 | firmware/mlkem512_suite/、results/official_baseline/mlkem512/ | 标准便携 C 的完整 API 调用基线 | 三组各 145 条已通过，64 KiB RAM，仅 RTL 仿真 |
 | 历史官方 KeyGen 首例 | firmware/mlkem_baseline/、results/official_baseline/keygen512_tc1/ | 首次标准算法执行闭环，独立保留 | 三组 tcId=1 已通过，不替代当前全量分布 |
-| 原有 NTT/BaseMul/INTT 加速器 | rtl/accelerator/、hls/ | 后续硬件主线 | 保持不动 |
-| 原有 CPU+加速器系统 | rtl/system/、rtl/board/ | 后续端到端集成入口 | 待接入标准软件 |
+| 新 K=2 NTT 域 BaseMul HLS | hls/mlkem512_basemul_k2/ | 新硬件主线的计算核心 | C 仿真/综合已通过，待 adapter |
+| 新 CPU+PQC 集成系统 | 待创建 AXI/BRAM adapter 与 Vivado 顶层 | 端到端公平对照入口 | 待实现 |
 
 当前数据记录在 [性能台账](BENCHMARKS.md) 和 [CPU 测量协议](CPU_BENCHMARK_PROTOCOL.md) 中。
 原 8 组输入来自本项目，仍作为“软件多项式乘法 baseline”；历史官方 KeyGen 单例独立记账。
@@ -169,14 +169,14 @@ Core 周期不包含 CPU 搬运；Call 周期不应再次加上与其重叠的�
 
 交付物：firmware/mlkem512_suite/、后续参数集驱动、CPU 工程、results/official_baseline/。
 
-### M3：现有加速器端到端接入
+### M3：新 HLS 端到端接入
 
 状态：未开始。
 
 工作内容：
 
-- 保持 rtl/accelerator/ 和 HLS 生成快照不变；
-- 只替换软件多项式乘法调用为现有 MMIO/AXI 控制路径；
+- 从 `hls/mlkem512_basemul_k2/` 导出独立 AXI/BRAM adapter；
+- 只替换标准软件 BaseMul 调用为新 MMIO/AXI 控制路径；
 - 保留 CPU 侧输入写入、启动、轮询、读回和校验；
 - 先用 512 跑通完整流程，再用 768/1024 对应官方 KAT 检查最终结果；
 - 同时测量 Core、Call 和完整 KEM 三种边界。
@@ -185,7 +185,7 @@ Core 周期不包含 CPU 搬运；Call 周期不应再次加上与其重叠的�
 
 - 官方 KAT 在 CPU+加速器系统中通过；
 - 明确计算、搬运、等待和校验各占多少周期；
-- 得到未经优化的硬件系统 baseline。
+- 得到未经优化的 CPU+PQC 硬件系统 baseline。
 
 交付物：加速器适配层、板级/RTL 仿真、results/accelerator_baseline/。
 

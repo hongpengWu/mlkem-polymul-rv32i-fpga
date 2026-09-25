@@ -127,11 +127,8 @@ def main() -> None:
     args = parser.parse_args()
 
     vendor_zetas_path = ROOT / "third_party/mlkem-native/mlkem/src/zetas.inc"
-    hls_support_path = ROOT / "hls/src/mlkem_poly_mul256_v39e_unified_stream_support.cpp"
     vendor_zetas = read_zetas(vendor_zetas_path, "mlk_zetas")
-    hls_zetas = read_zetas(hls_support_path, "zetas39c")
-    require([x % Q for x in hls_zetas] == [x % Q for x in vendor_zetas],
-            "HLS and portable software twiddle tables differ modulo q")
+    require(len(vendor_zetas) == 128, "Portable twiddle table must contain 128 entries")
 
     cases = []
     for fixture in fixtures(args.seed):
@@ -154,7 +151,6 @@ def main() -> None:
         "third_party/mlkem-native/mlkem/src/poly_k.c",
         "third_party/mlkem-native/mlkem/src/poly_k.h",
         "third_party/mlkem-native/mlkem/src/zetas.inc",
-        "hls/src/mlkem_poly_mul256_v39e_unified_stream_support.cpp",
         "hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.h",
         "hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.cpp",
     ]
@@ -169,7 +165,8 @@ def main() -> None:
         "scope": "Synthetic NTT-domain operands in stated coefficient bounds. Not official KAT intermediates and not an HLS/RTL result.",
         "comparison": "Direct two-factor quadratic BaseMul with +/- zeta versus portable cached K=2 vector accumulation; compare canonical residues modulo q.",
         "montgomery": {"radix": "2^16", "qinv": QINV},
-        "twiddle_tables_equal_mod_q": True,
+        "twiddle_table_source": "third_party/mlkem-native/mlkem/src/zetas.inc",
+        "hls_consumes_twiddles": False,
         "cases": cases,
         "source_sha256": {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
                           for path in source_paths},

@@ -8,7 +8,7 @@ _Static_assert((-1 >> 1) == -1, "This implementation requires arithmetic shift")
 
 /*
  * Same Montgomery-domain twiddle constants as the existing HLS source:
- * hls/src/mlkem_poly_mul256_v39e_unified_stream_support.cpp, zetas39c.
+ * third_party/mlkem-native/mlkem/src/zetas.inc.
  * They represent R * 17^bitrev7(i) mod 3329, R = 2^16, in centered form.
  * The software uses ordinary arrays and seven in-place butterfly stages;
  * it does not reproduce the hardware stream or packed-memory architecture.

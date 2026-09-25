@@ -1,38 +1,8 @@
 {
-  "schema_version": 1,
-  "status": "audited_legacy_and_new_interface_not_drop_in",
+  "schema_version": 2,
+  "status": "audited_new_hls_interface",
   "audited_at": "2026-09-25",
-  "scope": "Read-only source audit before adapter and stage-oracle work.",
-  "register_map": {
-    "control": 0,
-    "cycles": 4,
-    "id": 8,
-    "a_base": 4096,
-    "b_base": 4608,
-    "output_base": 5120,
-    "a_bytes": 512,
-    "b_bytes": 512,
-    "output_bytes": 512,
-    "word_bytes": 4,
-    "coefficients_per_word": 2
-  },
-  "control_bits": {
-    "write_start": 0,
-    "write_clear_done": 1,
-    "write_clear_access_error": 2,
-    "read_done": 1,
-    "read_idle": 2,
-    "read_busy": 3,
-    "read_access_error": 4
-  },
-  "current_hls_top": {
-    "input_domain": "normal_time_domain_coefficients",
-    "output_domain": "canonical_time_domain_coefficients",
-    "coefficient_type": "signed_ap_int_16_at_top_unsigned_12_internal",
-    "operation": "FNTT(A), FNTT(B), BaseMul, INTT, scale",
-    "scale_constant_observed": 1441,
-    "top_is_stage_configurable": false
-  },
+  "scope": "Maintained K=2 NTT-domain BaseMul HLS and portable ML-KEM boundary.",
   "new_hls_top": {
     "path": "hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.cpp",
     "input_domain": "NTT_domain",
@@ -49,9 +19,6 @@
     "k": 2,
     "q": 3329,
     "polynomial_coefficients": 256,
-    "ntt_matrix_input": true,
-    "ntt_vector_input": true,
-    "mulcache_coefficients_per_polynomial": 128,
     "base_mul": "K=2 vector dot product with Montgomery reduction per output pair",
     "montgomery_radix": "2^16",
     "montgomery_qinv": 62209,
@@ -61,14 +28,11 @@
   },
   "integration_decision": {
     "direct_drop_in": false,
-    "reason": "The current top consumes ordinary polynomials and returns a complete product, while standard matrix/vector BaseMul consumes NTT-domain operands and a reusable mulcache.",
-    "next_boundary": "stage_oracle_then_ntt_domain_vector_base_mul_adapter",
-    "preserve_original_sources": true
+    "reason": "The maintained HLS block consumes NTT-domain operands and an explicit mulcache; it does not perform NTT, inverse NTT, compression, or scaling.",
+    "next_boundary": "stage_oracle_then_axi_bram_adapter",
+    "legacy_complete_polymul_removed": true
   },
   "source_sha256": {
-    "rtl/axi/mlkem_polymul_axi_wrapper.v": "3dda0db7a5a3e96793abe042b253ca3aae242a106238c91ef13fdbbaa60b6f77",
-    "hls/src/mlkem_poly_mul256_v39e_true_one_dsp.cpp": "8ac558fc50bda154dc621292a3a75cd1c9fbf82818a54ca80b1cf86f99e11fb9",
-    "hls/src/mlkem_poly_mul256_v39e_unified_stream_support.cpp": "a8b8abfab2e11de7a4ad04d41fb5aa07270a56e4997a65145cd86a1b5a7893ad",
     "hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.h": "9bccf9e4095511ee6d989445c124729c6c85d2b8d2fc4f084b38ed65bfa4c4b7",
     "hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.cpp": "e759faa8f20678b55714d9184be8dce605cd09c742d8fd1af87f4d7c5d3c8ed1",
     "third_party/mlkem-native/mlkem/src/poly.h": "86224c6d1e7ec5a4c0dcd829ae90c0cb43b4855d84dd719973d47e71b8e962d4",
@@ -76,6 +40,7 @@
     "third_party/mlkem-native/mlkem/src/poly_k.h": "839852fd9c8d155f37a7a07dc1116c2ea18fade754b1d882f73c4affef5e62d3",
     "third_party/mlkem-native/mlkem/src/poly_k.c": "56130249963b5b62e97dc6413adeed21f4e542da6531e34cf640baca161fa5ff",
     "third_party/mlkem-native/mlkem/src/indcpa.c": "deec4767a465d71656862d55c26a45775e9bf4328e0837c3cb2e23b6a06ea0ec",
-    "third_party/mlkem-native/mlkem/src/params.h": "450fe3e0e50496921920473ae4321660f178c23d51f1453f3c537ee63c4158cb"
+    "third_party/mlkem-native/mlkem/src/params.h": "450fe3e0e50496921920473ae4321660f178c23d51f1453f3c537ee63c4158cb",
+    "third_party/mlkem-native/mlkem/src/zetas.inc": "303d1abccc4757d49a5c8df5f88080fefef617b7360056db5311bd94354096d4"
   }
 }

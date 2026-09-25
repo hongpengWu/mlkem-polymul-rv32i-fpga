@@ -1,50 +1,40 @@
 # ML-KEM-512 K=2 cached BaseMul HLS
 
-这是从标准库接口重新设计的第一版 HLS 核，独立于 `hls/src/` 中的旧完整时域多项式乘法核。
+这是当前维护的 HLS 设计，直接对应 portable ML-KEM 的
+`polyvec_basemul_acc_montgomery_cached()` 接口。它独立于已经移除的旧完整时域乘法核。
 
-顶层 `mlkem512_basemul_acc_k2` 对应 portable ML-KEM 的
-`polyvec_basemul_acc_montgomery_cached()`：输入是两个 NTT 域多项式向量和已经计算好的
-`mulcache`，输出是 K=2 向量点积的 NTT 域结果。它不执行 NTT、逆 NTT、1441 缩放或压缩。
+顶层 `mlkem512_basemul_acc_k2` 接收两个 NTT 域多项式向量和显式 `mulcache`，输出 K=2
+向量点积结果。它不执行 NTT、逆 NTT、1441 缩放、压缩或解压。
 
 ```text
-a[2][256]        NTT 域矩阵行，标准库约束为 [0, 4095]
-b[2][256]        NTT 域向量，signed lazy int16 表示
+a[2][256]        NTT 域矩阵行
+b[2][256]        NTT 域向量
 b_cache[2][128]  b 的 mulcache
-result[256]      每个系数一次 Montgomery reduction 后的 NTT 域结果
+result[256]      K=2 cached BaseMul 输出
 ```
 
-`tb/` 中的 cache 生成和数学 oracle 是独立实现，覆盖零输入、规范输入、signed lazy 边界和
-100 组确定性随机输入。它检查 signed 结果和模 `q=3329` 的 canonical 结果。
-
-## 本机 C 仿真
-
-在仓库根目录执行：
+## C 仿真
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_csim.ps1
 ```
 
-## Vivado/Vitis HLS 2024.2
+testbench 覆盖零输入、边界和确定性随机输入，共 103 个检查。
 
-在安装了 Vivado 2024.2 的 Tcl 环境中，从本目录执行：
+## Vitis HLS 2024.2
 
-```text
-vitis_hls -f run_hls.tcl
-```
-
-脚本会创建本地 `mlkem512_basemul_k2_vivado/` 工程、运行 C 仿真和综合，并导出 IP。生成目录
-是构建产物，默认不纳入 Git；源文件、testbench、配置和 Tcl 脚本才是可复现输入。
-
-Windows 路径较长时，把本目录的 `src/`、`tb/`、`run_hls.tcl` 和配置复制到短路径（例如
-`E:\hlsk2`）后从该目录运行。已用 Vitis HLS 2024.2 在短路径验证通过：C 仿真 103/103，
-II=1，估算延迟 137 cycles，估算 Fmax 150.83 MHz，DSP/LUT/FF/BRAM 估算为
-12/310/599/0。完整 HLS 报告和导出的 IP 归档在
-[`results/accelerator_interface/hls_synthesis/`](../../results/accelerator_interface/hls_synthesis/)
-和 [`ip/`](ip/)；这些是估算/综合阶段数据，不是最终 Vivado 布局布线资源。
-
-也可以直接使用 `run_hls_short.ps1`，它会复制到短路径、调用 Vitis HLS，并把报告和 IP
-归档回仓库：
+从短路径运行：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_hls_short.ps1
 ```
+
+脚本会复制源文件、TB、Tcl 和配置到短路径，调用 `vitis_hls.bat`，再把报告和导出 IP
+归档回仓库。也可以在本目录执行 `vitis_hls -f run_hls.tcl`。本地工程、缓存和临时日志
+不提交；源码、配置和 `ip/*.zip` 是可复现输入。
+
+已验证结果：C 仿真 103/103，II=1，估算 137 cycles、150.83 MHz，DSP/LUT/FF/BRAM
+估算为 12/310/599/0。完整证据在 [`results/accelerator_interface/hls_synthesis/`](../../results/accelerator_interface/hls_synthesis/)。
+
+该 IP 使用 `ap_ctrl_hs + ap_memory`，还没有 AXI wrapper 或 Vivado 顶层。接入时必须新建
+adapter，并将核心、事务、CPU API 和完整 KEM 周期分别记录。

@@ -1,13 +1,16 @@
-# PYNQ-Z2 烧录文件
+# CPU-only 烧录产物
 
-本目录保存 2026-09-22 使用 Vivado 2024.2（Build 5239630）生成的同一套产物：
+本目录保存当前仍可复现的 CPU-only Vivado 2024.2 bitstream：
 
-- `mlkem_pynqz2.bit`：`xc7z020clg400-1`、100 MHz、BRAM wrapper、只读 VIO。
-- `mlkem_pynqz2.ltx`：与上述 BIT 匹配的调试探针配置。
-- `SHA256SUMS`：上述两个文件的 SHA256。
+```text
+cpu_baseline_rv32i/cpu_baseline_rv32i.bit
+cpu_baseline_rv32im_iterative/cpu_baseline_rv32im_iterative.bit
+cpu_baseline_rv32im_fast/cpu_baseline_rv32im_fast.bit
+```
 
-固件为 `firmware/images/transfer_both_unroll4.mem`，已初始化在 bitstream 的程序 RAM 中，不需要再下载 ELF。使用 JTAG Hardware Manager 同时选择 BIT/LTX，或从仓库根目录运行 `vivado -mode batch -source scripts/program_board.tcl`。这是易失性的 PL 配置，不是 SD 卡启动镜像；没有创建 BOOT.BIN 或添加 PS 设计。
+这些 bitstream 只用于 CPU baseline 的资源、时序和板级准备，不包含新的 HLS BaseMul，也
+不代表 CPU+PQC 加速系统已经完成。新 HLS 目前只有 HLS IP，待独立 AXI/BRAM adapter 和
+Vivado 顶层完成后再生成新的系统 bitstream。
 
-构建已通过四组 RTL 仿真、综合和布局布线。WNS=+1.027 ns，WHS=+0.023 ns；没有 DRC Error，保留的 Warning 及验证范围见 [验证记录](../docs/VALIDATION.md)。本次未对实体开发板烧录。自检成功时 `LED[3:0]=0101`，BTN0 可复位重跑。
-
-重新构建：`vivado -mode batch -source scripts/run.tcl -tclargs implement`，然后运行 `./scripts/update_release_checksums.ps1` 更新校验文件。替换产物时应同时提交 BIT、LTX 和校验文件。
+重新生成方式见 [`docs/BUILD.md`](../docs/BUILD.md)。替换 bitstream 时应同时更新
+`docs/BENCHMARKS.md` 中的文件哈希和对应结果目录。

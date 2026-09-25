@@ -176,11 +176,11 @@ INTT 分别占 9.52%、10.21%。缓存 BaseMul 累加本身分别占 KeyGen/Enca
 
 | 问题 | 现有实现 | 接入前的验收内容 |
 |---|---|---|
-| 运算域 | [HLS 顶层](../hls/src/mlkem_poly_mul256_v39e_true_one_dsp.cpp) 固定执行两次正 NTT、BaseMul、逆 NTT 和缩放；标准库的公共矩阵直接生成在 NTT 域，KeyGen 也需要保留 NTT 域结果 | 明确独立 NTT、INTT、NTT 域乘加命令；不能把已有 NTT 域数据送入完整乘法后再次变换 |
+| 运算域 | [新 HLS 顶层](../hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.cpp) 只执行 NTT 域 K=2 cached BaseMul；标准库的公共矩阵直接生成在 NTT 域 | 明确独立 NTT、INTT、NTT 域乘加命令；新核不执行额外变换 |
 | 向量与复用 | [标准库 BaseMul](../third_party/mlkem-native/mlkem/src/poly_k.c) 执行 K=2 向量点积、32 位累加并使用可复用 mulcache；旧核只算一对多项式 | 定义缓存、累加、输出约减与存储驻留边界，先比较正确性再评估是否融合命令 |
-| 数值表示 | 标准库使用带符号系数、Montgomery 缩放及懒约减；旧核有自己的 K²-RED、12 位打包与中间排列 | 逐阶段核对系数顺序、模 q 等价、缩放因子、输入界限；完整卷积通过不能代替这些检查 |
-| 搬运与并行 | [AXI 包装](../rtl/axi/mlkem_polymul_axi_wrapper.v) 仅有 start/status/cycles 和三个 512 B 数据区；忙时不能同时写输入 | 首先量化一次调用的实际写入、等待、读回；根据实测决定批量接口、BRAM 常驻或双缓冲 |
-| 存储容量 | 旧加速系统的程序 RAM 为 4 KiB，官方 KEM 软件基线为 64 KiB | 在相同 64 KiB CPU 环境接入，保持计时和数据布局可比，并重新实现测资源/时序 |
+| 数值表示 | 标准库使用带符号系数、Montgomery 缩放及懒约减；新核保持 signed int16 和单次 Montgomery reduction | 逐阶段核对系数顺序、模 q 等价、缩放因子、输入界限；HLS C 仿真通过不能代替 RTL 检查 |
+| 搬运与并行 | 新 HLS 生成 `ap_ctrl_hs + ap_memory`，尚无 AXI wrapper | 先定义四个数组的 BRAM/AXI 地址、启动/完成和清零边界，再测写入、等待和读回 |
+| 存储容量 | 官方 KEM 软件基线使用 64 KiB RAM；新 HLS 只描述计算核心 | 在相同 64 KiB CPU 环境接入，保持计时和数据布局可比，并重新实现测资源/时序 |
 
 对接顺序：导出标准软件的真实中间操作数 → 阶段级 oracle → 接口/缩放适配 → 512 完整官方回归 → 未插桩完整 API 加速比 → 同约束资源与时序。硬件中的秘密数据也要纳入清零边界，保持软件基线包含清零的口径。
 

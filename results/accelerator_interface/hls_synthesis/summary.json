@@ -16,7 +16,7 @@
     "URAM": 0
   },
   "csim_cases": 103,
-  "ip_archive": "xilinx_com_hls_mlkem512_basemul_acc_k2_1_0.zip",
+  "ip_archive": "hls/mlkem512_basemul_k2/ip/xilinx_com_hls_mlkem512_basemul_acc_k2_1_0.zip",
   "source_sha256": {
     "hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.h": "9bccf9e4095511ee6d989445c124729c6c85d2b8d2fc4f084b38ed65bfa4c4b7",
     "hls/mlkem512_basemul_k2/src/mlkem512_basemul_acc_k2.cpp": "e759faa8f20678b55714d9184be8dce605cd09c742d8fd1af87f4d7c5d3c8ed1",
@@ -30,7 +30,6 @@
     "csynth.rpt": "4cfe9cf23b55e263ebf4b0fc2baf39257f9501e008a72a830f1ea48d0a87a231",
     "csynth_design_size.rpt": "c6d7115f3e685d831d860f2652cbe63cbf54358debe4e536df96ce73b355276a",
     "mlkem512_basemul_acc_k2_csynth.rpt": "88d6dc0f2d570904f05e49de08617db03d88a5aead544c9127a280b56bd8fcd4",
-    "xilinx_com_hls_mlkem512_basemul_acc_k2_1_0.zip": "f7a00f29852ef097b875cc57321fc15759cffcb478722ffb5e8c594c50a29162",
     "solution1.log": "449a2cafa1a31e166fcd93165baee9501736148fd4a8ba893e35cff18dfd93a5"
   },
   "hls_executable": "E:/Xilinx/Vitis_HLS/2024.2/bin/vitis_hls.bat",

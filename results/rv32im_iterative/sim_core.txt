@@ -1,6 +1,0 @@
-Time resolution is 1 ps
-V39-E RTL PASS [ring boundary x255*x]: latency=4788 cycles
-V39-E RTL PASS [deterministic dense]: latency=4788 cycles
-V39-E RTL PASS [deterministic random]: latency=4788 cycles
-V39-E MANUAL RTL COSIM PASS: all 3 transactions
-$finish called at time : 143806 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/core/tb_v39e_true_one_dsp.sv" Line 133

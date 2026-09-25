@@ -1,29 +1,10 @@
 /build/
-/vivado/project/*
-!/vivado/project/*.xpr
-!/vivado/project/mlkem_pynqz2.srcs/
-/vivado/project/mlkem_pynqz2.srcs/*
-!/vivado/project/mlkem_pynqz2.srcs/sources_1/
-/vivado/project/mlkem_pynqz2.srcs/sources_1/*
-!/vivado/project/mlkem_pynqz2.srcs/sources_1/ip/
-/vivado/project/mlkem_pynqz2.srcs/sources_1/ip/*
-!/vivado/project/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/
-/vivado/project/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/*
-!/vivado/project/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/mlkem_profile_vio.xci
-/vivado/project_rv32im_iterative/*
-!/vivado/project_rv32im_iterative/*.xpr
-!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/
-/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/*
-!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/
-/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/*
-!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/
-/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/*
-!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/
-/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/*
-!/vivado/project_rv32im_iterative/mlkem_pynqz2.srcs/sources_1/ip/mlkem_profile_vio/mlkem_profile_vio.xci
-# CPU-only Vivado projects: keep the reproducible project entry point and
-# firmware image; caches, generated simulation data and implementation runs
-# are recreated by scripts/cpu_baseline/run.tcl.
+/.Xil/
+/hls/.Xil/
+/hls/mlkem512_basemul_k2/build/
+/hls/mlkem512_basemul_k2/mlkem512_basemul_k2_vivado/
+
+# CPU-only and ML-KEM software Vivado projects keep only XPR/MEM (and tracked XCI if added).
 /vivado/cpu_baseline_rv32i/*
 !/vivado/cpu_baseline_rv32i/cpu_baseline.xpr
 !/vivado/cpu_baseline_rv32i/cpu_baseline.mem
@@ -33,16 +14,13 @@
 /vivado/cpu_baseline_rv32im_fast/*
 !/vivado/cpu_baseline_rv32im_fast/cpu_baseline.xpr
 !/vivado/cpu_baseline_rv32im_fast/cpu_baseline.mem
-/hls/.Xil/
-/hls/mlkem512_basemul_k2/build/
-/hls/mlkem512_basemul_k2/mlkem512_basemul_k2_vivado/
 /vivado/mlkem_keygen_*/*
 !/vivado/mlkem_keygen_*/*.xpr
 !/vivado/mlkem_keygen_*/mlkem_keygen.mem
 /vivado/mlkem512_*/*
-!/vivado/mlkem512_*/*.xpr
+!/vivado/mlkem512_*/mlkem512.xpr
 !/vivado/mlkem512_*/mlkem512.mem
-/.Xil/
+
 *.jou
 *.log
 !/results/cpu_baseline/rv32i/simulate.log
@@ -54,14 +32,13 @@
 !/results/official_baseline/mlkem512/batches/**/simulate.log
 !/results/official_baseline/mlkem512/profile/batches/**/simulate.log
 !/results/accelerator_interface/hls_synthesis/*.log
+
 *.backup.*
 *.str
 *.wdb
 *.wcfg
 *.dcp
 *.bit
-!/release/*.bit
-!/release/rv32im_iterative/*.bit
 !/release/cpu_baseline_rv32i/*.bit
 !/release/cpu_baseline_rv32im_iterative/*.bit
 !/release/cpu_baseline_rv32im_fast/*.bit

@@ -30,8 +30,9 @@ HLS 原型，下一步再接通完整 KEM。
 ## 1. 已确认的项目方向
 
 **ML-KEM-512 做主要优化和展示，ML-KEM-768/1024 验证正确性与扩展能力。**
-目前先完善纯 CPU 软件 baseline，在 Vivado 中用真实 PicoRV32＋AXI＋BRAM RTL 执行固件。
-之后接入并优化 PQC 加速器；仿真、综合、布局布线、时序检查和产物准备完成后，最后安排实板。
+目前先完善纯 CPU 软件 baseline，在 Vivado 中用真实 PicoRV32＋BRAM RTL 执行固件。
+旧完整板级加速链已清理；下一步为新 HLS 建立独立 AXI/BRAM adapter，再进行仿真、综合、
+布局布线、时序检查和最后的实板验证。
 
 | 工作范围 | ML-KEM-512 | ML-KEM-768 / 1024 |
 |---|---|---|
@@ -51,8 +52,8 @@ HLS 原型，下一步再接通完整 KEM。
 
 | 工作项 | 当前状态 | 证据或入口 |
 |---|---|---|
-| 仓库整理与 Vivado 2024.2 重建入口 | 已完成；保留源码、HLS、必要 TB/Tcl、XPR 和已有烧录产物 | [目录规则](STRUCTURE.md)、[构建说明](BUILD.md) |
-| PicoRV32 迭代 M 扩展验证 | 已通过 8 类 M 指令共 4096 项检查；原加速路径兼容性回归通过 | [阶段 2 证据](../results/rv32im_iterative/) |
+| 仓库整理与 Vivado 2024.2 重建入口 | 已完成；保留 CPU-only 源码、HLS、必要 TB/Tcl、XPR 和 CPU-only bitstream | [目录规则](STRUCTURE.md)、[构建说明](BUILD.md) |
+| PicoRV32 迭代 M 扩展验证 | 已通过 8 类 M 指令共 4096 项检查；三组 CPU baseline 回归通过 | [CPU baseline 证据](../results/cpu_baseline/) |
 | ML-KEM-512 baseline 与阶段分析 | 三组基线离线分析完成；快速乘法 profiling 全部 145 条通过 | [基线解释](MLKEM512_BASELINE_ANALYSIS.md)、[阶段分析](MLKEM512_PROFILE.md) |
 | 纯 CPU 多项式软件 baseline | RV32I、RV32IM 迭代、RV32IM 快速均完成 8 组输入检查及周期测量 | [CPU baseline 结果](../results/cpu_baseline/) |
 | 旧 16 KiB CPU baseline 实现 | 三组已完成综合、布局布线、资源/时序报告和 bitstream；本轮未做实板复验 | [性能台账](BENCHMARKS.md) |
@@ -63,7 +64,7 @@ HLS 原型，下一步再接通完整 KEM。
 | 错误输出拒绝检查 | 临时预期公钥首字节翻转后，被全量 TB 准确拒绝 | [负向检查](../results/official_baseline/mlkem512/negative_check/README.md) |
 | 标准软件的完整 CPU baseline | 512 API 与快速 CPU 阶段分析已完成；768/1024 CPU 回归及 64 KiB 实现仍待做 | [M2 路线](COMPETITION_ROADMAP.md#m2picorv32-完整软件-baseline) |
 | 标准库接口审计与新 HLS 原型 | 已完成接口事实清单；C 仿真 103/103 通过，Vitis HLS 2024.2 综合通过（137 cycles、II=1、估算 Fmax 150.83 MHz），尚未接 CPU/AXI | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[新 HLS](../hls/mlkem512_basemul_k2/) |
-| PQC 加速器接入标准软件 | 待开始；旧完整乘法核和新 BaseMul 原型均保留，尚未参与新增官方 KAT | [现有加速器](../rtl/accelerator/) |
+| PQC 加速器接入标准软件 | 待开始；旧完整乘法核已移除，新 BaseMul 原型尚未参与官方 KAT | [新 HLS 接口](MLKEM512_ACCELERATOR_INTERFACE.md) |
 | 新标准软件配置的实现与实板 | 64 KiB ML-KEM-512 工程已完成 RTL 回归；实现待做，实板放到最后 | [512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md) |
 
 ### 当前官方用例覆盖
