@@ -49,7 +49,8 @@ void mlkem512_basemul_acc_k2(
 
 Vitis HLS 2024.2 生成的是 `ap_ctrl_hs` 加 `ap_memory` 数组接口。当前已由
 `rtl/accelerator/mlkem512_basemul_k2_mmio_adapter.sv` 包装成 native request/response
-MMIO 总线；它不是 AXI-Lite，也尚未连接 PicoRV32。基址为 `0x50001000`，32 位访问按
+MMIO 总线；它不是 AXI-Lite，已通过 `mlkem512_accel_system.sv` 接入 PicoRV32。基址为
+`0x50001000`，32 位访问按
 little-endian 打包两个 signed `int16_t`：
 
 | 偏移 | 范围/寄存器 | 说明 |
@@ -99,6 +100,7 @@ TRANSFER_CYCLES 的终点是最末地址读请求，不包含其响应与调用�
 - 接口审计：[`scripts/mlkem512_interface/audit.py`](../scripts/mlkem512_interface/audit.py)
   生成 [`current_contract.json`](../results/accelerator_interface/current_contract.json)。
 
-这些结果验证了独立 HLS→BRAM→MMIO→PYNQ-Z2 顶层路径，但不代表 PicoRV32 总线接入、
-完整 KEM 或实体板烧录已经验证。下一阶段应先接入未插桩 RV32IM-fast 软件，再用官方
-ML-KEM-512 记录进行 CPU+PQC 回归，最后扩展到 768/1024 和实体板。
+这些结果验证了 HLS→BRAM→MMIO→PicoRV32 的 ML-KEM-512 K=2 路径；官方 145 条
+CPU+PQC RTL 回归已通过，但当前端到端为 0.9930×，不代表已取得系统级性能收益。
+它也不代表实体板烧录或 ML-KEM-768/1024 硬件支持；后续需先优化接口批量化，再做参数集
+扩展和实体板验证。

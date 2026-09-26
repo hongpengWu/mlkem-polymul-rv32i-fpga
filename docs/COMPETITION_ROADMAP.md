@@ -42,7 +42,8 @@ PYNQ-Z2 不能运行 768/1024。当前阶段先做仿真与实现，实板放在
 以及三种 PicoRV32 配置各 145 条 ML-KEM-512 官方记录的完整 API 基线。
 2026-09-25 已完成快速乘法 CPU 的 512 全量阶段分析；M2 仍待补齐 768/1024 CPU 回归
 和 64 KiB 配置实现。新 BaseMul 的独立 MMIO/BRAM/BIST 与 Vivado 2024.2 实现已通过，
-下一步接入 RV32IM-fast 并运行官方 KAT。详细瓶颈与接入任务见 [阶段分析](MLKEM512_PROFILE.md)。
+RV32IM-fast CPU+PQC 的 145 条 ML-KEM-512 官方 KAT 也已完成；端到端为 0.9930×，
+下一步应先降低搬运和轮询开销，再扩展多 PE。详细瓶颈与接入任务见 [阶段分析](MLKEM512_PROFILE.md)。
 
 | 已有内容 | 位置 | 作用 | 状态 |
 |---|---|---|---|
@@ -57,12 +58,13 @@ PYNQ-Z2 不能运行 768/1024。当前阶段先做仿真与实现，实板放在
 | 历史官方 KeyGen 首例 | firmware/mlkem_baseline/、results/official_baseline/keygen512_tc1/ | 首次标准算法执行闭环，独立保留 | 三组 tcId=1 已通过，不替代当前全量分布 |
 | 新 K=2 NTT 域 BaseMul HLS | hls/mlkem512_basemul_k2/ | 新硬件主线的计算核心 | C 仿真/综合已通过 |
 | 独立 MMIO/BRAM/BIST 硬件路径 | rtl/accelerator/、vivado/mlkem512_basemul_k2/ | 先验证核、存储、控制和板级顶层 | RTL/BIST/100 MHz 实现通过，XPR/bitstream 已保存 |
-| 新 CPU+PQC 集成系统 | 基于已验证 adapter 新建 CPU 集成系统 | 端到端公平对照入口 | 下一步接入 RV32IM-fast 和官方 KAT |
+| 新 CPU+PQC 集成系统 | 基于已验证 adapter 新建 CPU 集成系统 | 端到端公平对照入口 | RV32IM-fast 官方 KAT 145/145；当前 0.9930×，待优化 |
 
 当前数据记录在 [性能台账](BENCHMARKS.md) 和 [CPU 测量协议](CPU_BENCHMARK_PROTOCOL.md) 中。
 原 8 组输入来自本项目，仍作为“软件多项式乘法 baseline”；历史官方 KeyGen 单例独立记账。
 当前完整 512 API 结果见 [全量汇总](../results/official_baseline/mlkem512/summary.md) 和
-[512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md)，尚不包含其他参数集或加速器执行证据。
+[512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md)；已包含 RV32IM-fast＋K=2 加速器 145 条
+RTL 仿真证据，但不包含 768/1024 PicoRV32/硬件执行证据。
 
 ## 3. 最终系统和公平对照
 
@@ -174,14 +176,14 @@ Core 周期不包含 CPU 搬运；Call 周期不应再次加上与其重叠的�
 ### M3：新 HLS 端到端接入
 
 状态：进行中。独立 MMIO/BRAM/BIST、Vivado 2024.2 实现和 bitstream 已完成；
-尚未连接 PicoRV32 或运行 CPU+PQC 官方 KAT。
+PicoRV32 接入和 ML-KEM-512 CPU+PQC 官方 KAT 已完成；当前性能基线为 0.9930×。
 
 工作内容：
 
 - 已完成新 HLS 的独立 native MMIO/BRAM adapter，基址 `0x50001000`；
-- 下一步接入 RV32IM-fast 总线，只替换标准软件 BaseMul 调用，保留 CPU-only baseline；
+- 已接入 RV32IM-fast 总线，只替换标准软件 BaseMul 调用，保留 CPU-only baseline；
 - 保留 CPU 侧输入写入、启动、轮询、读回和校验；
-- 先用 512 跑通完整流程，再用 768/1024 对应官方 KAT 检查最终结果；
+- 512 已跑通完整流程；768/1024 仍需对应参数化 CPU/硬件包装和官方 KAT 检查；
 - 同时测量 Core、Call 和完整 KEM 三种边界。
 
 出口条件：
@@ -191,7 +193,8 @@ Core 周期不包含 CPU 搬运；Call 周期不应再次加上与其重叠的�
 - 得到未经优化的 CPU+PQC 硬件系统 baseline。
 
 当前交付物：`rtl/accelerator/`、`tb/accelerator/`、`vivado/mlkem512_basemul_k2/basemul.xpr`、
-`release/mlkem512_basemul_k2/`、`results/accelerator_interface/`；后续增加 CPU+PQC 回归和端到端基线。
+`release/mlkem512_basemul_k2/`、`results/accelerator_interface/` 和
+`results/accelerator_cpu/kat/`；后续增加搬运优化和参数集扩展。
 
 ### M4：存储—计算协同优化
 
@@ -375,9 +378,10 @@ PE 数量和存储方案的完整扫参以 512 为主；768/1024 不要求重复
 当前完成点（2026-09-24）：512 全量回归已完成，RV32I／迭代／快速各 145 条通过。
 关机前的 25／31／38 条原始记录与 44 个独立完成批次合并，原始身份无重复或遗漏；
 全量日志、映射和哈希见 [512 汇总](../results/official_baseline/mlkem512/summary.md)。
-2026-09-25 快速 CPU 的 512 全量阶段分析、标准库接口契约和独立 BaseMul MMIO/BRAM/BIST、
-Vivado 实现已完成；下一步接通快速 CPU 的软件/硬件主线并跑官方 KAT，再量化同配置资源与
-时序。完整 M2 仍需补齐扩展参数集。
+2026-09-25 快速 CPU 的 512 全量阶段分析、标准库接口契约、独立 BaseMul
+MMIO/BRAM/BIST、Vivado 实现和 CPU+PQC 官方 KAT 已完成；145 条 RTL 记录全部通过，
+端到端为 0.9930×。下一步先降低搬运/轮询开销，再量化同配置资源与时序；完整 M2 仍需
+补齐扩展参数集。
 
 - [x] 确定 512 重点优化、768/1024 正确性与基本性能验证的范围，实板放到最后；
 - [x] 固定 FIPS 203/ACVP 官方 KAT 来源和哈希；
@@ -392,10 +396,10 @@ Vivado 实现已完成；下一步接通快速 CPU 的软件/硬件主线并跑�
 - [ ] 完成三组 64 KiB CPU 配置的资源、时序和 bitstream；
 - [ ] 补齐 768/1024 的完整软件移植和内存需求测量；
 - [ ] 建立官方 KAT 的多项式操作数 trace；
-- [ ] 将新 BaseMul 接入 RV32IM-fast 并通过官方 ML-KEM-512 KAT；
+- [x] 将新 BaseMul 接入 RV32IM-fast 并通过官方 ML-KEM-512 KAT；
 - [ ] 按 Keccak 71%–81% 的实测占比，比较仅多项式、仅 Keccak 与两者协同的端到端收益；
-- [ ] 完成 CPU+加速器端到端基线；
-- [ ] 重点量化 512 的搬运、等待和计算瓶颈；
+- [x] 完成 CPU+加速器端到端基线；
+- [x] 重点量化 512 的搬运、等待和计算瓶颈；当前端到端为 0.9930×，优化尚未开始；
 - [ ] 面向 512 实现双缓冲、BRAM bank 和批量接口；
 - [ ] 以 512 扫描 P1/P2/P4/P8 多 PE 配置；
 - [ ] 加入常数时间和故障检测；

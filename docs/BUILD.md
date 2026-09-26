@@ -112,6 +112,8 @@ vivado -mode batch -source scripts/mlkem512_basemul_k2/implement.tcl
 和 `.cache` 目录由 `.gitignore` 排除，入口工程为
 `vivado/mlkem512_basemul_k2/basemul.xpr`。
 
-当前验证结果位于 `results/accelerator_interface/rtl_sim/` 和
-`results/accelerator_interface/vivado_impl/`。下一阶段才接入未插桩 RV32IM-fast 软件，
-再做 CPU+PQC 官方向量回归和统一端到端计时；不能把独立 BIST 结果称为完整 KEM 验证。
+当前独立验证结果位于 `results/accelerator_interface/rtl_sim/` 和
+`results/accelerator_interface/vivado_impl/`。RV32IM-fast CPU+PQC 官方 ML-KEM-512
+回归已完成，结果位于 `results/accelerator_cpu/kat/`；145 条全部通过，但端到端为
+0.9930×，后续优化应先降低批量搬运、轮询和读回开销。不能把独立 BIST 结果称为完整
+KEM 性能收益，也不能把该 K=2 核心直接宣称支持 ML-KEM-768/1024。

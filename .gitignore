@@ -46,6 +46,7 @@
 !/release/mlkem512_basemul_k2/*.bit
 !/results/accelerator_interface/rtl_sim/*.log
 !/results/accelerator_cpu/*.log
+!/results/accelerator_cpu/kat/**/*.log
 !/vivado/mlkem512_basemul_k2/basemul.xpr
 *.elf
 __pycache__/

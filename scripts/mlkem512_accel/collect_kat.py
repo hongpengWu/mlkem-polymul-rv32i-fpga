@@ -15,6 +15,7 @@ import math
 import re
 import statistics
 import sys
+from datetime import datetime, timezone
 from collections import defaultdict
 from pathlib import Path
 
@@ -24,7 +25,7 @@ RESULTS = ROOT / "results/accelerator_cpu/kat"
 SUITE = ROOT / "scripts/mlkem512_suite"
 
 sys.path.insert(0, str(SUITE))
-from collect import FIELDS, M_OPS  # noqa: E402
+from collect import FIELDS, M_OPS, key_values  # noqa: E402
 from collect_resumed import validate_row  # noqa: E402
 
 METRIC_FIELDS = ("index", "starts", "done", "loads", "reads",
@@ -121,16 +122,21 @@ def parse_batch(directory: Path, fixture, baseline):
               if line.startswith("MLKEM512_HEADER,")]
     require(header == [",".join(FIELDS)], f"unexpected header in {log_path}")
     start = [line for line in log.splitlines() if line.startswith("MLKEM512_START ")]
-    require(len(start) == 1 and f"cases={len(indices)}" in start[0],
+    require(len(start) == 1 and key_values(start[0]).get("cases") == len(indices),
             f"missing or wrong start record in {log_path}")
     pass_lines = [line for line in log.splitlines() if line.startswith("MLKEM512_PASS ")]
-    complete_log = len(pass_lines) == 1 and f"cases={len(indices)}" in pass_lines[0]
+    complete_log = (len(pass_lines) == 1 and
+                    key_values(pass_lines[0]).get("cases") == len(indices))
     row_lines = [line[len("MLKEM512_ROW,"):] for line in log.splitlines()
                  if line.startswith("MLKEM512_ROW,")]
     require(len(row_lines) <= len(indices), f"duplicate rows in {log_path}")
     metrics = parse_metrics(log, log_path)
     if len(row_lines) != len(indices) or len(metrics) != len(indices) or not complete_log:
         complete_log = False
+    if complete_log:
+        require(log.index(start[0]) < log.index("MLKEM512_ROW,") and
+                max(log.rindex("MLKEM512_ROW,"), log.rindex("ACCEL_METRICS ")) <
+                log.index(pass_lines[0]), f"invalid final PASS ordering in {log_path}")
     rows = []
     for local, line in enumerate(row_lines):
         values = line.split(",")
@@ -150,6 +156,16 @@ def parse_batch(directory: Path, fixture, baseline):
 
 
 def make_case(original, checked, metric, baseline):
+    calls = metric["starts"]
+    require((calls > 0) if checked["op"] <= 4 else (calls == 0),
+            f"unexpected accelerator use for case {original}")
+    require(metric["done"] == calls and metric["loads"] == 640 * calls and
+            metric["reads"] == 128 * calls and metric["core_cycles"] == 136 * calls,
+            f"incomplete accelerator calls for case {original}")
+    require((metric["load_cycles"] >= metric["loads"] and
+             metric["read_cycles"] >= metric["reads"]) if calls else
+            (metric["load_cycles"] == metric["read_cycles"] == 0),
+            f"invalid accelerator transfer cycles for case {original}")
     sw = int(baseline[original]["raw_cycles"])
     hw = int(checked["raw_cycles"])
     load = metric["load_cycles"]
@@ -237,6 +253,43 @@ def write_outputs(rows, summary, complete, errors):
         lines += ["", "## Incomplete batches", ""] + [f"- {e}" for e in errors]
     (RESULTS / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
+    # Keep an auditable manifest beside the aggregate results.  The batch
+    # logs and fixtures are copied into RESULTS by the run wrapper; hashes are
+    # captured here only after collector validation has accepted every case.
+    evidence = {}
+    for path in sorted(RESULTS.rglob("*")):
+        if path.is_file() and path.name != "evidence_manifest.json":
+            evidence[path.relative_to(ROOT).as_posix()] = sha(path)
+    inputs = [
+        "rtl/cpu/picorv32.v",
+        "rtl/accelerator/mlkem512_accel_system.sv",
+        "rtl/accelerator/mlkem512_tdp_bram.sv",
+        "rtl/accelerator/mlkem512_basemul_k2_mmio_adapter.sv",
+        "tb/accelerator/tb_mlkem512_kat_accel.sv",
+        "firmware/images/mlkem512_accel/kat.mem",
+        "tb/software/mlkem512_suite/cases.json",
+        "results/official_baseline/mlkem512/cases.csv",
+        "scripts/mlkem512_accel/run_kat_batch.tcl",
+        "scripts/mlkem512_accel/collect_kat.py",
+    ]
+    input_hashes = {name: sha(ROOT / name) for name in inputs if (ROOT / name).is_file()}
+    manifest = {
+        "schema_version": 1,
+        "status": document["status"],
+        "parameter_set": document["parameter_set"],
+        "cases": document["completed_cases"],
+        "expected_cases": document["expected_cases"],
+        "simulator": "Vivado/XSim 2024.2",
+        "cpu_config": "rv32im_fast",
+        "clock_mhz": 100,
+        "generated_utc": datetime.now(timezone.utc).isoformat(),
+        "input_sha256": input_hashes,
+        "evidence_sha256": evidence,
+    }
+    (RESULTS / "evidence_manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
@@ -251,11 +304,14 @@ def main(argv=None):
         all_rows, errors, seen = [], [], set()
         for directory in batch_dirs:
             try:
-                parsed, _meta = parse_batch(directory, fixture, baseline)
+                parsed, meta = parse_batch(directory, fixture, baseline)
+                require(meta["complete_log"], "missing final PASS or incomplete batch records")
+                batch_rows = []
                 for original, checked, metric in parsed:
                     require(original not in seen, f"duplicate official case {original}")
-                    seen.add(original)
-                    all_rows.append(make_case(original, checked, metric, baseline))
+                    batch_rows.append(make_case(original, checked, metric, baseline))
+                seen.update(row["case_index"] for row in batch_rows)
+                all_rows.extend(batch_rows)
             except Exception as error:  # retain all failures in partial reports
                 errors.append(f"{directory.name}: {error}")
         all_rows.sort(key=lambda row: row["case_index"])

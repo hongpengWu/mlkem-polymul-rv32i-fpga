@@ -18,14 +18,15 @@
 | PYNQ-Z2 BIST 顶层 RTL | PASS，两次完整运行、256 个结果字检查和一次故障注入；时钟/按钮复位测试通过 | [`results/accelerator_interface/rtl_sim/board_simulate.log`](../results/accelerator_interface/rtl_sim/board_simulate.log) |
 | Vivado 2024.2 独立实现 | PASS，WNS=0.732 ns、WHS=0.129 ns、BRAM=8、DSP=12 @ 100 MHz | [`results/accelerator_interface/vivado_impl/`](../results/accelerator_interface/vivado_impl/) |
 | CPU+PQC 局部接口 | PASS，RV32IM-fast 执行 C 驱动，3 组、768 个系数 | [接口验证](MLKEM512_CPU_ACCEL_SMOKE.md) |
-| CPU+PQC 官方 KAT | 待完成 | 仍需接入标准库并运行官方记录 |
+| CPU+PQC 官方 KAT | PASS，145/145 ML-KEM-512 | [`results/accelerator_cpu/kat/`](../results/accelerator_cpu/kat/)；端到端 0.9930×，当前为功能闭环而非性能收益 |
 | PYNQ-Z2 实板烧录 | 待完成 | 已生成 [`mlkem512_basemul_k2_validation.bit`](../release/mlkem512_basemul_k2/mlkem512_basemul_k2_validation.bit)，尚未上板 |
 
 ## 官方数据口径
 
 主机端的 435 条记录覆盖 ML-KEM-512/768/1024；PicoRV32 当前完整 RTL 套件只覆盖
-ML-KEM-512，每种 CPU 145 条。PicoRV32 的通过结果证明固定软件、输入、输出和 RTL
-执行路径一致，不代表正式 CAVP 认证，也不代表实体板结果。
+ML-KEM-512，每种 CPU 145 条。CPU+PQC 加速版同样完成 145/145 条 ML-KEM-512 记录，
+并核验了每条记录的 MMIO 调用计数、核心周期和输出。PicoRV32 的通过结果证明固定软件、
+输入、输出和 RTL 执行路径一致，不代表正式 CAVP 认证，也不代表实体板结果。
 
 ## HLS 证据边界
 

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "config": "rv32im_fast",
+  "original_indices": [
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77
+  ],
+  "case_count": 8,
+  "input_words": 2328,
+  "expected_words": 104,
+  "input_bytes": 8896,
+  "output_bytes": 0
+}

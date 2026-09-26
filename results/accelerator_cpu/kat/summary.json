@@ -1,0 +1,214 @@
+{
+  "baseline": "results/official_baseline/mlkem512/cases.csv",
+  "completed_cases": 145,
+  "errors": [],
+  "expected_cases": 145,
+  "operations": {
+    "1": {
+      "hardware": {
+        "max": 5849737,
+        "mean": 5298117.96,
+        "min": 5221318,
+        "sum": 132452949
+      },
+      "op": 1,
+      "operation": "keyGen",
+      "phase_cycles": {
+        "core_cycles": 6800,
+        "load_cycles": 2118350,
+        "read_cycles": 292150,
+        "remaining_api_cycles": 130035649
+      },
+      "phase_ratio": {
+        "core_cycles": 5.133898528752274e-05,
+        "load_cycles": 0.015993226394679972,
+        "read_cycles": 0.0022056889046690835,
+        "remaining_api_cycles": 0.9817497457153634
+      },
+      "samples": 25,
+      "software": {
+        "max": 5821023,
+        "mean": 5269403.96,
+        "min": 5192604,
+        "sum": 131735099
+      },
+      "speedup_per_sample_mean": 0.9945729955852134,
+      "speedup_sum": 0.9945803396193165
+    },
+    "2": {
+      "hardware": {
+        "max": 6200782,
+        "mean": 5624167.62,
+        "min": 5572450,
+        "sum": 281208381
+      },
+      "op": 2,
+      "operation": "encapsulation",
+      "phase_cycles": {
+        "core_cycles": 20400,
+        "load_cycles": 6355050,
+        "read_cycles": 876450,
+        "remaining_api_cycles": 273956481
+      },
+      "phase_ratio": {
+        "core_cycles": 7.25440683078361e-05,
+        "load_cycles": 0.022599077514691854,
+        "read_cycles": 0.0031167278759021053,
+        "remaining_api_cycles": 0.9742116505410982
+      },
+      "samples": 50,
+      "software": {
+        "max": 6157711,
+        "mean": 5581096.62,
+        "min": 5529379,
+        "sum": 279054831
+      },
+      "speedup_per_sample_mean": 0.9923354205432424,
+      "speedup_sum": 0.9923418000831206
+    },
+    "3": {
+      "hardware": {
+        "max": 6996824,
+        "mean": 6995167.25,
+        "min": 6993055,
+        "sum": 139903345
+      },
+      "op": 3,
+      "operation": "decapsulation",
+      "phase_cycles": {
+        "core_cycles": 10880,
+        "load_cycles": 3389360,
+        "read_cycles": 467440,
+        "remaining_api_cycles": 136035665
+      },
+      "phase_ratio": {
+        "core_cycles": 7.776797616954762e-05,
+        "load_cycles": 0.02422644004687665,
+        "read_cycles": 0.0033411638585196086,
+        "remaining_api_cycles": 0.9723546281184342
+      },
+      "samples": 20,
+      "software": {
+        "max": 6939396,
+        "mean": 6937739.25,
+        "min": 6935627,
+        "sum": 138754785
+      },
+      "speedup_per_sample_mean": 0.9917903319167183,
+      "speedup_sum": 0.9917903321039251
+    },
+    "4": {
+      "hardware": {
+        "max": 12221920,
+        "mean": 12218227.4,
+        "min": 12212936,
+        "sum": 122182274
+      },
+      "op": 4,
+      "operation": "decapsulationSeed",
+      "phase_cycles": {
+        "core_cycles": 8160,
+        "load_cycles": 2542020,
+        "read_cycles": 350580,
+        "remaining_api_cycles": 119281514
+      },
+      "phase_ratio": {
+        "core_cycles": 6.678546513220076e-05,
+        "load_cycles": 0.02080514559747022,
+        "read_cycles": 0.0028693196527018313,
+        "remaining_api_cycles": 0.9762587492846958
+      },
+      "samples": 10,
+      "software": {
+        "max": 12135778,
+        "mean": 12132085.4,
+        "min": 12126794,
+        "sum": 121320854
+      },
+      "speedup_per_sample_mean": 0.9929497134919157,
+      "speedup_sum": 0.9929497138021838
+    },
+    "5": {
+      "hardware": {
+        "max": 128943,
+        "mean": 128937.5,
+        "min": 128932,
+        "sum": 2578750
+      },
+      "op": 5,
+      "operation": "encapsulationKeyCheck",
+      "phase_cycles": {
+        "core_cycles": 0,
+        "load_cycles": 0,
+        "read_cycles": 0,
+        "remaining_api_cycles": 2578750
+      },
+      "phase_ratio": {
+        "core_cycles": 0.0,
+        "load_cycles": 0.0,
+        "read_cycles": 0.0,
+        "remaining_api_cycles": 1.0
+      },
+      "samples": 20,
+      "software": {
+        "max": 128943,
+        "mean": 128937.5,
+        "min": 128932,
+        "sum": 2578750
+      },
+      "speedup_per_sample_mean": 1.0,
+      "speedup_sum": 1.0
+    },
+    "6": {
+      "hardware": {
+        "max": 941452,
+        "mean": 941446.5,
+        "min": 941441,
+        "sum": 18828930
+      },
+      "op": 6,
+      "operation": "decapsulationKeyCheck",
+      "phase_cycles": {
+        "core_cycles": 0,
+        "load_cycles": 0,
+        "read_cycles": 0,
+        "remaining_api_cycles": 18828930
+      },
+      "phase_ratio": {
+        "core_cycles": 0.0,
+        "load_cycles": 0.0,
+        "read_cycles": 0.0,
+        "remaining_api_cycles": 1.0
+      },
+      "samples": 20,
+      "software": {
+        "max": 941452,
+        "mean": 941446.5,
+        "min": 941441,
+        "sum": 18828930
+      },
+      "speedup_per_sample_mean": 1.0,
+      "speedup_sum": 1.0
+    }
+  },
+  "parameter_set": "ML-KEM-512",
+  "status": "PASS",
+  "totals": {
+    "hardware_cycles": 697154629,
+    "phase_cycles": {
+      "core_cycles": 46240,
+      "load_cycles": 14404780,
+      "read_cycles": 1986620,
+      "remaining_api_cycles": 680716989
+    },
+    "phase_ratio": {
+      "core_cycles": 6.632674886821988e-05,
+      "load_cycles": 0.020662245362499058,
+      "read_cycles": 0.002849611717919182,
+      "remaining_api_cycles": 0.9764218161707136
+    },
+    "samples": 145,
+    "software_cycles": 692273249,
+    "speedup_sum": 0.9929981387242571
+  }
+}
