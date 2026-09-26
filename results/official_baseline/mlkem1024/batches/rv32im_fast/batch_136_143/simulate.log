@@ -1,0 +1,14 @@
+Time resolution is 1 ps
+MLKEM_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM_START cases=8 ram_bytes=131072 stack_bytes=32768 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+MLKEM_ROW,0,3,42,15,187,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_ROW,1,3,42,15,188,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_ROW,2,3,42,15,189,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_ROW,3,3,42,15,190,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_ROW,4,3,42,15,191,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_ROW,5,3,42,15,192,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_ROW,6,3,42,15,193,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_ROW,7,3,42,15,194,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_PASS cases=8 input_bytes=12544 output_bytes=0 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=3938489 all_m=16384 min_sp=0x0001f100 stack_used=3824
+$finish called at time : 39385205 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem_suite.sv" Line 309
+INFO: xsimkernel Simulation Memory Usage: 30852 KB (Peak: 30852 KB), Simulation CPU Usage: 31968 ms

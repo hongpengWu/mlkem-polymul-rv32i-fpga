@@ -2,7 +2,7 @@
 
 更新时间：2026-09-26。用户已授权校验、汇总、扩展验证、清理并提交推送到 `24-2hp`；
 原始分支和 ML-KEM-512 CPU-only 基线不改，实板最后进行。
-自动续跑 ID：`pqc-kat`，每 20 分钟检查；电脑需保持开机、不休眠、Codex 运行。
+自动续跑 ID：`pqc-kat`，按当前 automation 设置定期检查；电脑需保持开机、不休眠、Codex 运行。
 
 ## 已完成
 
@@ -15,26 +15,25 @@
   算法周期 1,112,525,793，全程周期 1,147,835,590，最大观测栈 18,432 B。
   证据和表格在 `results/official_baseline/mlkem768/rv32im_fast/`。
 - [x] K3/K4 参数化固件、fixture 和 TB 已建立，128 KiB RAM、32 KiB 栈。
-  1024 RV32I/RV32IM 已编译；编译成功不等于 RTL 通过。
+  1024 RV32I/RV32IM 已编译；RV32IM-fast 官方 RTL 回归已 145/145 通过。
 
-## 当前运行：1024 RV32IM-fast CPU-only
+## 1024 RV32IM-fast CPU-only 已完成
 
-- 入口：`python scripts/mlkem_suite/resume.py --parameter-set 1024 --config rv32im_fast`。
-  顺序 19 批：0–7、8–15、…、136–143、144（最后 1 条）。
-- 调度输出：`build/mlkem_suite/1024_scheduler.log`；异常：同目录 `1024_scheduler.err`。
+- 已按 19 个顺序批次完成：0–7、8–15、…、136–143、144（最后 1 条）。
+- 全量 collector 已通过：145/145 唯一覆盖，逐字节官方输出、返回值、M 指令、栈和输入哈希均通过。
+- 汇总：算法 1,699,294,360 cycles，全程 1,747,426,461 cycles，最大观测栈 24,464 B；证据在 `results/official_baseline/mlkem1024/rv32im_fast/`。
 - 每批证据：`results/official_baseline/mlkem1024/batches/rv32im_fast/batch_*/`。
   实时日志为 `console_<attempt>.txt`；`simulate.log` 可能缓冲至结束，不能因其为空误判停止。
 - 构建目录：`build/mlkem_suite/1024/rv32im_fast/<batch>/<attempt>/`，重试使用新目录。
-- 每批保存真实 case_count、original_indices、运行前输入哈希、最终 PASS 和 success.json。
-  同一命令可恢复，校验后跳过成功批次；Windows 进程锁及活动 Vivado/XSim 检查防止重复调度。
+- 每批保存真实 case_count、original_indices、运行前输入哈希、最终 PASS 和 success.json；失败修复时保留旧 attempt。
+  Windows 进程锁及活动 Vivado/XSim 检查防止重复调度。
 - 新建 `build/mlkem_suite/STOP` 后，在当前批结束时停止启动下一批；恢复前移除标记。
   运行中禁止更改冻结脚本、TB、固件、manifest，禁止终止正常仿真或删除活动目录。
 
 ## 下一步顺序
 
-1. [ ] 1024 全部结束后执行 `python scripts/mlkem_suite/collect.py --parameter-set 1024 --write`。
-   严查145唯一覆盖、每批最终PASS、官方字节/返回值、M指令、栈、周期和哈希。
-   失败保存诊断，仅修复并重跑缺失或失败批次。
+1. [x] 1024 已执行 `python scripts/mlkem_suite/collect.py --parameter-set 1024 --write`。
+   145 条唯一覆盖、每批最终 PASS、官方字节/返回值、M 指令、栈、周期和哈希全部通过。
 2. [ ] 更新性能表、覆盖矩阵、路线图。K3/K4 的128/32 KiB与512的64/16 KiB分开列明。
    768 run_snapshot是事后归档：原run_inputs哈希仿真前捕获，额外源码只属事后快照。
    不改写历史哈希或伪称构建前证据。1024已补齐命令、源码、工具链和链接脚本哈希。

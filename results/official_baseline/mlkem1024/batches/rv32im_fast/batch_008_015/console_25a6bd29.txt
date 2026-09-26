@@ -1,0 +1,161 @@
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Sat Sep 26 19:17:04 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source {E:\pqc\mlkem-polymul-rv32i-fpga\scripts\mlkem_suite\run_batch.tcl}
+# set root [file normalize [file join [file dirname [info script]] ../..]]
+# if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2"}
+# if {[llength $argv] != 5} {error "Expected parameter_set config batch_dir project_dir case_count"}
+# lassign $argv level config result_dir project_dir case_count
+# set result_dir [file normalize $result_dir]
+# set project_dir [file normalize $project_dir]
+# if {![string is integer -strict $case_count] || $case_count<1 || $case_count>145} {error "Invalid case count"}
+# if {$level ni {768 1024}} {error "Expected parameter set 768 or 1024"}
+# switch -- $config {
+#     rv32i {set parameters {CPU_ENABLE_MUL=0 CPU_ENABLE_FAST_MUL=0 CPU_ENABLE_DIV=0}; set isa rv32i; set expect_m 0}
+#     rv32im_iterative {set parameters {CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=0 CPU_ENABLE_DIV=1}; set isa rv32im; set expect_m 1}
+#     rv32im_fast {set parameters {CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=1 CPU_ENABLE_DIV=1}; set isa rv32im; set expect_m 1}
+#     default {error "Expected rv32i, rv32im_iterative or rv32im_fast"}
+# }
+# set ram_bits [expr {$level == 512 ? 14 : 15}]
+# set stack_bytes [expr {$level == 512 ? 16384 : 32768}]
+# set tag mlkem${level}
+# if {[file exists [file join $project_dir ${tag}.xpr]]} {error "Use a fresh attempt directory"}
+# file mkdir $project_dir
+# set image [file join $project_dir ${tag}.mem]
+# file copy -force [file join $root firmware images ${tag}_suite $isa.mem] $image
+# create_project $tag $project_dir -part xc7z020clg400-1
+INFO: [ProjectBase 1-489] The host OS only allows 260 characters in a normal path. The project is stored in a path with more than 80 characters. If you experience issues with IP, Block Designs, or files not being found, please consider moving the project to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter.
+Current project path is 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29'
+create_project: Time (s): cpu = 00:00:03 ; elapsed = 00:00:06 . Memory (MB): peak = 448.527 ; gain = 124.082
+# set_property target_language Verilog [current_project]
+# set_property simulator_language Mixed [current_project]
+# set_property XPM_LIBRARIES {XPM_MEMORY} [current_project]
+# foreach f {rtl/cpu/picorv32.v rtl/benchmark/cpu_benchmark_system.v} {add_files -norecurse [file join $root $f]}
+# add_files -norecurse $image
+# set_property file_type {Memory Initialization Files} [get_files $image]
+# set_property top cpu_benchmark_system [get_filesets sources_1]
+# set_property generic [concat [list FIRMWARE_INIT_FILE=${tag}.mem RAM_ADDR_BITS=$ram_bits] $parameters] [get_filesets sources_1]
+# add_files -fileset sim_1 -norecurse [file join $root tb software tb_mlkem_suite.sv]
+# foreach name [list ${tag}_input.mem ${tag}_expected.mem] {
+#     set path [file join $result_dir $name]
+#     add_files -fileset sim_1 -norecurse $path
+#     set_property file_type {Memory Initialization Files} [get_files $path]
+# }
+# set_property top tb_mlkem_suite [get_filesets sim_1]
+# set sim_generics [concat [list PARAMETER_SET=$level RAM_ADDR_BITS=$ram_bits STACK_BYTES=$stack_bytes FIRMWARE_INIT_FILE=${tag}.mem INPUT_FIXTURE_FILE=${tag}_input.mem EXPECTED_FIXTURE_FILE=${tag}_expected.mem] $parameters [list EXPECT_M=$expect_m EXPECTED_CASES=$case_count]]
+# set_property generic $sim_generics [get_filesets sim_1]
+# set_property xsim.elaborate.debug_level off [get_filesets sim_1]
+# set_property xsim.simulate.custom_tcl [file join $root scripts mlkem_suite sim.tcl] [get_filesets sim_1]
+# set_property xsim.simulate.runtime all [get_filesets sim_1]
+# update_compile_order -fileset sources_1
+# update_compile_order -fileset sim_1
+# launch_simulation -simset sim_1
+Command: launch_simulation  -simset sim_1
+INFO: [Vivado 12-12493] Simulation top is 'tb_mlkem_suite'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'E:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'E:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_mlkem_suite' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim/mlkem1024.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim/mlkem1024_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim/mlkem1024_expected.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim/mlkem1024_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim/mlkem1024_expected.mem'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -L uvm -prj tb_mlkem_suite_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/rtl/benchmark/cpu_benchmark_system.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cpu_benchmark_system
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/rtl/cpu/picorv32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module picorv32
+INFO: [VRFC 10-311] analyzing module picorv32_regs
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_fast_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_div
+INFO: [VRFC 10-311] analyzing module picorv32_axi
+INFO: [VRFC 10-311] analyzing module picorv32_axi_adapter
+INFO: [VRFC 10-311] analyzing module picorv32_wb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem_suite.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_mlkem_suite
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '2' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim'
+"xelab --incr --debug off --relax --mt 2 -generic_top "PARAMETER_SET=1024" -generic_top "RAM_ADDR_BITS=15" -generic_top "STACK_BYTES=32768" -generic_top "FIRMWARE_INIT_FILE=mlkem1024.mem" -generic_top "INPUT_FIXTURE_FILE=mlkem1024_input.mem" -generic_top "EXPECTED_FIXTURE_FILE=mlkem1024_expected.mem" -generic_top "CPU_ENABLE_MUL=1" -generic_top "CPU_ENABLE_FAST_MUL=1" -generic_top "CPU_ENABLE_DIV=1" -generic_top "EXPECT_M=1" -generic_top "EXPECTED_CASES=8" -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem_suite_behav xil_defaultlib.tb_mlkem_suite xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: E:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug off --relax --mt 2 -generic_top PARAMETER_SET=1024 -generic_top RAM_ADDR_BITS=15 -generic_top STACK_BYTES=32768 -generic_top FIRMWARE_INIT_FILE=mlkem1024.mem -generic_top INPUT_FIXTURE_FILE=mlkem1024_input.mem -generic_top EXPECTED_FIXTURE_FILE=mlkem1024_expected.mem -generic_top CPU_ENABLE_MUL=1 -generic_top CPU_ENABLE_FAST_MUL=1 -generic_top CPU_ENABLE_DIV=1 -generic_top EXPECT_M=1 -generic_top EXPECTED_CASES=8 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem_suite_behav xil_defaultlib.tb_mlkem_suite xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3532] module 'glbl' does not have a parameter named 'PARAMETER_SET' to override [E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim/glbl.v:6]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.picorv32_axi_adapter
+Compiling module xil_defaultlib.picorv32_pcpi_fast_mul
+Compiling module xil_defaultlib.picorv32_pcpi_div
+Compiling module xil_defaultlib.picorv32(ENABLE_COUNTERS=1'b1,EN...
+Compiling module xil_defaultlib.picorv32_axi(ENABLE_COUNTERS64=1...
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=104...
+Compiling module xil_defaultlib.cpu_benchmark_system(FIRMWARE_IN...
+Compiling module xil_defaultlib.tb_mlkem_suite(CPU_ENABLE_MUL=1,...
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_mlkem_suite_behav
+run_program: Time (s): cpu = 00:00:00 ; elapsed = 00:00:07 . Memory (MB): peak = 452.414 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '7' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'E:/pqc/mlkem-polymul-rv32i-fpga/build/mlkem_suite/1024/rv32im_fast/batch_008_015/25a6bd29/mlkem1024.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_mlkem_suite_behav -key {Behavioral:sim_1:Functional:tb_mlkem_suite} -tclbatch {E:/pqc/mlkem-polymul-rv32i-fpga/scripts/mlkem_suite/sim.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source E:/pqc/mlkem-polymul-rv32i-fpga/scripts/mlkem_suite/sim.tcl
+## run all
+MLKEM_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM_START cases=8 ram_bytes=131072 stack_bytes=32768 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+MLKEM_ROW,0,1,42,3,52,1,0,13673293,4,64,4736,40448,40448,0,0,0,0,0,0,0,0x0001b520
+MLKEM_ROW,1,1,42,3,53,1,0,13045043,4,64,4736,40448,40448,0,0,0,0,0,0,0,0x0001b520
+MLKEM_ROW,2,1,42,3,54,1,0,13043741,4,64,4736,40448,40448,0,0,0,0,0,0,0,0x0001b520
+MLKEM_ROW,3,1,42,3,55,1,0,13046456,4,64,4736,40448,40448,0,0,0,0,0,0,0,0x0001b520
+MLKEM_ROW,4,1,42,3,56,1,0,13047589,4,64,4736,40448,40448,0,0,0,0,0,0,0,0x0001b520
+MLKEM_ROW,5,1,42,3,57,1,0,13046869,4,64,4736,40448,40448,0,0,0,0,0,0,0,0x0001b520
+MLKEM_ROW,6,1,42,3,58,1,0,13048061,4,64,4736,40448,40448,0,0,0,0,0,0,0,0x0001b520
+MLKEM_ROW,7,1,42,3,59,1,0,13046210,4,64,4736,40448,40448,0,0,0,0,0,0,0,0x0001b520
+MLKEM_PASS cases=8 input_bytes=512 output_bytes=37888 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=107750208 all_m=323584 min_sp=0x0001b520 stack_used=19152
+$finish called at time : 1077502395 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem_suite.sv" Line 309
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:13:17 . Memory (MB): peak = 459.043 ; gain = 0.000
+xsim: Time (s): cpu = 00:00:00 ; elapsed = 00:13:19 . Memory (MB): peak = 459.043 ; gain = 6.629
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_mlkem_suite_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for all
+launch_simulation: Time (s): cpu = 00:00:01 ; elapsed = 00:13:29 . Memory (MB): peak = 459.043 ; gain = 10.516
+# close_sim
+INFO: xsimkernel Simulation Memory Usage: 30840 KB (Peak: 30840 KB), Simulation CPU Usage: 796639 ms
+INFO: [Simtcl 6-16] Simulation closed
+# set logpath [file join $project_dir ${tag}.sim sim_1 behav xsim simulate.log]
+# set f [open $logpath r]
+# set log [read $f]
+# close $f
+# if {![regexp "MLKEM_PASS cases=$case_count " $log] || [regexp -nocase {fatal:|\$fatal|ERROR:|MLKEM_FAIL} $log]} {
+#     error "ML-KEM-$level suite failed: $logpath"
+# }
+# file copy -force $logpath [file join $result_dir simulate.log]
+# puts "MLKEM${level}_BATCH_PASS config=$config cases=$case_count results=$result_dir"
+MLKEM1024_BATCH_PASS config=rv32im_fast cases=8 results=E:/pqc/mlkem-polymul-rv32i-fpga/results/official_baseline/mlkem1024/batches/rv32im_fast/batch_008_015
+# close_project
+INFO: [Common 17-206] Exiting Vivado at Sat Sep 26 19:30:54 2026...

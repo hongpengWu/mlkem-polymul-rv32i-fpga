@@ -86,7 +86,12 @@ def verify_inputs(path, cases, config, ram_bytes, stack_bytes):
     for name, wanted in hashes.items():
         source = (ROOT / name).resolve()
         require(source.is_relative_to(ROOT), f"Input escapes repository: {name}")
-        if not source.is_file() or sha(source) != wanted:
+        # These two files orchestrate or validate a finished run; Vivado does
+        # not compile or load them. Their recorded hashes remain provenance,
+        # while validator fixes must not invalidate an executed simulation.
+        postprocess_only = name in {"scripts/mlkem_suite/resume.py",
+                                    "scripts/mlkem_suite/collect.py"}
+        if not postprocess_only and (not source.is_file() or sha(source) != wanted):
             require(snapshot_path.is_file(), f"Missing snapshot provenance for changed input: {name}")
             source = (path.parent / "run_snapshot" / name).resolve()
             require(source.is_relative_to(path.parent.resolve() / "run_snapshot") and
@@ -105,7 +110,16 @@ def verify_inputs(path, cases, config, ram_bytes, stack_bytes):
         require(all(case.get(name) == value for name, value in canonical.items() if name != "case_index"),
                 f"Fixture differs from pinned ACVP bytes/metadata: case {index}")
     for expected, suffix in ((False, "input"), (True, "expected")):
-        names = [name for name in hashes if Path(name).name == f"mlkem{level}_{suffix}.mem"]
+        exact = [name for name in hashes
+                 if Path(name).name == f"mlkem{level}_{suffix}.mem" and
+                 (ROOT / name).resolve() ==
+                 (path.parent / f"mlkem{level}_{suffix}.mem").resolve()]
+        # Legacy single-run evidence records the fixture at its repository
+        # path instead of copying it beside simulate.log. Prefer a batch-local
+        # fixture when present; otherwise fall back to that single global one.
+        names = exact or [name for name in hashes
+                          if Path(name).name == f"mlkem{level}_{suffix}.mem" and
+                          (ROOT / name).is_file()]
         require(len(names) == 1, f"Missing/ambiguous frozen {suffix} fixture: {record_path}")
         actual = [int(line, 16) for line in verified[names[0]].read_text(encoding="ascii").splitlines()]
         require(actual == pack_fixture(deepcopy(cases), level, expected),

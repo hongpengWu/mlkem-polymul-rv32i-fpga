@@ -1,0 +1,6 @@
+Time resolution is 1 ps
+MLKEM_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM_START cases=1 ram_bytes=131072 stack_bytes=32768 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+MLKEM_ROW,0,3,42,15,195,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+MLKEM_PASS cases=1 input_bytes=1568 output_bytes=0 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=545989 all_m=2048 min_sp=0x0001f100 stack_used=3824
+$finish called at time : 5460205 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/software/tb_mlkem_suite.sv" Line 309

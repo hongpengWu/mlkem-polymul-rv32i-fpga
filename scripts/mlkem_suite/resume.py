@@ -47,6 +47,9 @@ def validate_batch(batch, level, config, cases):
     assert record['parameter_set'] == level and record['config'] == config
     assert record['ram_bytes'] == 131072 and record['stack_bytes'] == 32768
     for name, wanted in record['input_sha256'].items():
+        if name in {'scripts/mlkem_suite/resume.py',
+                    'scripts/mlkem_suite/collect.py'}:
+            continue
         if sha(ROOT / name) != wanted:
             raise RuntimeError(f'Frozen batch input changed: {name}')
     if (batch / 'success.json').exists():
@@ -173,6 +176,9 @@ def main():
             if active_simulators():
                 raise RuntimeError('Another Vivado/XSim is active; checkpoint preserved')
             for name, wanted in frozen.items():
+                if name in {'scripts/mlkem_suite/resume.py',
+                            'scripts/mlkem_suite/collect.py'}:
+                    continue
                 assert sha(ROOT / name) == wanted, f'Input changed: {name}'
             meta = json.loads((batch / 'batch.json').read_text())
             attempt = uuid.uuid4().hex[:8]

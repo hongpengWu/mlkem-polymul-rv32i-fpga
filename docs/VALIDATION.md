@@ -10,7 +10,7 @@
 | CPU-only 多项式 baseline | PASS，RV32I/RV32IM-iterative/RV32IM-fast 各 8 组、4096 项检查 | [`results/cpu_baseline/`](../results/cpu_baseline/) |
 | ML-KEM-512 官方 PicoRV32 回归 | PASS，三种 CPU 各 145/145 | [`results/official_baseline/mlkem512/`](../results/official_baseline/mlkem512/) |
 | ML-KEM-768 官方 PicoRV32 回归 | PASS，RV32IM-fast 145/145，128 KiB RAM/32 KiB栈 | [768汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md) |
-| ML-KEM-1024 官方 PicoRV32 回归 | RV32IM-fast顺序批次运行中，尚未全量通过 | [续跑记录](ACCEL_KAT_AUTORUN.md) |
+| ML-KEM-1024 官方 PicoRV32 回归 | PASS，RV32IM-fast 145/145，128 KiB RAM/32 KiB栈 | [1024汇总](../results/official_baseline/mlkem1024/rv32im_fast/summary.md) |
 | 主机端 FIPS 203/ACVP | PASS，512/768/1024 合计 435 条 | [`results/official_reference/`](../results/official_reference/) |
 | KeyGen 官方 tcId=1 | PASS，三种 CPU | [`results/official_baseline/keygen512_tc1/`](../results/official_baseline/keygen512_tc1/) |
 | RV32IM 指令配置 | PASS，迭代和快速乘法配置均在软件回归中使用 | [`tb/cpu/`](../tb/cpu/) |
@@ -26,7 +26,7 @@
 ## 官方数据口径
 
 主机端的 435 条记录覆盖 ML-KEM-512/768/1024；PicoRV32已完成
-ML-KEM-512三种CPU各145条，及ML-KEM-768 RV32IM-fast的145条；1024运行中。CPU+PQC 加速版同样完成 145/145 条 ML-KEM-512 记录，
+ML-KEM-512三种CPU各145条，及ML-KEM-768/1024 RV32IM-fast各145条。CPU+PQC 加速版同样完成 145/145 条 ML-KEM-512 记录，
 并核验了每条记录的 MMIO 调用计数、核心周期和输出。PicoRV32 的通过结果证明固定软件、
 输入、输出和 RTL 执行路径一致，不代表正式 CAVP 认证，也不代表实体板结果。
 

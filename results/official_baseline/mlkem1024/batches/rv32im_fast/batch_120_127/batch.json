@@ -1,0 +1,15 @@
+{
+  "parameter_set": 1024,
+  "config": "rv32im_fast",
+  "original_indices": [
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127
+  ],
+  "case_count": 8
+}

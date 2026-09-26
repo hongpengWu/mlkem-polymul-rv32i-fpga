@@ -130,6 +130,7 @@ python scripts/mlkem_suite/resume.py --parameter-set 1024 --prepare-only
 python scripts/mlkem_suite/resume.py --parameter-set 1024 --config rv32im_fast
 python scripts/mlkem_suite/collect.py --parameter-set 1024 --write
 python scripts/mlkem_suite/collect.py --parameter-set 768 --check-only
+python scripts/mlkem_suite/collect.py --parameter-set 1024 --write
 ```
 
 resume每批默认8条、最后1条，独立attempt目录，保存成功断点后可恢复；当前批运行中勿再启动。

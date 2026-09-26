@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "case_count": 8,
+  "log_sha256": "f86aac3add5af92187fcc04175d25b1ec2700cf654adc0fad392eafc84a5a1a3",
+  "run_inputs_sha256": "cd3b3976e9899259881fc183160522adf85476e00a6df90b37379219192188d1",
+  "finished_at": "2026-09-26T21:13:41.318607+08:00"
+}
