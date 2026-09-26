@@ -4,14 +4,16 @@
 [BENCHMARKS.md](BENCHMARKS.md) 和对应原始日志为准，长期阶段门见
 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 
-## 最新执行状态：768 CPU 官方全集通过，1024 顺序批次运行
+## 最新执行状态：软件 K=2/K=3/K=4 基线完成，K=2 加速完成
 
-2026-09-26：768 RV32IM-fast CPU-only 已逐字节通过全部 145 条官方记录，算法区间合计
-**1,112,525,793 cycles**，全程最大观测栈 **18,432 B**。新参数化测试使用 **128 KiB RAM /
-32 KiB 栈**；512 原基线仍为64/16 KiB。1024 已构建固件，正按19个可恢复批次运行，
-尚未宣称全部通过。K=3/K=4 加速硬件仍待移植和验证。
-证据见 [768 汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md)，
-运行断点见 [自动续跑记录](ACCEL_KAT_AUTORUN.md)。
+2026-09-26：ML-KEM-768 和 ML-KEM-1024 的 RV32IM-fast CPU-only 官方记录均已逐字节通过
+145/145。算法区间分别为 **1,112,525,793** 和 **1,699,294,360 cycles**，最大观测栈分别为
+**18,432 B** 和 **24,464 B**；两组使用 **128 KiB RAM / 32 KiB 栈**，512 原基线仍为
+64/16 KiB。K=2（ML-KEM-512）CPU+PQC 加速链路也已通过 145/145，端到端为 0.9930×。
+当前待做的是 K=3/K=4 加速硬件移植、RTL 官方 KAT 和 Vivado 实现。
+证据见 [768 汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md)、
+[1024 汇总](../results/official_baseline/mlkem1024/rv32im_fast/summary.md) 和
+[自动续跑记录](ACCEL_KAT_AUTORUN.md)。
 
 RV32IM-fast 已通过新总线桥执行 MMIO C 驱动，3 组输入的 768 个系数全部核对通过。
 调用周期均为 48,632，包含搬入、启动、等待及读回；核心为 136 周期。标准库 native hook
@@ -84,7 +86,7 @@ RV32IM-fast 的官方 KAT 对照已完成；当前结果用于定位搬运/轮�
 | PicoRV32 ML-KEM-512 官方全集 | 三种 CPU 各 145 条通过，覆盖六类操作、两类密钥检查的有效/无效结果及隐式拒绝 | [全量汇总](../results/official_baseline/mlkem512/summary.md) |
 | 输入、输出和执行真实性检查 | 每组核对 148,160 B 输入和 101,760 B 输出；检查实际 rdcycle、M 指令、栈和异常 | [验证记录](VALIDATION.md) |
 | 错误输出拒绝检查 | 临时预期公钥首字节翻转后，被全量 TB 准确拒绝 | [负向检查](../results/official_baseline/mlkem512/negative_check/README.md) |
-| 标准软件的完整 CPU baseline | 512 API/阶段分析和768 fast CPU全集完成；1024运行中，新配置实现待做 | [M2 路线](COMPETITION_ROADMAP.md#m2picorv32-完整软件-baseline) |
+| 标准软件的完整 CPU baseline | 512 API/阶段分析和768/1024 RV32IM-fast CPU全集完成；其他CPU消融和K3/K4硬件待做 | [M2 路线](COMPETITION_ROADMAP.md#m2picorv32-完整软件-baseline) |
 | 标准库接口审计与新 HLS 原型 | C 仿真 103/103、HLS 综合通过；137 cycles 为核心估算，II=1、估算 Fmax 150.83 MHz | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[新 HLS](../hls/mlkem512_basemul_k2/) |
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
 | PQC 加速器接入标准软件 | CPU+驱动及 ML-KEM-512 官方 KAT 145/145 通过；端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
@@ -139,7 +141,7 @@ RV32IM-fast 的官方 KAT 对照已完成；当前结果用于定位搬运/轮�
 | 6 | 主线 64 KiB 配置 Vivado 实现 | 同条件软件/硬件资源、时序与 bitstream；不沿用旧 16 KiB 报告 | 待执行 |
 | 7 | Keccak 加速及与多项式协同评估 | 软件、仅多项式、仅 Keccak、两者协同的周期和资源可比 | 待执行 |
 | 8 | 512 存储/计算优化 | 搬运分解、BRAM、适用的多 PE 和流水化，有资源/性能前后数据 | 待执行 |
-| 9 | 其他 CPU 消融及 768/1024 扩展 | 补齐官方回归、基本周期/内存、最终架构验证及适用实现结果 | 768 fast CPU完成；1024 fast CPU运行中；其他配置及硬件待测 |
+| 9 | 其他 CPU 消融及 768/1024 扩展 | 补齐官方回归、基本周期/内存、最终架构验证及适用实现结果 | 768/1024 RV32IM-fast CPU完成；RV32I/迭代CPU消融及K3/K4硬件待测 |
 | 10 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 待执行 |
 | 11 | 最后进行 PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 最后阶段 |
 
@@ -151,10 +153,10 @@ RV32IM-fast 的官方 KAT 对照已完成；当前结果用于定位搬运/轮�
 当前可表述为：
 
 > 固定版本参考实现在主机上通过 435 项 NIST ACVP 官方公开向量回归；三种 PicoRV32
-> 配置在 RTL 仿真中均通过全部 145 条固定版本 ML-KEM-512 官方记录，覆盖 KeyGen、Encaps、
-> 两种 Decaps 形式及密钥检查。快速乘法 CPU 的 512 全量阶段分析和新 BaseMul 的独立
-> MMIO/BRAM/BIST、Vivado 2024.2 实现已完成；PicoRV32 硬件接入、768/1024 CPU 回归、
-> 64 KiB 系统实现及标准软件的硬件加速对照仍待完成。
+> 配置在 RTL 仿真中均通过全部 145 条固定版本 ML-KEM-512 官方记录。ML-KEM-768/1024
+> 的 RV32IM-fast CPU-only 官方记录也分别通过 145/145；K=2 的 BaseMul 独立
+> MMIO/BRAM/BIST、Vivado 2024.2 实现及 CPU+PQC 全流程已完成。K=3/K=4 加速硬件
+> 仍待移植、RTL 官方 KAT 和 Vivado 实现验证。
 
 全部对应回归完成后，可以描述所覆盖版本、参数集、操作和用例的结果一致性。
 公开向量离线回归不等于正式 CAVP 算法验证，也不等于 FIPS 140-3 / CMVP 密码模块认证；

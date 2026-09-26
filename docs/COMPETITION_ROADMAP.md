@@ -1,6 +1,6 @@
 # ML-KEM FPGA 竞赛路线图
 
-更新日期：2026-09-25。最新完成情况与近期执行顺序见 [项目进度](PROJECT_STATUS.md)。
+更新日期：2026-09-26。最新完成情况与近期执行顺序见 [项目进度](PROJECT_STATUS.md)。
 
 ## 1. 项目定位
 
@@ -64,7 +64,7 @@ RV32IM-fast CPU+PQC 的 145 条 ML-KEM-512 官方 KAT 也已完成；端到端�
 原 8 组输入来自本项目，仍作为“软件多项式乘法 baseline”；历史官方 KeyGen 单例独立记账。
 当前完整 512 API 结果见 [全量汇总](../results/official_baseline/mlkem512/summary.md) 和
 [512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md)；已包含 RV32IM-fast＋K=2 加速器 145 条
-RTL仿真证据；另已完成768 fast CPU-only 145条，1024 CPU-only运行中，
+RTL仿真证据；另已完成768/1024 fast CPU-only各145条，
 K3/K4加速硬件仍待移植验证。扩展参数采用128 KiB RAM/32 KiB栈，512保持64/16 KiB。
 
 ## 3. 最终系统和公平对照
@@ -184,7 +184,7 @@ PicoRV32 接入和 ML-KEM-512 CPU+PQC 官方 KAT 已完成；当前性能基线�
 - 已完成新 HLS 的独立 native MMIO/BRAM adapter，基址 `0x50001000`；
 - 已接入 RV32IM-fast 总线，只替换标准软件 BaseMul 调用，保留 CPU-only baseline；
 - 保留 CPU 侧输入写入、启动、轮询、读回和校验；
-- 512已跑通完整流程；768 fast CPU官方全集通过，1024 fast CPU分批运行中；K3/K4硬件包装和KAT待做；
+- 512已跑通完整流程；768/1024 fast CPU官方全集通过；K3/K4硬件包装和KAT待做；
 - 同时测量 Core、Call 和完整 KEM 三种边界。
 
 出口条件：
@@ -390,12 +390,12 @@ MMIO/BRAM/BIST、Vivado 实现和 CPU+PQC 官方 KAT 已完成；145 条 RTL 记
 - [x] 三种 PicoRV32 配置通过官方 ML-KEM-512 KeyGen 首例（仅 RTL 仿真）；
 - [x] 建立逐字节 oracle、实际 rdcycle/M 指令观测和错字节拒绝检查；
 - [x] 完成 PicoRV32 Encaps/Decaps 首例和 ML-KEM-512 全套对应向量；
-- [ ] 完成 PicoRV32 768/1024 对应官方向量回归及基本周期/内存测量；
+- [x] 完成 PicoRV32 768/1024 RV32IM-fast 对应官方向量回归及基本周期/内存测量；
 - [x] 完成 512 完整 API 的 RAM、代码、观测栈和动态 M 指令测量；
 - [x] 完成快速 CPU 的 512 独立阶段 profiling（145 条、19 批）；
 - [x] 完成新 BaseMul 的接口契约、独立 MMIO/BRAM/BIST 仿真、Vivado 实现和 bitstream；
 - [ ] 完成三组 64 KiB CPU 配置的资源、时序和 bitstream；
-- [ ] 补齐 768/1024 的完整软件移植和内存需求测量；
+- [x] 补齐 768/1024 RV32IM-fast 软件移植和内存需求测量；
 - [ ] 建立官方 KAT 的多项式操作数 trace；
 - [x] 将新 BaseMul 接入 RV32IM-fast 并通过官方 ML-KEM-512 KAT；
 - [ ] 按 Keccak 71%–81% 的实测占比，比较仅多项式、仅 Keccak 与两者协同的端到端收益；
@@ -420,4 +420,4 @@ M0/M1 的主机端交付物已经落地：官方向量位于
 `results/official_baseline/keygen512_tc1/`，当前完整 512 回归保存于
 `results/official_baseline/mlkem512/`。后者只覆盖指定版本的 512 官方记录，
 不能用于证明其他参数集、实板或正式认证。512 CPU＋加速器和768 fast CPU已有各自独立证据，
-1024 fast CPU仍运行中，K3/K4加速硬件尚待移植与验证。
+1024 fast CPU已完成，K3/K4加速硬件尚待移植与验证。
