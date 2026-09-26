@@ -40,7 +40,7 @@ PYNQ-Z2 不能运行 768/1024。当前阶段先做仿真与实现，实板放在
 
 当前仓库已经完成“多项式乘法级软件 baseline”、三参数集共 435 项主机官方向量回归，
 以及三种 PicoRV32 配置各 145 条 ML-KEM-512 官方记录的完整 API 基线。
-2026-09-25 已完成快速乘法 CPU 的 512 全量阶段分析；M2 仍待补齐 768/1024 CPU 回归
+2026-09-25 已完成快速乘法 CPU 的 512 全量阶段分析；768 fast CPU于2026-09-26完成145/145，1024 fast CPU顺序回归中；M2仍待补齐其他CPU配置
 和 64 KiB 配置实现。新 BaseMul 的独立 MMIO/BRAM/BIST 与 Vivado 2024.2 实现已通过，
 RV32IM-fast CPU+PQC 的 145 条 ML-KEM-512 官方 KAT 也已完成；端到端为 0.9930×，
 下一步应先降低搬运和轮询开销，再扩展多 PE。详细瓶颈与接入任务见 [阶段分析](MLKEM512_PROFILE.md)。
@@ -64,7 +64,8 @@ RV32IM-fast CPU+PQC 的 145 条 ML-KEM-512 官方 KAT 也已完成；端到端�
 原 8 组输入来自本项目，仍作为“软件多项式乘法 baseline”；历史官方 KeyGen 单例独立记账。
 当前完整 512 API 结果见 [全量汇总](../results/official_baseline/mlkem512/summary.md) 和
 [512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md)；已包含 RV32IM-fast＋K=2 加速器 145 条
-RTL 仿真证据，但不包含 768/1024 PicoRV32/硬件执行证据。
+RTL仿真证据；另已完成768 fast CPU-only 145条，1024 CPU-only运行中，
+K3/K4加速硬件仍待移植验证。扩展参数采用128 KiB RAM/32 KiB栈，512保持64/16 KiB。
 
 ## 3. 最终系统和公平对照
 
@@ -183,7 +184,7 @@ PicoRV32 接入和 ML-KEM-512 CPU+PQC 官方 KAT 已完成；当前性能基线�
 - 已完成新 HLS 的独立 native MMIO/BRAM adapter，基址 `0x50001000`；
 - 已接入 RV32IM-fast 总线，只替换标准软件 BaseMul 调用，保留 CPU-only baseline；
 - 保留 CPU 侧输入写入、启动、轮询、读回和校验；
-- 512 已跑通完整流程；768/1024 仍需对应参数化 CPU/硬件包装和官方 KAT 检查；
+- 512已跑通完整流程；768 fast CPU官方全集通过，1024 fast CPU分批运行中；K3/K4硬件包装和KAT待做；
 - 同时测量 Core、Call 和完整 KEM 三种边界。
 
 出口条件：
@@ -418,4 +419,5 @@ M0/M1 的主机端交付物已经落地：官方向量位于
 `results/official_reference/`。主机结果不计入 PicoRV32 覆盖；历史 M2 首例独立保存于
 `results/official_baseline/keygen512_tc1/`，当前完整 512 回归保存于
 `results/official_baseline/mlkem512/`。后者只覆盖指定版本的 512 官方记录，
-不代表 768/1024、CPU＋加速器系统、实板或正式认证已经通过。
+不能用于证明其他参数集、实板或正式认证。512 CPU＋加速器和768 fast CPU已有各自独立证据，
+1024 fast CPU仍运行中，K3/K4加速硬件尚待移植与验证。

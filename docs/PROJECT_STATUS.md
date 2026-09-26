@@ -1,10 +1,17 @@
 # 项目进度与执行记录
 
-更新时间：2026-09-25。本页汇总已完成工作、当前覆盖范围和下一步；详细数值以
+更新时间：2026-09-26。本页汇总已完成工作、当前覆盖范围和下一步；详细数值以
 [BENCHMARKS.md](BENCHMARKS.md) 和对应原始日志为准，长期阶段门见
 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 
-## 最新执行状态：快速 CPU 与 BaseMul 最小闭环通过
+## 最新执行状态：768 CPU 官方全集通过，1024 顺序批次运行
+
+2026-09-26：768 RV32IM-fast CPU-only 已逐字节通过全部 145 条官方记录，算法区间合计
+**1,112,525,793 cycles**，全程最大观测栈 **18,432 B**。新参数化测试使用 **128 KiB RAM /
+32 KiB 栈**；512 原基线仍为64/16 KiB。1024 已构建固件，正按19个可恢复批次运行，
+尚未宣称全部通过。K=3/K=4 加速硬件仍待移植和验证。
+证据见 [768 汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md)，
+运行断点见 [自动续跑记录](ACCEL_KAT_AUTORUN.md)。
 
 RV32IM-fast 已通过新总线桥执行 MMIO C 驱动，3 组输入的 768 个系数全部核对通过。
 调用周期均为 48,632，包含搬入、启动、等待及读回；核心为 136 周期。标准库 native hook
@@ -52,7 +59,7 @@ RV32IM-fast 的官方 KAT 对照已完成；当前结果用于定位搬运/轮�
 | 工作范围 | ML-KEM-512 | ML-KEM-768 / 1024 |
 |---|---|---|
 | NIST 安全类别 | 1，主目标应用的安全等级 | 3 / 5，扩展参数集 |
-| 官方公开向量正确性回归 | 三种 CPU 各 145 条已完成 | 主机已通过；三种 CPU 对应测试待做 |
+| 官方公开向量正确性回归 | 三种 CPU 各 145 条已完成 | 主机已通过；768 fast CPU 145/145，1024 fast CPU运行中，其他CPU待测 |
 | CPU 基本性能与内存 | 三种 CPU 完整 API 已测；快速乘法全量阶段分析已完成 | 三种 CPU 补齐基本周期、代码、RAM 和栈需求 |
 | 加速器优化 | 重点分析阶段耗时、数据搬运、BRAM 和多 PE | 验证共用计算核心和接口的兼容性 |
 | 设计空间与资源权衡 | 重点开展，形成主要竞赛结论 | 最终选定架构补充代表性性能和存储结果 |
@@ -77,7 +84,7 @@ RV32IM-fast 的官方 KAT 对照已完成；当前结果用于定位搬运/轮�
 | PicoRV32 ML-KEM-512 官方全集 | 三种 CPU 各 145 条通过，覆盖六类操作、两类密钥检查的有效/无效结果及隐式拒绝 | [全量汇总](../results/official_baseline/mlkem512/summary.md) |
 | 输入、输出和执行真实性检查 | 每组核对 148,160 B 输入和 101,760 B 输出；检查实际 rdcycle、M 指令、栈和异常 | [验证记录](VALIDATION.md) |
 | 错误输出拒绝检查 | 临时预期公钥首字节翻转后，被全量 TB 准确拒绝 | [负向检查](../results/official_baseline/mlkem512/negative_check/README.md) |
-| 标准软件的完整 CPU baseline | 512 API 与快速 CPU 阶段分析已完成；768/1024 CPU 回归及 64 KiB 实现仍待做 | [M2 路线](COMPETITION_ROADMAP.md#m2picorv32-完整软件-baseline) |
+| 标准软件的完整 CPU baseline | 512 API/阶段分析和768 fast CPU全集完成；1024运行中，新配置实现待做 | [M2 路线](COMPETITION_ROADMAP.md#m2picorv32-完整软件-baseline) |
 | 标准库接口审计与新 HLS 原型 | C 仿真 103/103、HLS 综合通过；137 cycles 为核心估算，II=1、估算 Fmax 150.83 MHz | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[新 HLS](../hls/mlkem512_basemul_k2/) |
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
 | PQC 加速器接入标准软件 | CPU+驱动及 ML-KEM-512 官方 KAT 145/145 通过；端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
@@ -90,13 +97,13 @@ RV32IM-fast 的官方 KAT 对照已完成；当前结果用于定位搬运/轮�
 | 电脑主机参考实现 | 145 项所选记录通过 | 145 项所选记录通过 | 145 项所选记录通过 |
 | PicoRV32 RV32I RTL | 145 项所选记录通过 | 待测 | 待测 |
 | PicoRV32 RV32IM 迭代 RTL | 145 项所选记录通过 | 待测 | 待测 |
-| PicoRV32 RV32IM 快速 RTL | 145 项所选记录通过 | 待测 | 待测 |
+| PicoRV32 RV32IM 快速 RTL | 145 项所选记录通过 | 145 项通过，128 KiB RAM | 顺序批次运行中，128 KiB RAM |
 | CPU＋PQC 加速器标准软件 | 145 项 RTL 仿真通过；端到端 0.9930×，性能优化待做 | 待接入与验证 | 待接入与验证 |
 | 本项目标准软件实板回归 | 最后执行 | 最后执行 | 最后执行 |
 
 主机的 435 项是 `75 + 165 + 195`，来自固定版本 FIPS203 keyGen、FIPS203 encapDecap
-和 FIPS203-tr1 encapDecap 数据集。PicoRV32 本次的 435 次执行则是同一 512 集合在三种 CPU
-上各执行 145 项；两者口径不同，不能据此称 PicoRV32 已覆盖三个参数集。
+和 FIPS203-tr1 encapDecap 数据集。历史 PicoRV32 的 435 次执行是同一512集合在三种CPU上各145项；
+本次另新增768 fast CPU的145项。1024仍运行中，不能称PicoRV32已覆盖三个参数集。
 每参数集为 `25 + 55 + 65 = 145` 项记录，其中包含密钥检查，不能统称 145 次完整 KEM。
 后续按数据集/修订、操作、参数集、tgId、tcId 登记覆盖，保留检查型用例与运算型用例的区别。
 
@@ -132,7 +139,7 @@ RV32IM-fast 的官方 KAT 对照已完成；当前结果用于定位搬运/轮�
 | 6 | 主线 64 KiB 配置 Vivado 实现 | 同条件软件/硬件资源、时序与 bitstream；不沿用旧 16 KiB 报告 | 待执行 |
 | 7 | Keccak 加速及与多项式协同评估 | 软件、仅多项式、仅 Keccak、两者协同的周期和资源可比 | 待执行 |
 | 8 | 512 存储/计算优化 | 搬运分解、BRAM、适用的多 PE 和流水化，有资源/性能前后数据 | 待执行 |
-| 9 | 其他 CPU 消融及 768/1024 扩展 | 补齐官方回归、基本周期/内存、最终架构验证及适用实现结果 | 待执行 |
+| 9 | 其他 CPU 消融及 768/1024 扩展 | 补齐官方回归、基本周期/内存、最终架构验证及适用实现结果 | 768 fast CPU完成；1024 fast CPU运行中；其他配置及硬件待测 |
 | 10 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 待执行 |
 | 11 | 最后进行 PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 最后阶段 |
 

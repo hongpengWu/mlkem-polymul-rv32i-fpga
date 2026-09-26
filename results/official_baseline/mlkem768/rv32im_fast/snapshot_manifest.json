@@ -1,0 +1,27 @@
+{
+  "archived_at": "2026-09-26T17:53:02.536874+08:00",
+  "timing": "Post-run archive: original run_inputs hashes were captured before simulation; additional source/build files are post-run snapshots, not pre-build attestation.",
+  "run_input_sha256": {
+    "rtl/cpu/picorv32.v": "fd142889e8178ef67f1cff17cb2d18b3adae56fcae2badf7cbcc4c4f5ac7960e",
+    "rtl/benchmark/cpu_benchmark_system.v": "eb0e2bc113242f6a5760a6a11b34caa6d73c9df3317403279ec7529ab0c567b3",
+    "tb/software/tb_mlkem_suite.sv": "c9c5c491dfeea3820de49146d5e18082e0b13e130df3c5d64c0fc7a5e57026f0",
+    "scripts/mlkem_suite/run.tcl": "342ec81fb5265f8403240313532391be4b442852f0d6ecebd4c77bb2702277f2",
+    "scripts/mlkem_suite/sim.tcl": "3979baeb16a37a5f23c04be7e8e963fd6b4d7f908f17b1fcf4fb96a5b48487c6",
+    "scripts/mlkem_suite/run.py": "590513fff2554058452b091df5a92b5e4a3b8f8af0cd92f980b80a47b4e92234",
+    "firmware/images/mlkem768_suite/rv32im.mem": "006ba31c9ed7b187896046253ece955020c78dca2f747e717633bcda03f9640c",
+    "tb/software/mlkem768_suite/cases.json": "424cd272f40ca5007084141d3fdcbc141d8e4dd7cd5e732037111cceac1008fc",
+    "tb/software/mlkem768_suite/mlkem768_expected.mem": "c747bb105944b889ab23fe42958469de46d64a90e33f9ea96935f8e715ae402b",
+    "tb/software/mlkem768_suite/mlkem768_input.mem": "897e809672b4c51fb0afd7b815ddf357722b693fffabe4ce3d1b957580b53617"
+  },
+  "additional_postrun_sha256": {
+    "scripts/mlkem_suite/build.py": "a7378a96d17d678adae3e04422c67a2ecf8713c2dcb63d770f3e4a74925d56a8",
+    "scripts/kat/package_mlkem.py": "49e374423d0b03c08a8c747f6f9e59aa7e0b3a99b64ac58295345f8814f74783",
+    "firmware/mlkem_suite/kat_suite.c": "e54b5e5520081231f30d7665f86c736c7e6a2b3a41b937f56e1b2cca376e0d80",
+    "firmware/mlkem_suite/mlkem_config.h": "ef65a032125abe7e564ce76522d634cd92a7d4bfdad04803d7e734bdf8bfba9a",
+    "firmware/mlkem_baseline/startup.S": "1328921a185dfb4f023f709dcf3ea002dc44e622b5397137deb2d44985ffc945",
+    "firmware/mlkem_baseline/runtime.c": "ad46980b6b67acc30f26903635f363cc0a974fa64e93ad849609ede4ab171722",
+    "firmware/mlkem_baseline/kat_protocol.h": "4ca178ed5ce2c838033153fa35410e4594ec6c64ace2f8ee9b1d1d501654a967",
+    "third_party/mlkem-native/SOURCE_MANIFEST.json": "e081d0d75e60b9683a9cd0fb3fdab2fed96c251ef0a9ae5ba1f32ce102bcf56a",
+    "results/official_baseline/mlkem768/build_manifest.json": "44e983c5905749b32c5a67f1fa482090238fbb618d5b4a893e8ac0fbddcb2393"
+  }
+}

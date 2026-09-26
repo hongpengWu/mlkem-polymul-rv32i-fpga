@@ -117,3 +117,24 @@ vivado -mode batch -source scripts/mlkem512_basemul_k2/implement.tcl
 回归已完成，结果位于 `results/accelerator_cpu/kat/`；145 条全部通过，但端到端为
 0.9930×，后续优化应先降低批量搬运、轮询和读回开销。不能把独立 BIST 结果称为完整
 KEM 性能收益，也不能把该 K=2 核心直接宣称支持 ML-KEM-768/1024。
+
+
+## ML-KEM-768/1024 CPU-only 可恢复回归
+
+新入口仅接受768/1024，避免覆盖512冻结基线。默认128 KiB RAM、32 KiB栈；同一参数下
+所有CPU配置的RAM一致。已有通过结果无需重跑，构建不得与使用同一输入的仿真并发。
+
+```powershell
+python scripts/mlkem_suite/build.py --parameter-set 1024
+python scripts/mlkem_suite/resume.py --parameter-set 1024 --prepare-only
+python scripts/mlkem_suite/resume.py --parameter-set 1024 --config rv32im_fast
+python scripts/mlkem_suite/collect.py --parameter-set 1024 --write
+python scripts/mlkem_suite/collect.py --parameter-set 768 --check-only
+```
+
+resume每批默认8条、最后1条，独立attempt目录，保存成功断点后可恢复；当前批运行中勿再启动。
+新建`build/mlkem_suite/STOP`可在批次结束后停调度，删除该标记后恢复。collector要求完整145条、
+官方输入/期望、最终PASS和冻结输入哈希；构建成功不算RTL通过。
+768首次运行是完整单次145条，证据在`results/official_baseline/mlkem768/rv32im_fast/`。
+该次run_inputs是仿真前哈希，run_snapshot为事后归档，用于核对后续修订前的运行脚本；
+额外源码快照并非构建前采集。1024新构建保存命令及源码、链接脚本、编译器和libgcc哈希。

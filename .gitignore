@@ -20,6 +20,12 @@
 /vivado/mlkem512_*/*
 !/vivado/mlkem512_*/mlkem512.xpr
 !/vivado/mlkem512_*/mlkem512.mem
+/vivado/mlkem768_*/*
+!/vivado/mlkem768_*/*.xpr
+!/vivado/mlkem768_*/mlkem768.mem
+/vivado/mlkem1024_*/*
+!/vivado/mlkem1024_*/*.xpr
+!/vivado/mlkem1024_*/mlkem1024.mem
 
 *.jou
 *.log
@@ -30,6 +36,8 @@
 !/results/official_baseline/keygen512_tc1/*/simulate.log
 !/results/official_baseline/mlkem512/*/simulate.log
 !/results/official_baseline/mlkem512/batches/**/simulate.log
+!/results/official_baseline/mlkem768/**/simulate.log
+!/results/official_baseline/mlkem1024/**/simulate.log
 !/results/official_baseline/mlkem512/profile/batches/**/simulate.log
 !/results/accelerator_interface/hls_synthesis/*.log
 

@@ -1,31 +1,52 @@
-# 加速 KAT 无人值守续跑
+# KAT 无人值守续跑
 
-2026-09-25：用户授权在当前仿真结束后继续校验、汇总、更新报告、扩展验证、清理和提交到 `24-2hp`。当前 Vivado/XSim 运行不得中断。自动续跑由本任务的 Codex heartbeat 接管，不再运行独立 `watch_and_finalize.ps1`。
+更新时间：2026-09-26。用户已授权校验、汇总、扩展验证、清理并提交推送到 `24-2hp`；
+原始分支和 ML-KEM-512 CPU-only 基线不改，实板最后进行。
+自动续跑 ID：`pqc-kat`，每 20 分钟检查；电脑需保持开机、不休眠、Codex 运行。
 
-自动续跑 ID：`pqc-kat`，状态 ACTIVE，每 20 分钟检查。电脑应保持开机、不休眠，Codex 保持运行。
+## 已完成
 
-## 当前运行与已发现的脚本问题
+- [x] 512 CPU+PQC：19 批、145/145 唯一覆盖，各批最终 PASS、实际 MMIO 指标和官方输出通过。
+  缺失 0–37 已补齐，142–144 已按实际 3 条修复，不要重跑旧 14 批入口。
+- [x] 独立证据位于 `results/accelerator_cpu/kat/`，默认 collector 通过；已提交推送 `0b16e76`。
+  CPU-only / CPU+PQC 为 692,273,249 / 697,154,629 cycles，端到端 0.992998×。
+  核心 46,240、搬入 14,404,780、读回 1,986,620、其余 API/驱动 680,716,989 cycles；后者不能全称轮询。
+- [x] 768 RV32IM-fast CPU-only：2026-09-26 17:40 完成 145/145，collector 校验通过。
+  算法周期 1,112,525,793，全程周期 1,147,835,590，最大观测栈 18,432 B。
+  证据和表格在 `results/official_baseline/mlkem768/rv32im_fast/`。
+- [x] K3/K4 参数化固件、fixture 和 TB 已建立，128 KiB RAM、32 KiB 栈。
+  1024 RV32I/RV32IM 已编译；编译成功不等于 RTL 通过。
 
-- 可见入口：`build/run_accel_kat_visible.ps1`；依次运行 14 批，原始编号 **38–144，共 107 条**。这不等于加速版完整 145 条；CPU-only 的 0–37 不能充当加速版证据。
-- 成功批次日志目前写入 `results/official_baseline/mlkem512/batches/rv32im_fast/batch_*/accelerate_simulate.log`；CPU-only 原有日志和结果保持不变。
-- 最后一批 `batch_142_144/batch.json` 的 `case_count` 是 **3**，现有可见入口却始终传入 **8**。如该批失败，保留其诊断日志，待当前运行结束后按真实数量重跑此批；不要重跑已经验证通过的批次。
-- `Read-Host` 会让外层 PowerShell 一直存在，`ACCEL_KAT_RUN_FINISHED` 在失败时也会输出。必须根据 Vivado/XSim 活动、各批最终 PASS 和 collector 校验判断完成。
-- `collect_kat.py` 默认读取 `results/accelerator_cpu/kat/batch_*`。应先归档加速版独立批次证据，再用默认路径收集；不得用 baseline 的 `simulate.log` 替代缺失的加速日志。
+## 当前运行：1024 RV32IM-fast CPU-only
 
-## 按顺序执行
+- 入口：`python scripts/mlkem_suite/resume.py --parameter-set 1024 --config rv32im_fast`。
+  顺序 19 批：0–7、8–15、…、136–143、144（最后 1 条）。
+- 调度输出：`build/mlkem_suite/1024_scheduler.log`；异常：同目录 `1024_scheduler.err`。
+- 每批证据：`results/official_baseline/mlkem1024/batches/rv32im_fast/batch_*/`。
+  实时日志为 `console_<attempt>.txt`；`simulate.log` 可能缓冲至结束，不能因其为空误判停止。
+- 构建目录：`build/mlkem_suite/1024/rv32im_fast/<batch>/<attempt>/`，重试使用新目录。
+- 每批保存真实 case_count、original_indices、运行前输入哈希、最终 PASS 和 success.json。
+  同一命令可恢复，校验后跳过成功批次；Windows 进程锁及活动 Vivado/XSim 检查防止重复调度。
+- 新建 `build/mlkem_suite/STOP` 后，在当前批结束时停止启动下一批；恢复前移除标记。
+  运行中禁止更改冻结脚本、TB、固件、manifest，禁止终止正常仿真或删除活动目录。
 
-1. [ ] 当前运行结束后，归档已完成的加速批次日志、元数据和输入/期望向量；使用固定官方向量生成缺失的 0–37，补跑缺失/失败批次。每批使用自己的实际 `case_count` 和独立构建目录。
-2. [ ] 校验 0–144 各出现且仅出现一次；所有纳入统计的批次必须有最终 PASS、实际硬件调用指标和正确输出。保存源码/固件/向量/日志哈希，不能声称事后计算的哈希是运行前采集的证据。
-3. [ ] 汇总同一 RV32IM-fast CPU 的软件/加速 API 周期、加速比、核心及搬运周期；保留其他软件/控制开销，不把剩余周期全部解释为轮询。按操作和数据集说明结论。
-4. [ ] 更新 `BENCHMARKS.md`、`PROJECT_STATUS.md`、`VALIDATION.md` 和路线图中的过时状态，明确这是 RTL 仿真结果。
-5. [ ] 抽查各主要操作的输入、期望输出、固件配置和真实 MMIO 调用证据。
-6. [ ] 开展 768/1024 正确性扩展：当前只有主机端 435 项通过记录，尚无对应 PicoRV32 完整测试包装；512 专用 K=2 硬件不能直接冒充 K=3/4 支持。先完成所需移植和检查，再执行对应 CPU/硬件验证；软件回退须明确标注。不要重复已通过且输入未变的主机测试来代替此项。
-7. [ ] 保存原始证据和摘要后，只清理已停止运行的可再生构建缓存，保留用户要求的工程和烧录产物；审查差异后提交当前任务成果到 `24-2hp`。保持原始分支不变；推送沿用本会话的授权。
+## 下一步顺序
 
-## 运行规则
+1. [ ] 1024 全部结束后执行 `python scripts/mlkem_suite/collect.py --parameter-set 1024 --write`。
+   严查145唯一覆盖、每批最终PASS、官方字节/返回值、M指令、栈、周期和哈希。
+   失败保存诊断，仅修复并重跑缺失或失败批次。
+2. [ ] 更新性能表、覆盖矩阵、路线图。K3/K4 的128/32 KiB与512的64/16 KiB分开列明。
+   768 run_snapshot是事后归档：原run_inputs哈希仿真前捕获，额外源码只属事后快照。
+   不改写历史哈希或伪称构建前证据。1024已补齐命令、源码、工具链和链接脚本哈希。
+3. [ ] 完成K3/K4加速硬件移植和对应RTL官方回归。K=2专用核不能冒充支持K3/K4，
+   主机、纯CPU或软件回退不能替代对应硬件验证。
+4. [ ] 完成新系统所需Vivado实现，保留XPR、报告和烧录产物；只清理已停止的可再生缓存。
+   审查差异后提交推送24-2hp，可阶段提交；未测项目保持待测，实板最后进行。
+5. [ ] 全部授权步骤完成后删除heartbeat并简短总结。
 
-续跑时先读取本文件和最新进程/结果状态。运行未变则静默退出，避免重复分析与无效 token 消耗。禁止同时启动第二份同批仿真或删除活动目录。遇到可修复问题自行处理；只有缺工具、需用户操作或真实阻塞才通知。全部完成后停止本次 heartbeat 并给出简短总结。
+## 检查规则
 
-## 续跑记录
-
-- 2026-09-25 22:09：发现可见 PowerShell 处于文本选择状态，XSim CPU 时间停止增长。仅向该批处理控制台发送 Escape 解除选择，未结束任何仿真进程；`batch_078_085` 随即完成并保存最终 PASS，累计 6/14 批（48 条）。后续若日志长时间不变且 CPU 不增长，应检查控制台选择暂停，不能直接判定算法死锁。
+先读本文件，再查 vivado/xsim/xsimk/xelab/xvlog 和日志；正常推进时静默结束，避免重复分析。
+Read-Host、外层PowerShell存在、RUN_FINISHED不是成功判据。仅阶段完成、失败或需用户操作时通知。
+可修复问题自主处理。历史可见控制台曾因文本选择暂停，Escape后恢复；当前stdout写日志。
+CPU时间增长和有效ROW是进度证据，最终成功仍须PASS。
