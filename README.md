@@ -12,7 +12,7 @@
   独立核的优化、资源和时序见 [测量记录](results/hls/mlkem1024_keccak/summary.md)。
 - K4 RV32IM-fast＋Keccak已通过**145/145官方RTL记录**，同CPU/RAM测试集API总周期比**3.803×**。
   KeyGen/Encaps/Decaps分别4.203×/3.636×/3.602×；[原始日志与汇总](results/keccak_cpu/kat/summary.md)。
-  完整系统资源/布局布线及实板待完成；独立核时序不代替系统时序。
+  完整系统OOC已完成：LUT19,084、FF16,970、BRAM34.5、DSP4，资源足够；100 MHz内部setup尚差1.367 ns，实板待做。
 - ML-KEM-768/1024 RV32IM-fast CPU-only RTL 官方回归各通过 145/145，使用 128 KiB RAM / 32 KiB 栈。
 
 - ML-KEM-512 的 RV32I、RV32IM 迭代乘法、RV32IM 快速乘法三组 PicoRV32 RTL 回归各通过

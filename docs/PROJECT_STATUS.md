@@ -4,7 +4,7 @@
 [BENCHMARKS.md](BENCHMARKS.md) 和对应原始日志为准，长期阶段门见
 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 
-## 最新执行状态：K=4 官方加速RTL全量通过，端到端3.803×
+## 最新执行状态：K=4官方RTL通过；系统资源足够，100 MHz时序待优化
 
 2026-09-27 决策：**ML-KEM-1024（K=4）为优化与展示主线，K=2 冻结为历史对照，
 K=3 在主线完成后验证扩展。** 主加速器优先评估 Keccak/FIPS 202 主导工作量候选，
@@ -39,7 +39,7 @@ CPU调用周期合计72,287，硬件busy合计4,070，完整TB326,618；不作�
 KeyGen / Encaps / Decaps分别 **4.203× / 3.636× / 3.602×**；含私钥重建的Decaps为3.827×。
 3,188次实际HLS启动/完成与预期一致（3,120 HASH＋68 SQUEEZE）；最大观测栈24,384 B。
 19批运行时长合计7,056.986 s（约1小时58分，含编译/展开），没有重跑CPU基线。
-证据见[加速官方KAT汇总](../results/keccak_cpu/kat/summary.md)。系统资源/时序和实板仍待验证。
+证据见[加速官方KAT汇总](../results/keccak_cpu/kat/summary.md)。完整系统OOC资源检查已完成，LUT19,084、FF16,970、BRAM34.5、DSP4；100 MHz内部setup −1.367 ns，实板待验证。
 详见[接口与移植断点](MLKEM1024_KECCAK_CPU_INTERFACE.md)、
 [调用统计](../results/keccak_cpu/call_profile/README.md)、[CPU闭环证据](../results/keccak_cpu/smoke/README.md)。
 
@@ -49,7 +49,7 @@ KeyGen / Encaps / Decaps分别 **4.203× / 3.636× / 3.602×**；含私钥重建
 145/145。算法区间分别为 **1,112,525,793** 和 **1,699,294,360 cycles**，最大观测栈分别为
 **18,432 B** 和 **24,464 B**；两组使用 **128 KiB RAM / 32 KiB 栈**，512 原基线仍为
 64/16 KiB。K=2（ML-KEM-512）CPU+PQC 加速链路也已通过 145/145，端到端为 0.9930×。
-K=4标准库CPU+Keccak已145/145官方RTL通过；系统实现待完成，K=3硬件扩展后置。
+K=4标准库CPU+Keccak已145/145官方RTL通过；系统OOC已完成但100 MHz时序待收敛，K=3硬件扩展后置。
 证据见 [768 汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md)、
 [1024 汇总](../results/official_baseline/mlkem1024/rv32im_fast/summary.md) 和
 [自动续跑记录](ACCEL_KAT_AUTORUN.md)。
@@ -126,8 +126,8 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | K=2 标准库接口审计与历史 HLS 原型 | C 仿真 103/103、HLS 综合通过；137 cycles 为核心估算，II=1、估算 Fmax 150.83 MHz | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[K=2 HLS](../hls/mlkem512_basemul_k2/) |
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
 | K=2 PQC 加速器接入标准软件 | 冻结历史对照；CPU+驱动及官方 KAT 145/145 通过，端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
-| K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，系统实现待测 | [HLS 说明](../hls/mlkem1024_keccak/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
-| K=4 CPU+加速器系统 | 组件10项、标准库官方145/145通过，端到端3.803×；系统实现和实板待做 | [当前路线](COMPETITION_ROADMAP.md) |
+| K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛 | [HLS 说明](../hls/mlkem1024_keccak/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
+| K=4 CPU+加速器系统 | 组件10项、标准库官方145/145通过，端到端3.803×；系统资源足够，100 MHz setup待优化；实板待做 | [当前路线](COMPETITION_ROADMAP.md) |
 
 ### 当前官方用例覆盖
 
@@ -170,11 +170,11 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 顺序 | 任务 | 完成标志 | 当前状态 |
 |---|---|---|---|
 | 1 | 保存 K=2 历史对照和 K3/K4 CPU 基线 | 原始日志、配置、哈希及内存差异可追溯 | 已完成 |
-| 2 | K=4 报告驱动的精确 HLS 优化 | 保持 FIPS 202 逐位结果；C/COSIM、周期、资源和时序报告完整 | io0/io1 局部差分通过；独立 IP OOC 实现已完成，系统实现待测 |
+| 2 | K=4 报告驱动的精确 HLS 优化 | 保持 FIPS 202 逐位结果；C/COSIM、周期、资源和时序报告完整 | io0/io1 局部差分通过；独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛 |
 | 3 | K=4 打包接口与 CPU 集成 | 明确上下文、搬运、启动、等待和读回契约 | 10次RTL组件调用通过，标准库适配完成 |
 | 4 | K=4 CPU+加速器官方 RTL KAT | 所选官方 145 条逐字节通过，真实硬件调用证据完整 | 145/145全量通过，19批最终PASS |
 | 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 全量端到端3.803×已完成；K4阶段占比独立待测 |
-| 6 | K=4 系统资源/时序与设计选择 | 同约束软件/硬件综合和布局布线，记录 LUT/FF/BRAM/DSP/WNS；独立 HLS 估算不替代系统结果 | 待执行 |
+| 6 | K=4 系统资源/时序与设计选择 | 同约束软件/硬件综合和布局布线，记录 LUT/FF/BRAM/DSP/WNS；独立 HLS 估算不替代系统结果 | 两组OOC已完成；加速组setup −1.367 ns，优先优化总线译码到RAM地址链 |
 | 7 | K=3 扩展和其他 CPU 消融 | 在选定架构上补齐对应官方回归、基本性能和内存数据 | 后置 |
 | 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 待执行 |
 | 9 | 最后进行 PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 最后阶段 |
@@ -190,9 +190,9 @@ K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，�
 > 配置在 RTL 仿真中均通过全部 145 条固定版本 ML-KEM-512 官方记录。ML-KEM-768/1024
 > 的 RV32IM-fast CPU-only 官方记录也分别通过 145/145；K=2 的 BaseMul 独立
 > MMIO/BRAM/BIST、Vivado 2024.2 实现及 CPU+PQC 全流程已完成并冻结。当前主线是
-> K=4 Keccak/FIPS 202：局部 HLS 的 C/Verilog COSIM 差分通过，独立 IP OOC 实现已完成，系统实现待测；
+> K=4 Keccak/FIPS 202：局部 HLS 的 C/Verilog COSIM 差分通过，独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛；
 > CPU组件接口10项及完整标准库145条官方RTL记录已通过，同配置测试集API总周期比3.803×；
-> 系统实现仍待验证，K=3后置。
+> 完整系统OOC资源足够，但100 MHz内部setup未闭合（−1.367 ns），实板与K=3后置。
 
 全部对应回归完成后，可以描述所覆盖版本、参数集、操作和用例的结果一致性。
 公开向量离线回归不等于正式 CAVP 算法验证，也不等于 FIPS 140-3 / CMVP 密码模块认证；

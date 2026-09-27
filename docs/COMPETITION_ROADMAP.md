@@ -73,15 +73,15 @@ LOOP_TRIPCOUNT 上界且周期/资源相同；RTL 对比已随报告归档，不
 | 历史 K=2 NTT 域 BaseMul HLS | hls/mlkem512_basemul_k2/ | 冻结的局部计算对照 | C 仿真/综合已通过 |
 | 独立 MMIO/BRAM/BIST 硬件路径 | rtl/accelerator/、vivado/mlkem512_basemul_k2/ | 先验证核、存储、控制和板级顶层 | RTL/BIST/100 MHz 实现通过，XPR/bitstream 已保存 |
 | K=2 CPU+PQC 集成系统 | results/accelerator_cpu/kat/ | 冻结的端到端对照 | RV32IM-fast 官方 KAT 145/145；0.9930× |
-| K=4 Keccak/FIPS 202 HLS | hls/mlkem1024_keccak/ | 当前主线 HLS 候选 | 局部 C/COSIM 差分通过；独立 IP OOC 实现已完成，系统实现待测 |
-| K=4 CPU+加速器集成系统 | rtl/accelerator/、firmware/mlkem1024_keccak/ | 当前主线端到端对照 | 标准库已接入，官方 RTL KAT已145/145通过，系统实现待测 |
+| K=4 Keccak/FIPS 202 HLS | hls/mlkem1024_keccak/ | 当前主线 HLS 候选 | 局部 C/COSIM 差分通过；独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛 |
+| K=4 CPU+加速器集成系统 | rtl/accelerator/、firmware/mlkem1024_keccak/ | 当前主线端到端对照 | 标准库已接入，官方 RTL KAT已145/145通过，系统OOC已测、100 MHz时序待收敛 |
 
 当前数据记录在 [性能台账](BENCHMARKS.md) 和 [CPU 测量协议](CPU_BENCHMARK_PROTOCOL.md) 中。
 原 8 组输入来自本项目，仍作为“软件多项式乘法 baseline”；历史官方 KeyGen 单例独立记账。
 当前完整 512 API 结果见 [全量汇总](../results/official_baseline/mlkem512/summary.md) 和
 [512 测量协议](MLKEM512_BENCHMARK_PROTOCOL.md)；已包含 RV32IM-fast＋K=2 加速器 145 条
 RTL仿真证据；另已完成768/1024 fast CPU-only各145条，
-K4 CPU+加速器已完成官方RTL集成验证，系统实现待测；K3硬件扩展后置。K3/K4 采用128 KiB RAM/32 KiB栈，
+K4 CPU+加速器已完成官方RTL集成验证，系统OOC已测、100 MHz时序待收敛；K3硬件扩展后置。K3/K4 采用128 KiB RAM/32 KiB栈，
 512保持64/16 KiB。
 
 ## 3. 最终系统和公平对照
@@ -395,7 +395,7 @@ K=4 CPU 驱动、RTL 接口、官方回归与系统实现证据。现有 `rtl/ac
 0.9930× 结果冻结保存；K3/K4 fast CPU 各 145/145 已完成。K=4 Keccak/FIPS 202 HLS
 的 io0/io1 C/COSIM 局部差分通过，独立 IP OOC 实现已完成。K=4标准库已接入，
 官方加速RTL145/145通过，KeyGen/Encaps/Decaps端到端4.203×/3.636×/3.602×，
-所选测试集API总周期比3.803×。下一步是同约束完整系统资源/时序实现，再据此优化。
+所选测试集API总周期比3.803×。同约束系统OOC已完成且资源足够，但加速组100 MHz内部setup −1.367 ns；下一步优先优化RAM写控制与MMIO ready反馈链。
 自动续跑 `pqc-kat` 已**删除**，不再定时发送指令。
 
 - [x] 确定 K=4 主线、K=2 冻结历史、K=3 后置扩展，实板最后；
@@ -409,7 +409,8 @@ K=4 CPU 驱动、RTL 接口、官方回归与系统实现证据。现有 `rtl/ac
 - [x] 完成 K=4 CPU+加速器官方 RTL KAT 145/145，核验3,188次真实硬件调用；
 - [x] 完成同 RV32IM-fast、128 KiB RAM / 32 KiB 栈的未插桩端到端对照，测试集总周期比3.803×；
 - [ ] 独立测量K=4加速后阶段周期及接口成本，按剩余瓶颈选择优化；
-- [ ] 完成 K=4 软件/加速系统同约束资源和时序报告，依据瓶颈选择进一步优化；
+- [x] 完成K=4软件/加速系统同约束OOC资源和时序报告；资源足够，加速组内部setup −1.367 ns；
+- [ ] 优先解耦RAM写控制和MMIO ready组合反馈，验证等价性和周期，再复验100 MHz时序；
 - [ ] 后置验证 K=3 扩展与其他 CPU 消融，保留独立官方回归和内存配置记录；
 - [ ] 完成适用常数时间、故障检查和上板前系统/产物验收；
 - [ ] 最后完成 PYNQ-Z2 实板验证、演示和可复现证据包。

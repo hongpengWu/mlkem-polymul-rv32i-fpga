@@ -1,0 +1,51 @@
+{
+  "variant": "cpu_only",
+  "run_dir": "E:\\hls\\k4sys\\20260927_194022\\cpu_only",
+  "started_utc": "2026-09-27T12:00:53.415584+00:00",
+  "inputs": {
+    "rtl/picorv32.v": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\rtl\\cpu\\picorv32.v",
+      "sha256": "fd142889e8178ef67f1cff17cb2d18b3adae56fcae2badf7cbcc4c4f5ac7960e"
+    },
+    "rtl/cpu_benchmark_system.v": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\rtl\\benchmark\\cpu_benchmark_system.v",
+      "sha256": "eb0e2bc113242f6a5760a6a11b34caa6d73c9df3317403279ec7529ab0c567b3"
+    },
+    "firmware.mem": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\firmware\\images\\mlkem1024_suite\\rv32im.mem",
+      "sha256": "812b0d0ecb6fde46e7eb5d9e84441b17585a43b3081b2e1d0a8e353d73e12c9c"
+    },
+    "implement_system.tcl": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\scripts\\mlkem1024_keccak\\implement_system.tcl",
+      "sha256": "373f359ed2733039a4fc344153c93f3572008d3006d694178c4a08ae9acb7aec"
+    },
+    "implement_system.py": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\scripts\\mlkem1024_keccak\\implement_system.py",
+      "sha256": "2469c3187c148ec7c7102304ff911800033ee184603fa9c052e1a5f3a9245456"
+    },
+    "system.xdc": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\constraints\\mlkem1024_system_ooc.xdc",
+      "sha256": "4d1df951ab6ee90581844223fada5d01c2a688525a4c530a17d4c52ae501d499"
+    },
+    "kat_provenance.json": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\official_baseline\\mlkem1024\\batches\\rv32im_fast\\batch_000_007\\run_inputs.json",
+      "sha256": "6b445eca4c9c180f10faf68a146b20fc6c14677d6ee53f675aead453ee38819d"
+    }
+  },
+  "command": [
+    "E:\\Xilinx\\Vivado\\2024.2\\bin\\vivado.bat",
+    "-mode",
+    "batch",
+    "-source",
+    "E:\\hls\\k4sys\\20260927_194022\\cpu_only\\snapshot\\implement_system.tcl",
+    "-tclargs",
+    "E:\\hls\\k4sys\\20260927_194022\\cpu_only",
+    "cpu_only"
+  ],
+  "part": "xc7z020clg400-1",
+  "period_ns": 10.0,
+  "ram_bytes": 131072,
+  "cpu": "rv32im_fast",
+  "max_threads": 8,
+  "scope": "Complete system OOC; assumed 2ns synchronous IO budget; not board implementation"
+}

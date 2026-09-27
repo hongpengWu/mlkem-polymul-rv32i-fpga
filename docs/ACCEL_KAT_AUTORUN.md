@@ -52,7 +52,10 @@ K=3 后置扩展**；实板最后进行。旧“K3/K4 BaseMul 移植后返回 K2
    主机、纯 CPU、局部 `hashlib` 差分或软件回退均不能替代对应加速系统的官方验证。
 5. [x] 完成同RV32IM-fast、128 KiB RAM / 32 KiB栈的完整API对照：
    1,699,294,360 / 446,853,509 cycles，3.8028×，包含搬运、启动、等待和读回。
-   [ ] 下一步完成同约束完整系统资源/时序及匹配产物。HLS估算不能替代系统实现。
+   [x] 已完成同约束完整系统OOC实现，报告在`results/keccak_cpu/system_impl/20260927_194022/`，DCP保留在`E:/hls/k4sys/20260927_194022/`。
+   两组资源足够；CPU-only内部setup/hold +1.452/+0.051 ns，加速组 −1.367/+0.050 ns。
+   [ ] 下一步解耦程序RAM写控制和adapter ready反馈、简化MMIO译码，验证等价性/周期后复验时序；原145条证据不改写。
+   OOC resetn边界无PARTPIN，不能宣称板级时序通过；实板/bitstream仍后置。
 6. [ ] K=4 主线完成后再验证 K=3 扩展和其他 CPU 消融；K=2 历史对照继续冻结。
 7. [ ] 完成适用异常/故障检查、系统回归和上板前验收，最后进行 PYNQ-Z2 实板和演示。
 
@@ -66,7 +69,7 @@ K=3 后置扩展**；实板最后进行。旧“K3/K4 BaseMul 移植后返回 K2
   LUT/FF/BRAM18K/DSP = 15,244/15,385/2/0、时钟 8.895 ns；基线为
   14,612/17,008/2/0、8.622 ns。全 TB 周期不能直接当作完整 ML-KEM 加速比。
 - 独立 IP `opt01` OOC 布局布线已通过当前10 ns时钟约束：WNS/WHS +0.279/+0.098 ns，
-  LUT/FF=16,885/15,320，外部存储与CPU未计入；系统实现待测。`opt02` 只修正 LOOP_TRIPCOUNT
+  LUT/FF=16,885/15,320，外部存储与CPU未计入；完整系统OOC现已测得加速组setup −1.367 ns。`opt02` 只修正 LOOP_TRIPCOUNT
   上界且周期/资源相同，RTL 对比随报告归档。细节见 [HLS 说明](../hls/mlkem1024_keccak/README.md)
   和 [结果汇总](../results/hls/mlkem1024_keccak/summary.md)。
 

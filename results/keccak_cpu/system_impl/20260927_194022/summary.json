@@ -1,0 +1,113 @@
+{
+  "status": "RESOURCE_FIT_TIMING_NOT_CLOSED",
+  "scope": "Complete-system OOC, not board signoff",
+  "run_group": "E:\\hls\\k4sys\\20260927_194022",
+  "clock_period_ns": 10,
+  "clock_uncertainty_ns": 0.1,
+  "ram_bytes": 131072,
+  "cpu": "rv32im_fast",
+  "variants": {
+    "cpu_only": {
+      "resources": {
+        "lut": 1719.0,
+        "ff": 1388.0,
+        "bram36_tiles": 32.0,
+        "dsp": 4.0
+      },
+      "internal_timing": {
+        "variant": "cpu_only",
+        "register_setup_slack_ns": 1.452,
+        "register_hold_slack_ns": 0.051
+      },
+      "global_timing": {
+        "scope": "Complete system OOC; not board timing or bitstream validation",
+        "variant": "cpu_only",
+        "top": "cpu_benchmark_system",
+        "part": "xc7z020clg400-1",
+        "clock_period_ns": 10.0,
+        "clock_uncertainty_ns": 0.1,
+        "hd_clk_src": "BUFGCTRL_X0Y0",
+        "io_min_ns": 0.0,
+        "io_max_ns": 2.0,
+        "ram_bytes": 131072,
+        "cpu_mul": 1,
+        "cpu_fast_mul": 1,
+        "cpu_div": 1,
+        "routed_setup_slack_ns": 0.228,
+        "routed_hold_slack_ns": -1.19,
+        "timing_met": false,
+        "lut_primitives": 1912,
+        "ff_primitives": 1388,
+        "ramb36_primitives": 32,
+        "ramb18_primitives": 0,
+        "bram36_equivalent": 32.0,
+        "dsp_primitives": 4,
+        "resource_count_note": "Primitive counts; report_utilization is authoritative for packed LUT and device totals",
+        "signoff_note": "timing_met checks routed worst setup/hold slack only; review DRC, pulse width, unconstrained paths and complete routing separately"
+      },
+      "pulse_width_slack_ns": 3.75,
+      "route": {
+        "routable": 3024,
+        "routed": 3024,
+        "errors": 0
+      },
+      "check_timing_all_zero": true,
+      "drc_errors": 0,
+      "drc_warnings": "DSP pipeline advice and missing PS7; resolve in board integration",
+      "resource_fit": true,
+      "elapsed_seconds": 138.76599999994505
+    },
+    "keccak": {
+      "resources": {
+        "lut": 19084.0,
+        "ff": 16970.0,
+        "bram36_tiles": 34.5,
+        "dsp": 4.0
+      },
+      "internal_timing": {
+        "variant": "keccak",
+        "register_setup_slack_ns": -1.367,
+        "register_hold_slack_ns": 0.05
+      },
+      "global_timing": {
+        "scope": "Complete system OOC; not board timing or bitstream validation",
+        "variant": "keccak",
+        "top": "mlkem1024_keccak_system",
+        "part": "xc7z020clg400-1",
+        "clock_period_ns": 10.0,
+        "clock_uncertainty_ns": 0.1,
+        "hd_clk_src": "BUFGCTRL_X0Y0",
+        "io_min_ns": 0.0,
+        "io_max_ns": 2.0,
+        "ram_bytes": 131072,
+        "cpu_mul": 1,
+        "cpu_fast_mul": 1,
+        "cpu_div": 1,
+        "routed_setup_slack_ns": -1.367,
+        "routed_hold_slack_ns": -1.116,
+        "timing_met": false,
+        "lut_primitives": 21726,
+        "ff_primitives": 16970,
+        "ramb36_primitives": 34,
+        "ramb18_primitives": 1,
+        "bram36_equivalent": 34.5,
+        "dsp_primitives": 4,
+        "resource_count_note": "Primitive counts; report_utilization is authoritative for packed LUT and device totals",
+        "signoff_note": "timing_met checks routed worst setup/hold slack only; review DRC, pulse width, unconstrained paths and complete routing separately"
+      },
+      "pulse_width_slack_ns": 3.75,
+      "route": {
+        "routable": 28248,
+        "routed": 28248,
+        "errors": 0
+      },
+      "check_timing_all_zero": true,
+      "drc_errors": 0,
+      "drc_warnings": "DSP pipeline advice and missing PS7; resolve in board integration",
+      "resource_fit": true,
+      "elapsed_seconds": 1229.905999999959
+    }
+  },
+  "limitation": "OOC resetn has no HD.PARTPIN_LOCS; global boundary hold is not internal or board signoff. Internal register-to-register paths were queried separately without changing constraints/checkpoints.",
+  "next_action": "Decouple firmware RAM write-enable/address selection from accelerator-ready decode; simplify aligned MMIO decode. Verify functional equivalence/cycles before replacing the accepted KAT version."
+}

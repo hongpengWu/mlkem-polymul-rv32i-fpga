@@ -18,7 +18,7 @@ custom FIPS202 provider 接入完整 K4 API。官方系统RTL KAT已145/145通�
 - [CPU 硬件闭环](../results/keccak_cpu/smoke/README.md)：10 次调用、216 个结果字、
   10 次真实 HLS 启动/完成，四种模式、上下文交错、续取及错误返回全部通过。
 - 首版接口按32-bit打包搬运；每次恢复和保存208B上下文。没有DMA、零拷贝或完整KEM加速比声明。
-- 新系统RTL默认128KiB程序RAM，固件预留32KiB栈；CPU+存储+桥的布局布线尚未执行。
+- 新系统RTL默认128KiB程序RAM，固件预留32KiB栈；CPU+存储+桥+Keccak的OOC布局布线已完成，资源足够，100 MHz内部setup −1.367 ns待优化。
 
 ## 地址及协议
 
@@ -60,7 +60,7 @@ SHAKE256 33→128和1600→32、SHAKE128每lane 34→504，必要时续取168。
 3. 已完成代表用例及145条可恢复加速RTL回归，逐字节官方输出、返回值和硬件调用计数均通过。
 4. 已与同CPU、同128/32KiB配置的未插桩K4软件基线对比完整API周期；
    计入打包、搬运、上下文、命令与等待开销，再决定是否保留状态于硬件、添加多context槽或DMA。
-5. 完成CPU集成系统资源/时序和匹配烧录产物，实板最后。
+5. 完整系统OOC已完成；优先优化程序RAM写控制与adapter ready组合反馈以收敛100 MHz，再完成板级时钟/复位及烧录产物，实板最后。
 
 组件构建入口为 `scripts/mlkem1024_keccak/build_smoke.py` 和 `run_smoke.py`；
 完整系统使用 `build_kat.py`、`run_kat.py` 和 `collect_kat.py`。

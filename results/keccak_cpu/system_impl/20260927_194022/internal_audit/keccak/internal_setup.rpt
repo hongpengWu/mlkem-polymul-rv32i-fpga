@@ -1,0 +1,727 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sun Sep 27 20:04:01 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_timing -from [all_registers -clock system_clk] -to [all_registers -clock system_clk] -delay_type max -max_paths 10 -file E:/pqc/mlkem-polymul-rv32i-fpga/results/keccak_cpu/system_impl/20260927_194022/internal_audit/keccak/internal_setup.rpt
+| Design       : mlkem1024_keccak_system
+| Device       : 7z020-clg400
+| Speed File   : -1  PRODUCTION 1.12 2019-11-22
+| Design State : Routed
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -1.367ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2/ADDRARDADDR[8]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.663ns  (logic 2.466ns (23.128%)  route 8.197ns (76.872%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        -0.004ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.649ns = ( 11.649 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.013ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.895    10.250    cpu/picorv32_core/p_10_in
+    SLICE_X37Y18         LUT4 (Prop_lut4_I2_O)        0.124    10.374 r  cpu/picorv32_core/xpm_memory_base_inst_i_12_comp/O
+                         net (fo=64, routed)          1.955    12.329    firmware_bram/xpm_memory_base_inst/addra[8]
+    RAMB36_X4Y4          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2/ADDRARDADDR[8]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.649    11.649    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X4Y4          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2/CLKARDCLK
+                         clock pessimism              0.013    11.662    
+                         clock uncertainty           -0.135    11.527    
+    RAMB36_X4Y4          RAMB36E1 (Setup_ramb36e1_CLKARDCLK_ADDRARDADDR[8])
+                                                     -0.566    10.961    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2
+  -------------------------------------------------------------------
+                         required time                         10.961    
+                         arrival time                         -12.329    
+  -------------------------------------------------------------------
+                         slack                                 -1.367    
+
+Slack (VIOLATED) :        -1.363ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2/ADDRBWRADDR[8]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.661ns  (logic 2.466ns (23.131%)  route 8.195ns (76.869%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        -0.001ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.652ns = ( 11.652 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.013ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.895    10.250    cpu/picorv32_core/p_10_in
+    SLICE_X37Y18         LUT4 (Prop_lut4_I2_O)        0.124    10.374 r  cpu/picorv32_core/xpm_memory_base_inst_i_12_comp/O
+                         net (fo=64, routed)          1.953    12.327    firmware_bram/xpm_memory_base_inst/addra[8]
+    RAMB36_X4Y4          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2/ADDRBWRADDR[8]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.652    11.652    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X4Y4          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2/CLKBWRCLK
+                         clock pessimism              0.013    11.665    
+                         clock uncertainty           -0.135    11.530    
+    RAMB36_X4Y4          RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ADDRBWRADDR[8])
+                                                     -0.566    10.964    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2
+  -------------------------------------------------------------------
+                         required time                         10.964    
+                         arrival time                         -12.327    
+  -------------------------------------------------------------------
+                         slack                                 -1.363    
+
+Slack (VIOLATED) :        -1.311ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_7/ADDRARDADDR[6]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.552ns  (logic 2.466ns (23.371%)  route 8.086ns (76.629%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        -0.058ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.595ns = ( 11.595 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.013ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.750    10.106    cpu/picorv32_core/p_10_in
+    SLICE_X43Y14         LUT4 (Prop_lut4_I2_O)        0.124    10.230 r  cpu/picorv32_core/xpm_memory_base_inst_i_14_comp/O
+                         net (fo=64, routed)          1.988    12.218    firmware_bram/xpm_memory_base_inst/addra[6]
+    RAMB36_X3Y8          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_7/ADDRARDADDR[6]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.595    11.595    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X3Y8          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_7/CLKARDCLK
+                         clock pessimism              0.013    11.608    
+                         clock uncertainty           -0.135    11.473    
+    RAMB36_X3Y8          RAMB36E1 (Setup_ramb36e1_CLKARDCLK_ADDRARDADDR[6])
+                                                     -0.566    10.907    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_7
+  -------------------------------------------------------------------
+                         required time                         10.907    
+                         arrival time                         -12.218    
+  -------------------------------------------------------------------
+                         slack                                 -1.311    
+
+Slack (VIOLATED) :        -1.310ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7/ADDRBWRADDR[8]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.665ns  (logic 2.466ns (23.121%)  route 8.199ns (76.879%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        0.056ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.607ns = ( 11.607 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.895    10.250    cpu/picorv32_core/p_10_in
+    SLICE_X37Y18         LUT4 (Prop_lut4_I2_O)        0.124    10.374 r  cpu/picorv32_core/xpm_memory_base_inst_i_12_comp/O
+                         net (fo=64, routed)          1.957    12.331    firmware_bram/xpm_memory_base_inst/addra[8]
+    RAMB36_X0Y5          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7/ADDRBWRADDR[8]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.607    11.607    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X0Y5          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7/CLKBWRCLK
+                         clock pessimism              0.115    11.722    
+                         clock uncertainty           -0.135    11.587    
+    RAMB36_X0Y5          RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ADDRBWRADDR[8])
+                                                     -0.566    11.021    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7
+  -------------------------------------------------------------------
+                         required time                         11.021    
+                         arrival time                         -12.331    
+  -------------------------------------------------------------------
+                         slack                                 -1.310    
+
+Slack (VIOLATED) :        -1.288ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2/ADDRARDADDR[6]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.654ns  (logic 2.466ns (23.147%)  route 8.188ns (76.853%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        0.066ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.617ns = ( 11.617 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.750    10.106    cpu/picorv32_core/p_10_in
+    SLICE_X43Y14         LUT4 (Prop_lut4_I2_O)        0.124    10.230 r  cpu/picorv32_core/xpm_memory_base_inst_i_14_comp/O
+                         net (fo=64, routed)          2.090    12.320    firmware_bram/xpm_memory_base_inst/addra[6]
+    RAMB36_X1Y7          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2/ADDRARDADDR[6]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.617    11.617    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X1Y7          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2/CLKARDCLK
+                         clock pessimism              0.115    11.732    
+                         clock uncertainty           -0.135    11.597    
+    RAMB36_X1Y7          RAMB36E1 (Setup_ramb36e1_CLKARDCLK_ADDRARDADDR[6])
+                                                     -0.566    11.031    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2
+  -------------------------------------------------------------------
+                         required time                         11.031    
+                         arrival time                         -12.320    
+  -------------------------------------------------------------------
+                         slack                                 -1.288    
+
+Slack (VIOLATED) :        -1.287ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2/ADDRBWRADDR[6]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.650ns  (logic 2.466ns (23.154%)  route 8.184ns (76.846%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        0.064ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.615ns = ( 11.615 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.750    10.106    cpu/picorv32_core/p_10_in
+    SLICE_X43Y14         LUT4 (Prop_lut4_I2_O)        0.124    10.230 r  cpu/picorv32_core/xpm_memory_base_inst_i_14_comp/O
+                         net (fo=64, routed)          2.087    12.316    firmware_bram/xpm_memory_base_inst/addra[6]
+    RAMB36_X1Y7          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2/ADDRBWRADDR[6]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.615    11.615    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X1Y7          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2/CLKBWRCLK
+                         clock pessimism              0.115    11.730    
+                         clock uncertainty           -0.135    11.595    
+    RAMB36_X1Y7          RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ADDRBWRADDR[6])
+                                                     -0.566    11.029    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2
+  -------------------------------------------------------------------
+                         required time                         11.029    
+                         arrival time                         -12.316    
+  -------------------------------------------------------------------
+                         slack                                 -1.287    
+
+Slack (VIOLATED) :        -1.286ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7/ADDRARDADDR[8]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.645ns  (logic 2.466ns (23.167%)  route 8.179ns (76.833%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        0.059ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.610ns = ( 11.610 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.895    10.250    cpu/picorv32_core/p_10_in
+    SLICE_X37Y18         LUT4 (Prop_lut4_I2_O)        0.124    10.374 r  cpu/picorv32_core/xpm_memory_base_inst_i_12_comp/O
+                         net (fo=64, routed)          1.937    12.311    firmware_bram/xpm_memory_base_inst/addra[8]
+    RAMB36_X0Y5          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7/ADDRARDADDR[8]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.610    11.610    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X0Y5          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7/CLKARDCLK
+                         clock pessimism              0.115    11.725    
+                         clock uncertainty           -0.135    11.590    
+    RAMB36_X0Y5          RAMB36E1 (Setup_ramb36e1_CLKARDCLK_ADDRARDADDR[8])
+                                                     -0.566    11.024    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7
+  -------------------------------------------------------------------
+                         required time                         11.024    
+                         arrival time                         -12.311    
+  -------------------------------------------------------------------
+                         slack                                 -1.286    
+
+Slack (VIOLATED) :        -1.284ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5/ADDRARDADDR[8]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.654ns  (logic 2.466ns (23.147%)  route 8.188ns (76.853%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        0.071ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.622ns = ( 11.622 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.895    10.250    cpu/picorv32_core/p_10_in
+    SLICE_X37Y18         LUT4 (Prop_lut4_I2_O)        0.124    10.374 r  cpu/picorv32_core/xpm_memory_base_inst_i_12_comp/O
+                         net (fo=64, routed)          1.946    12.320    firmware_bram/xpm_memory_base_inst/addra[8]
+    RAMB36_X0Y0          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5/ADDRARDADDR[8]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.622    11.622    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X0Y0          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5/CLKARDCLK
+                         clock pessimism              0.115    11.737    
+                         clock uncertainty           -0.135    11.602    
+    RAMB36_X0Y0          RAMB36E1 (Setup_ramb36e1_CLKARDCLK_ADDRARDADDR[8])
+                                                     -0.566    11.036    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5
+  -------------------------------------------------------------------
+                         required time                         11.036    
+                         arrival time                         -12.320    
+  -------------------------------------------------------------------
+                         slack                                 -1.284    
+
+Slack (VIOLATED) :        -1.281ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5/ADDRBWRADDR[8]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.652ns  (logic 2.466ns (23.150%)  route 8.186ns (76.850%))
+  Logic Levels:           10  (CARRY4=2 LUT4=3 LUT5=4 LUT6=1)
+  Clock Path Skew:        0.072ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.623ns = ( 11.623 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.895    10.250    cpu/picorv32_core/p_10_in
+    SLICE_X37Y18         LUT4 (Prop_lut4_I2_O)        0.124    10.374 r  cpu/picorv32_core/xpm_memory_base_inst_i_12_comp/O
+                         net (fo=64, routed)          1.944    12.318    firmware_bram/xpm_memory_base_inst/addra[8]
+    RAMB36_X0Y0          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5/ADDRBWRADDR[8]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.623    11.623    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X0Y0          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5/CLKBWRCLK
+                         clock pessimism              0.115    11.738    
+                         clock uncertainty           -0.135    11.603    
+    RAMB36_X0Y0          RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ADDRBWRADDR[8])
+                                                     -0.566    11.037    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5
+  -------------------------------------------------------------------
+                         required time                         11.037    
+                         arrival time                         -12.318    
+  -------------------------------------------------------------------
+                         slack                                 -1.281    
+
+Slack (VIOLATED) :        -1.261ns  (required time - arrival time)
+  Source:                 local_awaddr_reg[22]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_5/ADDRBWRADDR[10]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.628ns  (logic 2.466ns (23.203%)  route 8.162ns (76.797%))
+  Logic Levels:           10  (CARRY4=2 LUT4=2 LUT5=4 LUT6=2)
+  Clock Path Skew:        0.068ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.619ns = ( 11.619 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.666ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17131, unset)        1.666     1.666    clk
+    SLICE_X43Y8          FDRE                                         r  local_awaddr_reg[22]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X43Y8          FDRE (Prop_fdre_C_Q)         0.456     2.122 f  local_awaddr_reg[22]/Q
+                         net (fo=2, routed)           0.838     2.960    cpu/picorv32_core/xpm_memory_base_inst_i_24_0[20]
+    SLICE_X45Y9          LUT5 (Prop_lut5_I1_O)        0.124     3.084 f  cpu/picorv32_core/debug_regs[0][31]_i_6/O
+                         net (fo=2, routed)           0.589     3.673    cpu/picorv32_core/debug_regs[0][31]_i_6_n_2
+    SLICE_X44Y11         LUT4 (Prop_lut4_I0_O)        0.124     3.797 f  cpu/picorv32_core/xpm_memory_base_inst_i_25/O
+                         net (fo=18, routed)          0.858     4.655    cpu/picorv32_core/xpm_memory_base_inst_i_25_n_2
+    SLICE_X42Y12         LUT5 (Prop_lut5_I1_O)        0.124     4.779 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=26, routed)          0.708     5.487    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X47Y12         LUT5 (Prop_lut5_I1_O)        0.124     5.611 r  cpu/picorv32_core/context_mem_reg_i_172/O
+                         net (fo=2, routed)           0.625     6.236    cpu/picorv32_core/context_mem_reg_i_172_n_2
+    SLICE_X46Y11         CARRY4 (Prop_carry4_DI[1]_CO[3])
+                                                      0.520     6.756 r  cpu/picorv32_core/context_mem_reg_i_170/CO[3]
+                         net (fo=1, routed)           0.000     6.756    cpu/picorv32_core/context_mem_reg_i_170_n_2
+    SLICE_X46Y12         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.315     7.071 f  cpu/picorv32_core/context_mem_reg_i_182/O[3]
+                         net (fo=1, routed)           0.738     7.809    cpu/picorv32_core/adapter_i/offset[22]
+    SLICE_X49Y14         LUT4 (Prop_lut4_I2_O)        0.307     8.116 f  cpu/picorv32_core/context_mem_reg_i_180/O
+                         net (fo=2, routed)           0.307     8.423    cpu/picorv32_core/context_mem_reg_i_180_n_2
+    SLICE_X49Y13         LUT5 (Prop_lut5_I4_O)        0.124     8.547 f  cpu/picorv32_core/context_mem_reg_i_167/O
+                         net (fo=4, routed)           0.684     9.231    cpu/picorv32_core/context_mem_reg_i_167_n_2
+    SLICE_X45Y14         LUT6 (Prop_lut6_I4_O)        0.124     9.355 r  cpu/picorv32_core/debug_regs[0][31]_i_4_comp_1/O
+                         net (fo=47, routed)          0.688    10.043    cpu/picorv32_core/p_10_in
+    SLICE_X39Y14         LUT6 (Prop_lut6_I4_O)        0.124    10.167 r  cpu/picorv32_core/xpm_memory_base_inst_i_10_comp/O
+                         net (fo=64, routed)          2.127    12.294    firmware_bram/xpm_memory_base_inst/addra[10]
+    RAMB36_X1Y8          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_5/ADDRBWRADDR[10]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17131, unset)        1.619    11.619    firmware_bram/xpm_memory_base_inst/clka
+    RAMB36_X1Y8          RAMB36E1                                     r  firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_5/CLKBWRCLK
+                         clock pessimism              0.115    11.734    
+                         clock uncertainty           -0.135    11.599    
+    RAMB36_X1Y8          RAMB36E1 (Setup_ramb36e1_CLKBWRCLK_ADDRBWRADDR[10])
+                                                     -0.566    11.033    firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_5
+  -------------------------------------------------------------------
+                         required time                         11.033    
+                         arrival time                         -12.294    
+  -------------------------------------------------------------------
+                         slack                                 -1.261    
+
+
+
+

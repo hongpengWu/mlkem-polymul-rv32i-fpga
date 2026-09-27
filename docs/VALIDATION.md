@@ -7,6 +7,7 @@
 
 | 项目 | 状态 | 证据 |
 |---|---|---|
+| K4完整系统OOC布局布线 | 两组均完成且资源足够；CPU-only内部时序通过，加速组setup −1.367 ns，尚未收敛100 MHz | [完整系统实现报告](../results/keccak_cpu/system_impl/20260927_194022/summary.md) |
 | K4 CPU＋Keccak官方RTL KAT | PASS，19批145/145唯一覆盖，3,188次真实HLS调用、68次续取；同配置API总周期比3.803× | [全量证据](../results/keccak_cpu/kat/summary.md) |
 | CPU-only 多项式 baseline | PASS，RV32I/RV32IM-iterative/RV32IM-fast 各 8 组、4096 项检查 | [`results/cpu_baseline/`](../results/cpu_baseline/) |
 | ML-KEM-512 官方 PicoRV32 回归 | PASS，三种 CPU 各 145/145 | [`results/official_baseline/mlkem512/`](../results/official_baseline/mlkem512/) |

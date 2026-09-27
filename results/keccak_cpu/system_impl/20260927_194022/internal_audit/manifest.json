@@ -1,0 +1,18 @@
+{
+  "recorded_after_analysis": true,
+  "script": "scripts/mlkem1024_keccak/report_internal_timing.tcl",
+  "script_sha256": "a88d2318e077517228d57c7b54bd9b5c28a0a2f522c896eaa90787c7bf3aa952",
+  "checkpoint_sha256": {
+    "keccak": "66a17d3ee48b983e9bc69886b29c5b0f9f56f422219857c16addd4dd85b60958",
+    "cpu_only": "b3746c63edf8bc8e6f84bff16960d2d205aa3b3343ac874e2d1040c82273a1b8"
+  },
+  "outputs": {
+    "console.txt": "00592b9f2c86828dc938dce5485ec9f2d1cbc358d0eae1e6f419103803ab3e74",
+    "cpu_only/internal_hold.rpt": "9e055bae9bdaa023fe9c4eaf0947bd54d53d47db3ea5bde96ed96568edee9a1a",
+    "cpu_only/internal_metrics.json": "a71054d51f79d7bee3c2b4457f67ad9880685aabd3bad16c2df4a555a6350d59",
+    "cpu_only/internal_setup.rpt": "ed67de912205e8d4c531d475764eef45190686036ef0b5d795ca321f1530f661",
+    "keccak/internal_hold.rpt": "0576c23f5ac9ce6f34550ba6b0c6b37bcec7b65214176b683c7807ef8f183ae4",
+    "keccak/internal_metrics.json": "08926834d07b87f92fdd7ab26511c885369b37f65d4fea489c20b855a9c83ad2",
+    "keccak/internal_setup.rpt": "9198b946333b547fb82bb5ab53e7ebcad3428c5d80bd3a27804baaa0863d8272"
+  }
+}
