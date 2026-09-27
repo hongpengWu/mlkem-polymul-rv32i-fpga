@@ -74,7 +74,7 @@ LOOP_TRIPCOUNT 上界且周期/资源相同；RTL 对比已随报告归档，不
 | 独立 MMIO/BRAM/BIST 硬件路径 | rtl/accelerator/、vivado/mlkem512_basemul_k2/ | 先验证核、存储、控制和板级顶层 | RTL/BIST/100 MHz 实现通过，XPR/bitstream 已保存 |
 | K=2 CPU+PQC 集成系统 | results/accelerator_cpu/kat/ | 冻结的端到端对照 | RV32IM-fast 官方 KAT 145/145；0.9930× |
 | K=4 Keccak/FIPS 202 HLS | hls/mlkem1024_keccak/ | 当前主线 HLS 候选 | 局部 C/COSIM 差分通过；独立 IP OOC 实现已完成，系统实现待测 |
-| K=4 CPU+加速器集成系统 | 后续打包/批量接口与 CPU 驱动 | 当前主线端到端对照 | 待接入、官方 RTL KAT 与系统实现 |
+| K=4 CPU+加速器集成系统 | rtl/accelerator/、firmware/mlkem1024_keccak/ | 当前主线端到端对照 | 标准库已接入，官方 RTL KAT执行中，系统实现待测 |
 
 当前数据记录在 [性能台账](BENCHMARKS.md) 和 [CPU 测量协议](CPU_BENCHMARK_PROTOCOL.md) 中。
 原 8 组输入来自本项目，仍作为“软件多项式乘法 baseline”；历史官方 KeyGen 单例独立记账。
@@ -188,7 +188,7 @@ K=3 硬件扩展后置；K=2 已有基线和阶段分析冻结保存，不继续
 ### M3：K=4 精确 HLS 优化与端到端接入
 
 状态：进行中。K=4 Keccak/FIPS 202 的 io0/io1 局部 C/Verilog COSIM 差分已通过，
-独立 IP OOC 布局布线已通过当前时钟约束；打包/批量接口、CPU 集成和官方 RTL KAT 尚未完成。
+独立 IP OOC 布局布线已通过当前时钟约束；32-bit打包接口和CPU标准库已接入，官方 RTL KAT执行中。
 K=2 的独立实现与 0.9930× 集成结果只作为历史参考。
 
 工作内容：
@@ -388,13 +388,15 @@ K=4 CPU 驱动、RTL 接口、官方回归与系统实现证据。现有 `rtl/ac
 ## 8. 当前执行队列
 
 2026-09-27补充：K4主机145条调用统计与CPU＋Keccak的10项/216字RTL接口闭环已完成。
-当前先做标准库FIPS202适配和代表性官方KAT，再完整加速KAT；详见
+标准库FIPS202适配已完成，当前先做代表性官方KAT，再完整加速KAT；详见
 [接口断点](MLKEM1024_KECCAK_CPU_INTERFACE.md)。局部验证不计入完整K4加速官方覆盖。
 
 当前完成点（2026-09-27）：K=2 的三种 CPU 各 145/145、CPU+BaseMul 145/145 与
 0.9930× 结果冻结保存；K3/K4 fast CPU 各 145/145 已完成。K=4 Keccak/FIPS 202 HLS
-的 io0/io1 C/COSIM 局部差分通过，独立 IP OOC 实现已完成。当前没有 K=4 加速官方 KAT、
-端到端加速比或系统实现通过结论。自动续跑 `pqc-kat` 为 **PAUSED，60 分钟间隔**。
+的 io0/io1 C/COSIM 局部差分通过，独立 IP OOC 实现已完成。K=4标准库已接入，
+官方加速RTL代表用例0、1、115通过，KeyGen/Encaps/Decaps端到端4.180×/3.621×/3.668×。
+剩余142条顺序续跑中，完整145条及系统实现通过结论仍待完成。
+自动续跑 `pqc-kat` 已**删除**，不再定时发送指令。
 
 - [x] 确定 K=4 主线、K=2 冻结历史、K=3 后置扩展，实板最后；
 - [x] 固定 FIPS 203/ACVP 来源、哈希和主机三参数集 435 项回归；
@@ -403,7 +405,7 @@ K=4 CPU 驱动、RTL 接口、官方回归与系统实现证据。现有 `rtl/ac
 - [x] 建立 K=4 四模式、HASH/SQUEEZE/CLEAR HLS 和本地差分集，io0/io1 C/COSIM 109 笔事务通过；
 - [x] 完成首轮独立 HLS OOC 物理实现与精确功能/周期对比；后续优化按系统瓶颈推进；
 - [x] 完成K4官方输入的主机调用统计及32-bit打包接口/CPU组件RTL闭环；
-- [ ] 将FIPS202硬件接口接入标准CPU固件，保留x4上下文及续取语义；
+- [x] 将FIPS202硬件接口接入标准CPU固件，保留x4上下文及续取语义；
 - [ ] 完成 K=4 CPU+加速器官方 RTL KAT 145/145，核验真实硬件调用；
 - [ ] 完成同 RV32IM-fast、128 KiB RAM / 32 KiB 栈的未插桩端到端对照，独立测量 K=4 阶段占比；
 - [ ] 完成 K=4 软件/加速系统同约束资源和时序报告，依据瓶颈选择进一步优化；

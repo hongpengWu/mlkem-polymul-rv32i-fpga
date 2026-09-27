@@ -1,7 +1,13 @@
 # K4 Keccak CPU 接口与移植断点
 
-2026-09-27：已完成实际 RV32IM-fast CPU＋Keccak 的 RTL 组件闭环，尚未将标准库的
-完整 K4 API 替换为硬件实现。K2 和 CPU-only 基线保持冻结。
+2026-09-27：已完成实际 RV32IM-fast CPU＋Keccak 的 RTL 组件闭环，并通过标准库的
+custom FIPS202 provider 接入完整 K4 API。官方系统 RTL KAT 正在执行；K2 和 CPU-only 基线保持冻结。
+
+代表性官方RTL用例原索引0、1、115已3/3通过，覆盖KeyGen、Encaps、带SHAKE续取的
+隐式拒绝Decaps；真实HLS启动/完成85次（81 HASH＋4 SQUEEZE）。同配置CPU基线对照为
+4.180× / 3.621× / 3.668×；全套145条结论仍待完成。
+首批墙钟185.4 s，包含Vivado编译/展开和RTL运行；这与芯片执行时间不同。
+详见[逐例原始证据与汇总](../results/keccak_cpu/kat/summary.md)。
 
 ## 已验证内容
 
@@ -39,15 +45,15 @@ CPU AXI AW/W独立接收，读写串行；控制桥等待HLS响应才接受下�
 CLEAR的HLS流水线在退出条件上生成地址0xd0、EN=1、WEN=0的无用读探测。
 adapter只丢弃这一确切的CLEAR退出探测，不访问RAM；其他越界仍置错，写边界保持26 words。
 
-## 标准库接入的具体下一步
+## 标准库接入与系统验证
 
 实测调用形状均在现有HLS容量内：SHA3-256 1568→32、SHA3-512 33/64→64、
 SHAKE256 33→128和1600→32、SHAKE128每lane 34→504，必要时续取168。
 17次x4续取分布在16条官方记录，不能忽略；观察到最长672B不代表所有种子的上界。
 
-1. 在独立加速构建中包装FIPS202接口，保持第三方源码和正式软件基线不变。
+1. 已在独立加速构建中包装FIPS202接口，保持第三方源码和正式软件基线不变。
    SHA3/SHAKE256走HASH；合并SHAKE128吸收和首次输出为HASH(34,504)。
-2. 标准库x4是四条独立流，分别保存四个HLS上下文，续取必须恢复原lane。
+2. 已为标准库x4的四条独立流分别保存四个HLS上下文，续取恢复原lane。
    标准库25-lane状态和HLS26-word状态含义不同，不能直接强制转换；需独立上下文适配。
 3. 先跑KeyGen/Encaps/Decaps及一个真实续取案例，核对官方输出及硬件调用计数，
    再执行145条可恢复加速RTL回归。
@@ -55,6 +61,21 @@ SHAKE256 33→128和1600→32、SHAKE128每lane 34→504，必要时续取168。
    计入打包、搬运、上下文、命令与等待开销，再决定是否保留状态于硬件、添加多context槽或DMA。
 5. 完成CPU集成系统资源/时序和匹配烧录产物，实板最后。
 
-构建入口为 `scripts/mlkem1024_keccak/build_smoke.py` 和 `run_smoke.py`；
+组件构建入口为 `scripts/mlkem1024_keccak/build_smoke.py` 和 `run_smoke.py`；
+完整系统使用 `build_kat.py`、`run_kat.py` 和 `collect_kat.py`。
+固件镜像17,824 B，静态占用36,676 B；与CPU-only一致使用128 KiB RAM / 32 KiB栈。
+构建检查全部FIPS202符号来自硬件provider，不链接软件Keccak，也无软件回退。
+provider共享6 KiB打包缓冲，非可重入；SHAKE128拥有34 B输入副本并保留任意次数的块续取，
+单条命令最多4096 B输出。CPU中间量清零计入API周期；加速器BRAM擦除尚待实现和验证。
+
+运行方法：先 `python scripts/mlkem1024_keccak/run_kat.py` 验证原索引0、1、115，
+再 `python scripts/mlkem1024_keccak/run_kat.py --remaining` 仅运行未通过的用例，每批最多8条。
+`python scripts/mlkem1024_keccak/collect_kat.py --partial --write` 汇总代表性结果；
+全量成功后调度器自动运行不带`--partial`的严格汇总，必须145条唯一覆盖。
+`build/keccak_cpu/kat_progress.json` 保存当前运行目录/断点；创建`build/keccak_cpu/STOP`
+可在当前批结束后停止，恢复前移除该标记。运行中的冻结输入不能改动。
+机器为Ryzen 7 6800H（8核16线程）；Vivado `general.maxThreads=8`，xelab使用auto。
+RTL逐周期仿真不承诺8倍并行提速。本轮不重复独立HLS综合/实现。
+
 HLS生成RTL只从外部已验证短路径复制到忽略的运行快照，核对哈希，不纳入Git。
 定时任务 `pqc-kat` 已删除，后续由用户发起继续。

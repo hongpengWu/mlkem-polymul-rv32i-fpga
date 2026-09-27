@@ -42,7 +42,13 @@ K=3 后置扩展**；实板最后进行。旧“K3/K4 BaseMul 移植后返回 K2
    主加速器不受旧 BaseMul 范围限制；K=2 的 Keccak 71%–81% 占比只属于 K=2，K=4 尚未测量。
 4. [x] K4主机145条官方记录调用统计已完成；CPU＋Keccak接口10次真实RTL调用/216字通过。
    见 [接口与移植断点](MLKEM1024_KECCAK_CPU_INTERFACE.md)。
-   [ ] 下一步完成标准库FIPS202适配，先代表性用例后完整官方RTL KAT145/145。
+   [x] 已完成标准库FIPS202适配与固件编译；先代表性用例后完整官方RTL KAT145/145。
+   官方加速系统入口为`scripts/mlkem1024_keccak/run_kat.py`，续跑加`--remaining`，
+   日志/证据独立保存在`results/keccak_cpu/kat/`，短路径冻结项目在`E:/hls/k4kat/`。
+   当前进程/断点读取`build/keccak_cpu/kat_progress.json`；不要再运行CPU-only批次。
+   原索引0、1、115已3/3通过（85次真实HLS调用），剩余142条顺序运行中。
+   当前调度日志`build/keccak_cpu/kat_scheduler_20260927.log`；无定时任务。
+   全量完成时脚本自动运行`collect_kat.py --write`严格汇总。
    主机、纯 CPU、局部 `hashlib` 差分或软件回退均不能替代对应加速系统的官方验证。
 5. [ ] 完成同 RV32IM-fast、128 KiB RAM / 32 KiB 栈的未插桩端到端对照，计入搬运、
    启动、等待和读回，再完成同约束系统资源/时序及匹配产物。HLS 估算不能替代系统实现。

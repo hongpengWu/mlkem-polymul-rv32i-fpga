@@ -1,0 +1,148 @@
+"""Build ML-KEM-1024 KAT with exclusively hardware FIPS 202; no RTL run."""
+from pathlib import Path
+import argparse
+import hashlib
+import json
+import re
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[2]
+TOOLS = Path("E:/Xilinx/Vivado/2024.2/gnu/riscv/nt/riscv64-unknown-elf/bin")
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--tool-dir", type=Path, default=TOOLS)
+    args = parser.parse_args()
+    src = ROOT / "firmware/mlkem1024_keccak"
+    common = ROOT / "firmware/mlkem_baseline"
+    suite = ROOT / "firmware/mlkem_suite"
+    vendor = ROOT / "third_party/mlkem-native"
+    lib = vendor / "mlkem"
+    fixtures = ROOT / "tb/software/mlkem1024_suite"
+    out = ROOT / "build/keccak_cpu/kat"
+    evidence = ROOT / "results/keccak_cpu/kat"
+    manifest = json.loads((vendor / "SOURCE_MANIFEST.json").read_text(encoding="utf-8"))
+    for item in manifest["files"]:
+        require(sha(vendor / item["path"]) == item["sha256"],
+                "Vendor changed: " + item["path"])
+    cases = json.loads((fixtures / "cases.json").read_text(encoding="utf-8"))
+    require(len(cases["cases"]) == 145, "Expected frozen 145-case K4 fixture")
+
+    def tool(name):
+        path = args.tool_dir / f"riscv64-unknown-elf-{name}.exe"
+        require(path.is_file(), f"Missing tool: {path}")
+        return path
+
+    def run(command):
+        result = subprocess.run(list(map(str, command)), cwd=ROOT,
+                                capture_output=True, text=True)
+        require(result.returncode == 0, f"Command failed: {command}\n{result.stdout}{result.stderr}")
+        return result.stdout
+
+    sources = [common / "startup.S", suite / "kat_suite.c", common / "runtime.c",
+               src / "keccak_mmio.c", src / "fips202_hw.c"]
+    sources += sorted((lib / "src").glob("*.c"))
+    require(not any("fips202" in path.parts for path in sources), "Software FIPS 202 included")
+    source_files = set(sources + [Path(__file__).resolve(), common / "kat_protocol.h",
+        src / "link.ld", src / "kat_config.h", src / "keccak_mmio.h",
+        src / "fips202_hw.h", src / "fips202x4_hw.h", vendor / "SOURCE_MANIFEST.json"])
+    source_files.update(vendor / item["path"] for item in manifest["files"])
+    source_files.update(fixtures / name for name in
+        ["cases.json", "mlkem1024_input.mem", "mlkem1024_expected.mem"])
+    before = {p.relative_to(ROOT).as_posix(): sha(p) for p in sorted(source_files)}
+    out.mkdir(parents=True, exist_ok=True)
+    evidence.mkdir(parents=True, exist_ok=True)
+    flags = ["-march=rv32im", "-mabi=ilp32", "-O3", "-std=c11", "-ffreestanding",
+        "-fno-builtin", "-fno-pic", "-msmall-data-limit=0", "-ffunction-sections",
+        "-fdata-sections", "-fno-tree-loop-distribute-patterns", "-fstack-usage",
+        "-Wall", "-Wextra", "-Werror", "-I", str(src), "-I", str(common),
+        "-I", str(lib), "-DMLK_CONFIG_FILE=<kat_config.h>"]
+    commands, logs, objects = [], [], []
+    for path in sources:
+        obj = out / (path.stem + ".o")
+        command = [tool("gcc"), *flags, "-c", path, "-o", obj]
+        logs.append(run(command))
+        commands.append(list(map(str, command)))
+        objects.append(obj)
+    elf, binary, image = out / "kat.elf", out / "kat.bin", out / "kat.mem"
+    command = [tool("gcc"), *flags, "-nostdlib", "-nostartfiles",
+        "-Wl,--build-id=none", "-Wl,--gc-sections", f"-Wl,-Map,{out / 'kat.map'}",
+        "-T", src / "link.ld", *objects, "-lgcc", "-o", elf]
+    logs.append(run(command))
+    commands.append(list(map(str, command)))
+    (out / "build.txt").write_text("\n".join(logs), encoding="utf-8")
+    symbols_text = run([tool("nm"), "-n", elf])
+    symbols = {m[3]: int(m[1], 16) for line in symbols_text.splitlines()
+               if (m := re.fullmatch(r"([0-9a-fA-F]+)\s+(\w)\s+(\S+)", line))}
+    require(not run([tool("nm"), "-u", elf]).strip(), "Unresolved symbols")
+    require(symbols["_start"] == 0 and symbols["__image_end"] <= symbols["__stack_bottom"],
+            "Firmware/stack overlap")
+    for api in ["keypair_derand", "enc_derand", "dec", "check_pk", "check_sk"]:
+        require("pico_mlkem1024_" + api in symbols, "Missing ML-KEM API: " + api)
+    needed = ["sha3_256", "sha3_512", "shake256", "shake128x4_absorb_once",
+              "shake128x4_squeezeblocks", "shake128x4_init", "shake128x4_release"]
+    provider_symbols = ["pico_mlkem1024_" + name for name in needed]
+    provider_nm = run([tool("nm"), "--defined-only", out / "fips202_hw.o"])
+    for symbol in provider_symbols:
+        require(symbol in symbols and re.search(r"\b" + re.escape(symbol) + r"$", provider_nm, re.M),
+                "Missing hardware provider symbol: " + symbol)
+    require("keccak_mmio_run" in symbols, "MMIO path not linked")
+    forbidden = [name for name in symbols
+                 if re.search(r"keccakf1600|keccak_absorb|keccak_squeeze|KeccakF1600", name)]
+    require(not forbidden, "Software Keccak present: " + str(forbidden))
+    dump = run([tool("objdump"), "-d", elf])
+    attrs = run([tool("readelf"), "-A", elf])
+    require("rv32i" in attrs and "m2p0" in attrs, "Wrong ISA")
+    size = run([tool("size"), "-A", elf])
+    for name, data in [("disassembly.txt", dump), ("attributes.txt", attrs),
+                       ("symbols.txt", symbols_text), ("size.txt", size),
+                       ("provider_symbols.txt", provider_nm)]:
+        (out / name).write_text(data, encoding="ascii")
+    run([tool("objcopy"), "-O", "binary", elf, binary])
+    data = binary.read_bytes()
+    require(len(data) <= symbols["__stack_bottom"], "Binary exceeds RAM reservation")
+    padded = data + bytes(131072-len(data))
+    image.write_text("".join(f"{int.from_bytes(padded[i:i+4], 'little'):08x}\n"
+        for i in range(0, len(padded), 4)), encoding="ascii", newline="\n")
+    libgcc = Path(run([tool("gcc"), "-march=rv32im", "-mabi=ilp32",
+                      "-print-libgcc-file-name"]).strip())
+    for name, digest in before.items():
+        require(sha(ROOT / name) == digest, "Build input changed: " + name)
+    stack_frames = "\n".join(path.read_text(encoding="ascii")
+        for path in sorted(out.glob("*.su")))
+    (out / "stack_frames.txt").write_text(stack_frames, encoding="ascii")
+    record = dict(status="BUILD_ONLY", parameter_set=1024, isa="rv32im",
+        scope="Official K4 KAT firmware using hardware-only FIPS 202; RTL results pending",
+        compiler=run([tool("gcc"), "--version"]).splitlines()[0],
+        compiler_sha256=sha(tool("gcc")), libgcc_path=str(libgcc), libgcc_sha256=sha(libgcc),
+        ram_bytes=131072, stack_reserved=32768, binary_bytes=len(data),
+        static_end=symbols["__image_end"], stack_top=symbols["__stack_top"],
+        stack_bottom=symbols["__stack_bottom"],
+        firmware=image.relative_to(ROOT).as_posix(), firmware_sha256=sha(image),
+        elf_sha256=sha(elf), source_sha256=before, flags=flags, commands=commands,
+        compiled_sources=[p.relative_to(ROOT).as_posix() for p in sources],
+        provider_symbols=provider_symbols, excluded_software_fips202=True,
+        software_keccak_symbols=forbidden, mlkem_native_commit=manifest["source_commit"],
+        linker_sha256=sha(src / "link.ld"),
+        provider_limits=dict(shake128_pending_input_bytes=34, input_bytes=2048,
+            output_bytes=4096, reentrant=False, sha128x4_independent_contexts=True,
+            first_squeeze="combined HASH", subsequent_squeeze="SQUEEZE",
+            cpu_zeroization=True, accelerator_bram_erasure=False))
+    (evidence / "build.json").write_text(json.dumps(record, indent=2)+"\n",
+                                         encoding="utf-8", newline="\n")
+    print(f"KECCAK_KAT_BUILD_PASS image_bytes={len(data)} static_end={symbols['__image_end']} "
+          f"stack_reserved=32768 no_software_keccak=1 firmware={image}")
+
+
+if __name__ == "__main__":
+    main()
