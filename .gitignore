@@ -3,6 +3,8 @@
 /hls/.Xil/
 /hls/mlkem512_basemul_k2/build/
 /hls/mlkem512_basemul_k2/mlkem512_basemul_k2_vivado/
+/hls/mlkem1024_keccak/mlkem1024_keccak_hls_prj/
+/hls/mlkem1024_keccak/reports/
 
 # CPU-only and ML-KEM software Vivado projects keep only XPR/MEM (and tracked XCI if added).
 /vivado/cpu_baseline_rv32i/*

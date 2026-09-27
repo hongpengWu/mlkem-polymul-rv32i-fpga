@@ -1,7 +1,7 @@
 # 目录与维护规则
 
 `24-2hp` 只保留当前可复现成果：CPU-only baseline、官方 KAT 软件回归和新的标准接口
-BaseMul HLS 及其独立 MMIO/BRAM/PYNQ-Z2 验证路径。旧完整时域核、旧 AXI wrapper、旧
+BaseMul HLS 及其独立 MMIO/BRAM/PYNQ-Z2 验证路径，以及新 K4 Keccak HLS 主线。旧完整时域核、旧 AXI wrapper、旧
 板级顶层、transfer 固件及其工程已整体删除，避免出现“源码已删但 XPR 仍引用”的失效结构。
 
 ```text
@@ -11,7 +11,8 @@ mlkem-polymul-rv32i-fpga/
 │   ├── benchmark/              CPU-only 固件 RAM 和可配置系统 wrapper
 │   └── accelerator/            HLS RTL、BRAM、MMIO adapter 和 PYNQ-Z2 BIST 顶层
 ├── hls/
-│   └── mlkem512_basemul_k2/    新 HLS 源码、TB、Tcl、短路径脚本和导出 IP
+│   ├── mlkem512_basemul_k2/    历史 K2 源码、TB、Tcl和导出 IP
+│   └── mlkem1024_keccak/      K4 主线源码、TB、Tcl和证据脚本，生成工程不入 Git
 ├── firmware/
 │   ├── cpu_baseline/           软件多项式 baseline
 │   ├── mlkem_baseline/         官方 KeyGen 入口
@@ -43,8 +44,10 @@ mlkem-polymul-rv32i-fpga/
 
 - `rtl/cpu/`、`rtl/benchmark/`、`firmware/`、`tb/cpu/`、`tb/software/` 是软件 baseline 和
   官方 KAT 的执行输入，不随新 HLS 改动。
-- `hls/mlkem512_basemul_k2/` 是当前唯一维护的 HLS 设计。`src/`、`tb/`、`hls_config.cfg`、
-  `run_hls.tcl`、两个 PowerShell 入口和 `ip/` 归档共同构成可复现 HLS 工程。
+- `hls/mlkem512_basemul_k2/` 冻结为历史对照，保留其可复现入口和已有 IP。
+- `hls/mlkem1024_keccak/` 是新主线：`src/`、`tb/`、`scripts/`、`run_hls.tcl`。
+  构建在 `E:/hls/` 短路径；新生成的工程、RTL、IP、波形、缓存不入 Git。
+  `results/hls/mlkem1024_keccak/` 只归档精选报告、运行清单、源码快照和哈希。
 - `rtl/accelerator/`、`tb/accelerator/` 和 `scripts/mlkem512_basemul_k2/` 共同构成独立
   MMIO/BRAM 验证路径；`vivado/mlkem512_basemul_k2/basemul.xpr` 是可直接打开的
   Vivado 2024.2 工程，`release/mlkem512_basemul_k2/` 保存匹配的 bitstream。
@@ -62,5 +65,5 @@ Vitis HLS 和 Vivado 都会生成大量缓存、日志、波形和布局布线�
 只保留可复现入口、XPR、MEM、XCI、BIT/LTX 和报告；重新生成时不要把 `.Xil`、`.runs`、
 `.sim`、`.cache`、DCP 或临时目录加入 Git。
 
-新 HLS 使用已验证的 native MMIO/BRAM adapter。后续 PicoRV32 接入需新增 CPU 总线桥接、
-软件调用、阶段 oracle 和系统顶层，并更新端到端证据；不能把旧 AXI wrapper 恢复后当作新接口。
+K2 保留已验证的 native MMIO/BRAM adapter。K4 Keccak 使用独立接口契约，后续需完成
+CPU 总线仲裁、批量数据通路、软件调用及系统顶层，再建立自己的端到端证据。

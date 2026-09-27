@@ -1,0 +1,54 @@
+{
+  "manifest.json": {
+    "source": "manifest.json",
+    "sha256": "0e690cc61d3224bd765e74e4f75b1053ca89ce722b5ea1faf0c1eb977c187cbb"
+  },
+  "state.json": {
+    "source": "state.json",
+    "sha256": "72672d5a8021aaf0bce9b48420edcd344eeb9fb1a062d72ab54d4c4de448ba83"
+  },
+  "reports/metrics.json": {
+    "source": "reports/metrics.json",
+    "sha256": "fa18ce32e0c18aabc9589589111ab5b12bb3937d1850a68a81c692540828bef7"
+  },
+  "reports/metrics.md": {
+    "source": "reports/metrics.md",
+    "sha256": "d0315b143db5138e7dc639ef2607b8872359644743393cc1b1eda3224c7fc8c6"
+  },
+  "p/sol1/csim/report/mlkem1024_keccak_accel_csim.txt": {
+    "source": "p/sol1/csim/report/mlkem1024_keccak_accel_csim.log",
+    "sha256": "8ffabba4104e743babb2c6d861cdd6ab8fd1a79dcd81b2590795031e00b10055"
+  },
+  "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.xml": {
+    "source": "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.xml",
+    "sha256": "b40477f0521469fc87be61d924827ba18c9d236b7ffe3b01ae2228e57cc8f8cc"
+  },
+  "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.rpt": {
+    "source": "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.rpt",
+    "sha256": "674b07ecbb059cbd738a31a1fe851f1daf9a528b827501b4d41f27369d0f9858"
+  },
+  "p/sol1/sim/report/mlkem1024_keccak_accel_cosim.rpt": {
+    "source": "p/sol1/sim/report/mlkem1024_keccak_accel_cosim.rpt",
+    "sha256": "cf9fbcf3bee6364f2c2842d07509044b16b7da3258759523993db89ffa3de254"
+  },
+  "p/sol1/sim/report/verilog/result.transaction.rpt": {
+    "source": "p/sol1/sim/report/verilog/result.transaction.rpt",
+    "sha256": "51f329b596d6e4d70da76525772c657a11dcac972dc5e552b96f76723ee8e80a"
+  },
+  "snapshot/src/mlkem1024_keccak_accel.cpp": {
+    "source": "snapshot/src/mlkem1024_keccak_accel.cpp",
+    "sha256": "5adee3f05786d3c433accff91e9a29c16a088b3f6798fe0d7b1543a4abdc016f"
+  },
+  "snapshot/src/mlkem1024_keccak_accel.h": {
+    "source": "snapshot/src/mlkem1024_keccak_accel.h",
+    "sha256": "4624879159b68e25c9a71be894703d964a2429e04fd1f8dec5b9381a6aa0d0cd"
+  },
+  "snapshot/run_hls.tcl": {
+    "source": "snapshot/run_hls.tcl",
+    "sha256": "2eb3185a3c52fba9c2a17171b34e8b402efb2fd7a87e3be862f486564d92d077"
+  },
+  "snapshot/scripts/collect_reports.py": {
+    "source": "snapshot/scripts/collect_reports.py",
+    "sha256": "cda89242a3a9268edddd19db3c852bcd380a2d88e2ae11bd0b9aba6f7e4bd86a"
+  }
+}

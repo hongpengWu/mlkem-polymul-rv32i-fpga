@@ -1,0 +1,126 @@
+{
+  "manifest.json": {
+    "source": "manifest.json",
+    "sha256": "9bd0a3f43196cac0528b0d1b6addb696a882e18bd392e8071c1668872771054f"
+  },
+  "state.json": {
+    "source": "state.json",
+    "sha256": "7329f0fd0463ea27c06b12df1ae660b33862475f5c55d617401a8cce62e53a32"
+  },
+  "reports/metrics.json": {
+    "source": "reports/metrics.json",
+    "sha256": "3f67d880891f0ff986e369130cad89e3fceb7421df0ee80de1881e455beef1e9"
+  },
+  "reports/metrics.md": {
+    "source": "reports/metrics.md",
+    "sha256": "9a4e228f90bfcdbb10d64c134aa84dd2f4e4b6e77c9af9fd51dfb2e3a2153267"
+  },
+  "p/sol1/csim/report/mlkem1024_keccak_accel_csim.txt": {
+    "source": "p/sol1/csim/report/mlkem1024_keccak_accel_csim.log",
+    "sha256": "8ffabba4104e743babb2c6d861cdd6ab8fd1a79dcd81b2590795031e00b10055"
+  },
+  "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.xml": {
+    "source": "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.xml",
+    "sha256": "7c2f9e9dfdee02093ce2cf0523d11dc88aec15d52e4cab458833a78f5a5a0e96"
+  },
+  "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.rpt": {
+    "source": "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.rpt",
+    "sha256": "00ea6ad68299e57aeed28f84345b6cb2a3b7385a73ec4dd2c959d8377bb7ce79"
+  },
+  "p/sol1/sim/report/mlkem1024_keccak_accel_cosim.rpt": {
+    "source": "p/sol1/sim/report/mlkem1024_keccak_accel_cosim.rpt",
+    "sha256": "56e193fc667cac385ee68c09efede8b06dab99b6df4ea17e8e72034ae3864b32"
+  },
+  "p/sol1/sim/report/verilog/result.transaction.rpt": {
+    "source": "p/sol1/sim/report/verilog/result.transaction.rpt",
+    "sha256": "87d1ce6379035f628bcd497fdbdafde0850fb6ed336bf73a26885efda3f8a1c1"
+  },
+  "snapshot/src/mlkem1024_keccak_accel.cpp": {
+    "source": "snapshot/src/mlkem1024_keccak_accel.cpp",
+    "sha256": "5adee3f05786d3c433accff91e9a29c16a088b3f6798fe0d7b1543a4abdc016f"
+  },
+  "snapshot/src/mlkem1024_keccak_accel.h": {
+    "source": "snapshot/src/mlkem1024_keccak_accel.h",
+    "sha256": "4624879159b68e25c9a71be894703d964a2429e04fd1f8dec5b9381a6aa0d0cd"
+  },
+  "snapshot/run_hls.tcl": {
+    "source": "snapshot/run_hls.tcl",
+    "sha256": "2eb3185a3c52fba9c2a17171b34e8b402efb2fd7a87e3be862f486564d92d077"
+  },
+  "snapshot/scripts/collect_reports.py": {
+    "source": "snapshot/scripts/collect_reports.py",
+    "sha256": "cda89242a3a9268edddd19db3c852bcd380a2d88e2ae11bd0b9aba6f7e4bd86a"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_design_analysis_routed.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_design_analysis_routed.rpt",
+    "sha256": "243d68c14a2df32c87cb2169563263ac8d0d7a6c24faf3d7240755550406374b"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_design_analysis_synth.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_design_analysis_synth.rpt",
+    "sha256": "7f77899bf0344ca9941f5c48007f455526097de012629b166a8ba35d37ca4423"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_failfast_routed.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_failfast_routed.rpt",
+    "sha256": "0a5f80fb8f7e66df8997d4b761145e655ef1985533a5f6063dcd21fed329f7ea"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_failfast_synth.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_failfast_synth.rpt",
+    "sha256": "71862ef627d82b895bf5c005d650a57ea39c4f41e1a7fc07eee9a2cd6125a1b0"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_power_routed.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_power_routed.rpt",
+    "sha256": "d1d07fa686008e35fcc47764533db5991986aecc765cd915ce7389a918e7f768"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_power_synth.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_power_synth.rpt",
+    "sha256": "7d1aed2ee60566adf02d00b2de13baa00d7c36f7611a0d9a181d029280c610d7"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_status_routed.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_status_routed.rpt",
+    "sha256": "15ebceba66b8eaa26eaa22bce5a53e7d8b73edf2bb0c45ae4215f674c8dcc6c7"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_timing_paths_routed.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_timing_paths_routed.rpt",
+    "sha256": "452bcef91695c7071bf02ce9f5011e75580a6506ebe9bb93aa9e8e78e67f262e"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_timing_paths_synth.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_timing_paths_synth.rpt",
+    "sha256": "2b1a8f85ba95a2ade3fb6789c25297e74453687214dc18439b175d635e250b54"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_timing_routed.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_timing_routed.rpt",
+    "sha256": "49290d6bd3331d7a3c6a8137b0d9de322cb81bccbc72fa8777ab8ae73b982697"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_timing_synth.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_timing_synth.rpt",
+    "sha256": "511f4373af0425c2f2cb2a85ce8487f59e7c364397f0b8b1fe99b2cfdac9aa37"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_utilization_hierarchical_routed.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_utilization_hierarchical_routed.rpt",
+    "sha256": "1d3e31538ef0a362e90e91d5d18bdfe18b406201a818675cc23a94f6d0be14e6"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_utilization_hierarchical_synth.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_utilization_hierarchical_synth.rpt",
+    "sha256": "2dd361ddff89faa2d62d94ba4a651d03bf384744b46a9f0a9c90799a1c5a7107"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_utilization_routed.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_utilization_routed.rpt",
+    "sha256": "6fe2e80d11d037837ae225f4837545704ae601f82145f36a54805a87d4fa8af7"
+  },
+  "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_utilization_synth.rpt": {
+    "source": "p/sol1/impl/verilog/report/mlkem1024_keccak_accel_utilization_synth.rpt",
+    "sha256": "665934bef258c1b0f86de4df468d9d7ec60fbd851487905e5b9d472cad7a2c52"
+  },
+  "p/sol1/impl/verilog/mlkem1024_keccak_accel.xdc": {
+    "source": "p/sol1/impl/verilog/mlkem1024_keccak_accel.xdc",
+    "sha256": "84dfa2826bfc9f18971bbced4a50eb15d4ea1d2da3882533d59c1852639e00a5"
+  },
+  "p/sol1/impl/verilog/project.runs/impl_1/bd_0_wrapper_drc_routed.rpt": {
+    "source": "p/sol1/impl/verilog/project.runs/impl_1/bd_0_wrapper_drc_routed.rpt",
+    "sha256": "92171dace4ed4048ecde6202048cbb6df9c068c5c7806d9832a1ab5bd57d7cca"
+  },
+  "p/sol1/impl/verilog/project.runs/impl_1/bd_0_wrapper_methodology_drc_routed.rpt": {
+    "source": "p/sol1/impl/verilog/project.runs/impl_1/bd_0_wrapper_methodology_drc_routed.rpt",
+    "sha256": "2ee3ec7e4069952613ef74c544eaf6c38e326668001ed48b3fa96201fc34dd0c"
+  }
+}

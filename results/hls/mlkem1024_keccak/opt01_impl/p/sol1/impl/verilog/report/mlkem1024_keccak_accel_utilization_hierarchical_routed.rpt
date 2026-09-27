@@ -1,0 +1,51 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sun Sep 27 16:27:44 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -hierarchical_depth 6 -file ./report/mlkem1024_keccak_accel_utilization_hierarchical_routed.rpt
+| Design       : bd_0_wrapper
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Routed
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++-----------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|                                Instance                               |                                                          Module                                                         | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++-----------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| bd_0_wrapper                                                          |                                                                                                                   (top) |      16885 |      16885 |       0 |    0 | 15320 |      0 |      0 |          0 |
+|   bd_0_i                                                              |                                                                                                                    bd_0 |      16885 |      16885 |       0 |    0 | 15320 |      0 |      0 |          0 |
+|     hls_inst                                                          |                                                                                                         bd_0_hls_inst_0 |      16885 |      16885 |       0 |    0 | 15320 |      0 |      0 |          0 |
+|       (hls_inst)                                                      |                                                                                                         bd_0_hls_inst_0 |          0 |          0 |       0 |    0 |     0 |      0 |      0 |          0 |
+|       inst                                                            |                                                                                  bd_0_hls_inst_0_mlkem1024_keccak_accel |      16885 |      16885 |       0 |    0 | 15320 |      0 |      0 |          0 |
+|         (inst)                                                        |                                                                                  bd_0_hls_inst_0_mlkem1024_keccak_accel |       2774 |       2774 |       0 |    0 | 10415 |      0 |      0 |          0 |
+|         control_s_axi_U                                               |                                                                    bd_0_hls_inst_0_mlkem1024_keccak_accel_control_s_axi |        161 |        161 |       0 |    0 |   135 |      0 |      0 |          0 |
+|         grp_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS_fu_2454      |                                     bd_0_hls_inst_0_mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS |       3861 |       3861 |       0 |    0 |  1457 |      0 |      0 |          0 |
+|           (grp_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS_fu_2454)  |                                     bd_0_hls_inst_0_mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS |       3123 |       3123 |       0 |    0 |  1455 |      0 |      0 |          0 |
+|           flow_control_loop_pipe_sequential_init_U                    |                                         bd_0_hls_inst_0_mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init_3 |        738 |        738 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         grp_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT_fu_2416     |                                    bd_0_hls_inst_0_mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT |         50 |         50 |       0 |    0 |     7 |      0 |      0 |          0 |
+|           (grp_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT_fu_2416) |                                    bd_0_hls_inst_0_mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT |          0 |          0 |       0 |    0 |     5 |      0 |      0 |          0 |
+|           flow_control_loop_pipe_sequential_init_U                    |                                         bd_0_hls_inst_0_mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init_2 |         50 |         50 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         grp_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT_fu_2422      |                                     bd_0_hls_inst_0_mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT |       1659 |       1659 |       0 |    0 |  1614 |      0 |      0 |          0 |
+|           (grp_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT_fu_2422)  |                                     bd_0_hls_inst_0_mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT |       1638 |       1638 |       0 |    0 |  1612 |      0 |      0 |          0 |
+|           flow_control_loop_pipe_sequential_init_U                    |                                         bd_0_hls_inst_0_mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init_1 |         21 |         21 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         grp_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT_fu_2559      |                                     bd_0_hls_inst_0_mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT |        517 |        517 |       0 |    0 |    77 |      0 |      0 |          0 |
+|           (grp_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT_fu_2559)  |                                     bd_0_hls_inst_0_mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT |         53 |         53 |       0 |    0 |    75 |      0 |      0 |          0 |
+|           flow_control_loop_pipe_sequential_init_U                    |                                         bd_0_hls_inst_0_mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init_0 |        464 |        464 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         grp_p_anonymous_namespace_keccak_f1600_fu_2505                |                                               bd_0_hls_inst_0_mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600 |       7867 |       7867 |       0 |    0 |  1615 |      0 |      0 |          0 |
+|           (grp_p_anonymous_namespace_keccak_f1600_fu_2505)            |                                               bd_0_hls_inst_0_mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600 |       2946 |       2946 |       0 |    0 |  1606 |      0 |      0 |          0 |
+|           flow_control_loop_pipe_sequential_init_U                    |                                           bd_0_hls_inst_0_mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init |       4914 |       4914 |       0 |    0 |     2 |      0 |      0 |          0 |
+|           p_anonymous_namespace_ROUND_CONSTANTS_U                     | bd_0_hls_inst_0_mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb |          7 |          7 |       0 |    0 |     7 |      0 |      0 |          0 |
++-----------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

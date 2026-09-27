@@ -1,0 +1,1092 @@
+[
+  {
+    "transaction": 0,
+    "name": "shake128_empty",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 295,
+    "opt_cycles": 176
+  },
+  {
+    "transaction": 1,
+    "name": "shake128_abc",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 3,
+    "output_bytes": 32,
+    "base_cycles": 392,
+    "opt_cycles": 175
+  },
+  {
+    "transaction": 2,
+    "name": "shake128_in_rate_167",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 167,
+    "output_bytes": 349,
+    "base_cycles": 7453,
+    "opt_cycles": 712
+  },
+  {
+    "transaction": 3,
+    "name": "shake128_in_rate_168",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 168,
+    "output_bytes": 349,
+    "base_cycles": 7511,
+    "opt_cycles": 728
+  },
+  {
+    "transaction": 4,
+    "name": "shake128_in_rate_169",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 169,
+    "output_bytes": 349,
+    "base_cycles": 7546,
+    "opt_cycles": 735
+  },
+  {
+    "transaction": 5,
+    "name": "shake128_multi_block_input",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 343,
+    "output_bytes": 337,
+    "base_cycles": 13613,
+    "opt_cycles": 845
+  },
+  {
+    "transaction": 6,
+    "name": "shake128_k4_input_33",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 33,
+    "output_bytes": 128,
+    "base_cycles": 1832,
+    "opt_cycles": 313
+  },
+  {
+    "transaction": 7,
+    "name": "shake128_k4_input_34",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 504,
+    "base_cycles": 3421,
+    "opt_cycles": 831
+  },
+  {
+    "transaction": 8,
+    "name": "shake128_k4_input_64",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 64,
+    "output_bytes": 64,
+    "base_cycles": 2665,
+    "opt_cycles": 250
+  },
+  {
+    "transaction": 9,
+    "name": "shake128_k4_input_1568",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 1568,
+    "output_bytes": 32,
+    "base_cycles": 55389,
+    "opt_cycles": 1244
+  },
+  {
+    "transaction": 10,
+    "name": "shake128_k4_input_1600",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 1600,
+    "output_bytes": 32,
+    "base_cycles": 56504,
+    "opt_cycles": 1253
+  },
+  {
+    "transaction": 11,
+    "name": "shake128_k4_input_2048",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 2048,
+    "output_bytes": 37,
+    "base_cycles": 72280,
+    "opt_cycles": 1587
+  },
+  {
+    "transaction": 12,
+    "name": "shake128_same_size_data_0",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 256,
+    "base_cycles": 2406,
+    "opt_cycles": 502
+  },
+  {
+    "transaction": 13,
+    "name": "shake128_same_size_data_1",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 256,
+    "base_cycles": 2389,
+    "opt_cycles": 485
+  },
+  {
+    "transaction": 14,
+    "name": "shake128_deterministic_random",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 597,
+    "output_bytes": 733,
+    "base_cycles": 24162,
+    "opt_cycles": 1545
+  },
+  {
+    "transaction": 15,
+    "name": "shake128_out_boundary_0",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 0,
+    "base_cycles": 1356,
+    "opt_cycles": 159
+  },
+  {
+    "transaction": 16,
+    "name": "shake128_out_boundary_167",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 167,
+    "base_cycles": 2023,
+    "opt_cycles": 364
+  },
+  {
+    "transaction": 17,
+    "name": "shake128_out_boundary_168",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 168,
+    "base_cycles": 2023,
+    "opt_cycles": 364
+  },
+  {
+    "transaction": 18,
+    "name": "shake128_out_boundary_169",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 169,
+    "base_cycles": 2051,
+    "opt_cycles": 392
+  },
+  {
+    "transaction": 19,
+    "name": "shake128_out_boundary_337",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 337,
+    "base_cycles": 2751,
+    "opt_cycles": 623
+  },
+  {
+    "transaction": 20,
+    "name": "shake128_out_boundary_4096",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 4096,
+    "base_cycles": 18312,
+    "opt_cycles": 5845
+  },
+  {
+    "transaction": 21,
+    "name": "shake128_max_input_and_output",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 2048,
+    "output_bytes": 4096,
+    "base_cycles": 89089,
+    "opt_cycles": 7224
+  },
+  {
+    "transaction": 22,
+    "name": "shake256_empty",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 64,
+    "base_cycles": 430,
+    "opt_cycles": 213
+  },
+  {
+    "transaction": 23,
+    "name": "shake256_abc",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 3,
+    "output_bytes": 64,
+    "base_cycles": 525,
+    "opt_cycles": 217
+  },
+  {
+    "transaction": 24,
+    "name": "shake256_in_rate_135",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 135,
+    "output_bytes": 285,
+    "base_cycles": 6081,
+    "opt_cycles": 614
+  },
+  {
+    "transaction": 25,
+    "name": "shake256_in_rate_136",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 136,
+    "output_bytes": 285,
+    "base_cycles": 6132,
+    "opt_cycles": 630
+  },
+  {
+    "transaction": 26,
+    "name": "shake256_in_rate_137",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 137,
+    "output_bytes": 285,
+    "base_cycles": 6167,
+    "opt_cycles": 644
+  },
+  {
+    "transaction": 27,
+    "name": "shake256_multi_block_input",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 279,
+    "output_bytes": 273,
+    "base_cycles": 11121,
+    "opt_cycles": 733
+  },
+  {
+    "transaction": 28,
+    "name": "shake256_k4_input_33",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 33,
+    "output_bytes": 128,
+    "base_cycles": 1832,
+    "opt_cycles": 313
+  },
+  {
+    "transaction": 29,
+    "name": "shake256_k4_input_34",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 128,
+    "base_cycles": 1862,
+    "opt_cycles": 308
+  },
+  {
+    "transaction": 30,
+    "name": "shake256_k4_input_64",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 64,
+    "output_bytes": 64,
+    "base_cycles": 2665,
+    "opt_cycles": 250
+  },
+  {
+    "transaction": 31,
+    "name": "shake256_k4_input_1568",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 1568,
+    "output_bytes": 32,
+    "base_cycles": 55438,
+    "opt_cycles": 1300
+  },
+  {
+    "transaction": 32,
+    "name": "shake256_k4_input_1600",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 1600,
+    "output_bytes": 32,
+    "base_cycles": 56553,
+    "opt_cycles": 1316
+  },
+  {
+    "transaction": 33,
+    "name": "shake256_k4_input_2048",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 2048,
+    "output_bytes": 37,
+    "base_cycles": 72357,
+    "opt_cycles": 1678
+  },
+  {
+    "transaction": 34,
+    "name": "shake256_same_size_data_0",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 256,
+    "base_cycles": 2406,
+    "opt_cycles": 502
+  },
+  {
+    "transaction": 35,
+    "name": "shake256_same_size_data_1",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 256,
+    "base_cycles": 2389,
+    "opt_cycles": 485
+  },
+  {
+    "transaction": 36,
+    "name": "shake256_deterministic_random",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 913,
+    "output_bytes": 733,
+    "base_cycles": 35320,
+    "opt_cycles": 1825
+  },
+  {
+    "transaction": 37,
+    "name": "shake256_out_boundary_0",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 0,
+    "base_cycles": 1356,
+    "opt_cycles": 159
+  },
+  {
+    "transaction": 38,
+    "name": "shake256_out_boundary_135",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 135,
+    "base_cycles": 1890,
+    "opt_cycles": 322
+  },
+  {
+    "transaction": 39,
+    "name": "shake256_out_boundary_136",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 136,
+    "base_cycles": 1897,
+    "opt_cycles": 322
+  },
+  {
+    "transaction": 40,
+    "name": "shake256_out_boundary_137",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 137,
+    "base_cycles": 1925,
+    "opt_cycles": 350
+  },
+  {
+    "transaction": 41,
+    "name": "shake256_out_boundary_273",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 273,
+    "base_cycles": 2492,
+    "opt_cycles": 546
+  },
+  {
+    "transaction": 42,
+    "name": "shake256_out_boundary_4096",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 4096,
+    "base_cycles": 18459,
+    "opt_cycles": 5992
+  },
+  {
+    "transaction": 43,
+    "name": "shake256_max_input_and_output",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 2048,
+    "output_bytes": 4096,
+    "base_cycles": 89306,
+    "opt_cycles": 7462
+  },
+  {
+    "transaction": 44,
+    "name": "sha3_256_empty",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 297,
+    "opt_cycles": 178
+  },
+  {
+    "transaction": 45,
+    "name": "sha3_256_abc",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 3,
+    "output_bytes": 32,
+    "base_cycles": 392,
+    "opt_cycles": 175
+  },
+  {
+    "transaction": 46,
+    "name": "sha3_256_in_rate_135",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 135,
+    "output_bytes": 32,
+    "base_cycles": 5012,
+    "opt_cycles": 238
+  },
+  {
+    "transaction": 47,
+    "name": "sha3_256_in_rate_136",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 136,
+    "output_bytes": 32,
+    "base_cycles": 5075,
+    "opt_cycles": 266
+  },
+  {
+    "transaction": 48,
+    "name": "sha3_256_in_rate_137",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 137,
+    "output_bytes": 32,
+    "base_cycles": 5110,
+    "opt_cycles": 273
+  },
+  {
+    "transaction": 49,
+    "name": "sha3_256_multi_block_input",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 279,
+    "output_bytes": 32,
+    "base_cycles": 10101,
+    "opt_cycles": 378
+  },
+  {
+    "transaction": 50,
+    "name": "sha3_256_k4_input_33",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 33,
+    "output_bytes": 32,
+    "base_cycles": 1442,
+    "opt_cycles": 189
+  },
+  {
+    "transaction": 51,
+    "name": "sha3_256_k4_input_34",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 32,
+    "base_cycles": 1477,
+    "opt_cycles": 189
+  },
+  {
+    "transaction": 52,
+    "name": "sha3_256_k4_input_64",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 64,
+    "output_bytes": 32,
+    "base_cycles": 2527,
+    "opt_cycles": 203
+  },
+  {
+    "transaction": 53,
+    "name": "sha3_256_k4_input_1568",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 1568,
+    "output_bytes": 32,
+    "base_cycles": 55433,
+    "opt_cycles": 1295
+  },
+  {
+    "transaction": 54,
+    "name": "sha3_256_k4_input_1600",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 1600,
+    "output_bytes": 32,
+    "base_cycles": 56553,
+    "opt_cycles": 1316
+  },
+  {
+    "transaction": 55,
+    "name": "sha3_256_k4_input_2048",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 2048,
+    "output_bytes": 32,
+    "base_cycles": 72331,
+    "opt_cycles": 1659
+  },
+  {
+    "transaction": 56,
+    "name": "sha3_256_same_size_data_0",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 32,
+    "base_cycles": 1477,
+    "opt_cycles": 189
+  },
+  {
+    "transaction": 57,
+    "name": "sha3_256_same_size_data_1",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 32,
+    "base_cycles": 1465,
+    "opt_cycles": 177
+  },
+  {
+    "transaction": 58,
+    "name": "sha3_256_deterministic_random",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 1283,
+    "output_bytes": 32,
+    "base_cycles": 45409,
+    "opt_cycles": 1092
+  },
+  {
+    "transaction": 59,
+    "name": "sha3_512_empty",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 64,
+    "base_cycles": 430,
+    "opt_cycles": 213
+  },
+  {
+    "transaction": 60,
+    "name": "sha3_512_abc",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 3,
+    "output_bytes": 64,
+    "base_cycles": 525,
+    "opt_cycles": 217
+  },
+  {
+    "transaction": 61,
+    "name": "sha3_512_in_rate_71",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 71,
+    "output_bytes": 64,
+    "base_cycles": 2905,
+    "opt_cycles": 252
+  },
+  {
+    "transaction": 62,
+    "name": "sha3_512_in_rate_72",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 72,
+    "output_bytes": 64,
+    "base_cycles": 2961,
+    "opt_cycles": 273
+  },
+  {
+    "transaction": 63,
+    "name": "sha3_512_in_rate_73",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 73,
+    "output_bytes": 64,
+    "base_cycles": 2996,
+    "opt_cycles": 280
+  },
+  {
+    "transaction": 64,
+    "name": "sha3_512_multi_block_input",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 151,
+    "output_bytes": 64,
+    "base_cycles": 5754,
+    "opt_cycles": 350
+  },
+  {
+    "transaction": 65,
+    "name": "sha3_512_k4_input_33",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 33,
+    "output_bytes": 64,
+    "base_cycles": 1575,
+    "opt_cycles": 231
+  },
+  {
+    "transaction": 66,
+    "name": "sha3_512_k4_input_34",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 64,
+    "base_cycles": 1610,
+    "opt_cycles": 231
+  },
+  {
+    "transaction": 67,
+    "name": "sha3_512_k4_input_64",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 64,
+    "output_bytes": 64,
+    "base_cycles": 2660,
+    "opt_cycles": 245
+  },
+  {
+    "transaction": 68,
+    "name": "sha3_512_k4_input_1568",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 1568,
+    "output_bytes": 64,
+    "base_cycles": 55804,
+    "opt_cycles": 1645
+  },
+  {
+    "transaction": 69,
+    "name": "sha3_512_k4_input_1600",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 1600,
+    "output_bytes": 64,
+    "base_cycles": 56945,
+    "opt_cycles": 1694
+  },
+  {
+    "transaction": 70,
+    "name": "sha3_512_k4_input_2048",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 2048,
+    "output_bytes": 64,
+    "base_cycles": 72772,
+    "opt_cycles": 2107
+  },
+  {
+    "transaction": 71,
+    "name": "sha3_512_same_size_data_0",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 64,
+    "base_cycles": 1610,
+    "opt_cycles": 231
+  },
+  {
+    "transaction": 72,
+    "name": "sha3_512_same_size_data_1",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 64,
+    "base_cycles": 1598,
+    "opt_cycles": 219
+  },
+  {
+    "transaction": 73,
+    "name": "sha3_512_deterministic_random",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 2011,
+    "output_bytes": 64,
+    "base_cycles": 71449,
+    "opt_cycles": 2058
+  },
+  {
+    "transaction": 74,
+    "name": "shake128_split_13_0_491_168_part0",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 13,
+    "base_cycles": 1417,
+    "opt_cycles": 178
+  },
+  {
+    "transaction": 75,
+    "name": "shake128_split_13_0_491_168_part1",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 0,
+    "base_cycles": 52,
+    "opt_cycles": 52
+  },
+  {
+    "transaction": 76,
+    "name": "shake128_split_13_0_491_168_part2",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 491,
+    "base_cycles": 2114,
+    "opt_cycles": 770
+  },
+  {
+    "transaction": 77,
+    "name": "shake128_split_13_0_491_168_part3",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 168,
+    "base_cycles": 798,
+    "opt_cycles": 336
+  },
+  {
+    "transaction": 78,
+    "name": "shake256_split_13_0_491_168_part0",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 13,
+    "base_cycles": 1422,
+    "opt_cycles": 183
+  },
+  {
+    "transaction": 79,
+    "name": "shake256_split_13_0_491_168_part1",
+    "mode": 1,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 0,
+    "base_cycles": 52,
+    "opt_cycles": 52
+  },
+  {
+    "transaction": 80,
+    "name": "shake256_split_13_0_491_168_part2",
+    "mode": 1,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 491,
+    "base_cycles": 2135,
+    "opt_cycles": 805
+  },
+  {
+    "transaction": 81,
+    "name": "shake256_split_13_0_491_168_part3",
+    "mode": 1,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 168,
+    "base_cycles": 798,
+    "opt_cycles": 336
+  },
+  {
+    "transaction": 82,
+    "name": "interleave_A_hash13",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 33,
+    "output_bytes": 13,
+    "base_cycles": 1387,
+    "opt_cycles": 183
+  },
+  {
+    "transaction": 83,
+    "name": "interleave_B_hash0",
+    "mode": 1,
+    "command": 0,
+    "input_bytes": 34,
+    "output_bytes": 0,
+    "base_cycles": 1361,
+    "opt_cycles": 164
+  },
+  {
+    "transaction": 84,
+    "name": "interleave_A_squeeze155",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 155,
+    "base_cycles": 736,
+    "opt_cycles": 309
+  },
+  {
+    "transaction": 85,
+    "name": "interleave_B_squeeze136",
+    "mode": 1,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 136,
+    "base_cycles": 649,
+    "opt_cycles": 278
+  },
+  {
+    "transaction": 86,
+    "name": "interleave_A_squeeze169",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 169,
+    "base_cycles": 831,
+    "opt_cycles": 369
+  },
+  {
+    "transaction": 87,
+    "name": "interleave_B_squeeze137",
+    "mode": 1,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 137,
+    "base_cycles": 698,
+    "opt_cycles": 327
+  },
+  {
+    "transaction": 88,
+    "name": "invalid_mode",
+    "mode": 255,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 52,
+    "opt_cycles": 52
+  },
+  {
+    "transaction": 89,
+    "name": "invalid_command",
+    "mode": 0,
+    "command": 255,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 90,
+    "name": "input_too_long",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 2049,
+    "output_bytes": 32,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 91,
+    "name": "output_too_long",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 4097,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 92,
+    "name": "input_uint32_max",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 4294967295,
+    "output_bytes": 32,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 93,
+    "name": "output_uint32_max",
+    "mode": 0,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 4294967295,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 94,
+    "name": "sha3_256_wrong_length",
+    "mode": 2,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 31,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 95,
+    "name": "sha3_512_wrong_length",
+    "mode": 3,
+    "command": 0,
+    "input_bytes": 0,
+    "output_bytes": 65,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 96,
+    "name": "squeeze_nonzero_input",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 1,
+    "output_bytes": 32,
+    "base_cycles": 57,
+    "opt_cycles": 57
+  },
+  {
+    "transaction": 97,
+    "name": "squeeze_sha3_mode",
+    "mode": 2,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 98,
+    "name": "clear_nonzero_input",
+    "mode": 0,
+    "command": 2,
+    "input_bytes": 1,
+    "output_bytes": 0,
+    "base_cycles": 57,
+    "opt_cycles": 57
+  },
+  {
+    "transaction": 99,
+    "name": "clear_nonzero_output",
+    "mode": 0,
+    "command": 2,
+    "input_bytes": 0,
+    "output_bytes": 1,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 100,
+    "name": "squeeze_uninitialized",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  },
+  {
+    "transaction": 101,
+    "name": "squeeze_bad_magic",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 30,
+    "opt_cycles": 30
+  },
+  {
+    "transaction": 102,
+    "name": "squeeze_mode_mismatch",
+    "mode": 1,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 42,
+    "opt_cycles": 42
+  },
+  {
+    "transaction": 103,
+    "name": "squeeze_reserved_metadata",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 42,
+    "opt_cycles": 42
+  },
+  {
+    "transaction": 104,
+    "name": "squeeze_cursor_over_rate",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 30,
+    "opt_cycles": 30
+  },
+  {
+    "transaction": 105,
+    "name": "squeeze_invalid_stored_mode",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 30,
+    "opt_cycles": 30
+  },
+  {
+    "transaction": 106,
+    "name": "clear_dirty_context",
+    "mode": 0,
+    "command": 2,
+    "input_bytes": 0,
+    "output_bytes": 0,
+    "base_cycles": 75,
+    "opt_cycles": 75
+  },
+  {
+    "transaction": 107,
+    "name": "clear_already_zero",
+    "mode": 0,
+    "command": 2,
+    "input_bytes": 0,
+    "output_bytes": 0,
+    "base_cycles": 58,
+    "opt_cycles": 58
+  },
+  {
+    "transaction": 108,
+    "name": "squeeze_after_clear",
+    "mode": 0,
+    "command": 1,
+    "input_bytes": 0,
+    "output_bytes": 32,
+    "base_cycles": 47,
+    "opt_cycles": 47
+  }
+]

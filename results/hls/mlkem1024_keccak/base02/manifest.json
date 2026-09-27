@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "created_utc": "2026-09-27T08:11:14.240642+00:00",
+  "source_dir": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\hls\\mlkem1024_keccak",
+  "config": {
+    "io_opt": 0,
+    "part": "xc7z020-clg400-1",
+    "clock_ns": 10.0,
+    "clock_uncertainty": "10%",
+    "pipeline_loops": 0,
+    "partition_state": true,
+    "language": "c++14",
+    "top": "mlkem1024_keccak_accel"
+  },
+  "input_sha256": {
+    "src/mlkem1024_keccak_accel.cpp": "5adee3f05786d3c433accff91e9a29c16a088b3f6798fe0d7b1543a4abdc016f",
+    "src/mlkem1024_keccak_accel.h": "4624879159b68e25c9a71be894703d964a2429e04fd1f8dec5b9381a6aa0d0cd",
+    "tb/generated_keccak_vectors.h": "ba12ce46154195b133b5923a9c8b4ea7393cc79423cfd780a977aa6f33143150",
+    "tb/local_fips202_vectors.json": "d50529577a9b1107dacfa579af5d3e79bda2c2f3b36a1f9a47ca329dd2cd27fa",
+    "tb/README.md": "60dae902d863b5848e626efad8dec3d561eb2e9b793d82fd0bc80a8f97d7af75",
+    "tb/tb_mlkem1024_keccak_accel.cpp": "e6cecdd0e864bd9113eb6c400533d01fd5169d897bba168d0b7bdb45d513d54f",
+    "tb/vector_manifest.json": "ac6b7de06d6df07363e21f91f702e484a2ab654a21ce9a01832b027d2328faef"
+  },
+  "informational_script_sha256": {
+    "run_hls.tcl": "2eb3185a3c52fba9c2a17171b34e8b402efb2fd7a87e3be862f486564d92d077",
+    "scripts/collect_reports.py": "cda89242a3a9268edddd19db3c852bcd380a2d88e2ae11bd0b9aba6f7e4bd86a"
+  }
+}

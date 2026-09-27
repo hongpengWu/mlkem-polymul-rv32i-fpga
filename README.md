@@ -1,12 +1,16 @@
 # ML-KEM PolyMul · PicoRV32 · PYNQ-Z2
 
-本仓库保存一个面向 PYNQ-Z2 的 ML-KEM/CRYSTALS-Kyber 研究工程。当前可复现主线是
-PicoRV32 CPU 软件 baseline、FIPS 203/ACVP 官方向量回归，以及从标准库接口重新设计并
-完成独立 MMIO/BRAM/板级 BIST 验证的 ML-KEM-512 K=2 BaseMul HLS 原型。旧的完整时域
-多项式加速器和与之绑定的板级工程已移除，避免把失效的 AXI 地址映射、旧 bitstream 和
-新接口混在一起。
+本仓库保存面向 PYNQ-Z2 的 ML-KEM/CRYSTALS-Kyber 研究工程。当前主线为
+**ML-KEM-1024（K4）的 Keccak/SHAKE 软硬件协同加速**，以完整 API 收益和资源成本
+指导架构。专用 HLS 入口见 [hls/mlkem1024_keccak](hls/mlkem1024_keccak/README.md)。
+已有 CPU 官方基线和 K2 BaseMul 结果保留作为历史对照；最新路线见
+[项目进度](docs/PROJECT_STATUS.md)。
 
-当前主线状态：
+当前状态（2026-09-27）：
+
+- K4 Keccak 两种访存配置均通过 109 次 C/RTL 协同测试；向量为本地 FIPS 202 差分测试。
+  独立核的优化、资源和时序见 [测量记录](results/hls/mlkem1024_keccak/summary.md)，CPU 接入与 K4 加速官方 KAT 待做。
+- ML-KEM-768/1024 RV32IM-fast CPU-only RTL 官方回归各通过 145/145，使用 128 KiB RAM / 32 KiB 栈。
 
 - ML-KEM-512 的 RV32I、RV32IM 迭代乘法、RV32IM 快速乘法三组 PicoRV32 RTL 回归各通过
   145 条固定版本官方记录。
@@ -17,8 +21,8 @@ PicoRV32 CPU 软件 baseline、FIPS 203/ACVP 官方向量回归，以及从标�
   估算 II=1、137 cycles、150.83 MHz、DSP/LUT/FF/BRAM=12/310/599/0。
 - 独立 MMIO/BRAM/板级 BIST RTL 仿真通过；Vivado 2024.2 PYNQ-Z2 工程实现通过，WNS/WHS
   为 0.732/0.129 ns，使用 8 个 BRAM 原语和 12 个 DSP，并已导出 bitstream。
-- RV32IM-fast＋MMIO 驱动最小闭环通过 3 组、768 个系数；完整 KEM 尚未接入，因此核心周期、搬运周期和完整 KEM 周期仍需分别
-  记录，不能把 137 cycles 当作端到端加速比。
+- K2 RV32IM-fast＋BaseMul 已通过完整145条官方RTL回归；端到端为0.9930×。
+  核心、搬运和完整API周期分别记录；K2结果不代表K4 Keccak系统性能。
 
 ## 目录
 
@@ -27,6 +31,7 @@ rtl/cpu/                 PicoRV32 RTL
 rtl/benchmark/           CPU-only 固件 RAM、时钟/复位和可配置 CPU wrapper
 rtl/accelerator/         HLS 生成 RTL、BRAM、MMIO adapter 和 PYNQ-Z2 BIST 顶层
 hls/mlkem512_basemul_k2/ K=2 NTT 域 cached BaseMul HLS、TB、Tcl、短路径脚本和 IP
+hls/mlkem1024_keccak/   K4 Keccak/SHAKE HLS、TB、Tcl与证据脚本（生成工程在E:/hls）
 firmware/cpu_baseline/   CPU-only 多项式 baseline
 firmware/mlkem_baseline/ 官方 KeyGen 入口
 firmware/mlkem512_suite/ ML-KEM-512 完整官方套件入口

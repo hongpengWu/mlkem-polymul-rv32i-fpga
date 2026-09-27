@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "collected_utc": "2026-09-27T08:17:01.113178+00:00",
+  "run_dir": "E:\\hls\\k4_io1\\opt02",
+  "input_sha256": {
+    "src/mlkem1024_keccak_accel.cpp": "6a6d53401ff832bd330ebd9dceafab4dc181a870e3a7a59d8fd3b31ebfc70890",
+    "src/mlkem1024_keccak_accel.h": "4624879159b68e25c9a71be894703d964a2429e04fd1f8dec5b9381a6aa0d0cd",
+    "tb/generated_keccak_vectors.h": "ba12ce46154195b133b5923a9c8b4ea7393cc79423cfd780a977aa6f33143150",
+    "tb/local_fips202_vectors.json": "d50529577a9b1107dacfa579af5d3e79bda2c2f3b36a1f9a47ca329dd2cd27fa",
+    "tb/README.md": "60dae902d863b5848e626efad8dec3d561eb2e9b793d82fd0bc80a8f97d7af75",
+    "tb/tb_mlkem1024_keccak_accel.cpp": "e6cecdd0e864bd9113eb6c400533d01fd5169d897bba168d0b7bdb45d513d54f",
+    "tb/vector_manifest.json": "ac6b7de06d6df07363e21f91f702e484a2ab654a21ce9a01832b027d2328faef"
+  },
+  "configuration": {
+    "io_opt": 1,
+    "part": "xc7z020-clg400-1",
+    "clock_ns": 10.0,
+    "clock_uncertainty": "10%",
+    "pipeline_loops": 0,
+    "partition_state": true,
+    "language": "c++14",
+    "top": "mlkem1024_keccak_accel"
+  },
+  "current_attempt": {
+    "started_utc": "2026-09-27T08:16:12.166604+00:00",
+    "pid": 2672,
+    "reuse": false,
+    "requested": {
+      "CSIM": true,
+      "CSYNTH": true,
+      "COSIM": true,
+      "EXPORT": false
+    },
+    "stages": {
+      "CSIM": "pass",
+      "CSYNTH": "pass",
+      "COSIM": "pass",
+      "EXPORT": "skipped"
+    },
+    "export_flow": "none"
+  },
+  "stage_evidence": {
+    "CSIM": {
+      "status": "pass",
+      "completed_utc": "2026-09-27T08:16:17.211140+00:00",
+      "command_returned_success": true,
+      "report_sha256": {
+        "p/sol1/csim/report/mlkem1024_keccak_accel_csim.log": "8ffabba4104e743babb2c6d861cdd6ab8fd1a79dcd81b2590795031e00b10055"
+      }
+    },
+    "CSYNTH": {
+      "status": "pass",
+      "completed_utc": "2026-09-27T08:16:36.928759+00:00",
+      "command_returned_success": true,
+      "report_sha256": {
+        "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.xml": "db5d4b7bfafd6d575c01faad41ba482f25c45e47b05607fc2ac0de3c7cfe74de"
+      }
+    },
+    "COSIM": {
+      "status": "pass",
+      "completed_utc": "2026-09-27T08:17:00.940262+00:00",
+      "command_returned_success": true,
+      "report_sha256": {
+        "p/sol1/sim/report/mlkem1024_keccak_accel_cosim.rpt": "50f5ead0773142a2b2ac690acf2d83a4e5941aab1b9c6b191b8340188b725d61"
+      }
+    }
+  },
+  "synthesis_estimates": {
+    "tool_version": "2024.2",
+    "part": "xc7z020-clg400-1",
+    "top": "mlkem1024_keccak_accel",
+    "configured_clock_ns": 10.0,
+    "clock_uncertainty_ns": 1.0,
+    "estimated_clock_ns": 8.895,
+    "estimated_latency_cycles": {
+      "min": 1,
+      "avg": 1256,
+      "max": 36247
+    },
+    "estimated_interval_cycles": {
+      "min": 2,
+      "max": 36248
+    },
+    "resources": {
+      "BRAM_18K": 2,
+      "FF": 15385,
+      "LUT": 15244,
+      "DSP": 0,
+      "URAM": 0
+    },
+    "available_resources": {
+      "BRAM_18K": 280,
+      "DSP": 220,
+      "FF": 106400,
+      "LUT": 53200,
+      "URAM": 0
+    }
+  },
+  "cosimulation_measurements": {
+    "rtl": "Verilog",
+    "status": "Pass",
+    "measured_latency_cycles": {
+      "min": 30,
+      "avg": 696,
+      "max": 7462
+    },
+    "measured_interval_cycles": {
+      "min": 24,
+      "avg": 696,
+      "max": 7456
+    },
+    "total_execution_cycles": 75280,
+    "report_row": "|   Verilog|      Pass|             30|            696|           7462|             24|            696|           7456|                 75280|",
+    "total_time_at_configured_clock_ns": 752800.0,
+    "projected_total_time_at_hls_estimate_ns": 669615.6
+  },
+  "requested_stages_passed": true,
+  "functional_hls_flow_passed": true,
+  "errors": []
+}

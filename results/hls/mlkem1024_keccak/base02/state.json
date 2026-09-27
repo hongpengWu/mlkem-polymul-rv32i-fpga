@@ -1,0 +1,48 @@
+{
+  "stage_evidence": {
+    "CSIM": {
+      "status": "pass",
+      "completed_utc": "2026-09-27T08:11:18.173217+00:00",
+      "command_returned_success": true,
+      "report_sha256": {
+        "p/sol1/csim/report/mlkem1024_keccak_accel_csim.log": "8ffabba4104e743babb2c6d861cdd6ab8fd1a79dcd81b2590795031e00b10055"
+      }
+    },
+    "CSYNTH": {
+      "status": "pass",
+      "completed_utc": "2026-09-27T08:11:38.101177+00:00",
+      "command_returned_success": true,
+      "report_sha256": {
+        "p/sol1/syn/report/mlkem1024_keccak_accel_csynth.xml": "b40477f0521469fc87be61d924827ba18c9d236b7ffe3b01ae2228e57cc8f8cc"
+      }
+    },
+    "COSIM": {
+      "status": "pass",
+      "completed_utc": "2026-09-27T08:12:31.314606+00:00",
+      "command_returned_success": true,
+      "report_sha256": {
+        "p/sol1/sim/report/mlkem1024_keccak_accel_cosim.rpt": "cf9fbcf3bee6364f2c2842d07509044b16b7da3258759523993db89ffa3de254"
+      }
+    }
+  },
+  "attempts": [
+    {
+      "started_utc": "2026-09-27T08:11:14.301334+00:00",
+      "pid": 2860,
+      "reuse": false,
+      "requested": {
+        "CSIM": true,
+        "CSYNTH": true,
+        "COSIM": true,
+        "EXPORT": false
+      },
+      "stages": {
+        "CSIM": "pass",
+        "CSYNTH": "pass",
+        "COSIM": "pass",
+        "EXPORT": "skipped"
+      },
+      "export_flow": "none"
+    }
+  ]
+}

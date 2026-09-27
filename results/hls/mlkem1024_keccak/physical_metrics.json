@@ -1,0 +1,20 @@
+{
+  "scope": "Standalone out-of-context HLS IP; external CPU/data/context memories absent",
+  "configuration": "Vivado 2024.2 xc7z020clg400-1, 10 ns clock-only XDC",
+  "wns_ns": 0.279,
+  "tns_ns": 0.0,
+  "whs_ns": 0.098,
+  "ths_ns": 0.0,
+  "resources": {
+    "Slice LUTs": 16885,
+    "Slice Registers": 15320,
+    "Block RAM Tile": 0,
+    "DSPs": 0
+  },
+  "limitations": [
+    "No external input/output delays in generated XDC",
+    "HD.CLK_SRC unset: final top-level clock skew not modeled",
+    "ZPS7-1 warning: standalone IP has no PS7",
+    "No full-system timing, bitstream, or board claim"
+  ]
+}
