@@ -23,7 +23,19 @@ ML-KEM 官方 KAT。优化版全 testbench 实测 **75,280 cycles**，基线 **1
 [K=4 HLS 说明](../hls/mlkem1024_keccak/README.md) 与
 [HLS 结果汇总](../results/hls/mlkem1024_keccak/summary.md)。
 
-自动续跑 `pqc-kat` 保持 **PAUSED、60 分钟间隔**；本次方向更新不恢复调度。
+自动续跑 `pqc-kat` 已按用户要求删除，不再周期性发送指令。
+
+### K4 调用分析与 CPU 接口闭环（2026-09-27）
+
+主机端145条官方K4记录全部匹配，计得8,683次Keccak置换；映射为3,120个HASH和68个SQUEEZE，
+输入最多1600B、单命令输出最多504B，现有HLS容量足够。这是调用统计，不是Pico阶段周期。
+独立RV32IM-fast＋Keccak系统已通过10次RTL调用、216个结果字，真实HLS启动/完成均为10次。
+覆盖四种模式、上下文交错、续取、CLEAR和两类错误返回；固件4888B，RAM/栈128/32KiB。
+CPU调用周期合计72,287，硬件busy合计4,070，完整TB326,618；不作为完整KEM或加速比。
+
+当前下一步已具体化为**标准库FIPS202适配＋代表性官方KAT，再完整145条硬件回归**。
+详见[接口与移植断点](MLKEM1024_KECCAK_CPU_INTERFACE.md)、
+[调用统计](../results/keccak_cpu/call_profile/README.md)、[CPU闭环证据](../results/keccak_cpu/smoke/README.md)。
 
 ### 已完成的 CPU 基线与 K=2 历史证据
 
@@ -31,7 +43,7 @@ ML-KEM 官方 KAT。优化版全 testbench 实测 **75,280 cycles**，基线 **1
 145/145。算法区间分别为 **1,112,525,793** 和 **1,699,294,360 cycles**，最大观测栈分别为
 **18,432 B** 和 **24,464 B**；两组使用 **128 KiB RAM / 32 KiB 栈**，512 原基线仍为
 64/16 KiB。K=2（ML-KEM-512）CPU+PQC 加速链路也已通过 145/145，端到端为 0.9930×。
-K=4 CPU+Keccak 集成、官方 RTL KAT 和系统实现仍待完成；K=3 硬件扩展后置。
+K=4标准库CPU+Keccak接入、官方RTL KAT和系统实现仍待完成；组件CPU闭环已通过；K=3 硬件扩展后置。
 证据见 [768 汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md)、
 [1024 汇总](../results/official_baseline/mlkem1024/rv32im_fast/summary.md) 和
 [自动续跑记录](ACCEL_KAT_AUTORUN.md)。
@@ -109,7 +121,7 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
 | K=2 PQC 加速器接入标准软件 | 冻结历史对照；CPU+驱动及官方 KAT 145/145 通过，端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
 | K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，系统实现待测 | [HLS 说明](../hls/mlkem1024_keccak/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
-| K=4 CPU+加速器系统 | 打包/批量接口、CPU 集成、官方 RTL KAT、同配置系统实现与实板均待做 | [当前路线](COMPETITION_ROADMAP.md) |
+| K=4 CPU+加速器系统 | 32-bit打包接口及CPU组件闭环10项通过；标准库、官方KAT、系统实现和实板待做 | [当前路线](COMPETITION_ROADMAP.md) |
 
 ### 当前官方用例覆盖
 
@@ -153,7 +165,7 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 |---|---|---|---|
 | 1 | 保存 K=2 历史对照和 K3/K4 CPU 基线 | 原始日志、配置、哈希及内存差异可追溯 | 已完成 |
 | 2 | K=4 报告驱动的精确 HLS 优化 | 保持 FIPS 202 逐位结果；C/COSIM、周期、资源和时序报告完整 | io0/io1 局部差分通过；独立 IP OOC 实现已完成，系统实现待测 |
-| 3 | K=4 打包/批量接口与 CPU 集成 | 明确上下文、输入输出、搬运、启动、等待和读回契约 | 待执行 |
+| 3 | K=4 打包接口与 CPU 集成 | 明确上下文、搬运、启动、等待和读回契约 | 10次RTL组件调用通过；标准库适配待做 |
 | 4 | K=4 CPU+加速器官方 RTL KAT | 所选官方 145 条逐字节通过，真实硬件调用证据完整 | 待执行 |
 | 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 待执行 |
 | 6 | K=4 系统资源/时序与设计选择 | 同约束软件/硬件综合和布局布线，记录 LUT/FF/BRAM/DSP/WNS；独立 HLS 估算不替代系统结果 | 待执行 |
@@ -173,7 +185,7 @@ K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，�
 > 的 RV32IM-fast CPU-only 官方记录也分别通过 145/145；K=2 的 BaseMul 独立
 > MMIO/BRAM/BIST、Vivado 2024.2 实现及 CPU+PQC 全流程已完成并冻结。当前主线是
 > K=4 Keccak/FIPS 202：局部 HLS 的 C/Verilog COSIM 差分通过，独立 IP OOC 实现已完成，系统实现待测；
-> CPU 集成、官方 RTL KAT、未插桩端到端及系统资源/时序仍待验证，K=3 扩展后置。
+> CPU组件接口10项已通过；标准库接入、官方RTL KAT、未插桩端到端及系统实现仍待验证，K=3后置。
 
 全部对应回归完成后，可以描述所覆盖版本、参数集、操作和用例的结果一致性。
 公开向量离线回归不等于正式 CAVP 算法验证，也不等于 FIPS 140-3 / CMVP 密码模块认证；

@@ -1,0 +1,23 @@
+Time resolution is 1 ps
+// Interrupt Monitor : interrupt for ap_done detected @ "561105000"
+KECCAK_CPU_CALL_PASS call=0 mode=2 command=0 input=1568 output=32 return=0 cpu_cycles=16683 hardware_busy=1260 cumulative_writes=444 cumulative_reads=60
+// Interrupt Monitor : interrupt for ap_done detected @ "961715000"
+KECCAK_CPU_CALL_PASS call=1 mode=1 command=0 input=1600 output=32 return=0 cpu_cycles=16944 hardware_busy=1276 cumulative_writes=896 cumulative_reads=120
+// Interrupt Monitor : interrupt for ap_done detected @ "1226515000"
+KECCAK_CPU_CALL_PASS call=2 mode=3 command=0 input=64 output=64 return=0 cpu_cycles=4983 hardware_busy=207 cumulative_writes=964 cumulative_reads=188
+// Interrupt Monitor : interrupt for ap_done detected @ "1509995000"
+KECCAK_CPU_CALL_PASS call=3 mode=0 command=0 input=34 output=13 return=0 cpu_cycles=4321 hardware_busy=133 cumulative_writes=1025 cumulative_reads=244
+// Interrupt Monitor : interrupt for ap_done detected @ "1767955000"
+KECCAK_CPU_CALL_PASS call=4 mode=1 command=0 input=33 output=7 return=0 cpu_cycles=4259 hardware_busy=123 cumulative_writes=1086 cumulative_reads=298
+// Interrupt Monitor : interrupt for ap_done detected @ "2027455000"
+KECCAK_CPU_CALL_PASS call=5 mode=0 command=1 input=0 output=491 return=0 cpu_cycles=8341 hardware_busy=735 cumulative_writes=1138 cumulative_reads=473
+// Interrupt Monitor : interrupt for ap_done detected @ "2397485000"
+KECCAK_CPU_CALL_PASS call=6 mode=0 command=1 input=0 output=168 return=0 cpu_cycles=5395 hardware_busy=296 cumulative_writes=1190 cumulative_reads=567
+// Interrupt Monitor : interrupt for ap_done detected @ "2687945000"
+KECCAK_CPU_CALL_PASS call=7 mode=0 command=2 input=0 output=0 return=0 cpu_cycles=3815 hardware_busy=31 cumulative_writes=1242 cumulative_reads=619
+// Interrupt Monitor : interrupt for ap_done detected @ "2947605000"
+KECCAK_CPU_CALL_PASS call=8 mode=0 command=1 input=0 output=17 return=-2 cpu_cycles=3773 hardware_busy=5 cumulative_writes=1294 cumulative_reads=671
+// Interrupt Monitor : interrupt for ap_done detected @ "3214585000"
+KECCAK_CPU_CALL_PASS call=9 mode=2 command=0 input=0 output=31 return=-1 cpu_cycles=3773 hardware_busy=4 cumulative_writes=1346 cumulative_reads=723
+KECCAK_CPU_SMOKE_PASS calls=10 words=216 hls_starts=10 hls_dones=10 cpu=rv32im_fast total_cycles=326618
+$finish called at time : 3266275 ns : File "E:/hls/k4cpu/20260927_164834_167894/snapshot/tb/tb_mlkem1024_keccak_cpu_smoke.sv" Line 73

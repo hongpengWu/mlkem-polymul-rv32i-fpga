@@ -3,6 +3,14 @@
 更新时间：2026-09-27。表中只列已完成且仍有源码/日志证据的结果。100 MHz 时间换算仅用于
 仿真周期的直观展示；新 HLS 估算不等同于端到端系统性能。
 
+## K4 CPU＋Keccak 接口闭环
+
+10次组件RTL调用、216个结果字、10次HLS启动/完成全部通过；四种模式、上下文和错误返回已验证。
+CPU使用RV32IM-fast、128KiB RAM/32KiB栈，固件4888B。调用区间总计72,287cycles，
+硬件busy共4,070cycles；完整TB326,618cycles。两者计时口径见
+[逐调用表和日志](../results/keccak_cpu/smoke/README.md)。
+这不是完整K4官方加速KAT，也没有同形状CPU-only微基准，不能计算系统加速比。
+
 ## K4 Keccak HLS 首轮独立验证
 
 109笔本地FIPS202差分事务，两配置C/RTL COSIM通过；不计入官方KAT覆盖。
