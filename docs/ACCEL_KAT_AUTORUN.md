@@ -42,16 +42,17 @@ K=3 后置扩展**；实板最后进行。旧“K3/K4 BaseMul 移植后返回 K2
    主加速器不受旧 BaseMul 范围限制；K=2 的 Keccak 71%–81% 占比只属于 K=2，K=4 尚未测量。
 4. [x] K4主机145条官方记录调用统计已完成；CPU＋Keccak接口10次真实RTL调用/216字通过。
    见 [接口与移植断点](MLKEM1024_KECCAK_CPU_INTERFACE.md)。
-   [x] 已完成标准库FIPS202适配与固件编译；先代表性用例后完整官方RTL KAT145/145。
+   [x] 已完成标准库FIPS202适配、固件编译及完整官方RTL KAT145/145。
    官方加速系统入口为`scripts/mlkem1024_keccak/run_kat.py`，续跑加`--remaining`，
    日志/证据独立保存在`results/keccak_cpu/kat/`，短路径冻结项目在`E:/hls/k4kat/`。
    当前进程/断点读取`build/keccak_cpu/kat_progress.json`；不要再运行CPU-only批次。
-   原索引0、1、115已3/3通过（85次真实HLS调用），剩余142条顺序运行中。
+   全部145条唯一覆盖、19批最终PASS、3,188次真实HLS调用（含68次SQUEEZE）均通过。
    当前调度日志`build/keccak_cpu/kat_scheduler_20260927.log`；无定时任务。
-   全量完成时脚本自动运行`collect_kat.py --write`严格汇总。
+   调度器已运行`collect_kat.py --write`严格汇总，人工只读复核也通过；状态complete，无需再启动。
    主机、纯 CPU、局部 `hashlib` 差分或软件回退均不能替代对应加速系统的官方验证。
-5. [ ] 完成同 RV32IM-fast、128 KiB RAM / 32 KiB 栈的未插桩端到端对照，计入搬运、
-   启动、等待和读回，再完成同约束系统资源/时序及匹配产物。HLS 估算不能替代系统实现。
+5. [x] 完成同RV32IM-fast、128 KiB RAM / 32 KiB栈的完整API对照：
+   1,699,294,360 / 446,853,509 cycles，3.8028×，包含搬运、启动、等待和读回。
+   [ ] 下一步完成同约束完整系统资源/时序及匹配产物。HLS估算不能替代系统实现。
 6. [ ] K=4 主线完成后再验证 K=3 扩展和其他 CPU 消融；K=2 历史对照继续冻结。
 7. [ ] 完成适用异常/故障检查、系统回归和上板前验收，最后进行 PYNQ-Z2 实板和演示。
 
@@ -60,7 +61,7 @@ K=3 后置扩展**；实板最后进行。旧“K3/K4 BaseMul 移植后返回 K2
 - 目录 `hls/mlkem1024_keccak/` 支持 SHAKE128/256、SHA3-256/512；32-bit BRAM 输入/输出
   为 2048/4096 B，26 个 `uint64` 上下文，命令为 HASH/SQUEEZE/CLEAR。
 - io0、io1 均已完成 C 仿真与 Verilog COSIM 的 109 笔本地 `hashlib` 差分事务，
-  这不是 ML-KEM-1024 官方 KAT；另有后续CPU组件闭环10项通过，完整KEM接入待做。
+  这不是ML-KEM-1024官方KAT；另有CPU组件闭环10项及完整CPU+Keccak官方145/145通过。
 - 所选 `opt02` 优化版全 TB 实测 75,280 cycles，对照基线 1,314,553 cycles。HLS 优化版估算
   LUT/FF/BRAM18K/DSP = 15,244/15,385/2/0、时钟 8.895 ns；基线为
   14,612/17,008/2/0、8.622 ns。全 TB 周期不能直接当作完整 ML-KEM 加速比。

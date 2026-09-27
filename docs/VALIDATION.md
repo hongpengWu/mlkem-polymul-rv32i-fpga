@@ -1,12 +1,13 @@
 # 验证记录
 
-更新时间：2026-09-26。本文只记录当前仍在仓库中的验证入口和证据；旧完整加速器的
+更新时间：2026-09-27。本文只记录当前仍在仓库中的验证入口和证据；旧完整加速器的
 板级仿真、实现报告和 bitstream 已随旧主线删除。
 
 ## 当前结果
 
 | 项目 | 状态 | 证据 |
 |---|---|---|
+| K4 CPU＋Keccak官方RTL KAT | PASS，19批145/145唯一覆盖，3,188次真实HLS调用、68次续取；同配置API总周期比3.803× | [全量证据](../results/keccak_cpu/kat/summary.md) |
 | CPU-only 多项式 baseline | PASS，RV32I/RV32IM-iterative/RV32IM-fast 各 8 组、4096 项检查 | [`results/cpu_baseline/`](../results/cpu_baseline/) |
 | ML-KEM-512 官方 PicoRV32 回归 | PASS，三种 CPU 各 145/145 | [`results/official_baseline/mlkem512/`](../results/official_baseline/mlkem512/) |
 | ML-KEM-768 官方 PicoRV32 回归 | PASS，RV32IM-fast 145/145，128 KiB RAM/32 KiB栈 | [768汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md) |
@@ -27,12 +28,17 @@
 
 主机端的 435 条记录覆盖 ML-KEM-512/768/1024；PicoRV32已完成
 ML-KEM-512三种CPU各145条，及ML-KEM-768/1024 RV32IM-fast各145条。CPU+PQC 加速版同样完成 145/145 条 ML-KEM-512 记录，
-并核验了每条记录的 MMIO 调用计数、核心周期和输出。PicoRV32 的通过结果证明固定软件、
+并核验了每条记录的 MMIO 调用计数、核心周期和输出。K4 CPU＋Keccak也已完成145/145，
+输入/输出分别核对287,360/199,360 B，覆盖密钥生成、封装、解封装、从种子重建及密钥检查；
+HASH/SQUEEZE、缓冲事务数、实际启动/完成、栈与两次rdcycle边界逐条验证。PicoRV32 的通过结果证明固定软件、
 输入、输出和 RTL 执行路径一致，不代表正式 CAVP 认证，也不代表实体板结果。
 
 ## HLS 证据边界
 
-新 HLS 只验证标准库 K=2 NTT 域 cached BaseMul。C 仿真、HLS 综合和独立 native
+以下K=2历史HLS只验证标准库NTT域cached BaseMul。K=4独立Keccak的109笔差分、
+CPU组件10项与完整KEM官方145项属于三个不同验证层次，分别保存证据。
+
+K=2 HLS：C 仿真、HLS 综合和独立 native
 MMIO/BRAM RTL 已通过，但仍不验证 PicoRV32 总线接入、完整 NTT/INTT 或端到端 KEM。
 HLS 报告的 137 cycles 与 adapter RTL 实测核心 136 cycles 都只属于核心边界，不能直接
 换算系统加速比。

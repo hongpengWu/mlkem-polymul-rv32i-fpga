@@ -1,11 +1,13 @@
 # K4 Keccak CPU 接口与移植断点
 
 2026-09-27：已完成实际 RV32IM-fast CPU＋Keccak 的 RTL 组件闭环，并通过标准库的
-custom FIPS202 provider 接入完整 K4 API。官方系统 RTL KAT 正在执行；K2 和 CPU-only 基线保持冻结。
+custom FIPS202 provider 接入完整 K4 API。官方系统RTL KAT已145/145通过；K2 和 CPU-only 基线保持冻结。
 
 代表性官方RTL用例原索引0、1、115已3/3通过，覆盖KeyGen、Encaps、带SHAKE续取的
 隐式拒绝Decaps；真实HLS启动/完成85次（81 HASH＋4 SQUEEZE）。同配置CPU基线对照为
-4.180× / 3.621× / 3.668×；全套145条结论仍待完成。
+4.180× / 3.621× / 3.668×；这是最先完成的代表用例历史数据。
+后续19批已145/145通过：全量KeyGen/Encaps/Decaps为4.203×/3.636×/3.602×，
+测试集API总周期比3.8028×，3,188次HLS调用（含68次续取）均有真实RTL证据。
 首批墙钟185.4 s，包含Vivado编译/展开和RTL运行；这与芯片执行时间不同。
 详见[逐例原始证据与汇总](../results/keccak_cpu/kat/summary.md)。
 
@@ -55,9 +57,8 @@ SHAKE256 33→128和1600→32、SHAKE128每lane 34→504，必要时续取168。
    SHA3/SHAKE256走HASH；合并SHAKE128吸收和首次输出为HASH(34,504)。
 2. 已为标准库x4的四条独立流分别保存四个HLS上下文，续取恢复原lane。
    标准库25-lane状态和HLS26-word状态含义不同，不能直接强制转换；需独立上下文适配。
-3. 先跑KeyGen/Encaps/Decaps及一个真实续取案例，核对官方输出及硬件调用计数，
-   再执行145条可恢复加速RTL回归。
-4. 与现有同CPU、同128/32KiB配置的未插桩K4软件基线对比完整API周期；
+3. 已完成代表用例及145条可恢复加速RTL回归，逐字节官方输出、返回值和硬件调用计数均通过。
+4. 已与同CPU、同128/32KiB配置的未插桩K4软件基线对比完整API周期；
    计入打包、搬运、上下文、命令与等待开销，再决定是否保留状态于硬件、添加多context槽或DMA。
 5. 完成CPU集成系统资源/时序和匹配烧录产物，实板最后。
 
@@ -70,6 +71,7 @@ provider共享6 KiB打包缓冲，非可重入；SHAKE128拥有34 B输入副本�
 
 运行方法：先 `python scripts/mlkem1024_keccak/run_kat.py` 验证原索引0、1、115，
 再 `python scripts/mlkem1024_keccak/run_kat.py --remaining` 仅运行未通过的用例，每批最多8条。
+当前已全量完成，无需重跑；只读验收使用`python scripts/mlkem1024_keccak/collect_kat.py`。
 `python scripts/mlkem1024_keccak/collect_kat.py --partial --write` 汇总代表性结果；
 全量成功后调度器自动运行不带`--partial`的严格汇总，必须145条唯一覆盖。
 `build/keccak_cpu/kat_progress.json` 保存当前运行目录/断点；创建`build/keccak_cpu/STOP`

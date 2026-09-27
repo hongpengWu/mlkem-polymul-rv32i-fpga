@@ -9,7 +9,10 @@
 当前状态（2026-09-27）：
 
 - K4 Keccak 两种访存配置均通过 109 次 C/RTL 协同测试；向量为本地 FIPS 202 差分测试。
-  独立核的优化、资源和时序见 [测量记录](results/hls/mlkem1024_keccak/summary.md)，CPU 接入与 K4 加速官方 KAT 待做。
+  独立核的优化、资源和时序见 [测量记录](results/hls/mlkem1024_keccak/summary.md)。
+- K4 RV32IM-fast＋Keccak已通过**145/145官方RTL记录**，同CPU/RAM测试集API总周期比**3.803×**。
+  KeyGen/Encaps/Decaps分别4.203×/3.636×/3.602×；[原始日志与汇总](results/keccak_cpu/kat/summary.md)。
+  完整系统资源/布局布线及实板待完成；独立核时序不代替系统时序。
 - ML-KEM-768/1024 RV32IM-fast CPU-only RTL 官方回归各通过 145/145，使用 128 KiB RAM / 32 KiB 栈。
 
 - ML-KEM-512 的 RV32I、RV32IM 迭代乘法、RV32IM 快速乘法三组 PicoRV32 RTL 回归各通过

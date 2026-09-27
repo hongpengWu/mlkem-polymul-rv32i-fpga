@@ -11,6 +11,22 @@
 - Windows PowerShell、Python 3
 - RISC-V GCC 工具链（路径通过 `RISCV_TOOLCHAIN_BIN` 或脚本参数配置）
 
+## K4 CPU＋Keccak官方RTL系统
+
+完整145条已运行通过。日常核验只执行：
+
+```powershell
+python scripts/mlkem1024_keccak/collect_kat.py
+```
+
+新版本需要回归时，使用`build_kat.py`构建固件、`run_kat.py`跑代表用例，
+`run_kat.py --remaining`顺序补齐，每批最多8条；不得覆盖历史结果或活动快照。
+入口均位于`scripts/mlkem1024_keccak/`，构建/运行限制详见
+[CPU接口文档](MLKEM1024_KECCAK_CPU_INTERFACE.md)。Vivado/xelab使用8线程；
+全部19批结果位于`results/keccak_cpu/kat/`，完整冻结工程保留在`E:/hls/k4kat/`，
+HLS生成RTL/IP/缓存不进入Git。当前collector严格验收需保留对应外部冻结快照，
+不能只凭仓库中的日志重建其原始输入。
+
 ## CPU-only baseline
 
 先构建三组固件和镜像：

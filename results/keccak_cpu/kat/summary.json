@@ -1,15 +1,12 @@
 {
-  "status": "PARTIAL",
+  "status": "PASS",
   "parameter_set": 1024,
   "config": "rv32im_fast",
-  "case_count": 3,
+  "case_count": 145,
   "expected_case_count": 145,
   "original_indices": [
     0,
     1,
-    115
-  ],
-  "missing_indices": [
     2,
     3,
     4,
@@ -123,6 +120,7 @@
     112,
     113,
     114,
+    115,
     116,
     117,
     118,
@@ -153,8 +151,331 @@
     143,
     144
   ],
-  "generated_utc": "2026-09-27T09:18:36.453712+00:00",
+  "missing_indices": [],
+  "generated_utc": "2026-09-27T11:27:34.041691+00:00",
   "attempts": [
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_002_009\\20260927_171910_204931",
+      "original_indices": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "elapsed_seconds": 301.35899999993853,
+      "manifest_sha256": "f6b0fb67f6e89ee00dde5fe210656869e8ee72c6d73bcdd61e39f58428bd55c7",
+      "result_sha256": "59cbe43b4ee5c34e76378695584d26c91ac237fb2500be9a4193507f58857021",
+      "log_sha256": "ea5323b13addbdf64379cf897de058db1c777ff2b29fe8d0a8100e47ee09ccb7",
+      "observed_stack_bytes": 24384
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_010_017\\20260927_172412_685587",
+      "original_indices": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17
+      ],
+      "elapsed_seconds": 410.64100000006147,
+      "manifest_sha256": "c65e27f628f9af94e2a6f3e6e36b4aef6ab8a3a9d44495057f3a0e90c7bba7e6",
+      "result_sha256": "c67ea32360de6240724f0388f3d30dc503ce8d923999055bbae22ac0f3450c40",
+      "log_sha256": "4848fef244d2ad58a851cdbe04801471bcd1682592ca998baedf6bfb8b2641c9",
+      "observed_stack_bytes": 19072
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_018_025\\20260927_173104_449267",
+      "original_indices": [
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "elapsed_seconds": 537.655999999959,
+      "manifest_sha256": "fcd687261495e4b1f4175f0a78ed674334b1ae632cba52d688dd10cd0b44c074",
+      "result_sha256": "068c14de7a4994b8c466978d3073170e378aa8106285b5cc1845582632fa9439",
+      "log_sha256": "a689e6e9aa78baf35f1930762eb83161d38079296312ab4e962389af61bab033",
+      "observed_stack_bytes": 19072
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_026_033\\20260927_174003_313576",
+      "original_indices": [
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33
+      ],
+      "elapsed_seconds": 555.1089999999385,
+      "manifest_sha256": "1ddebc3ef1251f346c92e025674d8169d0e34d818d0f3f281793ad882f99eef9",
+      "result_sha256": "546567e7706ee5de578d3c6caf81bf0eeb85c3e68c196fbfe89ef1d44441992e",
+      "log_sha256": "8002e9b3c2a83af4f3e4ce0a492d54cdf6b44b047bb217769412a8f14afc88d7",
+      "observed_stack_bytes": 22768
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_034_041\\20260927_174919_523198",
+      "original_indices": [
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41
+      ],
+      "elapsed_seconds": 499.73499999998603,
+      "manifest_sha256": "8a1c4a111f41c44a6e9c781ac3358e9e1bd03415e200a8c89d4e8953a42df666",
+      "result_sha256": "c4efe7c02c9c17baa20ef6e0b66d80b163972448e4189eb8f8125a54e1e37329",
+      "log_sha256": "35d2577dca6ec605d8503654496ab658a2d26f03335f3d448580ed8cc05b0391",
+      "observed_stack_bytes": 22768
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_042_049\\20260927_175740_329963",
+      "original_indices": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49
+      ],
+      "elapsed_seconds": 384.469000000041,
+      "manifest_sha256": "a243b9fbf4d9eb9749805ca0104189e27e04902d8548ead779dc03e90162e52c",
+      "result_sha256": "6a9000aeb672428b1f12cad433f35ded60f19878d88b1e10f7dfd565d350432f",
+      "log_sha256": "c80ad7dee55b1607289bd3c24b1ab84b3f7ed17c42eaa3c66c671d39a0ff01c2",
+      "observed_stack_bytes": 22768
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_050_057\\20260927_180405_839517",
+      "original_indices": [
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57
+      ],
+      "elapsed_seconds": 394.530999999959,
+      "manifest_sha256": "eb44c7ee2573e3018b06aedff607b4a7027ed53187c4144e6444fe0644ad0282",
+      "result_sha256": "784e855d449844dba87995081bc005a0a3ed41fc29ffa031110fa5d6cf44f6eb",
+      "log_sha256": "a86cad1d866803f3646ad46d9225035606b99f5325944d5e08df05fbf4bf4d63",
+      "observed_stack_bytes": 24384
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_058_065\\20260927_181041_513830",
+      "original_indices": [
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65
+      ],
+      "elapsed_seconds": 413.5779999999795,
+      "manifest_sha256": "d8d347feb52aedd87b5633f09a51a7b09bda541a984e770d689f6e084d39b8fd",
+      "result_sha256": "ee15b56032434403e1a5db7beefdbbb1254a458b2e3fd91c92bf84534d52cda9",
+      "log_sha256": "0ed061b931412f89ccf84a249a1b154148347c99b3ecf7307c2d9e41ef530bc3",
+      "observed_stack_bytes": 24384
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_066_073\\20260927_181736_071134",
+      "original_indices": [
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73
+      ],
+      "elapsed_seconds": 63.98399999993853,
+      "manifest_sha256": "abccf3361e5595c5bb7f4a8b4338f927cd5054294fda6db0d013e76f3422de03",
+      "result_sha256": "8227edc91a6d9dc52537303bd2922550148145b1b31fb914d7a43c7db23f8d15",
+      "log_sha256": "2ee220d7cf36ebf3f0fea6882c497cbc4508eb849d56e9c106e040b848bef436",
+      "observed_stack_bytes": 3824
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_074_081\\20260927_181841_054172",
+      "original_indices": [
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81
+      ],
+      "elapsed_seconds": 106.46799999999348,
+      "manifest_sha256": "8e8c61d134f10de739daf99250ea528d8cad5cc52103560e6a0f47df63d99569",
+      "result_sha256": "f56eab5c2142bbea90b807df825d5a15cc28eb13246ab259962f213ca11a980a",
+      "log_sha256": "c93bdf984cf0b4e9dfe237916a570beb7d4cf95052fffbfd40d364021b380858",
+      "observed_stack_bytes": 22768
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_082_089\\20260927_182028_554387",
+      "original_indices": [
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89
+      ],
+      "elapsed_seconds": 504.969000000041,
+      "manifest_sha256": "1e6fb879c6b5a8a19abb6555d4ca003ef892e07d0add156de066dc852cabd8bb",
+      "result_sha256": "2355c34fc1bc9fd9bac4620a27c99c138ad4369a890db015bf69ab57c9dac566",
+      "log_sha256": "eee31619202ff13984196d14203c119c092e93602b85727250e084fb9c867e68",
+      "observed_stack_bytes": 22768
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_090_097\\20260927_182854_601038",
+      "original_indices": [
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97
+      ],
+      "elapsed_seconds": 639.6570000000065,
+      "manifest_sha256": "42e3a42b6d713d1e315d0ac900c977928274d9157d75a9e52d0cfb845d41399c",
+      "result_sha256": "fc73bed1456c5e042a74818dd5b0a8eaca67e96e1b00e227573f1cb96f4bd5fe",
+      "log_sha256": "bf5173897b9a1bd7a3102d3c2bfd851ebe0fcba3bfbc8124399edda927e229fd",
+      "observed_stack_bytes": 22768
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_098_105\\20260927_183935_438995",
+      "original_indices": [
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105
+      ],
+      "elapsed_seconds": 526.625,
+      "manifest_sha256": "bfed90fad354e6294d61df56c5b0ebd628ee54e3f6760165a310d1b4cf559eea",
+      "result_sha256": "922d8646c6cd9228cc67bb5567795637517d952a84e4befb438e5371b9e3238f",
+      "log_sha256": "73aba54757cd67ab323b16b68ec430d944cd5b10933ccfc5d1c19f876807c3ca",
+      "observed_stack_bytes": 22768
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_106_113\\20260927_184823_252111",
+      "original_indices": [
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113
+      ],
+      "elapsed_seconds": 729.234999999986,
+      "manifest_sha256": "02efed69aecea2bc377ea5b50669acb6e5a799ac8a7859f3036cd4c472604f1b",
+      "result_sha256": "37b158788818ac32b6ce900f11d6bb13414d7fa5a3960c854fe8545562524ecf",
+      "log_sha256": "2aa5e28824b5f06e0b010c21f4fa4cea342066fecdc69e558f88655f2d5d6d1d",
+      "observed_stack_bytes": 24384
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_114_122\\20260927_190034_775543",
+      "original_indices": [
+        114,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122
+      ],
+      "elapsed_seconds": 516.5470000000205,
+      "manifest_sha256": "7710a743b4f541233429ff326553cad0ffde9f3bf183d8c6b3d100e02f836dca",
+      "result_sha256": "6554084a7c099a9de0cb8dcde3fd33840e7532332d8f6ba5c82ecaf7789d941f",
+      "log_sha256": "d31e6b72406e54a6bbea50e47473abc9ce5fda4e8c650c7d590d74aada57dfb3",
+      "observed_stack_bytes": 24384
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_123_130\\20260927_190912_372020",
+      "original_indices": [
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130
+      ],
+      "elapsed_seconds": 161.43799999996554,
+      "manifest_sha256": "71dd278aae71fd00b7968cf29130ba5e93edd0ac6eff9c08b4bc55a960c2264d",
+      "result_sha256": "25a2ed8a338aa95394b55e4e4330b9c1490aacc6abafeb93bf492120b12310fa",
+      "log_sha256": "8519b6befd64bf9e3a0cc460b8b3fa7b671f879ae49a55e569c8d127e1300496",
+      "observed_stack_bytes": 24384
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_131_138\\20260927_191154_846629",
+      "original_indices": [
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138
+      ],
+      "elapsed_seconds": 67.57800000009593,
+      "manifest_sha256": "f29262ef843e197011b77527f48e2cd794b1b7acb18b5b1d8052d18a7c3a5707",
+      "result_sha256": "61470a7008483957ff4d2c3af13475162a7f70dad6473e9433c709baeb0ffdb6",
+      "log_sha256": "1ca1e7d3d3e787d14ac3b97d1eb7c42a4e03c228e601dce30c7f3e08ffd880e8",
+      "observed_stack_bytes": 3824
+    },
+    {
+      "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\batch_139_144\\20260927_191303_475381",
+      "original_indices": [
+        139,
+        140,
+        141,
+        142,
+        143,
+        144
+      ],
+      "elapsed_seconds": 58.0,
+      "manifest_sha256": "16f14ea8bf1e9f8c168af3fb4b731146c0603c86df8387ede9d6c6200593c1b5",
+      "result_sha256": "758cee43da7836c8ed6012b01b766a70a370044fef1285647dfacdabc1dca035",
+      "log_sha256": "2b383662db90afe98c6dabc6bd773c48ab42fe4a55fcc949f292382dc4f82d00",
+      "observed_stack_bytes": 3824
+    },
     {
       "path": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\kat\\batches\\pilot_000_001_115\\20260927_171430_546316",
       "original_indices": [
@@ -165,7 +486,8 @@
       "elapsed_seconds": 185.40700000000652,
       "manifest_sha256": "900d37bad82ee56b143344ed7398db89489ad5bb48b4a8f8e06de77eb8f0347c",
       "result_sha256": "4618ea61671f1d8124f61558e5e724daecbd63c1f575f2c5b4ecad67bf220d42",
-      "log_sha256": "466d19f569a6de50aaab1f32f0fd3e8c5dd52e4ae84954e25062fb93fe60df2a"
+      "log_sha256": "466d19f569a6de50aaab1f32f0fd3e8c5dd52e4ae84954e25062fb93fe60df2a",
+      "observed_stack_bytes": 24384
     }
   ],
   "ignored_unsuccessful_attempts": [],
@@ -173,49 +495,117 @@
     {
       "operation": "decapsulation",
       "return_code": 0,
-      "cases": 1,
-      "software_cycles": 17088709,
-      "accelerated_cycles": 4658623,
-      "accelerated_min": 4658623,
-      "accelerated_mean": 4658623,
-      "accelerated_max": 4658623,
-      "speedup_ratio_of_sums": 3.6681888618160343,
-      "busy_cycles": 19040
+      "cases": 20,
+      "software_cycles": 331730912,
+      "accelerated_cycles": 92092840,
+      "accelerated_min": 4586643,
+      "accelerated_mean": 4604642,
+      "accelerated_max": 4658666,
+      "speedup_ratio_of_sums": 3.602135757785296,
+      "busy_cycles": 361856
+    },
+    {
+      "operation": "decapsulationKeyCheck",
+      "return_code": -5,
+      "cases": 10,
+      "software_cycles": 18793140,
+      "accelerated_cycles": 752230,
+      "accelerated_min": 75223,
+      "accelerated_mean": 75223,
+      "accelerated_max": 75223,
+      "speedup_ratio_of_sums": 24.98323651010994,
+      "busy_cycles": 12600
+    },
+    {
+      "operation": "decapsulationKeyCheck",
+      "return_code": 0,
+      "cases": 10,
+      "software_cycles": 18793030,
+      "accelerated_cycles": 752120,
+      "accelerated_min": 75212,
+      "accelerated_mean": 75212,
+      "accelerated_max": 75212,
+      "speedup_ratio_of_sums": 24.98674413657395,
+      "busy_cycles": 12600
+    },
+    {
+      "operation": "decapsulationSeed",
+      "return_code": 0,
+      "cases": 10,
+      "software_cycles": 295059990,
+      "accelerated_cycles": 77103920,
+      "accelerated_min": 7707757,
+      "accelerated_mean": 7710392,
+      "accelerated_max": 7715635,
+      "speedup_ratio_of_sums": 3.8267832556373267,
+      "busy_cycles": 341490
     },
     {
       "operation": "encapsulation",
       "return_code": 0,
-      "cases": 1,
-      "software_cycles": 13908293,
-      "accelerated_cycles": 3841529,
-      "accelerated_min": 3841529,
-      "accelerated_mean": 3841529,
-      "accelerated_max": 3841529,
-      "speedup_ratio_of_sums": 3.620509698091567,
-      "busy_cycles": 16580
+      "cases": 50,
+      "software_cycles": 700468926,
+      "accelerated_cycles": 192648902,
+      "accelerated_min": 3838640,
+      "accelerated_mean": 3852978.04,
+      "accelerated_max": 3974470,
+      "speedup_ratio_of_sums": 3.635987118161722,
+      "busy_cycles": 838472
+    },
+    {
+      "operation": "encapsulationKeyCheck",
+      "return_code": -4,
+      "cases": 10,
+      "software_cycles": 2574170,
+      "accelerated_cycles": 2574170,
+      "accelerated_min": 257417,
+      "accelerated_mean": 257417,
+      "accelerated_max": 257417,
+      "speedup_ratio_of_sums": 1.0,
+      "busy_cycles": 0
+    },
+    {
+      "operation": "encapsulationKeyCheck",
+      "return_code": 0,
+      "cases": 10,
+      "software_cycles": 2574060,
+      "accelerated_cycles": 2574060,
+      "accelerated_min": 257406,
+      "accelerated_mean": 257406,
+      "accelerated_max": 257406,
+      "speedup_ratio_of_sums": 1.0,
+      "busy_cycles": 0
     },
     {
       "operation": "keyGen",
       "return_code": 0,
-      "cases": 1,
-      "software_cycles": 13046698,
-      "accelerated_cycles": 3120949,
-      "accelerated_min": 3120949,
-      "accelerated_mean": 3120949,
-      "accelerated_max": 3120949,
-      "speedup_ratio_of_sums": 4.180362447447876,
-      "busy_cycles": 16293
+      "cases": 25,
+      "software_cycles": 329300132,
+      "accelerated_cycles": 78355267,
+      "accelerated_min": 3117617,
+      "accelerated_mean": 3134210.68,
+      "accelerated_max": 3190306,
+      "speedup_ratio_of_sums": 4.2026547111376695,
+      "busy_cycles": 413245
     }
   ],
-  "software_cycles": 44043700,
-  "accelerated_cycles": 11621101,
-  "starts": 85,
-  "squeeze": 4,
+  "software_cycles": 1699294360,
+  "accelerated_cycles": 446853509,
+  "starts": 3188,
+  "squeeze": 68,
+  "hardware_busy_cycles": 1980263,
+  "buffer_write_words": 257851,
+  "buffer_read_words": 435632,
+  "batch_count": 19,
+  "total_run_elapsed_seconds": 7056.985999999917,
+  "observed_stack_bytes": 24384,
   "baseline": "results\\official_baseline\\mlkem1024\\rv32im_fast\\cases.csv",
   "baseline_sha256": "d3bdb00447821af29c6822b1cabc67522818f05ec18d1d87e6b8022b0a2fe223",
   "profile_manifest_sha256": "463efea8067515fc9164bca06116f2d56236554f7cfa40b0bb8daff949a8b842",
-  "collector_sha256": "75bf695844c2b9d2a46776262a6526fb3b865abbd7a4254b7bc8e61222120ed2",
+  "collector_sha256": "bc7f804c57165bc1e913b1ed76aabcf67fb0357024115fd46b65354e5ab81231",
   "scope": "PicoRV32 fast CPU plus real generated Keccak RTL, official K4 cases; not board measurement or certification",
   "timing": "Raw rdcycle API intervals including CPU/MMIO work and zeroization; empty bracket retained; seed decapsulation includes key expansion. Busy cycles measure HLS activity; remaining API cycles also include transfers and CPU work, not pure transfer overhead.",
-  "speedup_ratio_of_sums": 3.789976526320527
+  "elapsed_scope": "Sum of individual simulator run durations, including compilation/elaboration; not uninterrupted wall elapsed time.",
+  "evidence_retention": "Strict recollection requires every manifest run_dir/snapshot directory, retained outside Git. Log and manifest hashes alone cannot reconstruct frozen firmware, testbench or generated HLS inputs.",
+  "speedup_ratio_of_sums": 3.8027996329329485
 }

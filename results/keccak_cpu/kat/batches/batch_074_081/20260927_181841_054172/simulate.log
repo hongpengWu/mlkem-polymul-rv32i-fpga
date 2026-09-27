@@ -1,0 +1,50 @@
+Time resolution is 1 ps
+MLKEM_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM_START cases=8 ram_bytes=131072 stack_bytes=32768 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+MLKEM_ROW,0,2,42,12,158,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,0,0,0,0,0,0,0,0
+MLKEM_ROW,1,2,42,12,160,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,1,0,0,0,0,0,0,0
+MLKEM_ROW,2,2,42,12,161,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,2,0,0,0,0,0,0,0
+MLKEM_ROW,3,2,42,12,162,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,3,0,0,0,0,0,0,0
+MLKEM_ROW,4,2,42,12,163,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,4,0,0,0,0,0,0,0
+MLKEM_ROW,5,2,42,12,164,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,5,0,0,0,0,0,0,0
+MLKEM_ROW,6,2,42,12,165,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,6,0,0,0,0,0,0,0
+// Interrupt Monitor : interrupt for ap_done detected @ "40321375000"
+// Interrupt Monitor : interrupt for ap_done detected @ "40503145000"
+// Interrupt Monitor : interrupt for ap_done detected @ "41219665000"
+// Interrupt Monitor : interrupt for ap_done detected @ "41627935000"
+// Interrupt Monitor : interrupt for ap_done detected @ "42036205000"
+// Interrupt Monitor : interrupt for ap_done detected @ "42444475000"
+// Interrupt Monitor : interrupt for ap_done detected @ "44000795000"
+// Interrupt Monitor : interrupt for ap_done detected @ "44409065000"
+// Interrupt Monitor : interrupt for ap_done detected @ "44817335000"
+// Interrupt Monitor : interrupt for ap_done detected @ "45225605000"
+// Interrupt Monitor : interrupt for ap_done detected @ "46787625000"
+// Interrupt Monitor : interrupt for ap_done detected @ "47195895000"
+// Interrupt Monitor : interrupt for ap_done detected @ "47604165000"
+// Interrupt Monitor : interrupt for ap_done detected @ "48012435000"
+// Interrupt Monitor : interrupt for ap_done detected @ "49560195000"
+// Interrupt Monitor : interrupt for ap_done detected @ "49968465000"
+// Interrupt Monitor : interrupt for ap_done detected @ "50376735000"
+// Interrupt Monitor : interrupt for ap_done detected @ "50785005000"
+// Interrupt Monitor : interrupt for ap_done detected @ "52296145000"
+// Interrupt Monitor : interrupt for ap_done detected @ "52464945000"
+// Interrupt Monitor : interrupt for ap_done detected @ "52633785000"
+// Interrupt Monitor : interrupt for ap_done detected @ "52802695000"
+// Interrupt Monitor : interrupt for ap_done detected @ "53605515000"
+// Interrupt Monitor : interrupt for ap_done detected @ "53774315000"
+// Interrupt Monitor : interrupt for ap_done detected @ "53943155000"
+// Interrupt Monitor : interrupt for ap_done detected @ "54112065000"
+// Interrupt Monitor : interrupt for ap_done detected @ "54903655000"
+MLKEM_ROW,7,3,42,3,51,2,0,3839182,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,7,27,27,27,0,16580,2037,3732
+MLKEM_PASS cases=8 input_bytes=12576 output_bytes=1600 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=7627482 all_m=72580 min_sp=0x0001a700 stack_used=22768
+KECCAK_PASS cases=8 starts=27 done=27 hash=27 squeeze=0
+$finish called at time : 76275135 ns : File "E:/hls/k4kat/20260927_181841_054172/snapshot/tb/tb_mlkem1024_keccak_kat.sv" Line 357
+INFO: xsimkernel Simulation Memory Usage: 32288 KB (Peak: 32288 KB), Simulation CPU Usage: 81202 ms

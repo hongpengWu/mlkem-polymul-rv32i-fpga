@@ -1,0 +1,408 @@
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Sun Sep 27 17:57:43 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source {E:\hls\k4kat\20260927_175740_329963\snapshot\run_kat.tcl}
+# if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2"}
+# if {[llength $argv] != 3} {error "Expected run_dir case_count threads"}
+# lassign $argv run case_count threads
+# set run [file normalize $run]
+# set snapshot [file join $run snapshot]
+# if {![string is integer -strict $case_count] || $case_count<1 || $case_count>145} {error "Invalid case count"}
+# if {![string is integer -strict $threads] || $threads<1 || $threads>8} {error "Invalid thread count"}
+# set_param general.maxThreads $threads
+# puts "KECCAK_THREADS general.maxThreads=[get_param general.maxThreads]"
+KECCAK_THREADS general.maxThreads=8
+# create_project keccakkat [file join $run p] -part xc7z020clg400-1
+# set_property target_language Verilog [current_project]
+# set_property XPM_LIBRARIES {XPM_MEMORY} [current_project]
+# foreach f [glob [file join $snapshot rtl *]] {add_files -norecurse $f}
+# foreach f [glob [file join $snapshot hls *.v]] {add_files -norecurse $f}
+# foreach f [glob [file join $snapshot hls *.dat]] {add_files -norecurse $f}
+# set fw [file join $snapshot fixtures mlkem1024.mem]
+# add_files -norecurse $fw
+# set_property file_type {Memory Initialization Files} [get_files $fw]
+# set_property top mlkem1024_keccak_system [get_filesets sources_1]
+# set_property generic {FIRMWARE_INIT_FILE=mlkem1024.mem RAM_ADDR_BITS=15 CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=1 CPU_ENABLE_DIV=1} [get_filesets sources_1]
+# add_files -fileset sim_1 -norecurse [file join $snapshot tb tb_mlkem1024_keccak_kat.sv]
+# foreach name {mlkem1024_input.mem mlkem1024_expected.mem} {
+#     set f [file join $snapshot fixtures $name]
+#     add_files -fileset sim_1 -norecurse $f
+#     set_property file_type {Memory Initialization Files} [get_files $f]
+# }
+# set_property top tb_mlkem1024_keccak_kat [get_filesets sim_1]
+# set_property generic [list EXPECTED_CASES=$case_count] [get_filesets sim_1]
+# set_property xsim.simulate.runtime all [get_filesets sim_1]
+# set_property xsim.elaborate.debug_level off [get_filesets sim_1]
+# set_property xsim.elaborate.mt_level auto [get_filesets sim_1]
+# set sim_tcl [file join $run sim.tcl]
+# set fp [open $sim_tcl w]
+# puts $fp "run all\nquit"
+# close $fp
+# set_property xsim.simulate.custom_tcl $sim_tcl [get_filesets sim_1]
+# update_compile_order -fileset sources_1
+# update_compile_order -fileset sim_1
+# launch_simulation -simset sim_1
+Command: launch_simulation  -simset sim_1
+INFO: [Vivado 12-12493] Simulation top is 'tb_mlkem1024_keccak_kat'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'E:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'E:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_mlkem1024_keccak_kat' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim/mlkem1024.mem'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim/mlkem1024_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim/mlkem1024_expected.mem'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim/mlkem1024_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim/mlkem1024_expected.mem'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -L uvm -prj tb_mlkem1024_keccak_kat_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_control_s_axi.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_control_s_axi
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_43_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_45_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_49_5_24_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_51_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_9_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/rtl/picorv32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module picorv32
+INFO: [VRFC 10-311] analyzing module picorv32_regs
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_fast_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_div
+INFO: [VRFC 10-311] analyzing module picorv32_axi
+INFO: [VRFC 10-311] analyzing module picorv32_axi_adapter
+INFO: [VRFC 10-311] analyzing module picorv32_wb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/rtl/keccak_mmio_adapter.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module keccak_mmio_adapter
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/rtl/mlkem1024_keccak_system.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_system
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/hls/k4kat/20260927_175740_329963/snapshot/tb/tb_mlkem1024_keccak_kat.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_mlkem1024_keccak_kat
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '3' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim'
+"xelab --incr --debug off --relax --mt 8 -generic_top "EXPECTED_CASES=8" -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem1024_keccak_kat_behav xil_defaultlib.tb_mlkem1024_keccak_kat xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: E:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug off --relax --mt 8 -generic_top EXPECTED_CASES=8 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem1024_keccak_kat_behav xil_defaultlib.tb_mlkem1024_keccak_kat xil_defaultlib.glbl -log elaborate.log 
+Using 8 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-3532] module 'glbl' does not have a parameter named 'EXPECTED_CASES' to override [E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim/glbl.v:6]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.picorv32_axi_adapter
+Compiling module xil_defaultlib.picorv32_pcpi_fast_mul
+Compiling module xil_defaultlib.picorv32_pcpi_div
+Compiling module xil_defaultlib.picorv32(ENABLE_COUNTERS=1'b1,EN...
+Compiling module xil_defaultlib.picorv32_axi(ENABLE_COUNTERS64=1...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_flow_cont...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_p_anonymo...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_p_anonymo...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_control_s...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel
+Compiling module xil_defaultlib.keccak_mmio_adapter
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=104...
+Compiling module xil_defaultlib.mlkem1024_keccak_system(FIRMWARE...
+Compiling module xil_defaultlib.tb_mlkem1024_keccak_kat(EXPECTED...
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_mlkem1024_keccak_kat_behav
+run_program: Time (s): cpu = 00:00:00 ; elapsed = 00:00:08 . Memory (MB): peak = 453.348 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '8' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'E:/hls/k4kat/20260927_175740_329963/p/keccakkat.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_mlkem1024_keccak_kat_behav -key {Behavioral:sim_1:Functional:tb_mlkem1024_keccak_kat} -tclbatch {E:/hls/k4kat/20260927_175740_329963/sim.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source E:/hls/k4kat/20260927_175740_329963/sim.tcl
+## run all
+MLKEM_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM_START cases=8 ram_bytes=131072 stack_bytes=32768 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+// Interrupt Monitor : interrupt for ap_done detected @ "6396485000"
+// Interrupt Monitor : interrupt for ap_done detected @ "6578255000"
+// Interrupt Monitor : interrupt for ap_done detected @ "7294775000"
+// Interrupt Monitor : interrupt for ap_done detected @ "7703045000"
+// Interrupt Monitor : interrupt for ap_done detected @ "8111315000"
+// Interrupt Monitor : interrupt for ap_done detected @ "8519585000"
+// Interrupt Monitor : interrupt for ap_done detected @ "10061425000"
+// Interrupt Monitor : interrupt for ap_done detected @ "10469695000"
+// Interrupt Monitor : interrupt for ap_done detected @ "10877965000"
+// Interrupt Monitor : interrupt for ap_done detected @ "11286235000"
+// Interrupt Monitor : interrupt for ap_done detected @ "12850015000"
+// Interrupt Monitor : interrupt for ap_done detected @ "13258285000"
+// Interrupt Monitor : interrupt for ap_done detected @ "13666555000"
+// Interrupt Monitor : interrupt for ap_done detected @ "14074825000"
+// Interrupt Monitor : interrupt for ap_done detected @ "15628225000"
+// Interrupt Monitor : interrupt for ap_done detected @ "16036495000"
+// Interrupt Monitor : interrupt for ap_done detected @ "16444765000"
+// Interrupt Monitor : interrupt for ap_done detected @ "16853035000"
+// Interrupt Monitor : interrupt for ap_done detected @ "18392085000"
+// Interrupt Monitor : interrupt for ap_done detected @ "18560885000"
+// Interrupt Monitor : interrupt for ap_done detected @ "18729725000"
+// Interrupt Monitor : interrupt for ap_done detected @ "18898635000"
+// Interrupt Monitor : interrupt for ap_done detected @ "19701455000"
+// Interrupt Monitor : interrupt for ap_done detected @ "19870255000"
+// Interrupt Monitor : interrupt for ap_done detected @ "20039095000"
+// Interrupt Monitor : interrupt for ap_done detected @ "20208005000"
+// Interrupt Monitor : interrupt for ap_done detected @ "20999595000"
+MLKEM_ROW,0,2,42,3,62,2,0,3841265,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,0,27,27,27,0,16580,2037,3732
+// Interrupt Monitor : interrupt for ap_done detected @ "47861865000"
+// Interrupt Monitor : interrupt for ap_done detected @ "48043635000"
+// Interrupt Monitor : interrupt for ap_done detected @ "48760155000"
+// Interrupt Monitor : interrupt for ap_done detected @ "49168425000"
+// Interrupt Monitor : interrupt for ap_done detected @ "49576695000"
+// Interrupt Monitor : interrupt for ap_done detected @ "49984965000"
+// Interrupt Monitor : interrupt for ap_done detected @ "51545325000"
+// Interrupt Monitor : interrupt for ap_done detected @ "51953595000"
+// Interrupt Monitor : interrupt for ap_done detected @ "52361865000"
+// Interrupt Monitor : interrupt for ap_done detected @ "52770135000"
+// Interrupt Monitor : interrupt for ap_done detected @ "54334405000"
+// Interrupt Monitor : interrupt for ap_done detected @ "54742675000"
+// Interrupt Monitor : interrupt for ap_done detected @ "55150945000"
+// Interrupt Monitor : interrupt for ap_done detected @ "55559215000"
+// Interrupt Monitor : interrupt for ap_done detected @ "57121535000"
+// Interrupt Monitor : interrupt for ap_done detected @ "57529805000"
+// Interrupt Monitor : interrupt for ap_done detected @ "57938075000"
+// Interrupt Monitor : interrupt for ap_done detected @ "58346345000"
+// Interrupt Monitor : interrupt for ap_done detected @ "59860395000"
+// Interrupt Monitor : interrupt for ap_done detected @ "60029195000"
+// Interrupt Monitor : interrupt for ap_done detected @ "60198035000"
+// Interrupt Monitor : interrupt for ap_done detected @ "60366945000"
+// Interrupt Monitor : interrupt for ap_done detected @ "61169765000"
+// Interrupt Monitor : interrupt for ap_done detected @ "61338565000"
+// Interrupt Monitor : interrupt for ap_done detected @ "61507405000"
+// Interrupt Monitor : interrupt for ap_done detected @ "61676315000"
+// Interrupt Monitor : interrupt for ap_done detected @ "62467905000"
+MLKEM_ROW,1,2,42,3,63,2,0,3841558,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,1,27,27,27,0,16580,2037,3732
+// Interrupt Monitor : interrupt for ap_done detected @ "89330175000"
+// Interrupt Monitor : interrupt for ap_done detected @ "89511945000"
+// Interrupt Monitor : interrupt for ap_done detected @ "90228465000"
+// Interrupt Monitor : interrupt for ap_done detected @ "90636735000"
+// Interrupt Monitor : interrupt for ap_done detected @ "91045005000"
+// Interrupt Monitor : interrupt for ap_done detected @ "91453275000"
+// Interrupt Monitor : interrupt for ap_done detected @ "93022625000"
+// Interrupt Monitor : interrupt for ap_done detected @ "93430895000"
+// Interrupt Monitor : interrupt for ap_done detected @ "93839165000"
+// Interrupt Monitor : interrupt for ap_done detected @ "94247435000"
+// Interrupt Monitor : interrupt for ap_done detected @ "95800905000"
+// Interrupt Monitor : interrupt for ap_done detected @ "96209175000"
+// Interrupt Monitor : interrupt for ap_done detected @ "96617445000"
+// Interrupt Monitor : interrupt for ap_done detected @ "97025715000"
+// Interrupt Monitor : interrupt for ap_done detected @ "98589125000"
+// Interrupt Monitor : interrupt for ap_done detected @ "98997395000"
+// Interrupt Monitor : interrupt for ap_done detected @ "99405665000"
+// Interrupt Monitor : interrupt for ap_done detected @ "99813935000"
+// Interrupt Monitor : interrupt for ap_done detected @ "101361825000"
+// Interrupt Monitor : interrupt for ap_done detected @ "101530625000"
+// Interrupt Monitor : interrupt for ap_done detected @ "101699465000"
+// Interrupt Monitor : interrupt for ap_done detected @ "101868375000"
+// Interrupt Monitor : interrupt for ap_done detected @ "102671195000"
+// Interrupt Monitor : interrupt for ap_done detected @ "102839995000"
+// Interrupt Monitor : interrupt for ap_done detected @ "103008835000"
+// Interrupt Monitor : interrupt for ap_done detected @ "103177745000"
+// Interrupt Monitor : interrupt for ap_done detected @ "103969335000"
+MLKEM_ROW,2,2,42,3,64,2,0,3844870,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,2,27,27,27,0,16580,2037,3732
+// Interrupt Monitor : interrupt for ap_done detected @ "130831605000"
+// Interrupt Monitor : interrupt for ap_done detected @ "131013375000"
+// Interrupt Monitor : interrupt for ap_done detected @ "131729895000"
+// Interrupt Monitor : interrupt for ap_done detected @ "132138165000"
+// Interrupt Monitor : interrupt for ap_done detected @ "132546435000"
+// Interrupt Monitor : interrupt for ap_done detected @ "132954705000"
+// Interrupt Monitor : interrupt for ap_done detected @ "134513245000"
+// Interrupt Monitor : interrupt for ap_done detected @ "134921515000"
+// Interrupt Monitor : interrupt for ap_done detected @ "135329785000"
+// Interrupt Monitor : interrupt for ap_done detected @ "135738055000"
+// Interrupt Monitor : interrupt for ap_done detected @ "137315715000"
+// Interrupt Monitor : interrupt for ap_done detected @ "137723985000"
+// Interrupt Monitor : interrupt for ap_done detected @ "138132255000"
+// Interrupt Monitor : interrupt for ap_done detected @ "138540525000"
+// Interrupt Monitor : interrupt for ap_done detected @ "140107365000"
+// Interrupt Monitor : interrupt for ap_done detected @ "140515635000"
+// Interrupt Monitor : interrupt for ap_done detected @ "140923905000"
+// Interrupt Monitor : interrupt for ap_done detected @ "141332175000"
+// Interrupt Monitor : interrupt for ap_done detected @ "142865375000"
+// Interrupt Monitor : interrupt for ap_done detected @ "143034175000"
+// Interrupt Monitor : interrupt for ap_done detected @ "143203015000"
+// Interrupt Monitor : interrupt for ap_done detected @ "143371925000"
+// Interrupt Monitor : interrupt for ap_done detected @ "144174745000"
+// Interrupt Monitor : interrupt for ap_done detected @ "144343545000"
+// Interrupt Monitor : interrupt for ap_done detected @ "144512385000"
+// Interrupt Monitor : interrupt for ap_done detected @ "144681295000"
+// Interrupt Monitor : interrupt for ap_done detected @ "145472885000"
+MLKEM_ROW,3,2,42,3,65,2,0,3845082,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,3,27,27,27,0,16580,2037,3732
+// Interrupt Monitor : interrupt for ap_done detected @ "172335155000"
+// Interrupt Monitor : interrupt for ap_done detected @ "172516925000"
+// Interrupt Monitor : interrupt for ap_done detected @ "173233445000"
+// Interrupt Monitor : interrupt for ap_done detected @ "173641715000"
+// Interrupt Monitor : interrupt for ap_done detected @ "174049985000"
+// Interrupt Monitor : interrupt for ap_done detected @ "174458255000"
+// Interrupt Monitor : interrupt for ap_done detected @ "176012295000"
+// Interrupt Monitor : interrupt for ap_done detected @ "176420565000"
+// Interrupt Monitor : interrupt for ap_done detected @ "176828835000"
+// Interrupt Monitor : interrupt for ap_done detected @ "177237105000"
+// Interrupt Monitor : interrupt for ap_done detected @ "178787025000"
+// Interrupt Monitor : interrupt for ap_done detected @ "179195295000"
+// Interrupt Monitor : interrupt for ap_done detected @ "179603565000"
+// Interrupt Monitor : interrupt for ap_done detected @ "180011835000"
+// Interrupt Monitor : interrupt for ap_done detected @ "181573365000"
+// Interrupt Monitor : interrupt for ap_done detected @ "181981635000"
+// Interrupt Monitor : interrupt for ap_done detected @ "182389905000"
+// Interrupt Monitor : interrupt for ap_done detected @ "182798175000"
+// Interrupt Monitor : interrupt for ap_done detected @ "184331345000"
+// Interrupt Monitor : interrupt for ap_done detected @ "184500145000"
+// Interrupt Monitor : interrupt for ap_done detected @ "184668985000"
+// Interrupt Monitor : interrupt for ap_done detected @ "184837895000"
+// Interrupt Monitor : interrupt for ap_done detected @ "185640715000"
+// Interrupt Monitor : interrupt for ap_done detected @ "185809515000"
+// Interrupt Monitor : interrupt for ap_done detected @ "185978355000"
+// Interrupt Monitor : interrupt for ap_done detected @ "186147265000"
+// Interrupt Monitor : interrupt for ap_done detected @ "186938855000"
+MLKEM_ROW,4,2,42,3,66,2,0,3841324,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,4,27,27,27,0,16580,2037,3732
+// Interrupt Monitor : interrupt for ap_done detected @ "213801125000"
+// Interrupt Monitor : interrupt for ap_done detected @ "213982895000"
+// Interrupt Monitor : interrupt for ap_done detected @ "214699415000"
+// Interrupt Monitor : interrupt for ap_done detected @ "215107685000"
+// Interrupt Monitor : interrupt for ap_done detected @ "215515955000"
+// Interrupt Monitor : interrupt for ap_done detected @ "215924225000"
+// Interrupt Monitor : interrupt for ap_done detected @ "217489765000"
+// Interrupt Monitor : interrupt for ap_done detected @ "217898035000"
+// Interrupt Monitor : interrupt for ap_done detected @ "218306305000"
+// Interrupt Monitor : interrupt for ap_done detected @ "218714575000"
+// Interrupt Monitor : interrupt for ap_done detected @ "220278485000"
+// Interrupt Monitor : interrupt for ap_done detected @ "220686755000"
+// Interrupt Monitor : interrupt for ap_done detected @ "221095025000"
+// Interrupt Monitor : interrupt for ap_done detected @ "221503295000"
+// Interrupt Monitor : interrupt for ap_done detected @ "223068065000"
+// Interrupt Monitor : interrupt for ap_done detected @ "223476335000"
+// Interrupt Monitor : interrupt for ap_done detected @ "223884605000"
+// Interrupt Monitor : interrupt for ap_done detected @ "224292875000"
+// Interrupt Monitor : interrupt for ap_done detected @ "225810705000"
+// Interrupt Monitor : interrupt for ap_done detected @ "225979505000"
+// Interrupt Monitor : interrupt for ap_done detected @ "226148345000"
+// Interrupt Monitor : interrupt for ap_done detected @ "226317255000"
+// Interrupt Monitor : interrupt for ap_done detected @ "227120075000"
+// Interrupt Monitor : interrupt for ap_done detected @ "227288875000"
+// Interrupt Monitor : interrupt for ap_done detected @ "227457715000"
+// Interrupt Monitor : interrupt for ap_done detected @ "227626625000"
+// Interrupt Monitor : interrupt for ap_done detected @ "228418215000"
+MLKEM_ROW,5,2,42,3,67,2,0,3842663,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,5,27,27,27,0,16580,2037,3732
+// Interrupt Monitor : interrupt for ap_done detected @ "255280485000"
+// Interrupt Monitor : interrupt for ap_done detected @ "255462255000"
+// Interrupt Monitor : interrupt for ap_done detected @ "256178775000"
+// Interrupt Monitor : interrupt for ap_done detected @ "256587045000"
+// Interrupt Monitor : interrupt for ap_done detected @ "256995315000"
+// Interrupt Monitor : interrupt for ap_done detected @ "257403585000"
+// Interrupt Monitor : interrupt for ap_done detected @ "258960665000"
+// Interrupt Monitor : interrupt for ap_done detected @ "259368935000"
+// Interrupt Monitor : interrupt for ap_done detected @ "259777205000"
+// Interrupt Monitor : interrupt for ap_done detected @ "260185475000"
+// Interrupt Monitor : interrupt for ap_done detected @ "261762835000"
+// Interrupt Monitor : interrupt for ap_done detected @ "262171105000"
+// Interrupt Monitor : interrupt for ap_done detected @ "262579375000"
+// Interrupt Monitor : interrupt for ap_done detected @ "262987645000"
+// Interrupt Monitor : interrupt for ap_done detected @ "264558155000"
+// Interrupt Monitor : interrupt for ap_done detected @ "264966425000"
+// Interrupt Monitor : interrupt for ap_done detected @ "265374695000"
+// Interrupt Monitor : interrupt for ap_done detected @ "265782965000"
+// Interrupt Monitor : interrupt for ap_done detected @ "267299175000"
+// Interrupt Monitor : interrupt for ap_done detected @ "267467975000"
+// Interrupt Monitor : interrupt for ap_done detected @ "267636815000"
+// Interrupt Monitor : interrupt for ap_done detected @ "267805725000"
+// Interrupt Monitor : interrupt for ap_done detected @ "268608545000"
+// Interrupt Monitor : interrupt for ap_done detected @ "268777345000"
+// Interrupt Monitor : interrupt for ap_done detected @ "268946185000"
+// Interrupt Monitor : interrupt for ap_done detected @ "269115095000"
+// Interrupt Monitor : interrupt for ap_done detected @ "269906685000"
+MLKEM_ROW,6,2,42,3,68,2,0,3843574,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,6,27,27,27,0,16580,2037,3732
+// Interrupt Monitor : interrupt for ap_done detected @ "296768955000"
+// Interrupt Monitor : interrupt for ap_done detected @ "296950725000"
+// Interrupt Monitor : interrupt for ap_done detected @ "297667245000"
+// Interrupt Monitor : interrupt for ap_done detected @ "298075515000"
+// Interrupt Monitor : interrupt for ap_done detected @ "298483785000"
+// Interrupt Monitor : interrupt for ap_done detected @ "298892055000"
+// Interrupt Monitor : interrupt for ap_done detected @ "300454875000"
+// Interrupt Monitor : interrupt for ap_done detected @ "300863145000"
+// Interrupt Monitor : interrupt for ap_done detected @ "301271415000"
+// Interrupt Monitor : interrupt for ap_done detected @ "301679685000"
+// Interrupt Monitor : interrupt for ap_done detected @ "303232385000"
+// Interrupt Monitor : interrupt for ap_done detected @ "303640655000"
+// Interrupt Monitor : interrupt for ap_done detected @ "304048925000"
+// Interrupt Monitor : interrupt for ap_done detected @ "304457195000"
+// Interrupt Monitor : interrupt for ap_done detected @ "306017535000"
+// Interrupt Monitor : interrupt for ap_done detected @ "306425805000"
+// Interrupt Monitor : interrupt for ap_done detected @ "306834075000"
+// Interrupt Monitor : interrupt for ap_done detected @ "307242345000"
+// Interrupt Monitor : interrupt for ap_done detected @ "308759745000"
+// Interrupt Monitor : interrupt for ap_done detected @ "308928545000"
+// Interrupt Monitor : interrupt for ap_done detected @ "309097385000"
+// Interrupt Monitor : interrupt for ap_done detected @ "309266295000"
+// Interrupt Monitor : interrupt for ap_done detected @ "310069115000"
+// Interrupt Monitor : interrupt for ap_done detected @ "310237915000"
+// Interrupt Monitor : interrupt for ap_done detected @ "310406755000"
+// Interrupt Monitor : interrupt for ap_done detected @ "310575665000"
+// Interrupt Monitor : interrupt for ap_done detected @ "311367255000"
+MLKEM_ROW,7,2,42,3,69,2,0,3840784,4,1600,1600,58244,57220,0,0,1024,0,0,0,0,0x0001a700
+KECCAK_ROW,7,27,27,27,0,16580,2037,3732
+MLKEM_PASS cases=8 input_bytes=12800 output_bytes=12800 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=33273842 all_m=465952 min_sp=0x0001a700 stack_used=22768
+KECCAK_PASS cases=8 starts=216 done=216 hash=216 squeeze=0
+$finish called at time : 332738735 ns : File "E:/hls/k4kat/20260927_175740_329963/snapshot/tb/tb_mlkem1024_keccak_kat.sv" Line 357
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:05:58 . Memory (MB): peak = 459.016 ; gain = 0.000
+## quit
+INFO: xsimkernel Simulation Memory Usage: 32316 KB (Peak: 32316 KB), Simulation CPU Usage: 357093 ms
+INFO: [Common 17-206] Exiting Vivado at Sun Sep 27 18:04:05 2026...

@@ -1,0 +1,19 @@
+Time resolution is 1 ps
+MLKEM_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM_START cases=6 ram_bytes=131072 stack_bytes=32768 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+MLKEM_ROW,0,3,42,15,190,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,0,0,0,0,0,0,0,0
+MLKEM_ROW,1,3,42,15,191,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,1,0,0,0,0,0,0,0
+MLKEM_ROW,2,3,42,15,192,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,2,0,0,0,0,0,0,0
+MLKEM_ROW,3,3,42,15,193,5,-4,257417,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,3,0,0,0,0,0,0,0
+MLKEM_ROW,4,3,42,15,194,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,4,0,0,0,0,0,0,0
+MLKEM_ROW,5,3,42,15,195,5,0,257406,4,1568,0,2048,2048,0,0,0,0,0,0,0,0x0001f100
+KECCAK_ROW,5,0,0,0,0,0,0,0
+MLKEM_PASS cases=6 input_bytes=9408 output_bytes=0 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=2998381 all_m=12288 min_sp=0x0001f100 stack_used=3824
+KECCAK_PASS cases=6 starts=0 done=0 hash=0 squeeze=0
+$finish called at time : 29984125 ns : File "E:/hls/k4kat/20260927_191303_475381/snapshot/tb/tb_mlkem1024_keccak_kat.sv" Line 357
+INFO: xsimkernel Simulation Memory Usage: 32264 KB (Peak: 32264 KB), Simulation CPU Usage: 32968 ms

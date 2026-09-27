@@ -273,10 +273,14 @@ def validate_attempt(directory, cases):
         path = snapshot / f"fixtures/mlkem1024_{suffix}.mem"
         words = [int(line, 16) for line in path.read_text(encoding="ascii").splitlines()]
         require(words == pack_fixture(deepcopy(local), 1024, expected), f"fixture is not exact official data: {suffix}")
-    rows, hardware = validate_log((directory / "simulate.log").read_text(encoding="utf-8", errors="replace"), cases, indices)
+    text = (directory / "simulate.log").read_text(encoding="utf-8", errors="replace")
+    rows, hardware = validate_log(text, cases, indices)
+    _, final_text = single([line.strip() for line in text.splitlines()], "MLKEM_PASS ")
+    final = key_values(final_text)
     return rows, hardware, dict(path=str(directory), original_indices=indices,
                                elapsed_seconds=elapsed, manifest_sha256=sha(manifest_path),
-                               result_sha256=sha(result_path), log_sha256=sha(directory / "simulate.log"))
+                               result_sha256=sha(result_path), log_sha256=sha(directory / "simulate.log"),
+                               observed_stack_bytes=final["stack_used"])
 
 
 def read_baseline(cases):
@@ -334,10 +338,18 @@ def collect(results_dir=RESULTS, partial=False):
                    software_cycles=sum(row["software_cycles"] for row in rows),
                    accelerated_cycles=sum(row["accelerated_cycles"] for row in rows),
                    starts=sum(row["starts"] for row in rows), squeeze=sum(row["squeeze"] for row in rows),
+                   hardware_busy_cycles=sum(row["busy"] for row in rows),
+                   buffer_write_words=sum(row["buffer_writes"] for row in rows),
+                   buffer_read_words=sum(row["buffer_reads"] for row in rows),
+                   batch_count=len(attempts),
+                   total_run_elapsed_seconds=sum(attempt["elapsed_seconds"] for attempt in attempts),
+                   observed_stack_bytes=max(attempt["observed_stack_bytes"] for attempt in attempts),
                    baseline=str(BASELINE.relative_to(ROOT)), baseline_sha256=sha(BASELINE),
                    profile_manifest_sha256=sha(PROFILE / "manifest.json"), collector_sha256=sha(Path(__file__)),
                    scope="PicoRV32 fast CPU plus real generated Keccak RTL, official K4 cases; not board measurement or certification",
-                   timing="Raw rdcycle API intervals including CPU/MMIO work and zeroization; empty bracket retained; seed decapsulation includes key expansion. Busy cycles measure HLS activity; remaining API cycles also include transfers and CPU work, not pure transfer overhead.")
+                   timing="Raw rdcycle API intervals including CPU/MMIO work and zeroization; empty bracket retained; seed decapsulation includes key expansion. Busy cycles measure HLS activity; remaining API cycles also include transfers and CPU work, not pure transfer overhead.",
+                   elapsed_scope="Sum of individual simulator run durations, including compilation/elaboration; not uninterrupted wall elapsed time.",
+                   evidence_retention="Strict recollection requires every manifest run_dir/snapshot directory, retained outside Git. Log and manifest hashes alone cannot reconstruct frozen firmware, testbench or generated HLS inputs.")
     summary["speedup_ratio_of_sums"] = summary["software_cycles"] / summary["accelerated_cycles"]
     return rows, summary
 
@@ -350,8 +362,12 @@ def markdown(summary):
              "|---|---:|---:|---:|---:|---:|"]
     for row in summary["aggregate"]:
         lines.append(f"| {row['operation']} | {row['return_code']} | {row['cases']} | {row['software_cycles']} | {row['accelerated_cycles']} | {row['speedup_ratio_of_sums']:.3f}x |")
-    lines += ["", f"Hardware commands: {summary['starts']} starts, including {summary['squeeze']} continuation squeezes.",
-              "", "Only successful, hash-verified, disjoint attempts are included. Every result checks official identities, byte counts, returns, CPU configuration, measured boundaries and exact expected hardware command/transfer counts."]
+    lines += ["", f"API cycle sums: CPU {summary['software_cycles']:,}; accelerated {summary['accelerated_cycles']:,}; ratio **{summary['speedup_ratio_of_sums']:.6f}x**. This ratio applies to this official case mix.",
+              "", f"Hardware commands: {summary['starts']:,} starts, including {summary['squeeze']} continuation squeezes. HLS busy: {summary['hardware_busy_cycles']:,} cycles. Buffer transfers: {summary['buffer_write_words']:,} writes / {summary['buffer_read_words']:,} reads, in 32-bit words including context.",
+              "", f"Completed batches: {summary['batch_count']}. Run-duration sum: {summary['total_run_elapsed_seconds']:,.3f} s. {summary['elapsed_scope']}",
+              "", f"Maximum observed stack: {summary['observed_stack_bytes']:,} bytes, from verified final PASS records; not a worst-case bound.",
+              "", "Only successful, hash-verified, disjoint attempts are included. Every result checks official identities, byte counts, returns, CPU configuration, measured boundaries and exact expected hardware command/transfer counts.",
+              "", summary["evidence_retention"]]
     if summary["status"] == "PARTIAL":
         lines += ["", "This pilot does not establish full 145-case RTL coverage. Selected original indices: " + str(summary["original_indices"]) + "."]
     return "\n".join(lines) + "\n"
