@@ -19,6 +19,9 @@
   开发只跑官方索引0、1、115子集；145条保留最终验收，历史全量结果不冒充新版本覆盖。
   统一入口为[`run_flow.tcl`](scripts/mlkem1024_keccak/run_flow.tcl)顶部0/1开关，默认`FULL_KAT=0`。
 - ML-KEM-768/1024 RV32IM-fast CPU-only RTL 官方回归各通过 145/145，使用 128 KiB RAM / 32 KiB 栈。
+- K4 PYNQ-Z2 板级上板前签核已通过：真实 MMCM/复位三例子集 3/3、路由和 100 MHz 时序通过，
+  packed LUT/FF/BRAM36 等效/DSP 为 19,030/16,963/34.5/4；bitstream 已生成但尚未烧录实板。
+  [板级证据](results/keccak_cpu/board/20261004_162430/result.json)
 
 - ML-KEM-512 的 RV32I、RV32IM 迭代乘法、RV32IM 快速乘法三组 PicoRV32 RTL 回归各通过
   145 条固定版本官方记录。
@@ -106,8 +109,8 @@ powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_hls_short.p
 
 ## 研究边界
 
-K4标准软件与Keccak硬件的完整RTL闭环及历史全量周期对照已完成，当前集中优化系统时序。
-新版本按子集验证，稳定后执行全量验收并集中整理脚本与目录；板级时钟/复位、bitstream和实板验证仍待完成。完整计划见
+K4标准软件与Keccak硬件的完整RTL闭环及历史全量周期对照已完成，当前板级上板前签核也已完成。
+新版本按子集验证，稳定后执行全量验收并集中整理脚本与目录；实板烧录、现场周期和演示仍待完成。完整计划见
 [`docs/COMPETITION_ROADMAP.md`](docs/COMPETITION_ROADMAP.md)。
 
 更多入口：

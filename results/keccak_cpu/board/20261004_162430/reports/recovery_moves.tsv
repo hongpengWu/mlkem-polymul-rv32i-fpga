@@ -1,0 +1,4 @@
+cell	from	to	clock_region	init
+system_i/cpu/picorv32_core/reg_pc_reg[7]	SLICE_X35Y7/AFF	SLICE_X35Y0/AFF	X0Y0	1'b0
+system_i/adapter_i/hls_i/cursor_2_reg_945_reg[2]	SLICE_X63Y17/DFF	SLICE_X63Y5/DFF	X1Y0	1'b0
+system_i/adapter_i/hls_i/cursor_6_reg_6692_reg[31]	SLICE_X79Y19/DFF	SLICE_X85Y19/DFF	X1Y0	1'b0

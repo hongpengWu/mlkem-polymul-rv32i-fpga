@@ -1,0 +1,62 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sun Oct  4 15:55:02 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_clocks -file E:/hls/k4board/20261004_152222/board/reports/clocks.rpt
+| Design       : mlkem1024_keccak_pynqz2_top
+| Device       : 7z020-clg400
+| Speed File   : -1  PRODUCTION 1.12 2019-11-22
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Clock Report
+
+
+Attributes
+  P: Propagated
+  G: Generated
+  A: Auto-derived
+  R: Renamed
+  V: Virtual
+  I: Inverted
+  S: Pin phase-shifted with Latency mode
+
+Clock           Period(ns)  Waveform(ns)   Attributes  Sources
+sys_clk_125mhz  8.000       {0.000 4.000}  P           {sys_clk}
+clk100_raw      10.000      {0.000 5.000}  P,G,A       {clock_manager/CLKOUT0}
+feedback_raw    8.000       {0.000 4.000}  P,G,A       {clock_manager/CLKFBOUT}
+
+
+====================================================
+Generated Clocks
+====================================================
+
+Generated Clock     : clk100_raw
+Master Source       : clock_manager/CLKIN1
+Master Clock        : sys_clk_125mhz
+Edges               : {1 2 3}
+Edge Shifts(ns)     : {0.000 1.000 2.000}
+Generated Sources   : {clock_manager/CLKOUT0}
+
+Generated Clock     : feedback_raw
+Master Source       : clock_manager/CLKIN1
+Master Clock        : sys_clk_125mhz
+Multiply By         : 1
+Generated Sources   : {clock_manager/CLKFBOUT}
+
+
+
+====================================================
+User Uncertainty
+====================================================
+
+From Clock  To Clock    Setup(ns)  Hold(ns)  Edges
+clk100_raw  clk100_raw  0.100      0.100     rf -> rf
+
+
+====================================================
+User Jitter
+====================================================
+
+

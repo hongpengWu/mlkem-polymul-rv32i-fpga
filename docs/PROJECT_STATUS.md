@@ -136,7 +136,7 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
 | K=2 PQC 加速器接入标准软件 | 冻结历史对照；CPU+驱动及官方 KAT 145/145 通过，端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
 | K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛 | [HLS 说明](../hls/mlkem1024_keccak/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
-| K=4 CPU+加速器系统 | 历史145/145、3.803×；当前候选组件10项、官方子集3/3及内部setup/hold通过；OOC边界/全量验收待完成 | [当前路线](COMPETITION_ROADMAP.md) |
+| K=4 CPU+加速器系统 | 历史145/145、3.803×；当前候选组件10项、官方子集3/3；板级上板前签核与bitstream已完成，当前版本全量145待验收 | [板级证据](../results/keccak_cpu/board/20261004_162430/result.json) |
 
 ### 当前官方用例覆盖
 
@@ -183,9 +183,9 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 3 | K=4 打包接口与 CPU 集成 | 明确上下文、搬运、启动、等待和读回契约 | 10次RTL组件调用通过，标准库适配完成 |
 | 4 | K=4 CPU+加速器官方 RTL KAT | 开发子集，最终145条逐字节通过且真实硬件调用证据完整 | 历史版本145/145；当前候选单独复验，不复用历史覆盖 |
 | 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 历史全量端到端3.803×；当前候选按同例周期复验，K4阶段占比独立待测 |
-| 6 | K=4 系统资源/时序与设计选择 | 同约束软件/硬件综合和布局布线，记录 LUT/FF/BRAM/DSP/WNS；独立 HLS 估算不替代系统结果 | 当前v3内部setup/hold +0.269/+0.029 ns；OOC resetn边界hold −1.194 ns，板级时序待做 |
+| 6 | K=4 系统资源/时序与设计选择 | 同约束软件/硬件综合和布局布线，记录 LUT/FF/BRAM/DSP/WNS；独立 HLS 估算不替代系统结果 | 板级setup/hold/pulse +0.109/+0.027/+2.000 ns；19,030 LUT、16,963 FF、34.5 BRAM36、4 DSP |
 | 7 | K=3 扩展和其他 CPU 消融 | 在选定架构上补齐对应官方回归、基本性能和内存数据 | 后置 |
-| 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 待执行 |
+| 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | K4板级子集、实现签核和bitstream已完成；最终145待执行 |
 | 9 | 最后进行 PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 最后阶段 |
 
 K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，但扩展必须有独立硬件证据。
@@ -201,7 +201,8 @@ K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，�
 > MMIO/BRAM/BIST、Vivado 2024.2 实现及 CPU+PQC 全流程已完成并冻结。当前主线是
 > K=4 Keccak/FIPS 202：局部 HLS 的 C/Verilog COSIM 差分通过，独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛；
 > 历史版本CPU组件10项及标准库145条官方RTL记录已通过，同配置测试集API总周期比3.803×；
-> 当前RTL优化候选官方子集3/3及100 MHz内部setup/hold通过；OOC边界仍失败，全量最终验收、板级时序和实板待完成，K=3后置。
+> 当前RTL优化候选官方子集3/3及100 MHz内部setup/hold通过；板级真实MMCM集成、实现签核和bitstream已完成，
+> setup/hold/pulse为+0.109/+0.027/+2.000 ns；最终145条验收、K=3扩展和实板仍后置。
 
 全部对应回归完成后，可以描述所覆盖版本、参数集、操作和用例的结果一致性。
 公开向量离线回归不等于正式 CAVP 算法验证，也不等于 FIPS 140-3 / CMVP 密码模块认证；

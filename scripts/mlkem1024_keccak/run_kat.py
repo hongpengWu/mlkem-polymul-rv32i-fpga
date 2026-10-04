@@ -96,6 +96,38 @@ def completed_indices(cases, expected):
     return completed
 
 
+def build_source(name, digest, build_file):
+    current = ROOT / name
+    if current.is_file() and sha(current) == digest:
+        return current
+    # This script is build provenance, not compiled firmware. Preserve the
+    # original bytes from a verified successful run when its implementation
+    # evolves; every actual firmware/header/linker/fixture still must match HEAD.
+    if name == 'scripts/mlkem1024_keccak/build_kat.py':
+        relative = 'source/' + name
+        roots = dict.fromkeys((EVIDENCE, ROOT / 'results/keccak_cpu/kat'))
+        for evidence_root in roots:
+            for manifest_file in sorted((evidence_root / 'batches/pilot_000_001_115').glob('*/manifest.json')):
+                manifest = json.loads(manifest_file.read_text())
+                result_file = manifest_file.with_name('result.json')
+                if not result_file.is_file():
+                    continue
+                result = json.loads(result_file.read_text())
+                inputs = manifest['inputs']
+                if (not result.get('passed') or
+                        inputs.get(relative, {}).get('sha256') != digest or
+                        inputs.get('build.json', {}).get('sha256') != sha(build_file)):
+                    continue
+                if sha(manifest_file) != result['input_manifest_sha256']:
+                    raise RuntimeError('Changed build provenance manifest: ' + str(manifest_file))
+                verify_snapshot(Path(manifest['run_dir']), manifest)
+                original = Path(manifest['run_dir']) / 'snapshot' / relative
+                if sha(original) != digest:
+                    raise RuntimeError('Changed frozen builder: ' + str(original))
+                return original
+    raise RuntimeError('Stale firmware build: ' + name)
+
+
 def current_input_pairs(args):
     build_file = EVIDENCE / 'build.json'
     # Candidate roots may reuse the verified firmware record without rebuilding
@@ -104,9 +136,8 @@ def current_input_pairs(args):
         build_file.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(args.build_record, build_file)
     build = json.loads(build_file.read_text())
-    for name, digest in build['source_sha256'].items():
-        if sha(ROOT / name) != digest:
-            raise RuntimeError('Stale firmware build: ' + name)
+    sources = {name: build_source(name, digest, build_file)
+               for name, digest in build['source_sha256'].items()}
     if sha(ROOT / build['firmware']) != build['firmware_sha256']:
         raise RuntimeError('Firmware image changed')
     selection_file = ROOT / 'results/hls/mlkem1024_keccak/rtl_equivalence.json'
@@ -122,7 +153,7 @@ def current_input_pairs(args):
               (Path(__file__), Path('run_kat.py')),
               (build_file, Path('build.json')), (selection_file, Path('hls_selection.json')),
               (ROOT / build['firmware'], Path('fixtures/mlkem1024.mem'))]
-    pairs += [(ROOT / name, Path('source') / name) for name in build['source_sha256']]
+    pairs += [(source, Path('source') / name) for name, source in sources.items()]
     pairs += [(args.hls_run / 'p/sol1/syn/verilog' / name, Path('hls') / name) for name in selected]
     return pairs
 

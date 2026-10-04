@@ -1,7 +1,7 @@
 # 验证记录
 
 更新时间：2026-10-04。本文只记录当前仍在仓库中的验证入口和证据；旧完整加速器的
-板级仿真、实现报告和 bitstream 已随旧主线删除。
+旧主线板级证据已删除；当前 K4 板级证据独立保存在 `results/keccak_cpu/board/20261004_162430/`。
 
 ## 当前结果
 
@@ -12,6 +12,7 @@
 | K4当前timing_decode_v3组件/译码 | 10次硬件调用、216字及262,144个高位区域/16,384个窗口字节等价检查PASS | [当前smoke](../results/keccak_cpu/smoke/20261004_121658_132844/)、[实现记录](MLKEM1024_SYSTEM_IMPLEMENTATION.md) |
 | K4当前timing_decode_v3官方子集 | 原索引0、1、115全部PASS，3/145覆盖；85次调用含4次续取，同例周期与历史一致 | [当前子集证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md) |
 | K4当前timing_decode_v3系统OOC | 100 MHz内部setup/hold +0.269/+0.029 ns；资源足够、routed DCP已保存；边界hold −1.194 ns，整体timing_met=false | [恢复实现结果](../results/keccak_cpu/system_impl/20261004_124354/keccak/result.json) |
+| K4 PYNQ-Z2 板级上板前签核 | PASS，真实125→100 MHz MMCM、BTN0忙时复位和官方子集3/3；setup/hold/pulse +0.109/+0.027/+2.000 ns；路由28,091/28,091；功能风险DRC 0 | [最终证据](../results/keccak_cpu/board/20261004_162430/result.json) |
 | CPU-only 多项式 baseline | PASS，RV32I/RV32IM-iterative/RV32IM-fast 各 8 组、4096 项检查 | [`results/cpu_baseline/`](../results/cpu_baseline/) |
 | ML-KEM-512 官方 PicoRV32 回归 | PASS，三种 CPU 各 145/145 | [`results/official_baseline/mlkem512/`](../results/official_baseline/mlkem512/) |
 | ML-KEM-768 官方 PicoRV32 回归 | PASS，RV32IM-fast 145/145，128 KiB RAM/32 KiB栈 | [768汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md) |
@@ -26,7 +27,7 @@
 | Vivado 2024.2 独立实现 | PASS，WNS=0.732 ns、WHS=0.129 ns、BRAM=8、DSP=12 @ 100 MHz | [`results/accelerator_interface/vivado_impl/`](../results/accelerator_interface/vivado_impl/) |
 | CPU+PQC 局部接口 | PASS，RV32IM-fast 执行 C 驱动，3 组、768 个系数 | [接口验证](MLKEM512_CPU_ACCEL_SMOKE.md) |
 | CPU+PQC 官方 KAT | PASS，145/145 ML-KEM-512 | [`results/accelerator_cpu/kat/`](../results/accelerator_cpu/kat/)；端到端 0.9930×，当前为功能闭环而非性能收益 |
-| PYNQ-Z2 实板烧录 | 待完成 | 已生成 [`mlkem512_basemul_k2_validation.bit`](../release/mlkem512_basemul_k2/mlkem512_basemul_k2_validation.bit)，尚未上板 |
+| K4 PYNQ-Z2 实板烧录 | 待完成 | bitstream 已生成于 `E:/hls/k4board/20261004_162430/board/board.bit`，SHA-256 见最终证据；尚未上板 |
 
 开发统一使用`run_flow.tcl`顶部开关，默认官方索引0、1、115子集；145条只在最终候选稳定后验收。
 每个RTL版本独立归档并检查输入哈希。历史145/145和3.803×不自动计入当前版本，子集不代表全量通过。

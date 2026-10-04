@@ -44,6 +44,11 @@ python scripts/mlkem1024_keccak/collect_kat.py
 当前RTL修改不改写历史证据。实现原始setup/hold失败仍保留，内部寄存器时序另列；
 系统OOC不代替板级签核。HLS生成RTL/IP、DCP和缓存不进入Git。
 
+板级仿真通过后，如只需修正约束或物理实现，可设置`RESUME_BOARD`为原运行目录，
+同时使用`BOARD_SIM=0`、`BOARD_IMPL=1`、`BOARD_BITSTREAM=1`。恢复入口会核对manifest、
+结果、91项冻结输入、仿真日志和routed DCP的SHA-256；RTL、HLS、固件或TB变化时拒绝复用。
+新目录记录恢复来源并重新执行签核门禁，原失败证据保持不变。
+
 ## CPU-only baseline
 
 先构建三组固件和镜像：

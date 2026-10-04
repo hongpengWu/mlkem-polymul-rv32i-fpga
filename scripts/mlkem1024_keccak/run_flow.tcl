@@ -13,6 +13,10 @@ set BUILD_SMOKE 1
 set KAT_SUBSET 1
 set FULL_KAT 0
 set IMPLEMENTATION 0
+set BUILD_BOARD 0
+set BOARD_SIM 0
+set BOARD_IMPL 0
+set BOARD_BITSTREAM 0
 set COLLECT 1
 set CHECK_ONLY 0
 
@@ -23,12 +27,13 @@ set VITIS_HLS E:/Xilinx/Vitis_HLS/2024.2/bin/vitis_hls.bat
 set HLS_RUN E:/hls/k4_io1/opt02
 set SHORT_ROOT E:/hls
 set RESUME_SYNTH ""
+set RESUME_BOARD ""
 set max_threads 8
 
 set SCRIPT_DIR [file normalize [file dirname [info script]]]
 set ROOT [file normalize [file join $SCRIPT_DIR ../..]]
 set CUR_DIR [pwd]
-foreach setting {HLS CSIM CSYNTH COSIM VIVADO_SYN VIVADO_IMPL EXPORT SMOKE BUILD_SMOKE KAT_SUBSET FULL_KAT IMPLEMENTATION COLLECT CHECK_ONLY} {
+foreach setting {HLS CSIM CSYNTH COSIM VIVADO_SYN VIVADO_IMPL EXPORT SMOKE BUILD_SMOKE KAT_SUBSET FULL_KAT IMPLEMENTATION BUILD_BOARD BOARD_SIM BOARD_IMPL BOARD_BITSTREAM COLLECT CHECK_ONLY} {
     if {[info exists ::env(FLOW_$setting)]} {set $setting $::env(FLOW_$setting)}
     if {[set $setting] ni {0 1}} {error "$setting must be 0 or 1"}
 }
@@ -38,7 +43,8 @@ if {$HLS && ($VIVADO_SYN || $VIVADO_IMPL) && !$EXPORT} {
 if {$HLS && !$CSIM && !$CSYNTH && !$COSIM && !$EXPORT} {
     error "HLS=1 requires at least one HLS stage."
 }
-foreach setting {CANDIDATE PYTHON VIVADO VITIS_HLS HLS_RUN SHORT_ROOT RESUME_SYNTH} {
+if {$BOARD_BITSTREAM && !$BOARD_IMPL} {error "BOARD_BITSTREAM requires BOARD_IMPL=1"}
+foreach setting {CANDIDATE PYTHON VIVADO VITIS_HLS HLS_RUN SHORT_ROOT RESUME_SYNTH RESUME_BOARD} {
     if {[info exists ::env(FLOW_$setting)]} {set $setting $::env(FLOW_$setting)}
 }
 if {![regexp {^[A-Za-z0-9_-]+$} $CANDIDATE]} {error "Unsafe CANDIDATE"}
@@ -57,7 +63,7 @@ proc run_stage {name command} {
 
 set failed [catch {
     cd $ROOT
-    if {$HLS || $SMOKE || $KAT_SUBSET || $FULL_KAT || $IMPLEMENTATION} {
+    if {$HLS || $SMOKE || $KAT_SUBSET || $FULL_KAT || $IMPLEMENTATION || $BOARD_SIM || $BOARD_IMPL} {
         run_stage TOOL_GUARD [list $PYTHON -c \
             {import sys; sys.path.insert(0, 'scripts/mlkem1024_keccak'); from run_kat import tool_guard; tool_guard()}]
     }
@@ -103,6 +109,18 @@ set failed [catch {
             --run-root [file join $SHORT_ROOT k4sys]]
         if {$RESUME_SYNTH ne ""} {lappend command --resume-synth $RESUME_SYNTH}
         run_stage IMPLEMENTATION $command
+    }
+    if {$BUILD_BOARD} {
+        run_stage BUILD_BOARD [list $PYTHON [file join $SCRIPT_DIR build_kat.py] --board]
+    }
+    if {$BOARD_SIM || $BOARD_IMPL} {
+        set command [list $PYTHON [file join $SCRIPT_DIR implement_system.py] \
+            --variants board --vivado $VIVADO --run-root [file join $SHORT_ROOT k4board]]
+        if {$BOARD_SIM} {lappend command --board-sim}
+        if {$BOARD_IMPL} {lappend command --board-impl}
+        if {$BOARD_BITSTREAM} {lappend command --bitstream}
+        if {$RESUME_BOARD ne ""} {lappend command --resume-board $RESUME_BOARD}
+        run_stage BOARD $command
     }
 } problem options]
 cd $CUR_DIR

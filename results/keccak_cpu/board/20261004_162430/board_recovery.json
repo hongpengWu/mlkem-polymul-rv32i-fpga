@@ -1,0 +1,22 @@
+{
+  "source_run": "E:\\hls\\k4board\\20261004_152222\\board",
+  "source_manifest_sha256": "698eb3b27f07002a245fc48a85c66f3e83323459c667d2df927d2438d1c52bfa",
+  "source_result_sha256": "3a3c41c89881b3f3be7a4cc42d142fbf21eead8c532f4df15d4bdf995f112703",
+  "checkpoint_sha256": "d1f98bbe6f4ffb1867327b01a97b87941009e92bd583363443d763a39a6ddc1d",
+  "simulation_sha256": "1310389c96efb75c2fbda6c0ddd9a0112f67ccccf7530d944dcc9d1f89882df9",
+  "simulation_reused": true,
+  "changed_inputs": {
+    "implement_system.py": {
+      "prior_sha256": "3f8f278b75fefad16409ac82f21f62c29e6d369a58baf29a599a176ca9ce12b3",
+      "current_sha256": "abc80dc8c274f3c7847844083c8d8f43dbfdb84ca38d328ef1258412a4a6b63b"
+    },
+    "implement_system.tcl": {
+      "prior_sha256": "cad9b19cf2ef97215ee550d8c6cf7c80d632dc80cb81f68158aa2482082fe304",
+      "current_sha256": "a617b8efafceb8ca322f08a75aed04c25338d013d62fa89c03c74883f0c737ec"
+    },
+    "system.xdc": {
+      "prior_sha256": "ea4286111502186425d9ca6937c393fe1c847b8a235f514c4a06c0b40c50a35d",
+      "current_sha256": "f02ec9af0459eafdea8f39281beed25822ca0bb9ef68a4f659807f9aa8a6ec27"
+    }
+  }
+}

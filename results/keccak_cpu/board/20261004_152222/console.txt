@@ -1,0 +1,2313 @@
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Sun Oct  4 15:22:26 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source {E:\hls\k4board\20261004_152222\board\snapshot\implement_system.tcl}
+# if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2"}
+# if {[llength $argv] ni {2 3}} {error "Expected run_dir variant(cpu_only|keccak|board) ?mode?"}
+# lassign $argv run variant recovery_mode
+# if {$variant eq "board"} {
+#     if {![regexp {^board_([01])([01])([01])$} $recovery_mode -> board_sim board_impl board_bit]} {
+#         error "Board mode must be board_<simulation><implementation><bitstream>"
+#     }
+#     if {$board_bit && !$board_impl} {error "Bitstream requires implementation"}
+#     if {!$board_sim && !$board_impl} {error "No board stage selected"}
+#     set run [file normalize $run]
+#     set snapshot [file join $run snapshot]
+#     set reports [file join $run reports]
+#     file mkdir $reports
+#     set_param general.maxThreads 8
+#     set part xc7z020clg400-1
+#     set top mlkem1024_keccak_pynqz2_top
+#     create_project board [file join $run p] -part $part
+#     set_property target_language Verilog [current_project]
+#     set_property simulator_language Mixed [current_project]
+#     set_property XPM_LIBRARIES {XPM_MEMORY} [current_project]
+#     foreach pattern {rtl/*.v rtl/*.sv hls/*.v hls/*.dat} {
+#         foreach f [glob -nocomplain [file join $snapshot $pattern]] {add_files -norecurse $f}
+#     }
+#     set firmware [file join $snapshot board.mem]
+#     if {![file isfile $firmware]} {error "Missing frozen board firmware"}
+#     add_files -norecurse $firmware
+#     set_property file_type {Memory Initialization Files} [get_files $firmware]
+#     set_property top $top [get_filesets sources_1]
+#     set_property generic {FIRMWARE_INIT_FILE=board.mem} [get_filesets sources_1]
+#     update_compile_order -fileset sources_1
+# 
+#     # Provide the physical clock to timing-driven synthesis. The full board
+#     # XDC is applied afterward because its strict reset pin checks need a netlist.
+#     set synthesis_clock [file join $run synth_clock.xdc]
+#     set fp [open $synthesis_clock w]
+#     puts $fp {create_clock -name sys_clk_125mhz -period 8.000 -waveform {0.000 4.000} [get_ports sys_clk]}
+#     close $fp
+#     add_files -fileset constrs_1 -norecurse $synthesis_clock
+#     set_property USED_IN_IMPLEMENTATION false [get_files $synthesis_clock]
+# 
+#     # JSON scalars only; raw reports retain all warnings and diagnostic detail.
+#     set signoff [dict create scope {PYNQ-Z2 pre-board RTL self-test and physical implementation; no board measurement} \
+#         status pending passed false simulation_requested [expr {$board_sim ? "true" : "false"}] \
+#         simulation_passed false implementation_requested [expr {$board_impl ? "true" : "false"}] \
+#         bitstream_requested [expr {$board_bit ? "true" : "false"}] bitstream_written false \
+#         generated_clock_100mhz false setup_slack_ns null hold_slack_ns null pulse_width_slack_ns null \
+#         timing_checks_passed false drc_errors null drc_critical_warnings null drc_warnings null \
+#         drc_rule_counts \{\} async_bram_control_warnings null lut_equation_warnings null \
+#         drc_rule_limit_warnings null invalid_constraint_messages null critical_tool_warnings null \
+#         drc_functional_checks_passed false \
+#         routing_errors null routing_complete false resource_checks_passed false \
+#         lut null ff null ramb36 null ramb18 null bram36_equivalent null dsp null gate_bitstream false]
+#     proc board_save_signoff {} {
+#         set fp [open [file join $::reports board_signoff.json] w]
+#         puts $fp "\{"
+#         set entries {}
+#         dict for {key value} $::signoff {
+#             if {$key in {scope status}} {set value "\"$value\""}
+#             lappend entries "  \"$key\": $value"
+#         }
+#         puts $fp [join $entries ",\n"]
+#         puts $fp "\}"
+#         close $fp
+#     }
+#     proc board_read {path} {
+#         set fp [open $path r]
+#         set value [read $fp]
+#         close $fp
+#         return $value
+#     }
+#     proc board_constraint_issues {} {
+#         # These messages mean a requested exception was rejected, or the XDC
+#         # contained unsupported Tcl. They are not ordinary advisory warnings.
+#         set path [file join $::run vivado.log]
+#         if {![file isfile $path]} {error "Missing Vivado log for constraint validation"}
+#         return [regexp -all -line {^(WARNING|CRITICAL WARNING): \[(Constraints (18-402|18-513)|Designutils 20-1307)\]} [board_read $path]]
+#     }
+#     proc board_critical_issues {} {
+#         # DRC objects do not include critical synthesis/constraint/placement
+#         # messages. Count those separately instead of treating zero DRC errors
+#         # as an all-tool signoff.
+#         return [regexp -all -line {^CRITICAL WARNING:} [board_read [file join $::run vivado.log]]]
+#     }
+#     board_save_signoff
+#     if {$board_sim} {
+#         puts "BOARD_STAGE simulation threads=[get_param general.maxThreads]"
+#         add_files -fileset sim_1 -norecurse [file join $snapshot tb tb_mlkem1024_keccak_board.sv]
+#         foreach name {board_input.mem board_expected.mem} {
+#             set fixture [file join $snapshot fixtures $name]
+#             if {![file isfile $fixture]} {error "Missing frozen board fixture $name"}
+#             add_files -fileset sim_1 -norecurse $fixture
+#             set_property file_type {Memory Initialization Files} [get_files $fixture]
+#         }
+#         set_property top tb_mlkem1024_keccak_board [get_filesets sim_1]
+#         set_property xsim.simulate.runtime all [get_filesets sim_1]
+#         set_property xsim.elaborate.debug_level off [get_filesets sim_1]
+#         update_compile_order -fileset sim_1
+#         set sim_failed [catch {launch_simulation -simset sim_1} sim_problem]
+#         catch {close_sim}
+#         set simlog [file join $run p board.sim sim_1 behav xsim simulate.log]
+#         set log ""
+#         if {[file isfile $simlog]} {
+#             file copy -force $simlog [file join $run simulate.txt]
+#             set log [board_read $simlog]
+#         }
+#         if {$sim_failed || [string first "BOARD_KAT_PASS cases=3 starts=85 resets=1" $log] < 0 ||
+#             [regexp -nocase {fatal:|ERROR:|BOARD_KAT_FAIL} $log]} {
+#             dict set signoff status simulation_failed
+#             board_save_signoff
+#             error "Board self-test failed: $sim_problem; see simulate.txt"
+#         }
+#         dict set signoff simulation_passed true
+#         dict set signoff status simulation_passed
+#         dict set signoff passed true
+#         board_save_signoff
+#     }
+#     if {!$board_impl} {
+#         close_project
+#         puts "BOARD_FLOW_PASS simulation_only=1"
+#         exit
+#     }
+# 
+#     dict set signoff passed false
+#     dict set signoff status implementation_running
+#     board_save_signoff
+#     puts "BOARD_STAGE synthesis threads=[get_param general.maxThreads]"
+#     synth_design -top $top -part $part -generic {FIRMWARE_INIT_FILE=board.mem}
+#     # XDC supports constraint commands, not procedural if/error guards.
+#     # Keep exact endpoint guards here before applying the frozen board XDC.
+#     if {[llength [get_pins -hier -filter {NAME =~ *reset_sync_reg*/CLR}]] != 4 ||
+#         [llength [get_pins -hier -filter {REF_PIN_NAME == LOCKED && NAME =~ *clock_manager*/LOCKED}]] != 1} {
+#         error "Expected four reset synchronizer CLR pins and one MMCM LOCKED pin"
+#     }
+#     read_xdc [file join $snapshot system.xdc]
+#     set invalid_constraints [board_constraint_issues]
+#     dict set signoff invalid_constraint_messages $invalid_constraints
+#     set critical_messages [board_critical_issues]
+#     dict set signoff critical_tool_warnings $critical_messages
+#     if {$invalid_constraints != 0 || $critical_messages != 0} {
+#         dict set signoff status constraints_rejected
+#         board_save_signoff
+#         error "Board XDC contains rejected or unsupported constraints; see Vivado log"
+#     }
+#     set clk100 [get_clocks -quiet -of_objects [get_pins -quiet clock_manager/CLKOUT0]]
+#     set correct_clock [expr {[llength $clk100] == 1 && abs([get_property PERIOD $clk100] - 10.0) < 0.0001}]
+#     if {!$correct_clock} {error "Board MMCM output is not constrained to 100 MHz"}
+#     set_clock_uncertainty 0.100 $clk100
+#     dict set signoff generated_clock_100mhz true
+#     report_utilization -file [file join $reports synth_utilization.rpt]
+#     report_clocks -file [file join $reports synth_clocks.rpt]
+#     write_xdc -force [file join $reports applied_synth.xdc]
+#     write_checkpoint -force [file join $run synth.dcp]
+#     puts "BOARD_STAGE opt"
+#     opt_design
+#     puts "BOARD_STAGE place"
+#     place_design
+#     puts "BOARD_STAGE phys_opt"
+#     # Vivado 2024.2 command documentation: explicit optimization options run
+#     # only the selected passes. Exclude default LUT restructuring/combining,
+#     # which produced unresolved paired-LUT equation DRCs in the first board run.
+#     phys_opt_design -fanout_opt -placement_opt -critical_cell_opt -hold_fix
+#     puts "BOARD_STAGE route"
+#     route_design
+# 
+#     # Archive diagnostics before writing the large routed checkpoint. No
+#     # severity downgrades, global reset exceptions or unconstrained IO waivers.
+#     write_xdc -force [file join $reports applied_routed.xdc]
+#     report_utilization -file [file join $reports utilization.rpt]
+#     report_utilization -hierarchical -file [file join $reports utilization_hierarchical.rpt]
+#     report_timing_summary -delay_type min_max -report_unconstrained -file [file join $reports timing_summary.rpt]
+#     report_timing -delay_type max -max_paths 10 -file [file join $reports setup_paths.rpt]
+#     report_timing -delay_type min -max_paths 10 -file [file join $reports hold_paths.rpt]
+#     check_timing -verbose -file [file join $reports check_timing.rpt]
+#     report_drc -file [file join $reports drc.rpt]
+#     report_route_status -file [file join $reports route_status.rpt]
+#     report_clocks -file [file join $reports clocks.rpt]
+#     report_io -file [file join $reports io.rpt]
+#     report_cdc -file [file join $reports cdc.rpt]
+#     report_exceptions -file [file join $reports exceptions.rpt]
+# 
+#     # The first numeric 12-column row is Design Timing Summary, including
+#     # pulse width checks. Parse the stable Vivado 2024.2 report format and
+#     # fail closed if it changes; do not infer pulse width from setup slack.
+#     set timing_row {}
+#     foreach line [split [board_read [file join $reports timing_summary.rpt]] "\n"] {
+#         set fields [regexp -all -inline {\S+} $line]
+#         if {[llength $fields] != 12} {continue}
+#         set numeric 1
+#         foreach field $fields {if {![string is double -strict $field]} {set numeric 0; break}}
+#         if {$numeric} {set timing_row $fields; break}
+#     }
+#     if {[llength $timing_row] != 12} {error "Cannot parse board design timing summary"}
+#     lassign $timing_row wns tns setup_fail setup_total whs ths hold_fail hold_total wpws tpws pulse_fail pulse_total
+#     dict set signoff setup_slack_ns $wns
+#     dict set signoff hold_slack_ns $whs
+#     dict set signoff pulse_width_slack_ns $wpws
+#     set timing_ok [expr {$wns >= 0 && $whs >= 0 && $wpws >= 0 &&
+#         $setup_fail == 0 && $hold_fail == 0 && $pulse_fail == 0 &&
+#         $setup_total > 0 && $hold_total > 0 && $pulse_total > 0}]
+#     set checks [board_read [file join $reports check_timing.rpt]]
+#     foreach name {no_clock constant_clock pulse_width_clock unconstrained_internal_endpoints multiple_clock generated_clocks loops partial_input_delay partial_output_delay latch_loops} {
+#         if {![regexp [format {checking %s \(([0-9]+)\)} $name] $checks -> count] || $count != 0} {
+#             set timing_ok 0
+#         }
+#     }
+#     # BTN0 and human LEDs have explicit narrow asynchronous exceptions. Their
+#     # no-delay notices remain in the report; genuinely missing IO delays fail.
+#     if {![regexp {There are 0 input ports with no input delay specified\.} $checks] ||
+#         ![regexp {There are 0 ports with no output delay specified\.} $checks]} {set timing_ok 0}
+#     dict set signoff timing_checks_passed [expr {$timing_ok ? "true" : "false"}]
+#     set drc_errors 0
+#     set drc_critical 0
+#     set drc_warnings 0
+#     foreach violation [get_drc_violations -quiet] {
+#         switch -nocase -- [get_property SEVERITY $violation] {
+#             Error {incr drc_errors}
+#             {Critical Warning} {incr drc_critical}
+#             Warning {incr drc_warnings}
+#         }
+#     }
+#     dict set signoff drc_errors $drc_errors
+#     dict set signoff drc_critical_warnings $drc_critical
+#     dict set signoff drc_warnings $drc_warnings
+#     # Warning severity does not make a functional-risk DRC acceptable. Retain
+#     # each reported rule/count; CHECK-3 means counts may be truncated. PDRC
+#     # pair-equation failures are unresolved LUT correctness risks even when
+#     # write_bitstream would permit them. Do not silently downgrade/waive them.
+#     set rule_counts [dict create]
+#     foreach {match rule severity} [regexp -all -inline -line \
+#         {^([A-Z][A-Z0-9]*-[0-9]+)#[0-9]+ (Error|Critical Warning|Warning)[ \t]*$} \
+#         [board_read [file join $reports drc.rpt]]] {
+#         dict incr rule_counts $rule
+#     }
+#     set rule_json {}
+#     set async_bram_warnings 0
+#     set lut_equation_warnings 0
+#     set truncated_rules 0
+#     dict for {rule count} $rule_counts {
+#         lappend rule_json "\"$rule\": $count"
+#         if {$rule in {REQP-1839 REQP-1840}} {incr async_bram_warnings $count}
+#         if {$rule in {PDRC-132 PDRC-134 PDRC-136 PDRC-138 PDRC-140 PDRC-142 PDRC-144 PDRC-146}} {
+#             incr lut_equation_warnings $count
+#         }
+#         if {$rule eq "CHECK-3"} {incr truncated_rules $count}
+#     }
+#     dict set signoff drc_rule_counts "\{[join $rule_json {, }]\}"
+#     dict set signoff async_bram_control_warnings $async_bram_warnings
+#     dict set signoff lut_equation_warnings $lut_equation_warnings
+#     dict set signoff drc_rule_limit_warnings $truncated_rules
+#     set invalid_constraints [board_constraint_issues]
+#     dict set signoff invalid_constraint_messages $invalid_constraints
+#     set critical_messages [board_critical_issues]
+#     dict set signoff critical_tool_warnings $critical_messages
+#     set functional_drc_ok [expr {$async_bram_warnings == 0 && $lut_equation_warnings == 0 &&
+#         $truncated_rules == 0 && $invalid_constraints == 0 && $critical_messages == 0}]
+#     dict set signoff drc_functional_checks_passed [expr {$functional_drc_ok ? "true" : "false"}]
+#     set routing [board_read [file join $reports route_status.rpt]]
+#     set routing_ok 1
+#     foreach {key pattern} {
+#         route_errors {# of nets with routing errors\.+\s*:\s*([0-9]+)}
+#         routable {# of routable nets\.+\s*:\s*([0-9]+)}
+#         routed {# of fully routed nets\.+\s*:\s*([0-9]+)}
+#     } {
+#         if {![regexp $pattern $routing -> $key]} {set routing_ok 0; set $key -1}
+#     }
+#     set routing_ok [expr {$routing_ok && $route_errors == 0 && $routable > 0 && $routed == $routable}]
+#     dict set signoff routing_errors $route_errors
+#     dict set signoff routing_complete [expr {$routing_ok ? "true" : "false"}]
+#     set lut [llength [get_cells -hier -filter {IS_PRIMITIVE && REF_NAME =~ LUT*}]]
+#     set ff [llength [get_cells -hier -filter {IS_PRIMITIVE && REF_NAME =~ FD*}]]
+#     set ramb36 [llength [get_cells -hier -filter {IS_PRIMITIVE && REF_NAME =~ RAMB36*}]]
+#     set ramb18 [llength [get_cells -hier -filter {IS_PRIMITIVE && REF_NAME =~ RAMB18*}]]
+#     set dsp [llength [get_cells -hier -filter {IS_PRIMITIVE && REF_NAME =~ DSP48*}]]
+#     set bram36_equivalent [expr {$ramb36 + 0.5*$ramb18}]
+#     foreach name {lut ff ramb36 ramb18 bram36_equivalent dsp} {dict set signoff $name [set $name]}
+#     set resource_ok [expr {$lut > 0 && $lut <= 53200 && $ff > 0 && $ff <= 106400 &&
+#         $bram36_equivalent >= 32 && $bram36_equivalent <= 140 && $dsp == 4}]
+#     dict set signoff resource_checks_passed [expr {$resource_ok ? "true" : "false"}]
+#     set gate [expr {[dict get $signoff simulation_passed] && $timing_ok && $routing_ok &&
+#         $resource_ok && $drc_errors == 0 && $drc_critical == 0 && $functional_drc_ok}]
+#     dict set signoff gate_bitstream [expr {$gate ? "true" : "false"}]
+#     dict set signoff status [expr {$gate ? "routed_checks_passed" : "routed_checks_failed"}]
+#     board_save_signoff
+#     puts "BOARD_STAGE routed_checkpoint setup_ns=$wns hold_ns=$whs pulse_ns=$wpws gate=$gate"
+#     write_checkpoint -force [file join $run routed.dcp]
+#     if {!$gate} {error "Board signoff gate failed; reports and checkpoint retained"}
+#     if {$board_bit} {
+#         puts "BOARD_STAGE bitstream"
+#         write_bitstream -force [file join $run board.bit]
+#         if {![file isfile [file join $run board.bit]] || [file size [file join $run board.bit]] == 0} {
+#             error "Bitstream not produced"
+#         }
+#         dict set signoff bitstream_written true
+#     }
+#     dict set signoff passed true
+#     dict set signoff status complete
+#     board_save_signoff
+#     close_project
+#     puts "BOARD_FLOW_PASS setup_ns=$wns hold_ns=$whs pulse_ns=$wpws bitstream=$board_bit"
+#     exit
+# }
+BOARD_STAGE simulation threads=8
+Command: launch_simulation  -simset sim_1
+INFO: [Vivado 12-12493] Simulation top is 'tb_mlkem1024_keccak_board'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'E:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'E:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_mlkem1024_keccak_board' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim/board.mem'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim/board_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim/board_expected.mem'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim/board_input.mem'
+INFO: [SIM-utils-43] Exported 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim/board_expected.mem'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -L uvm -prj tb_mlkem1024_keccak_board_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_control_s_axi.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_control_s_axi
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_43_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_45_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_49_5_24_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_51_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_9_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module picorv32
+INFO: [VRFC 10-311] analyzing module picorv32_regs
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_fast_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_div
+INFO: [VRFC 10-311] analyzing module picorv32_axi
+INFO: [VRFC 10-311] analyzing module picorv32_axi_adapter
+INFO: [VRFC 10-311] analyzing module picorv32_wb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/hls/k4board/20261004_152222/board/snapshot/rtl/keccak_mmio_adapter.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module keccak_mmio_adapter
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_pynqz2_top.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_pynqz2_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_system.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_system
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/hls/k4board/20261004_152222/board/snapshot/tb/tb_mlkem1024_keccak_board.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_mlkem1024_keccak_board
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '4' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim'
+"xelab --incr --debug off --relax --mt 8 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem1024_keccak_board_behav xil_defaultlib.tb_mlkem1024_keccak_board xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: E:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug off --relax --mt 8 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem1024_keccak_board_behav xil_defaultlib.tb_mlkem1024_keccak_board xil_defaultlib.glbl -log elaborate.log 
+Using 8 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module unisims_ver.MMCME2_ADV(CLKFBOUT_MULT_F=8.0,C...
+Compiling module unisims_ver.MMCME2_BASE(CLKFBOUT_MULT_F=8.0,...
+Compiling module unisims_ver.BUFG
+Compiling module xil_defaultlib.picorv32_axi_adapter
+Compiling module xil_defaultlib.picorv32_pcpi_fast_mul
+Compiling module xil_defaultlib.picorv32_pcpi_div
+Compiling module xil_defaultlib.picorv32(ENABLE_COUNTERS=1'b1,EN...
+Compiling module xil_defaultlib.picorv32_axi(ENABLE_COUNTERS64=1...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_flow_cont...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_p_anonymo...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_p_anonymo...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_control_s...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel
+Compiling module xil_defaultlib.keccak_mmio_adapter_default
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=104...
+Compiling module xil_defaultlib.mlkem1024_keccak_system(FIRMWARE...
+Compiling module xil_defaultlib.mlkem1024_keccak_pynqz2_top
+Compiling module xil_defaultlib.tb_mlkem1024_keccak_board
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_mlkem1024_keccak_board_behav
+run_program: Time (s): cpu = 00:00:00 ; elapsed = 00:00:09 . Memory (MB): peak = 452.266 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '9' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'E:/hls/k4board/20261004_152222/board/p/board.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_mlkem1024_keccak_board_behav -key {Behavioral:sim_1:Functional:tb_mlkem1024_keccak_board} -tclbatch {tb_mlkem1024_keccak_board.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source tb_mlkem1024_keccak_board.tcl
+## run all
+BOARD_RESET_PASS busy_abort=1 releases=1 real_mmcm=1
+// Interrupt Monitor : interrupt for ap_done detected @ "4153746000"
+// Interrupt Monitor : interrupt for ap_done detected @ "4358996000"
+// Interrupt Monitor : interrupt for ap_done detected @ "4767266000"
+// Interrupt Monitor : interrupt for ap_done detected @ "5175536000"
+// Interrupt Monitor : interrupt for ap_done detected @ "5583806000"
+// Interrupt Monitor : interrupt for ap_done detected @ "7146066000"
+// Interrupt Monitor : interrupt for ap_done detected @ "7554336000"
+// Interrupt Monitor : interrupt for ap_done detected @ "7962606000"
+// Interrupt Monitor : interrupt for ap_done detected @ "8370876000"
+// Interrupt Monitor : interrupt for ap_done detected @ "9940486000"
+// Interrupt Monitor : interrupt for ap_done detected @ "10348756000"
+// Interrupt Monitor : interrupt for ap_done detected @ "10757026000"
+// Interrupt Monitor : interrupt for ap_done detected @ "11165296000"
+// Interrupt Monitor : interrupt for ap_done detected @ "12711216000"
+// Interrupt Monitor : interrupt for ap_done detected @ "13119486000"
+// Interrupt Monitor : interrupt for ap_done detected @ "13527756000"
+// Interrupt Monitor : interrupt for ap_done detected @ "13936026000"
+// Interrupt Monitor : interrupt for ap_done detected @ "15467816000"
+// Interrupt Monitor : interrupt for ap_done detected @ "15636616000"
+// Interrupt Monitor : interrupt for ap_done detected @ "15805456000"
+// Interrupt Monitor : interrupt for ap_done detected @ "15974366000"
+// Interrupt Monitor : interrupt for ap_done detected @ "16777186000"
+// Interrupt Monitor : interrupt for ap_done detected @ "16945986000"
+// Interrupt Monitor : interrupt for ap_done detected @ "17114826000"
+// Interrupt Monitor : interrupt for ap_done detected @ "17283736000"
+// Interrupt Monitor : interrupt for ap_done detected @ "35182406000"
+BOARD_KAT_ROW case=0 op=1 cycles=3120949 starts=26 input_bytes=64 output_bytes=4736
+// Interrupt Monitor : interrupt for ap_done detected @ "46476876000"
+// Interrupt Monitor : interrupt for ap_done detected @ "46658646000"
+// Interrupt Monitor : interrupt for ap_done detected @ "47375166000"
+// Interrupt Monitor : interrupt for ap_done detected @ "47783436000"
+// Interrupt Monitor : interrupt for ap_done detected @ "48191706000"
+// Interrupt Monitor : interrupt for ap_done detected @ "48599976000"
+// Interrupt Monitor : interrupt for ap_done detected @ "50156586000"
+// Interrupt Monitor : interrupt for ap_done detected @ "50564856000"
+// Interrupt Monitor : interrupt for ap_done detected @ "50973126000"
+// Interrupt Monitor : interrupt for ap_done detected @ "51381396000"
+// Interrupt Monitor : interrupt for ap_done detected @ "52933216000"
+// Interrupt Monitor : interrupt for ap_done detected @ "53341486000"
+// Interrupt Monitor : interrupt for ap_done detected @ "53749756000"
+// Interrupt Monitor : interrupt for ap_done detected @ "54158026000"
+// Interrupt Monitor : interrupt for ap_done detected @ "55723326000"
+// Interrupt Monitor : interrupt for ap_done detected @ "56131596000"
+// Interrupt Monitor : interrupt for ap_done detected @ "56539866000"
+// Interrupt Monitor : interrupt for ap_done detected @ "56948136000"
+// Interrupt Monitor : interrupt for ap_done detected @ "58475116000"
+// Interrupt Monitor : interrupt for ap_done detected @ "58643916000"
+// Interrupt Monitor : interrupt for ap_done detected @ "58812756000"
+// Interrupt Monitor : interrupt for ap_done detected @ "58981666000"
+// Interrupt Monitor : interrupt for ap_done detected @ "59784486000"
+// Interrupt Monitor : interrupt for ap_done detected @ "59953286000"
+// Interrupt Monitor : interrupt for ap_done detected @ "60122126000"
+// Interrupt Monitor : interrupt for ap_done detected @ "60291036000"
+// Interrupt Monitor : interrupt for ap_done detected @ "61082626000"
+BOARD_KAT_ROW case=1 op=2 cycles=3841529 starts=27 input_bytes=1600 output_bytes=1600
+// Interrupt Monitor : interrupt for ap_done detected @ "88597976000"
+// Interrupt Monitor : interrupt for ap_done detected @ "97712846000"
+// Interrupt Monitor : interrupt for ap_done detected @ "98429406000"
+// Interrupt Monitor : interrupt for ap_done detected @ "98837676000"
+// Interrupt Monitor : interrupt for ap_done detected @ "99245946000"
+// Interrupt Monitor : interrupt for ap_done detected @ "99654216000"
+// Interrupt Monitor : interrupt for ap_done detected @ "101209176000"
+// Interrupt Monitor : interrupt for ap_done detected @ "101617446000"
+// Interrupt Monitor : interrupt for ap_done detected @ "102025716000"
+// Interrupt Monitor : interrupt for ap_done detected @ "102433986000"
+// Interrupt Monitor : interrupt for ap_done detected @ "103991866000"
+// Interrupt Monitor : interrupt for ap_done detected @ "104400136000"
+// Interrupt Monitor : interrupt for ap_done detected @ "104808406000"
+// Interrupt Monitor : interrupt for ap_done detected @ "105216676000"
+// Interrupt Monitor : interrupt for ap_done detected @ "106795836000"
+// Interrupt Monitor : interrupt for ap_done detected @ "107204106000"
+// Interrupt Monitor : interrupt for ap_done detected @ "107612376000"
+// Interrupt Monitor : interrupt for ap_done detected @ "108020646000"
+// Interrupt Monitor : interrupt for ap_done detected @ "109370256000"
+// Interrupt Monitor : interrupt for ap_done detected @ "109531806000"
+// Interrupt Monitor : interrupt for ap_done detected @ "109693356000"
+// Interrupt Monitor : interrupt for ap_done detected @ "109854906000"
+// Interrupt Monitor : interrupt for ap_done detected @ "110214326000"
+// Interrupt Monitor : interrupt for ap_done detected @ "110383126000"
+// Interrupt Monitor : interrupt for ap_done detected @ "110551966000"
+// Interrupt Monitor : interrupt for ap_done detected @ "110720876000"
+// Interrupt Monitor : interrupt for ap_done detected @ "111523696000"
+// Interrupt Monitor : interrupt for ap_done detected @ "111692496000"
+// Interrupt Monitor : interrupt for ap_done detected @ "111861336000"
+// Interrupt Monitor : interrupt for ap_done detected @ "112030246000"
+// Interrupt Monitor : interrupt for ap_done detected @ "112821836000"
+// Interrupt Monitor : interrupt for ap_done detected @ "134333676000"
+BOARD_KAT_ROW case=2 op=3 cycles=4658623 starts=32 input_bytes=4736 output_bytes=32
+BOARD_KAT_PASS cases=3 starts=85 resets=1 input_bytes=6400 output_bytes=6368 hash=81 squeeze=4 cycles=13253171
+$finish called at time : 134607976 ns : File "E:/hls/k4board/20261004_152222/board/snapshot/tb/tb_mlkem1024_keccak_board.sv" Line 247
+run: Time (s): cpu = 00:00:00 ; elapsed = 00:17:25 . Memory (MB): peak = 459.898 ; gain = 0.000
+xsim: Time (s): cpu = 00:00:00 ; elapsed = 00:17:27 . Memory (MB): peak = 459.898 ; gain = 7.633
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_mlkem1024_keccak_board_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for all
+launch_simulation: Time (s): cpu = 00:00:01 ; elapsed = 00:17:40 . Memory (MB): peak = 459.898 ; gain = 11.273
+INFO: xsimkernel Simulation Memory Usage: 31016 KB (Peak: 31016 KB), Simulation CPU Usage: 1035265 ms
+INFO: [Simtcl 6-16] Simulation closed
+BOARD_STAGE synthesis threads=8
+Command: synth_design -top mlkem1024_keccak_pynqz2_top -part xc7z020clg400-1 -generic FIRMWARE_INIT_FILE=board.mem
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 25532
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1156.238 ; gain = 466.605
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_pynqz2_top' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_pynqz2_top.sv:5]
+	Parameter FIRMWARE_INIT_FILE bound to: board.mem - type: string 
+INFO: [Synth 8-6157] synthesizing module 'MMCME2_BASE' [E:/Xilinx/Vivado/2024.2/scripts/rt/data/unisim_comp.v:84708]
+	Parameter CLKFBOUT_MULT_F bound to: 8.000000 - type: double 
+	Parameter CLKIN1_PERIOD bound to: 8.000000 - type: double 
+	Parameter CLKOUT0_DIVIDE_F bound to: 10.000000 - type: double 
+	Parameter DIVCLK_DIVIDE bound to: 1 - type: integer 
+	Parameter STARTUP_WAIT bound to: FALSE - type: string 
+INFO: [Synth 8-6155] done synthesizing module 'MMCME2_BASE' (0#1) [E:/Xilinx/Vivado/2024.2/scripts/rt/data/unisim_comp.v:84708]
+INFO: [Synth 8-6157] synthesizing module 'BUFG' [E:/Xilinx/Vivado/2024.2/scripts/rt/data/unisim_comp.v:2676]
+INFO: [Synth 8-6155] done synthesizing module 'BUFG' (0#1) [E:/Xilinx/Vivado/2024.2/scripts/rt/data/unisim_comp.v:2676]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_system' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_system.sv:4]
+	Parameter FIRMWARE_INIT_FILE bound to: board.mem - type: string 
+	Parameter RAM_ADDR_BITS bound to: 15 - type: integer 
+	Parameter CPU_ENABLE_MUL bound to: 1 - type: integer 
+	Parameter CPU_ENABLE_FAST_MUL bound to: 1 - type: integer 
+	Parameter CPU_ENABLE_DIV bound to: 1 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'picorv32_axi' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2517]
+	Parameter ENABLE_COUNTERS bound to: 1'b1 
+	Parameter ENABLE_COUNTERS64 bound to: 1'b0 
+	Parameter ENABLE_MUL bound to: 1 - type: integer 
+	Parameter ENABLE_FAST_MUL bound to: 1 - type: integer 
+	Parameter ENABLE_DIV bound to: 1 - type: integer 
+	Parameter ENABLE_TRACE bound to: 1'b1 
+	Parameter REGS_INIT_ZERO bound to: 1'b1 
+	Parameter STACKADDR bound to: 32'b00000000000000011111111111110000 
+INFO: [Synth 8-6157] synthesizing module 'picorv32_axi_adapter' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2731]
+INFO: [Synth 8-6155] done synthesizing module 'picorv32_axi_adapter' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2731]
+INFO: [Synth 8-6157] synthesizing module 'picorv32' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:62]
+	Parameter ENABLE_COUNTERS bound to: 1'b1 
+	Parameter ENABLE_COUNTERS64 bound to: 1'b0 
+	Parameter ENABLE_REGS_16_31 bound to: 1'b1 
+	Parameter ENABLE_REGS_DUALPORT bound to: 1'b1 
+	Parameter TWO_STAGE_SHIFT bound to: 1'b1 
+	Parameter BARREL_SHIFTER bound to: 1'b0 
+	Parameter TWO_CYCLE_COMPARE bound to: 1'b0 
+	Parameter TWO_CYCLE_ALU bound to: 1'b0 
+	Parameter COMPRESSED_ISA bound to: 1'b0 
+	Parameter CATCH_MISALIGN bound to: 1'b1 
+	Parameter CATCH_ILLINSN bound to: 1'b1 
+	Parameter ENABLE_PCPI bound to: 1'b0 
+	Parameter ENABLE_MUL bound to: 1 - type: integer 
+	Parameter ENABLE_FAST_MUL bound to: 1 - type: integer 
+	Parameter ENABLE_DIV bound to: 1 - type: integer 
+	Parameter ENABLE_IRQ bound to: 1'b0 
+	Parameter ENABLE_IRQ_QREGS bound to: 1'b1 
+	Parameter ENABLE_IRQ_TIMER bound to: 1'b1 
+	Parameter ENABLE_TRACE bound to: 1'b1 
+	Parameter REGS_INIT_ZERO bound to: 1'b1 
+	Parameter MASKED_IRQ bound to: 0 - type: integer 
+	Parameter LATCHED_IRQ bound to: -1 - type: integer 
+	Parameter PROGADDR_RESET bound to: 0 - type: integer 
+	Parameter PROGADDR_IRQ bound to: 16 - type: integer 
+	Parameter STACKADDR bound to: 32'b00000000000000011111111111110000 
+INFO: [Synth 8-6157] synthesizing module 'picorv32_pcpi_fast_mul' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2318]
+INFO: [Synth 8-155] case statement is not full and has no default [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2355]
+INFO: [Synth 8-6155] done synthesizing module 'picorv32_pcpi_fast_mul' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2318]
+INFO: [Synth 8-6157] synthesizing module 'picorv32_pcpi_div' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2420]
+INFO: [Synth 8-155] case statement is not full and has no default [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2445]
+INFO: [Synth 8-6155] done synthesizing module 'picorv32_pcpi_div' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2420]
+INFO: [Synth 8-155] case statement is not full and has no default [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:331]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1268]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1314]
+INFO: [Synth 8-155] case statement is not full and has no default [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1314]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1497]
+INFO: [Synth 8-155] case statement is not full and has no default [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1497]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1583]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1583]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1583]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1583]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1583]
+WARNING: [Synth 8-151] case item 1'b0 is unreachable [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1627]
+INFO: [Synth 8-6155] done synthesizing module 'picorv32' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:62]
+WARNING: [Synth 8-7071] port 'mem_la_read' of module 'picorv32' is unconnected for instance 'picorv32_core' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2674]
+WARNING: [Synth 8-7071] port 'mem_la_write' of module 'picorv32' is unconnected for instance 'picorv32_core' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2674]
+WARNING: [Synth 8-7071] port 'mem_la_addr' of module 'picorv32' is unconnected for instance 'picorv32_core' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2674]
+WARNING: [Synth 8-7071] port 'mem_la_wdata' of module 'picorv32' is unconnected for instance 'picorv32_core' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2674]
+WARNING: [Synth 8-7071] port 'mem_la_wstrb' of module 'picorv32' is unconnected for instance 'picorv32_core' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2674]
+WARNING: [Synth 8-7023] instance 'picorv32_core' of module 'picorv32' has 27 connections declared, but only 22 given [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2674]
+INFO: [Synth 8-6155] done synthesizing module 'picorv32_axi' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2517]
+WARNING: [Synth 8-7071] port 'pcpi_valid' of module 'picorv32_axi' is unconnected for instance 'cpu' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_system.sv:43]
+WARNING: [Synth 8-7071] port 'pcpi_insn' of module 'picorv32_axi' is unconnected for instance 'cpu' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_system.sv:43]
+WARNING: [Synth 8-7071] port 'pcpi_rs1' of module 'picorv32_axi' is unconnected for instance 'cpu' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_system.sv:43]
+WARNING: [Synth 8-7071] port 'pcpi_rs2' of module 'picorv32_axi' is unconnected for instance 'cpu' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_system.sv:43]
+WARNING: [Synth 8-7023] instance 'cpu' of module 'picorv32_axi' has 32 connections declared, but only 28 given [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_system.sv:43]
+INFO: [Synth 8-6157] synthesizing module 'keccak_mmio_adapter' [E:/hls/k4board/20261004_152222/board/snapshot/rtl/keccak_mmio_adapter.sv:21]
+	Parameter BASE_ADDR bound to: 1342242816 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v:11]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v:11]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_sparsemux_43_5_64_1_1' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v:9]
+	Parameter din0_WIDTH bound to: 64 - type: integer 
+	Parameter din1_WIDTH bound to: 64 - type: integer 
+	Parameter din2_WIDTH bound to: 64 - type: integer 
+	Parameter din3_WIDTH bound to: 64 - type: integer 
+	Parameter din4_WIDTH bound to: 64 - type: integer 
+	Parameter din5_WIDTH bound to: 64 - type: integer 
+	Parameter din6_WIDTH bound to: 64 - type: integer 
+	Parameter din7_WIDTH bound to: 64 - type: integer 
+	Parameter din8_WIDTH bound to: 64 - type: integer 
+	Parameter din9_WIDTH bound to: 64 - type: integer 
+	Parameter din10_WIDTH bound to: 64 - type: integer 
+	Parameter din11_WIDTH bound to: 64 - type: integer 
+	Parameter din12_WIDTH bound to: 64 - type: integer 
+	Parameter din13_WIDTH bound to: 64 - type: integer 
+	Parameter din14_WIDTH bound to: 64 - type: integer 
+	Parameter din15_WIDTH bound to: 64 - type: integer 
+	Parameter din16_WIDTH bound to: 64 - type: integer 
+	Parameter din17_WIDTH bound to: 64 - type: integer 
+	Parameter din18_WIDTH bound to: 64 - type: integer 
+	Parameter din19_WIDTH bound to: 64 - type: integer 
+	Parameter din20_WIDTH bound to: 64 - type: integer 
+	Parameter def_WIDTH bound to: 64 - type: integer 
+	Parameter sel_WIDTH bound to: 5 - type: integer 
+	Parameter dout_WIDTH bound to: 64 - type: integer 
+	Parameter CASE0 bound to: 5'b00000 
+	Parameter CASE1 bound to: 5'b00001 
+	Parameter CASE2 bound to: 5'b00010 
+	Parameter CASE3 bound to: 5'b00011 
+	Parameter CASE4 bound to: 5'b00100 
+	Parameter CASE5 bound to: 5'b00101 
+	Parameter CASE6 bound to: 5'b00110 
+	Parameter CASE7 bound to: 5'b00111 
+	Parameter CASE8 bound to: 5'b01000 
+	Parameter CASE9 bound to: 5'b01001 
+	Parameter CASE10 bound to: 5'b01010 
+	Parameter CASE11 bound to: 5'b01011 
+	Parameter CASE12 bound to: 5'b01100 
+	Parameter CASE13 bound to: 5'b01101 
+	Parameter CASE14 bound to: 5'b01110 
+	Parameter CASE15 bound to: 5'b01111 
+	Parameter CASE16 bound to: 5'b10000 
+	Parameter CASE17 bound to: 5'b10001 
+	Parameter CASE18 bound to: 5'b10010 
+	Parameter CASE19 bound to: 5'b10011 
+	Parameter CASE20 bound to: 5'b10100 
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_sparsemux_43_5_64_1_1' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v:7]
+	Parameter DataWidth bound to: 64 - type: integer 
+	Parameter AddressWidth bound to: 5 - type: integer 
+	Parameter AddressRange bound to: 24 - type: integer 
+INFO: [Synth 8-3876] $readmem data file './mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat' is read successfully [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v:28]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v:7]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_sparsemux_51_5_64_1_1' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v:9]
+	Parameter din0_WIDTH bound to: 64 - type: integer 
+	Parameter din1_WIDTH bound to: 64 - type: integer 
+	Parameter din2_WIDTH bound to: 64 - type: integer 
+	Parameter din3_WIDTH bound to: 64 - type: integer 
+	Parameter din4_WIDTH bound to: 64 - type: integer 
+	Parameter din5_WIDTH bound to: 64 - type: integer 
+	Parameter din6_WIDTH bound to: 64 - type: integer 
+	Parameter din7_WIDTH bound to: 64 - type: integer 
+	Parameter din8_WIDTH bound to: 64 - type: integer 
+	Parameter din9_WIDTH bound to: 64 - type: integer 
+	Parameter din10_WIDTH bound to: 64 - type: integer 
+	Parameter din11_WIDTH bound to: 64 - type: integer 
+	Parameter din12_WIDTH bound to: 64 - type: integer 
+	Parameter din13_WIDTH bound to: 64 - type: integer 
+	Parameter din14_WIDTH bound to: 64 - type: integer 
+	Parameter din15_WIDTH bound to: 64 - type: integer 
+	Parameter din16_WIDTH bound to: 64 - type: integer 
+	Parameter din17_WIDTH bound to: 64 - type: integer 
+	Parameter din18_WIDTH bound to: 64 - type: integer 
+	Parameter din19_WIDTH bound to: 64 - type: integer 
+	Parameter din20_WIDTH bound to: 64 - type: integer 
+	Parameter din21_WIDTH bound to: 64 - type: integer 
+	Parameter din22_WIDTH bound to: 64 - type: integer 
+	Parameter din23_WIDTH bound to: 64 - type: integer 
+	Parameter din24_WIDTH bound to: 64 - type: integer 
+	Parameter def_WIDTH bound to: 64 - type: integer 
+	Parameter sel_WIDTH bound to: 5 - type: integer 
+	Parameter dout_WIDTH bound to: 64 - type: integer 
+	Parameter CASE0 bound to: 5'b00000 
+	Parameter CASE1 bound to: 5'b00001 
+	Parameter CASE2 bound to: 5'b00010 
+	Parameter CASE3 bound to: 5'b00011 
+	Parameter CASE4 bound to: 5'b00100 
+	Parameter CASE5 bound to: 5'b00101 
+	Parameter CASE6 bound to: 5'b00110 
+	Parameter CASE7 bound to: 5'b00111 
+	Parameter CASE8 bound to: 5'b01000 
+	Parameter CASE9 bound to: 5'b01001 
+	Parameter CASE10 bound to: 5'b01010 
+	Parameter CASE11 bound to: 5'b01011 
+	Parameter CASE12 bound to: 5'b01100 
+	Parameter CASE13 bound to: 5'b01101 
+	Parameter CASE14 bound to: 5'b01110 
+	Parameter CASE15 bound to: 5'b01111 
+	Parameter CASE16 bound to: 5'b10000 
+	Parameter CASE17 bound to: 5'b10001 
+	Parameter CASE18 bound to: 5'b10010 
+	Parameter CASE19 bound to: 5'b10011 
+	Parameter CASE20 bound to: 5'b10100 
+	Parameter CASE21 bound to: 5'b10101 
+	Parameter CASE22 bound to: 5'b10110 
+	Parameter CASE23 bound to: 5'b10111 
+	Parameter CASE24 bound to: 5'b11000 
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_sparsemux_51_5_64_1_1' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_control_s_axi' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_control_s_axi.v:9]
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 6 - type: integer 
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_control_s_axi.v:232]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_control_s_axi' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_control_s_axi.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_sparsemux_45_5_64_1_1' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v:9]
+	Parameter din0_WIDTH bound to: 64 - type: integer 
+	Parameter din1_WIDTH bound to: 64 - type: integer 
+	Parameter din2_WIDTH bound to: 64 - type: integer 
+	Parameter din3_WIDTH bound to: 64 - type: integer 
+	Parameter din4_WIDTH bound to: 64 - type: integer 
+	Parameter din5_WIDTH bound to: 64 - type: integer 
+	Parameter din6_WIDTH bound to: 64 - type: integer 
+	Parameter din7_WIDTH bound to: 64 - type: integer 
+	Parameter din8_WIDTH bound to: 64 - type: integer 
+	Parameter din9_WIDTH bound to: 64 - type: integer 
+	Parameter din10_WIDTH bound to: 64 - type: integer 
+	Parameter din11_WIDTH bound to: 64 - type: integer 
+	Parameter din12_WIDTH bound to: 64 - type: integer 
+	Parameter din13_WIDTH bound to: 64 - type: integer 
+	Parameter din14_WIDTH bound to: 64 - type: integer 
+	Parameter din15_WIDTH bound to: 64 - type: integer 
+	Parameter din16_WIDTH bound to: 64 - type: integer 
+	Parameter din17_WIDTH bound to: 64 - type: integer 
+	Parameter din18_WIDTH bound to: 64 - type: integer 
+	Parameter din19_WIDTH bound to: 64 - type: integer 
+	Parameter din20_WIDTH bound to: 64 - type: integer 
+	Parameter din21_WIDTH bound to: 64 - type: integer 
+	Parameter def_WIDTH bound to: 64 - type: integer 
+	Parameter sel_WIDTH bound to: 5 - type: integer 
+	Parameter dout_WIDTH bound to: 64 - type: integer 
+	Parameter CASE0 bound to: 5'b00000 
+	Parameter CASE1 bound to: 5'b00001 
+	Parameter CASE2 bound to: 5'b00010 
+	Parameter CASE3 bound to: 5'b00011 
+	Parameter CASE4 bound to: 5'b00100 
+	Parameter CASE5 bound to: 5'b00101 
+	Parameter CASE6 bound to: 5'b00110 
+	Parameter CASE7 bound to: 5'b00111 
+	Parameter CASE8 bound to: 5'b01000 
+	Parameter CASE9 bound to: 5'b01001 
+	Parameter CASE10 bound to: 5'b01010 
+	Parameter CASE11 bound to: 5'b01011 
+	Parameter CASE12 bound to: 5'b01100 
+	Parameter CASE13 bound to: 5'b01101 
+	Parameter CASE14 bound to: 5'b01110 
+	Parameter CASE15 bound to: 5'b01111 
+	Parameter CASE16 bound to: 5'b10000 
+	Parameter CASE17 bound to: 5'b10001 
+	Parameter CASE18 bound to: 5'b10010 
+	Parameter CASE19 bound to: 5'b10011 
+	Parameter CASE20 bound to: 5'b10100 
+	Parameter CASE21 bound to: 5'b10101 
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_sparsemux_45_5_64_1_1' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_sparsemux_9_5_64_1_1' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v:9]
+	Parameter din0_WIDTH bound to: 64 - type: integer 
+	Parameter din1_WIDTH bound to: 64 - type: integer 
+	Parameter din2_WIDTH bound to: 64 - type: integer 
+	Parameter din3_WIDTH bound to: 64 - type: integer 
+	Parameter def_WIDTH bound to: 64 - type: integer 
+	Parameter sel_WIDTH bound to: 5 - type: integer 
+	Parameter dout_WIDTH bound to: 64 - type: integer 
+	Parameter CASE0 bound to: 5'b01000 
+	Parameter CASE1 bound to: 5'b01100 
+	Parameter CASE2 bound to: 5'b10000 
+	Parameter CASE3 bound to: 5'b10100 
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_sparsemux_9_5_64_1_1' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v:9]
+INFO: [Synth 8-6157] synthesizing module 'mlkem1024_keccak_accel_sparsemux_49_5_24_1_1' [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v:9]
+	Parameter din0_WIDTH bound to: 24 - type: integer 
+	Parameter din1_WIDTH bound to: 24 - type: integer 
+	Parameter din2_WIDTH bound to: 24 - type: integer 
+	Parameter din3_WIDTH bound to: 24 - type: integer 
+	Parameter din4_WIDTH bound to: 24 - type: integer 
+	Parameter din5_WIDTH bound to: 24 - type: integer 
+	Parameter din6_WIDTH bound to: 24 - type: integer 
+	Parameter din7_WIDTH bound to: 24 - type: integer 
+	Parameter din8_WIDTH bound to: 24 - type: integer 
+	Parameter din9_WIDTH bound to: 24 - type: integer 
+	Parameter din10_WIDTH bound to: 24 - type: integer 
+	Parameter din11_WIDTH bound to: 24 - type: integer 
+	Parameter din12_WIDTH bound to: 24 - type: integer 
+	Parameter din13_WIDTH bound to: 24 - type: integer 
+	Parameter din14_WIDTH bound to: 24 - type: integer 
+	Parameter din15_WIDTH bound to: 24 - type: integer 
+	Parameter din16_WIDTH bound to: 24 - type: integer 
+	Parameter din17_WIDTH bound to: 24 - type: integer 
+	Parameter din18_WIDTH bound to: 24 - type: integer 
+	Parameter din19_WIDTH bound to: 24 - type: integer 
+	Parameter din20_WIDTH bound to: 24 - type: integer 
+	Parameter din21_WIDTH bound to: 24 - type: integer 
+	Parameter din22_WIDTH bound to: 24 - type: integer 
+	Parameter din23_WIDTH bound to: 24 - type: integer 
+	Parameter def_WIDTH bound to: 24 - type: integer 
+	Parameter sel_WIDTH bound to: 5 - type: integer 
+	Parameter dout_WIDTH bound to: 24 - type: integer 
+	Parameter CASE0 bound to: 5'b00000 
+	Parameter CASE1 bound to: 5'b00001 
+	Parameter CASE2 bound to: 5'b00010 
+	Parameter CASE3 bound to: 5'b00011 
+	Parameter CASE4 bound to: 5'b00100 
+	Parameter CASE5 bound to: 5'b00101 
+	Parameter CASE6 bound to: 5'b00110 
+	Parameter CASE7 bound to: 5'b00111 
+	Parameter CASE8 bound to: 5'b01000 
+	Parameter CASE9 bound to: 5'b01001 
+	Parameter CASE10 bound to: 5'b01010 
+	Parameter CASE11 bound to: 5'b01011 
+	Parameter CASE12 bound to: 5'b01100 
+	Parameter CASE13 bound to: 5'b01101 
+	Parameter CASE14 bound to: 5'b01110 
+	Parameter CASE15 bound to: 5'b01111 
+	Parameter CASE16 bound to: 5'b10000 
+	Parameter CASE17 bound to: 5'b10001 
+	Parameter CASE18 bound to: 5'b10010 
+	Parameter CASE19 bound to: 5'b10011 
+	Parameter CASE20 bound to: 5'b10100 
+	Parameter CASE21 bound to: 5'b10101 
+	Parameter CASE22 bound to: 5'b10110 
+	Parameter CASE23 bound to: 5'b10111 
+	Parameter ID bound to: 1 - type: integer 
+	Parameter NUM_STAGE bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel_sparsemux_49_5_24_1_1' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_accel' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'keccak_mmio_adapter' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/rtl/keccak_mmio_adapter.sv:21]
+INFO: [Synth 8-6157] synthesizing module 'xpm_memory_spram' [E:/Xilinx/Vivado/2024.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv:8732]
+	Parameter MEMORY_SIZE bound to: 1048576 - type: integer 
+	Parameter MEMORY_PRIMITIVE bound to: block - type: string 
+	Parameter ECC_MODE bound to: no_ecc - type: string 
+	Parameter MEMORY_INIT_FILE bound to: board.mem - type: string 
+	Parameter MEMORY_INIT_PARAM bound to: 0 - type: string 
+	Parameter USE_MEM_INIT bound to: 1 - type: integer 
+	Parameter WAKEUP_TIME bound to: disable_sleep - type: string 
+	Parameter AUTO_SLEEP_TIME bound to: 0 - type: integer 
+	Parameter MESSAGE_CONTROL bound to: 0 - type: integer 
+	Parameter MEMORY_OPTIMIZATION bound to: true - type: string 
+	Parameter CASCADE_HEIGHT bound to: 0 - type: integer 
+	Parameter SIM_ASSERT_CHK bound to: 0 - type: integer 
+	Parameter WRITE_DATA_WIDTH_A bound to: 32 - type: integer 
+	Parameter READ_DATA_WIDTH_A bound to: 32 - type: integer 
+	Parameter BYTE_WRITE_WIDTH_A bound to: 8 - type: integer 
+	Parameter ADDR_WIDTH_A bound to: 15 - type: integer 
+	Parameter READ_RESET_VALUE_A bound to: 0 - type: string 
+	Parameter READ_LATENCY_A bound to: 1 - type: integer 
+	Parameter WRITE_MODE_A bound to: read_first - type: string 
+	Parameter RST_MODE_A bound to: SYNC - type: string 
+INFO: [Synth 8-6157] synthesizing module 'xpm_memory_base' [E:/Xilinx/Vivado/2024.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv:54]
+INFO: [Synth 8-3876] $readmem data file 'board.mem' is read successfully [E:/Xilinx/Vivado/2024.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv:1201]
+INFO: [Synth 8-6155] done synthesizing module 'xpm_memory_base' (0#1) [E:/Xilinx/Vivado/2024.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv:54]
+INFO: [Synth 8-6155] done synthesizing module 'xpm_memory_spram' (0#1) [E:/Xilinx/Vivado/2024.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv:8732]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_system' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_system.sv:4]
+INFO: [Synth 8-6155] done synthesizing module 'mlkem1024_keccak_pynqz2_top' (0#1) [E:/hls/k4board/20261004_152222/board/snapshot/rtl/mlkem1024_keccak_pynqz2_top.sv:5]
+WARNING: [Synth 8-6014] Unused sequential element pcpi_insn_valid_q_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2365]
+WARNING: [Synth 8-6014] Unused sequential element rs1_q_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2367]
+WARNING: [Synth 8-6014] Unused sequential element rs2_q_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2368]
+WARNING: [Synth 8-6014] Unused sequential element rd_q_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2374]
+WARNING: [Synth 8-6014] Unused sequential element pcpi_wr_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:2466]
+WARNING: [Synth 8-6014] Unused sequential element mem_la_firstword_reg_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:392]
+WARNING: [Synth 8-6014] Unused sequential element last_mem_valid_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:393]
+WARNING: [Synth 8-6014] Unused sequential element next_insn_opcode_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:433]
+WARNING: [Synth 8-6014] Unused sequential element mem_la_secondword_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:571]
+WARNING: [Synth 8-6014] Unused sequential element prefetched_high_word_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:572]
+WARNING: [Synth 8-6014] Unused sequential element q_ascii_instr_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:779]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_imm_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:780]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_opcode_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:781]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_rs1_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:782]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_rs2_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:783]
+WARNING: [Synth 8-6014] Unused sequential element q_insn_rd_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:784]
+WARNING: [Synth 8-6014] Unused sequential element dbg_next_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:785]
+WARNING: [Synth 8-6014] Unused sequential element dbg_valid_insn_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:788]
+WARNING: [Synth 8-6014] Unused sequential element cached_ascii_instr_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:793]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_imm_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:794]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_opcode_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:796]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_rs1_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:799]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_rs2_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:800]
+WARNING: [Synth 8-6014] Unused sequential element cached_insn_rd_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:801]
+WARNING: [Synth 8-6014] Unused sequential element dbg_insn_addr_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:805]
+WARNING: [Synth 8-6014] Unused sequential element clear_prefetched_high_word_q_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1293]
+WARNING: [Synth 8-6014] Unused sequential element set_mem_do_rinst_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1406]
+WARNING: [Synth 8-6014] Unused sequential element set_mem_do_rdata_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1407]
+WARNING: [Synth 8-6014] Unused sequential element set_mem_do_wdata_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1408]
+WARNING: [Synth 8-6014] Unused sequential element alu_out_0_q_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1410]
+WARNING: [Synth 8-6014] Unused sequential element alu_wait_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1413]
+WARNING: [Synth 8-6014] Unused sequential element alu_wait_2_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1414]
+WARNING: [Synth 8-6014] Unused sequential element dbg_rs1val_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1417]
+WARNING: [Synth 8-6014] Unused sequential element dbg_rs2val_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1418]
+WARNING: [Synth 8-6014] Unused sequential element dbg_rs1val_valid_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1419]
+WARNING: [Synth 8-6014] Unused sequential element dbg_rs2val_valid_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1420]
+WARNING: [Synth 8-6014] Unused sequential element next_irq_pending_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1440]
+WARNING: [Synth 8-6014] Unused sequential element decoder_trigger_q_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1447]
+WARNING: [Synth 8-6014] Unused sequential element decoder_pseudo_trigger_q_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1449]
+WARNING: [Synth 8-6014] Unused sequential element irq_delay_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1472]
+WARNING: [Synth 8-6014] Unused sequential element irq_mask_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1473]
+WARNING: [Synth 8-6014] Unused sequential element irq_state_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1475]
+WARNING: [Synth 8-6014] Unused sequential element timer_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1477]
+WARNING: [Synth 8-6014] Unused sequential element current_pc_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1495]
+WARNING: [Synth 8-6014] Unused sequential element irq_pending_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/rtl/picorv32.v:1963]
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+WARNING: [Synth 8-6014] Unused sequential element int_ap_done_reg was removed.  [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel_control_s_axi.v:308]
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+WARNING: [Synth 8-7129] Port sleep in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port regcea in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port injectsbiterra in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port injectdbiterra in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clkb in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rstb in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port enb in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port regceb in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port web[0] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[14] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[13] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[12] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[11] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[10] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[9] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[8] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[7] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[6] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[5] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[4] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[3] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[2] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[1] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port addrb[0] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[31] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[30] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[29] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[28] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[27] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[26] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[25] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[24] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[23] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[22] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[21] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[20] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[19] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[18] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[17] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[16] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[15] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[14] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[13] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[12] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[11] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[10] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[9] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[8] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[7] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[6] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[5] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[4] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[3] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[2] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[1] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port dinb[0] in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port injectsbiterrb in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port injectdbiterrb in module xpm_memory_base is either unconnected or has no load
+WARNING: [Synth 8-7129] Port AWADDR[1] in module mlkem1024_keccak_accel_control_s_axi is either unconnected or has no load
+WARNING: [Synth 8-7129] Port AWADDR[0] in module mlkem1024_keccak_accel_control_s_axi is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[63] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[62] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[61] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[60] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[59] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[58] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[57] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[56] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[55] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[54] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[53] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[52] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[51] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[50] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[49] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[48] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[47] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[46] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[45] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[44] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[43] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[42] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[41] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[40] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[39] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[38] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[37] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[36] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[35] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[34] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[33] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[32] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[31] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[30] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[29] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[28] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[27] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[26] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[25] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port context_r_Dout_A[24] in module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1384.688 ; gain = 695.055
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1384.688 ; gain = 695.055
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:12 ; elapsed = 00:00:12 . Memory (MB): peak = 1384.688 ; gain = 695.055
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.546 . Memory (MB): peak = 1384.688 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [E:/hls/k4board/20261004_152222/board/synth_clock.xdc]
+Finished Parsing XDC File [E:/hls/k4board/20261004_152222/board/synth_clock.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 1457.836 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 1 instances were transformed.
+  MMCME2_BASE => MMCME2_ADV: 1 instance 
+
+INFO: [Timing 38-2] Deriving generated clocks
+Constraint Validation Runtime : Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.458 . Memory (MB): peak = 1466.012 ; gain = 8.176
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:29 ; elapsed = 00:00:28 . Memory (MB): peak = 1466.012 ; gain = 776.379
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg400-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:29 ; elapsed = 00:00:28 . Memory (MB): peak = 1466.012 ; gain = 776.379
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:29 ; elapsed = 00:00:28 . Memory (MB): peak = 1466.012 ; gain = 776.379
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'mem_state_reg' in module 'picorv32'
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-802] inferred FSM for state register 'wstate_reg' in module 'mlkem1024_keccak_accel_control_s_axi'
+INFO: [Synth 8-802] inferred FSM for state register 'rstate_reg' in module 'mlkem1024_keccak_accel_control_s_axi'
+WARNING: [Synth 8-3936] Found unconnected internal register 'data_reg_6726_reg' and it is trimmed from '64' to '32' bits. [E:/hls/k4board/20261004_152222/board/snapshot/hls/mlkem1024_keccak_accel.v:2704]
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'ap_CS_fsm_reg' through user attribute
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                 iSTATE2 |                               00 |                               00
+                 iSTATE0 |                               01 |                               10
+                  iSTATE |                               10 |                               01
+                 iSTATE1 |                               11 |                               11
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'mem_state_reg' using encoding 'sequential' in module 'picorv32'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  iSTATE |                             0001 |                               11
+*
+                  WRIDLE |                             0010 |                               00
+                  WRDATA |                             0100 |                               01
+                  WRRESP |                             1000 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'wstate_reg' using encoding 'one-hot' in module 'mlkem1024_keccak_accel_control_s_axi'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                  iSTATE |                              001 |                               10
+*
+                  RDIDLE |                              010 |                               00
+                  RDDATA |                              100 |                               01
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'rstate_reg' using encoding 'one-hot' in module 'mlkem1024_keccak_accel_control_s_axi'
+WARNING: [Synth 8-6841] Block RAM (gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg) originally specified as a Byte Wide Write Enable RAM cannot take advantage of ByteWide feature and is implemented with single write enable per RAM due to following reason.
+(address width (15) is more than optimal threshold of 12. Implementing using BWWE will require more logic and timing would be suboptimal. Please use attribute ram_decomp = power if BWWE is desired.)
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:34 ; elapsed = 00:00:34 . Memory (MB): peak = 1466.012 ; gain = 776.379
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   64 Bit       Adders := 2     
+	   2 Input   63 Bit       Adders := 1     
+	   2 Input   33 Bit       Adders := 1     
+	   2 Input   32 Bit       Adders := 12    
+	   3 Input   32 Bit       Adders := 3     
+	   2 Input   29 Bit       Adders := 1     
+	   3 Input   13 Bit       Adders := 1     
+	   2 Input   12 Bit       Adders := 2     
+	   2 Input    9 Bit       Adders := 2     
+	   3 Input    9 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 2     
+	   2 Input    7 Bit       Adders := 1     
+	   2 Input    6 Bit       Adders := 1     
+	   2 Input    5 Bit       Adders := 5     
+	   2 Input    4 Bit       Adders := 1     
++---XORs : 
+	   5 Input     64 Bit         XORs := 5     
+	   2 Input     64 Bit         XORs := 81    
+	   3 Input     64 Bit         XORs := 1     
+	   2 Input     32 Bit         XORs := 1     
+	   2 Input      1 Bit         XORs := 3     
++---Registers : 
+	               64 Bit    Registers := 229   
+	               63 Bit    Registers := 1     
+	               36 Bit    Registers := 1     
+	               33 Bit    Registers := 2     
+	               32 Bit    Registers := 62    
+	               29 Bit    Registers := 1     
+	               24 Bit    Registers := 2     
+	               22 Bit    Registers := 1     
+	               13 Bit    Registers := 1     
+	               12 Bit    Registers := 3     
+	                9 Bit    Registers := 1     
+	                8 Bit    Registers := 12    
+	                7 Bit    Registers := 1     
+	                6 Bit    Registers := 5     
+	                5 Bit    Registers := 17    
+	                4 Bit    Registers := 7     
+	                3 Bit    Registers := 7     
+	                2 Bit    Registers := 7     
+	                1 Bit    Registers := 181   
++---Multipliers : 
+	              33x33  Multipliers := 1     
++---RAMs : 
+	            1024K Bit	(32768 X 32 bit)          RAMs := 1     
+	              32K Bit	(1024 X 32 bit)          RAMs := 1     
+	              16K Bit	(512 X 32 bit)          RAMs := 1     
+	               1K Bit	(26 X 64 bit)          RAMs := 1     
+	             1024 Bit	(32 X 32 bit)          RAMs := 1     
++---Muxes : 
+	   2 Input   64 Bit        Muxes := 360   
+	  25 Input   64 Bit        Muxes := 1     
+	   2 Input   63 Bit        Muxes := 3     
+	   2 Input   36 Bit        Muxes := 1     
+	   2 Input   33 Bit        Muxes := 2     
+	   2 Input   32 Bit        Muxes := 87    
+	   6 Input   32 Bit        Muxes := 2     
+	   4 Input   32 Bit        Muxes := 6     
+	   3 Input   32 Bit        Muxes := 4     
+	   2 Input   22 Bit        Muxes := 2     
+	   4 Input   22 Bit        Muxes := 1     
+	   2 Input   21 Bit        Muxes := 1     
+	   2 Input   20 Bit        Muxes := 1     
+	   2 Input   17 Bit        Muxes := 1     
+	   2 Input   16 Bit        Muxes := 1     
+	   2 Input   15 Bit        Muxes := 2     
+	   2 Input   14 Bit        Muxes := 1     
+	   2 Input   13 Bit        Muxes := 1     
+	   2 Input   12 Bit        Muxes := 1     
+	   2 Input   10 Bit        Muxes := 2     
+	   2 Input    9 Bit        Muxes := 1     
+	   2 Input    8 Bit        Muxes := 94    
+	   3 Input    8 Bit        Muxes := 1     
+	   4 Input    8 Bit        Muxes := 2     
+	   2 Input    6 Bit        Muxes := 1     
+	   2 Input    5 Bit        Muxes := 2     
+	   4 Input    4 Bit        Muxes := 2     
+	   2 Input    4 Bit        Muxes := 8     
+	   5 Input    4 Bit        Muxes := 1     
+	   3 Input    4 Bit        Muxes := 1     
+	   3 Input    3 Bit        Muxes := 2     
+	   2 Input    3 Bit        Muxes := 5     
+	   6 Input    3 Bit        Muxes := 1     
+	   4 Input    2 Bit        Muxes := 3     
+	   2 Input    2 Bit        Muxes := 4     
+	   2 Input    1 Bit        Muxes := 205   
+	   6 Input    1 Bit        Muxes := 20    
+	   4 Input    1 Bit        Muxes := 17    
+	   7 Input    1 Bit        Muxes := 4     
+	   3 Input    1 Bit        Muxes := 4     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+DSP Report: Generating DSP rd0, operation Mode is: A2*B2.
+DSP Report: register rs1_reg is absorbed into DSP rd0.
+DSP Report: register rd0 is absorbed into DSP rd0.
+DSP Report: operator rd0 is absorbed into DSP rd0.
+DSP Report: operator rd0 is absorbed into DSP rd0.
+DSP Report: Generating DSP rd_reg, operation Mode is: (PCIN>>17)+A2*B2.
+DSP Report: register rs2_reg is absorbed into DSP rd_reg.
+DSP Report: register rs1_reg is absorbed into DSP rd_reg.
+DSP Report: register rd_reg is absorbed into DSP rd_reg.
+DSP Report: operator rd0 is absorbed into DSP rd_reg.
+DSP Report: operator rd0 is absorbed into DSP rd_reg.
+DSP Report: Generating DSP rd0, operation Mode is: A2*B2.
+DSP Report: register rd0 is absorbed into DSP rd0.
+DSP Report: register rd0 is absorbed into DSP rd0.
+DSP Report: operator rd0 is absorbed into DSP rd0.
+DSP Report: operator rd0 is absorbed into DSP rd0.
+DSP Report: Generating DSP rd_reg, operation Mode is: (PCIN>>17)+A2*B2.
+DSP Report: register rs2_reg is absorbed into DSP rd_reg.
+DSP Report: register rd_reg is absorbed into DSP rd_reg.
+DSP Report: register rd_reg is absorbed into DSP rd_reg.
+DSP Report: operator rd0 is absorbed into DSP rd_reg.
+DSP Report: operator rd0 is absorbed into DSP rd_reg.
+WARNING: [Synth 8-6841] Block RAM (gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg) originally specified as a Byte Wide Write Enable RAM cannot take advantage of ByteWide feature and is implemented with single write enable per RAM due to following reason.
+(address width (15) is more than optimal threshold of 12. Implementing using BWWE will require more logic and timing would be suboptimal. Please use attribute ram_decomp = power if BWWE is desired.)
+WARNING: [Synth 8-3332] Sequential element (FSM_onehot_wstate_reg[0]) is unused and will be removed from module mlkem1024_keccak_accel_control_s_axi.
+WARNING: [Synth 8-3332] Sequential element (FSM_onehot_rstate_reg[0]) is unused and will be removed from module mlkem1024_keccak_accel_control_s_axi.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[47]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[46]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[45]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[44]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[43]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[42]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[41]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[40]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[39]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[38]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[37]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[36]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[35]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[34]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[33]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[32]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[31]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[30]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[29]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[28]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[27]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[26]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[25]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[24]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[23]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[22]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[21]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[20]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[19]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[18]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[17]) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[47]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[46]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[45]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[44]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[43]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[42]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[41]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[40]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[39]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[38]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[37]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[36]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[35]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[34]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[33]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[32]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[31]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[30]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[29]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[28]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[27]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[26]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[25]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[24]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[23]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[22]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[21]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[20]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[19]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[18]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+WARNING: [Synth 8-3332] Sequential element (rd_reg[17]__0) is unused and will be removed from module picorv32_pcpi_fast_mul.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:02:38 ; elapsed = 00:02:42 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+ Sort Area is mlkem1024_keccak_system__GC0 rd0_0 : 0 0 : 2737 5129 : Used 1 time 0
+ Sort Area is mlkem1024_keccak_system__GC0 rd0_0 : 0 1 : 2392 5129 : Used 1 time 0
+ Sort Area is mlkem1024_keccak_system__GC0 rd0_3 : 0 0 : 2338 4501 : Used 1 time 0
+ Sort Area is mlkem1024_keccak_system__GC0 rd0_3 : 0 1 : 2163 4501 : Used 1 time 0
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Preliminary Mapping Report (see note below)
++---------------------------------------------------+--------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name                                        | RTL Object                                       | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++---------------------------------------------------+--------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|mlkem1024_keccak_pynqz2_top                        | context_mem_reg                                  | 26 x 64(READ_FIRST)    | W |   | 26 x 64(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
+|mlkem1024_keccak_pynqz2_top                        | output_mem_reg                                   | 1 K x 32(READ_FIRST)   | W |   | 1 K x 32(WRITE_FIRST)  |   | R | Port A and B     | 0      | 1      | 
+|mlkem1024_keccak_pynqz2_top                        | input_mem_reg                                    | 512 x 32(READ_FIRST)   | W |   | 512 x 32(WRITE_FIRST)  |   | R | Port A and B     | 1      | 0      | 
+|system_ii_2_5/\firmware_bram/xpm_memory_base_inst  | gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg | 32 K x 32(READ_FIRST)  | W |   | 32 K x 32(WRITE_FIRST) |   | R | Port A and B     | 0      | 32     | 
++---------------------------------------------------+--------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+Note: The table above is a preliminary report that shows the Block RAMs at the current stage of the synthesis flow. Some Block RAMs may be reimplemented as non Block RAM primitives later in the synthesis flow. Multiple instantiated Block RAMs are reported only once. 
+
+Distributed RAM: Preliminary Mapping Report (see note below)
++----------------------------------+-------------+-----------+----------------------+--------------+
+|Module Name                       | RTL Object  | Inference | Size (Depth x Width) | Primitives   | 
++----------------------------------+-------------+-----------+----------------------+--------------+
+|system_ii_2_5/\cpu/picorv32_core  | cpuregs_reg | Implied   | 32 x 32              | RAM32M x 12  | 
++----------------------------------+-------------+-----------+----------------------+--------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++-----------------------+------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name            | DSP Mapping      | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++-----------------------+------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|picorv32_pcpi_fast_mul | A2*B2            | 18     | 16     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 0    | 
+|picorv32_pcpi_fast_mul | (PCIN>>17)+A2*B2 | 16     | 16     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 1    | 
+|picorv32_pcpi_fast_mul | A2*B2            | 18     | 18     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 0    | 
+|picorv32_pcpi_fast_mul | (PCIN>>17)+A2*B2 | 18     | 16     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 1    | 
++-----------------------+------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:02:50 ; elapsed = 00:02:54 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+info: optimization accepted worst group hill climbing move (2763.0/oG.CP 480.0ps)
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:03:43 ; elapsed = 00:03:48 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+Block RAM: Final Mapping Report
++---------------------------------------------------+--------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|Module Name                                        | RTL Object                                       | PORT A (Depth x Width) | W | R | PORT B (Depth x Width) | W | R | Ports driving FF | RAMB18 | RAMB36 | 
++---------------------------------------------------+--------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+|mlkem1024_keccak_pynqz2_top                        | context_mem_reg                                  | 26 x 64(READ_FIRST)    | W |   | 26 x 64(WRITE_FIRST)   |   | R | Port A and B     | 0      | 1      | 
+|mlkem1024_keccak_pynqz2_top                        | output_mem_reg                                   | 1 K x 32(READ_FIRST)   | W |   | 1 K x 32(WRITE_FIRST)  |   | R | Port A and B     | 0      | 1      | 
+|mlkem1024_keccak_pynqz2_top                        | input_mem_reg                                    | 512 x 32(READ_FIRST)   | W |   | 512 x 32(WRITE_FIRST)  |   | R | Port A and B     | 1      | 0      | 
+|system_ii_2_5/\firmware_bram/xpm_memory_base_inst  | gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg | 32 K x 32(READ_FIRST)  | W |   | 32 K x 32(WRITE_FIRST) |   | R | Port A and B     | 0      | 32     | 
++---------------------------------------------------+--------------------------------------------------+------------------------+---+---+------------------------+---+---+------------------+--------+--------+
+
+
+Distributed RAM: Final Mapping Report
++----------------------------------+-------------+-----------+----------------------+--------------+
+|Module Name                       | RTL Object  | Inference | Size (Depth x Width) | Primitives   | 
++----------------------------------+-------------+-----------+----------------------+--------------+
+|system_ii_2_5/\cpu/picorv32_core  | cpuregs_reg | Implied   | 32 x 32              | RAM32M x 12  | 
++----------------------------------+-------------+-----------+----------------------+--------------+
+
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_2 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_3 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_4 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_5 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_0_0_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_2 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_3 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_4 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_5 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_1_0_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_2 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_3 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_4 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_5 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_2_0_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_0 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_1 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_2 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_3 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_4 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_5 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_6 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/firmware_bram/xpm_memory_base_inst/gen_wr_a.gen_byte_narrow.for_mem_cols[1].mem_reg_3_0_7 (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/adapter_i/context_mem_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/adapter_i/output_mem_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+INFO: [Synth 8-7052] The timing for the instance system_i/adapter_i/input_mem_reg (implemented as a Block RAM) might be sub-optimal as no optional output register could be merged into the ram block. Providing additional output register may help in improving timing.
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:03:57 ; elapsed = 00:04:02 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:04:10 ; elapsed = 00:04:15 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:04:10 ; elapsed = 00:04:15 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:04:15 ; elapsed = 00:04:20 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:04:15 ; elapsed = 00:04:21 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:04:17 ; elapsed = 00:04:22 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:04:17 ; elapsed = 00:04:22 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+DSP Final Report (the ' indicates corresponding REG is set)
++-----------------------+--------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name            | DSP Mapping        | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++-----------------------+--------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|picorv32_pcpi_fast_mul | A''*B'             | 17     | 18     | -      | -      | 48     | 2    | 1    | -    | -    | -     | 0    | 0    | 
+|picorv32_pcpi_fast_mul | (PCIN>>17+A'*B')'  | 30     | 18     | -      | -      | 48     | 1    | 1    | -    | -    | -     | 0    | 1    | 
+|picorv32_pcpi_fast_mul | A''*B''            | 17     | 17     | -      | -      | 48     | 2    | 2    | -    | -    | -     | 0    | 0    | 
+|picorv32_pcpi_fast_mul | (PCIN>>17+A''*B')' | 17     | 18     | -      | -      | 48     | 2    | 1    | -    | -    | -     | 0    | 1    | 
++-----------------------+--------------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+------------+------+
+|      |Cell        |Count |
++------+------------+------+
+|1     |BUFG        |     2|
+|2     |CARRY4      |   263|
+|3     |DSP48E1     |     4|
+|7     |LUT1        |   214|
+|8     |LUT2        |   512|
+|9     |LUT3        |  4405|
+|10    |LUT4        |  5400|
+|11    |LUT5        |  2994|
+|12    |LUT6        |  8038|
+|13    |MMCME2_BASE |     1|
+|14    |MUXF7       |   650|
+|15    |MUXF8       |   256|
+|16    |RAM32M      |    10|
+|17    |RAM32X1D    |     4|
+|18    |RAMB18E1    |     1|
+|19    |RAMB36E1    |    34|
+|53    |FDCE        |     4|
+|54    |FDRE        | 16916|
+|55    |FDSE        |    43|
+|56    |IBUF        |     2|
+|57    |OBUF        |     4|
++------+------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:04:17 ; elapsed = 00:04:22 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 68 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:03:56 ; elapsed = 00:04:15 . Memory (MB): peak = 2209.789 ; gain = 1438.832
+Synthesis Optimization Complete : Time (s): cpu = 00:04:17 ; elapsed = 00:04:23 . Memory (MB): peak = 2209.789 ; gain = 1520.156
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:01 . Memory (MB): peak = 2209.789 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1223 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.017 . Memory (MB): peak = 2209.789 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 15 instances were transformed.
+  MMCME2_BASE => MMCME2_ADV: 1 instance 
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 10 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 4 instances
+
+Synth Design complete | Checksum: 47ec590f
+INFO: [Common 17-83] Releasing license: Synthesis
+129 Infos, 234 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:04:30 ; elapsed = 00:04:37 . Memory (MB): peak = 2209.789 ; gain = 1749.891
+Parsing XDC File [E:/hls/k4board/20261004_152222/board/snapshot/system.xdc]
+Finished Parsing XDC File [E:/hls/k4board/20261004_152222/board/snapshot/system.xdc]
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Wrote PlaceDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 2209.789 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2209.789 ; gain = 0.000
+Writing XDEF routing.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.049 . Memory (MB): peak = 2209.789 ; gain = 0.000
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.040 . Memory (MB): peak = 2209.789 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2209.789 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2209.789 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.068 . Memory (MB): peak = 2209.789 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'E:/hls/k4board/20261004_152222/board/synth.dcp' has been generated.
+BOARD_STAGE opt
+Command: opt_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+Running DRC as a precondition to command opt_design
+
+Starting DRC Task
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Project 1-461] DRC finished with 0 Errors
+INFO: [Project 1-462] Please refer to the DRC report (report_drc) for more information.
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:00.939 . Memory (MB): peak = 2275.605 ; gain = 65.816
+
+Starting Cache Timing Information Task
+Ending Cache Timing Information Task | Checksum: 190b3622c
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 2275.605 ; gain = 0.000
+
+Starting Logic Optimization Task
+
+Phase 1 Initialization
+
+Phase 1.1 Core Generation And Design Setup
+Phase 1.1 Core Generation And Design Setup | Checksum: 190b3622c
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.030 . Memory (MB): peak = 2580.793 ; gain = 0.000
+
+Phase 1.2 Setup Constraints And Sort Netlist
+Phase 1.2 Setup Constraints And Sort Netlist | Checksum: 190b3622c
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.048 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Phase 1 Initialization | Checksum: 190b3622c
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.050 . Memory (MB): peak = 2580.793 ; gain = 0.000
+
+Phase 2 Timer Update And Timing Data Collection
+
+Phase 2.1 Timer Update
+Phase 2.1 Timer Update | Checksum: 190b3622c
+
+Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.599 . Memory (MB): peak = 2580.793 ; gain = 0.000
+
+Phase 2.2 Timing Data Collection
+Phase 2.2 Timing Data Collection | Checksum: 190b3622c
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:00.697 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Phase 2 Timer Update And Timing Data Collection | Checksum: 190b3622c
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:00.699 . Memory (MB): peak = 2580.793 ; gain = 0.000
+
+Phase 3 Retarget
+INFO: [Opt 31-1851] Number of loadless carry chains removed were: 0
+INFO: [Opt 31-1834] Total Chains To Be Transformed Were: 0 AND Number of Transformed insts Created are: 0
+INFO: [Opt 31-1566] Pulled 1 inverters resulting in an inversion of 41 pins
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+INFO: [Opt 31-49] Retargeted 0 cell(s).
+Phase 3 Retarget | Checksum: 21a51c44e
+
+Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Retarget | Checksum: 21a51c44e
+INFO: [Opt 31-389] Phase Retarget created 0 cells and removed 1 cells
+INFO: [Opt 31-1021] In phase Retarget, 1 netlist objects are constrained preventing optimization. Please run opt_design with -debug_log to get more detail. 
+
+Phase 4 Constant propagation
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Phase 4 Constant propagation | Checksum: 1c11dbe2b
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:02 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Constant propagation | Checksum: 1c11dbe2b
+INFO: [Opt 31-389] Phase Constant propagation created 0 cells and removed 0 cells
+
+Phase 5 Sweep
+INFO: [Constraints 18-11670] Building netlist checker database with flags, 0x8
+Done building netlist checker database: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.008 . Memory (MB): peak = 2580.793 ; gain = 0.000
+INFO: [Constraints 18-11670] Building netlist checker database with flags, 0x8
+Done building netlist checker database: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Phase 5 Sweep | Checksum: 22141d00c
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:02 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Sweep | Checksum: 22141d00c
+INFO: [Opt 31-389] Phase Sweep created 0 cells and removed 0 cells
+
+Phase 6 BUFG optimization
+Phase 6 BUFG optimization | Checksum: 22141d00c
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:02 . Memory (MB): peak = 2580.793 ; gain = 0.000
+BUFG optimization | Checksum: 22141d00c
+INFO: [Opt 31-662] Phase BUFG optimization created 0 cells of which 0 are BUFGs and removed 0 cells.
+
+Phase 7 Shift Register Optimization
+INFO: [Opt 31-1064] SRL Remap converted 0 SRLs to 0 registers and converted 0 registers of register chains to 0 SRLs
+Phase 7 Shift Register Optimization | Checksum: 22141d00c
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Shift Register Optimization | Checksum: 22141d00c
+INFO: [Opt 31-389] Phase Shift Register Optimization created 0 cells and removed 0 cells
+
+Phase 8 Post Processing Netlist
+Phase 8 Post Processing Netlist | Checksum: 22141d00c
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Post Processing Netlist | Checksum: 22141d00c
+INFO: [Opt 31-389] Phase Post Processing Netlist created 0 cells and removed 0 cells
+
+Phase 9 Finalization
+
+Phase 9.1 Finalizing Design Cores and Updating Shapes
+Phase 9.1 Finalizing Design Cores and Updating Shapes | Checksum: 1587cf6f3
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2580.793 ; gain = 0.000
+
+Phase 9.2 Verifying Netlist Connectivity
+
+Starting Connectivity Check Task
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.092 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Phase 9.2 Verifying Netlist Connectivity | Checksum: 1587cf6f3
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Phase 9 Finalization | Checksum: 1587cf6f3
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2580.793 ; gain = 0.000
+Opt_design Change Summary
+=========================
+
+
+-------------------------------------------------------------------------------------------------------------------------
+|  Phase                        |  #Cells created  |  #Cells Removed  |  #Constrained objects preventing optimizations  |
+-------------------------------------------------------------------------------------------------------------------------
+|  Retarget                     |               0  |               1  |                                              1  |
+|  Constant propagation         |               0  |               0  |                                              0  |
+|  Sweep                        |               0  |               0  |                                              0  |
+|  BUFG optimization            |               0  |               0  |                                              0  |
+|  Shift Register Optimization  |               0  |               0  |                                              0  |
+|  Post Processing Netlist      |               0  |               0  |                                              0  |
+-------------------------------------------------------------------------------------------------------------------------
+
+
+Ending Logic Optimization Task | Checksum: 1587cf6f3
+
+Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 2580.793 ; gain = 0.000
+
+Starting Power Optimization Task
+INFO: [Pwropt 34-132] Skipping clock gating for clocks with a period < 2.00 ns.
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+INFO: [Pwropt 34-9] Applying IDT optimizations ...
+INFO: [Pwropt 34-10] Applying ODC optimizations ...
+Running Vector-less Activity Propagation...
+
+Finished Running Vector-less Activity Propagation
+
+
+Starting PowerOpt Patch Enables Task
+INFO: [Pwropt 34-162] WRITE_MODE attribute of 0 BRAM(s) out of a total of 35 has been updated to save power. Run report_power_opt to get a complete listing of the BRAMs updated.
+INFO: [Pwropt 34-201] Structural ODC has moved 32 WE to EN ports
+Number of BRAM Ports augmented: 0 newly gated: 32 Total Ports: 70
+Ending PowerOpt Patch Enables Task | Checksum: 120a02d49
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.242 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Ending Power Optimization Task | Checksum: 120a02d49
+
+Time (s): cpu = 00:00:19 ; elapsed = 00:00:09 . Memory (MB): peak = 2739.172 ; gain = 158.379
+
+Starting Final Cleanup Task
+Ending Final Cleanup Task | Checksum: 120a02d49
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Starting Netlist Obfuscation Task
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.015 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Ending Netlist Obfuscation Task | Checksum: 13d031183
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.018 . Memory (MB): peak = 2739.172 ; gain = 0.000
+INFO: [Common 17-83] Releasing license: Implementation
+158 Infos, 234 Warnings, 0 Critical Warnings and 0 Errors encountered.
+opt_design completed successfully
+opt_design: Time (s): cpu = 00:00:31 ; elapsed = 00:00:17 . Memory (MB): peak = 2739.172 ; gain = 529.383
+BOARD_STAGE place
+Command: place_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-83] Releasing license: Implementation
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+Running DRC as a precondition to command place_design
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 4-198] DRC finished with 0 Errors
+INFO: [Vivado_Tcl 4-199] Please refer to the DRC report (report_drc) for more information.
+INFO: [Place 30-611] Multithreading enabled for place_design using a maximum of 8 CPUs
+
+Starting Placer Task
+
+Phase 1 Placer Initialization
+
+Phase 1.1 Placer Initialization Netlist Sorting
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.016 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 1.1 Placer Initialization Netlist Sorting | Checksum: e74f3d1a
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.018 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.017 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+Phase 1.2 IO Placement/ Clock Placement/ Build Placer Device | Checksum: e2c338d3
+
+Time (s): cpu = 00:00:07 ; elapsed = 00:00:02 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 1.3 Build Placer Netlist Model
+Phase 1.3 Build Placer Netlist Model | Checksum: 14c3a4f0b
+
+Time (s): cpu = 00:00:20 ; elapsed = 00:00:08 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 1.4 Constrain Clocks/Macros
+Phase 1.4 Constrain Clocks/Macros | Checksum: 14c3a4f0b
+
+Time (s): cpu = 00:00:20 ; elapsed = 00:00:08 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 1 Placer Initialization | Checksum: 14c3a4f0b
+
+Time (s): cpu = 00:00:20 ; elapsed = 00:00:08 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 2 Global Placement
+
+Phase 2.1 Floorplanning
+Phase 2.1 Floorplanning | Checksum: 136df8692
+
+Time (s): cpu = 00:00:27 ; elapsed = 00:00:10 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 2.2 Update Timing before SLR Path Opt
+Phase 2.2 Update Timing before SLR Path Opt | Checksum: 157b409a4
+
+Time (s): cpu = 00:00:31 ; elapsed = 00:00:11 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 2.3 Post-Processing in Floorplanning
+Phase 2.3 Post-Processing in Floorplanning | Checksum: 157b409a4
+
+Time (s): cpu = 00:00:32 ; elapsed = 00:00:12 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 2.4 Global Place Phase1
+Phase 2.4 Global Place Phase1 | Checksum: 1498e2a8c
+
+Time (s): cpu = 00:01:54 ; elapsed = 00:00:41 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 2.5 Global Place Phase2
+
+Phase 2.5.1 UpdateTiming Before Physical Synthesis
+Phase 2.5.1 UpdateTiming Before Physical Synthesis | Checksum: e3419542
+
+Time (s): cpu = 00:01:59 ; elapsed = 00:00:42 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 2.5.2 Physical Synthesis In Placer
+INFO: [Physopt 32-1035] Found 1 LUTNM shape to break, 322 LUT instances to create LUTNM shape
+INFO: [Physopt 32-1044] Break lutnm for timing: one critical 1, two critical 0, total 1, new lutff created 0
+INFO: [Physopt 32-1138] End 1 Pass. Optimized 147 nets or LUTs. Breaked 1 LUT, combined 146 existing LUTs and moved 0 existing LUT
+INFO: [Physopt 32-65] No nets found for high-fanout optimization.
+INFO: [Physopt 32-232] Optimized 0 net. Created 0 new instance.
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-456] No candidate cells for DSP register optimization found in the design.
+INFO: [Physopt 32-775] End 2 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-1123] No candidate cells found for Shift Register to Pipeline optimization
+INFO: [Physopt 32-775] End 2 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-1401] No candidate cells found for Shift Register optimization.
+INFO: [Physopt 32-677] No candidate cells for Shift Register optimization found in the design
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-526] No candidate cells for BRAM register optimization found in the design
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-846] No candidate cells for URAM register optimization found in the design
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-846] No candidate cells for URAM register optimization found in the design
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+INFO: [Physopt 32-949] No candidate nets found for dynamic/static region interface net replication
+INFO: [Physopt 32-775] End 1 Pass. Optimized 0 net or cell. Created 0 new cell, deleted 0 existing cell and moved 0 existing cell
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.018 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Summary of Physical Synthesis Optimizations
+============================================
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+|  Optimization                                     |  Added Cells  |  Removed Cells  |  Optimized Cells/Nets  |  Dont Touch  |  Iterations  |  Elapsed   |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+|  LUT Combining                                    |            1  |            146  |                   147  |           0  |           1  |  00:00:01  |
+|  Retime                                           |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Very High Fanout                                 |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  DSP Register                                     |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Shift Register to Pipeline                       |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Shift Register                                   |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  BRAM Register                                    |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  URAM Register                                    |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Dynamic/Static Region Interface Net Replication  |            0  |              0  |                     0  |           0  |           1  |  00:00:00  |
+|  Total                                            |            1  |            146  |                   147  |           0  |           9  |  00:00:01  |
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Phase 2.5.2 Physical Synthesis In Placer | Checksum: 18d1458a0
+
+Time (s): cpu = 00:02:06 ; elapsed = 00:00:45 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 2.5 Global Place Phase2 | Checksum: 2133fdbeb
+
+Time (s): cpu = 00:02:11 ; elapsed = 00:00:47 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 2 Global Placement | Checksum: 2133fdbeb
+
+Time (s): cpu = 00:02:11 ; elapsed = 00:00:47 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3 Detail Placement
+
+Phase 3.1 Commit Multi Column Macros
+Phase 3.1 Commit Multi Column Macros | Checksum: 166df313a
+
+Time (s): cpu = 00:02:17 ; elapsed = 00:00:49 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3.2 Commit Most Macros & LUTRAMs
+Phase 3.2 Commit Most Macros & LUTRAMs | Checksum: 220032223
+
+Time (s): cpu = 00:02:27 ; elapsed = 00:00:52 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3.3 Area Swap Optimization
+Phase 3.3 Area Swap Optimization | Checksum: 24ac5a4cb
+
+Time (s): cpu = 00:02:28 ; elapsed = 00:00:52 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3.4 Pipeline Register Optimization
+Phase 3.4 Pipeline Register Optimization | Checksum: 24666fe46
+
+Time (s): cpu = 00:02:28 ; elapsed = 00:00:52 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3.5 Fast Optimization
+Phase 3.5 Fast Optimization | Checksum: 16ea7f47b
+
+Time (s): cpu = 00:02:40 ; elapsed = 00:00:56 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3.6 Small Shape Detail Placement
+Phase 3.6 Small Shape Detail Placement | Checksum: 175e06139
+
+Time (s): cpu = 00:03:09 ; elapsed = 00:01:23 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3.7 Re-assign LUT pins
+Phase 3.7 Re-assign LUT pins | Checksum: 21b4b7b16
+
+Time (s): cpu = 00:03:11 ; elapsed = 00:01:25 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3.8 Pipeline Register Optimization
+Phase 3.8 Pipeline Register Optimization | Checksum: 22f681c8a
+
+Time (s): cpu = 00:03:11 ; elapsed = 00:01:25 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 3 Detail Placement | Checksum: 22f681c8a
+
+Time (s): cpu = 00:03:11 ; elapsed = 00:01:25 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 4 Post Placement Optimization and Clean-Up
+
+Phase 4.1 Post Commit Optimization
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+
+Phase 4.1.1 Post Placement Optimization
+Post Placement Optimization Initialization | Checksum: 1c18e8500
+
+Phase 4.1.1.1 BUFG Insertion
+
+Starting Physical Synthesis Task
+
+Phase 1 Physical Synthesis Initialization
+INFO: [Physopt 32-721] Multithreading enabled for phys_opt_design using a maximum of 8 CPUs
+INFO: [Physopt 32-619] Estimated Timing Summary | WNS=-0.649 | TNS=-4.968 |
+Phase 1 Physical Synthesis Initialization | Checksum: 116a06211
+
+Time (s): cpu = 00:00:03 ; elapsed = 00:00:00.773 . Memory (MB): peak = 2739.172 ; gain = 0.000
+INFO: [Place 46-33] Processed net system_i/adapter_i/hls_i/grp_p_anonymous_namespace_keccak_f1600_fu_2505/flow_control_loop_pipe_sequential_init_U/E[0], BUFG insertion was skipped due to placement/routing conflicts.
+INFO: [Place 46-33] Processed net system_i/adapter_i/hls_i/grp_p_anonymous_namespace_keccak_f1600_fu_2505/flow_control_loop_pipe_sequential_init_U/ap_CS_fsm_reg[13]_rep__20[0], BUFG insertion was skipped due to placement/routing conflicts.
+INFO: [Place 46-33] Processed net system_i/adapter_i/hls_i/reg_28620, BUFG insertion was skipped due to placement/routing conflicts.
+INFO: [Place 46-33] Processed net system_i/adapter_i/hls_i/state_9_0_fu_508, BUFG insertion was skipped due to placement/routing conflicts.
+INFO: [Place 46-33] Processed net system_i/adapter_i/hls_i/grp_p_anonymous_namespace_keccak_f1600_fu_2505/flow_control_loop_pipe_sequential_init_U/ap_CS_fsm_reg[9][0], BUFG insertion was skipped due to placement/routing conflicts.
+INFO: [Place 46-33] Processed net system_i/adapter_i/hls_i/control_s_axi_U/resetn_reg, BUFG insertion was skipped due to placement/routing conflicts.
+INFO: [Place 46-33] Processed net system_i/adapter_i/hls_i/state_3_3_reg_1852[63]_i_1_n_2, BUFG insertion was skipped due to placement/routing conflicts.
+INFO: [Place 46-56] BUFG insertion identified 7 candidate nets. Inserted BUFG: 0, Replicated BUFG Driver: 0, Skipped due to Placement/Routing Conflicts: 7, Skipped due to Timing Degradation: 0, Skipped due to netlist editing failed: 0.
+Ending Physical Synthesis Task | Checksum: 20968867b
+
+Time (s): cpu = 00:00:05 ; elapsed = 00:00:02 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 4.1.1.1 BUFG Insertion | Checksum: 1c18e8500
+
+Time (s): cpu = 00:03:31 ; elapsed = 00:01:31 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 4.1.1.2 Post Placement Timing Optimization
+INFO: [Place 30-746] Post Placement Timing Summary WNS=0.510. For the most accurate timing information please run report_timing.
+Phase 4.1.1.2 Post Placement Timing Optimization | Checksum: e732cad6
+
+Time (s): cpu = 00:03:34 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Time (s): cpu = 00:03:34 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 4.1 Post Commit Optimization | Checksum: e732cad6
+
+Time (s): cpu = 00:03:35 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 4.2 Post Placement Cleanup
+Phase 4.2 Post Placement Cleanup | Checksum: e732cad6
+
+Time (s): cpu = 00:03:36 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 4.3 Placer Reporting
+
+Phase 4.3.1 Print Estimated Congestion
+INFO: [Place 30-612] Post-Placement Estimated Congestion 
+ ____________________________________________________
+|           | Global Congestion | Short Congestion  |
+| Direction | Region Size       | Region Size       |
+|___________|___________________|___________________|
+|      North|              16x16|              16x16|
+|___________|___________________|___________________|
+|      South|                4x4|                4x4|
+|___________|___________________|___________________|
+|       East|              16x16|                8x8|
+|___________|___________________|___________________|
+|       West|                1x1|                1x1|
+|___________|___________________|___________________|
+
+Phase 4.3.1 Print Estimated Congestion | Checksum: e732cad6
+
+Time (s): cpu = 00:03:36 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 4.3 Placer Reporting | Checksum: e732cad6
+
+Time (s): cpu = 00:03:37 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 4.4 Final Placement Cleanup
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.180 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Time (s): cpu = 00:03:37 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Phase 4 Post Placement Optimization and Clean-Up | Checksum: 1271fbf7a
+
+Time (s): cpu = 00:03:37 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+Ending Placer Task | Checksum: 10ecf68fb
+
+Time (s): cpu = 00:03:38 ; elapsed = 00:01:34 . Memory (MB): peak = 2739.172 ; gain = 0.000
+202 Infos, 234 Warnings, 0 Critical Warnings and 0 Errors encountered.
+place_design completed successfully
+place_design: Time (s): cpu = 00:03:45 ; elapsed = 00:01:36 . Memory (MB): peak = 2739.172 ; gain = 0.000
+BOARD_STAGE phys_opt
+Command: phys_opt_design -fanout_opt -placement_opt -critical_cell_opt -hold_fix
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+
+Starting Initial Update Timing Task
+
+Time (s): cpu = 00:00:12 ; elapsed = 00:00:04 . Memory (MB): peak = 2739.172 ; gain = 0.000
+INFO: [Vivado_Tcl 4-2280] Estimated Timing Summary | WNS= 0.510 | TNS= 0.000 | WHS= -0.122 |
+INFO: [Vivado_Tcl 4-383] Design worst setup slack (WNS) is greater than or equal to 0.250 ns. All physical synthesis setup optimizations will be skipped.
+INFO: [Vivado_Tcl 4-2291] Design worst hold slack (WHS) is greater than or equal to -0.250 ns. Hold fix optimization will be skipped.
+ 
+INFO: [Vivado_Tcl 4-232] No setup violation found. The netlist was not modified.
+INFO: [Common 17-83] Releasing license: Implementation
+208 Infos, 234 Warnings, 0 Critical Warnings and 0 Errors encountered.
+phys_opt_design completed successfully
+BOARD_STAGE route
+Command: route_design
+Attempting to get a license for feature 'Implementation' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Implementation' and/or device 'xc7z020'
+
+
+Starting Routing Task
+INFO: [Route 35-254] Multithreading enabled for route_design using a maximum of 8 CPUs
+
+Phase 1 Build RT Design
+Checksum: PlaceDB: 5d646ad ConstDB: 0 ShapeSum: f2ffaf5e RouteDB: 15f972f0
+Post Restoration Checksum: NetGraph: f6929a7c | NumContArr: 65d8c537 | Constraints: c2a8fa9d | Timing: c2a8fa9d
+Phase 1 Build RT Design | Checksum: 2e1bd54ed
+
+Time (s): cpu = 00:00:40 ; elapsed = 00:00:26 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 2 Router Initialization
+
+Phase 2.1 Fix Topology Constraints
+Phase 2.1 Fix Topology Constraints | Checksum: 2e1bd54ed
+
+Time (s): cpu = 00:00:40 ; elapsed = 00:00:27 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 2.2 Pre Route Cleanup
+Phase 2.2 Pre Route Cleanup | Checksum: 2e1bd54ed
+
+Time (s): cpu = 00:00:40 ; elapsed = 00:00:27 . Memory (MB): peak = 2739.172 ; gain = 0.000
+ Number of Nodes with overlaps = 0
+
+Phase 2.3 Update Timing
+Phase 2.3 Update Timing | Checksum: 1dcba2848
+
+Time (s): cpu = 00:00:58 ; elapsed = 00:00:33 . Memory (MB): peak = 2739.172 ; gain = 0.000
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.659  | TNS=0.000  | WHS=-0.251 | THS=-948.649|
+
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 0 %
+  Global Horizontal Routing Utilization  = 0 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 28084
+    (Failed Nets is the sum of unrouted and partially routed nets)
+  Number of Unrouted Nets             = 28084
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Phase 2 Router Initialization | Checksum: 1b057b03b
+
+Time (s): cpu = 00:01:06 ; elapsed = 00:00:36 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 3 Global Routing
+Phase 3 Global Routing | Checksum: 1b057b03b
+
+Time (s): cpu = 00:01:06 ; elapsed = 00:00:36 . Memory (MB): peak = 2739.172 ; gain = 0.000
+
+Phase 4 Initial Routing
+
+Phase 4.1 Initial Net Routing Pass
+Phase 4.1 Initial Net Routing Pass | Checksum: 2fec4f281
+
+Time (s): cpu = 00:01:44 ; elapsed = 00:00:46 . Memory (MB): peak = 2889.293 ; gain = 150.121
+Phase 4 Initial Routing | Checksum: 2fec4f281
+
+Time (s): cpu = 00:01:44 ; elapsed = 00:00:46 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 5 Rip-up And Reroute
+
+Phase 5.1 Global Iteration 0
+ Number of Nodes with overlaps = 16688
+ Number of Nodes with overlaps = 4610
+ Number of Nodes with overlaps = 1537
+ Number of Nodes with overlaps = 738
+ Number of Nodes with overlaps = 379
+ Number of Nodes with overlaps = 207
+ Number of Nodes with overlaps = 108
+ Number of Nodes with overlaps = 65
+ Number of Nodes with overlaps = 54
+ Number of Nodes with overlaps = 35
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.289  | TNS=0.000  | WHS=N/A    | THS=N/A    |
+
+WARNING: [Route 35-447] Congestion is preventing the router from routing all nets. The router will prioritize the successful completion of routing all nets over timing optimizations.
+Phase 5.1 Global Iteration 0 | Checksum: 24c2e48f8
+
+Time (s): cpu = 00:11:49 ; elapsed = 00:06:34 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 5.2 Global Iteration 1
+ Number of Nodes with overlaps = 3863
+ Number of Nodes with overlaps = 1953
+ Number of Nodes with overlaps = 541
+ Number of Nodes with overlaps = 175
+ Number of Nodes with overlaps = 62
+ Number of Nodes with overlaps = 22
+ Number of Nodes with overlaps = 8
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 1
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=-0.245 | TNS=-4.118 | WHS=N/A    | THS=N/A    |
+
+Phase 5.2 Global Iteration 1 | Checksum: 2ab6091c0
+
+Time (s): cpu = 00:13:33 ; elapsed = 00:07:23 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 5.3 Global Iteration 2
+ Number of Nodes with overlaps = 181
+ Number of Nodes with overlaps = 123
+ Number of Nodes with overlaps = 60
+ Number of Nodes with overlaps = 25
+ Number of Nodes with overlaps = 24
+ Number of Nodes with overlaps = 11
+ Number of Nodes with overlaps = 10
+ Number of Nodes with overlaps = 3
+ Number of Nodes with overlaps = 2
+ Number of Nodes with overlaps = 0
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.109  | TNS=0.000  | WHS=N/A    | THS=N/A    |
+
+Phase 5.3 Global Iteration 2 | Checksum: 27c7107fe
+
+Time (s): cpu = 00:13:57 ; elapsed = 00:07:38 . Memory (MB): peak = 2889.293 ; gain = 150.121
+Phase 5 Rip-up And Reroute | Checksum: 27c7107fe
+
+Time (s): cpu = 00:13:58 ; elapsed = 00:07:38 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 6 Delay and Skew Optimization
+
+Phase 6.1 Delay CleanUp
+Phase 6.1 Delay CleanUp | Checksum: 27c7107fe
+
+Time (s): cpu = 00:13:58 ; elapsed = 00:07:38 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 6.2 Clock Skew Optimization
+Phase 6.2 Clock Skew Optimization | Checksum: 27c7107fe
+
+Time (s): cpu = 00:13:58 ; elapsed = 00:07:38 . Memory (MB): peak = 2889.293 ; gain = 150.121
+Phase 6 Delay and Skew Optimization | Checksum: 27c7107fe
+
+Time (s): cpu = 00:13:58 ; elapsed = 00:07:38 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 7 Post Hold Fix
+
+Phase 7.1 Hold Fix Iter
+INFO: [Route 35-416] Intermediate Timing Summary | WNS=0.109  | TNS=0.000  | WHS=0.027  | THS=0.000  |
+
+Phase 7.1 Hold Fix Iter | Checksum: 28ae90c21
+
+Time (s): cpu = 00:14:03 ; elapsed = 00:07:39 . Memory (MB): peak = 2889.293 ; gain = 150.121
+Phase 7 Post Hold Fix | Checksum: 28ae90c21
+
+Time (s): cpu = 00:14:04 ; elapsed = 00:07:39 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 8 Route finalize
+
+Router Utilization Summary
+  Global Vertical Routing Utilization    = 20.3524 %
+  Global Horizontal Routing Utilization  = 20.6002 %
+  Routable Net Status*
+  *Does not include unroutable nets such as driverless and loadless.
+  Run report_route_status for detailed report.
+  Number of Failed Nets               = 0
+    (Failed Nets is the sum of unrouted and partially routed nets)
+  Number of Unrouted Nets             = 0
+  Number of Partially Routed Nets     = 0
+  Number of Node Overlaps             = 0
+
+Phase 8 Route finalize | Checksum: 28ae90c21
+
+Time (s): cpu = 00:14:04 ; elapsed = 00:07:39 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 9 Verifying routed nets
+
+ Verification completed successfully
+Phase 9 Verifying routed nets | Checksum: 28ae90c21
+
+Time (s): cpu = 00:14:04 ; elapsed = 00:07:39 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 10 Depositing Routes
+Phase 10 Depositing Routes | Checksum: 2bb4c77b9
+
+Time (s): cpu = 00:14:09 ; elapsed = 00:07:42 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 11 Post Process Routing
+Phase 11 Post Process Routing | Checksum: 2bb4c77b9
+
+Time (s): cpu = 00:14:09 ; elapsed = 00:07:42 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Phase 12 Post Router Timing
+INFO: [Route 35-57] Estimated Timing Summary | WNS=0.109  | TNS=0.000  | WHS=0.027  | THS=0.000  |
+
+INFO: [Route 35-327] The final timing numbers are based on the router estimated timing analysis. For a complete and accurate timing signoff, please run report_timing_summary.
+Phase 12 Post Router Timing | Checksum: 2bb4c77b9
+
+Time (s): cpu = 00:14:09 ; elapsed = 00:07:42 . Memory (MB): peak = 2889.293 ; gain = 150.121
+Total Elapsed time in route_design: 461.969 secs
+
+Phase 13 Post-Route Event Processing
+Phase 13 Post-Route Event Processing | Checksum: 1b5931864
+
+Time (s): cpu = 00:14:10 ; elapsed = 00:07:42 . Memory (MB): peak = 2889.293 ; gain = 150.121
+INFO: [Route 35-16] Router Completed Successfully
+Ending Routing Task | Checksum: 1b5931864
+
+Time (s): cpu = 00:14:10 ; elapsed = 00:07:42 . Memory (MB): peak = 2889.293 ; gain = 150.121
+
+Routing Is Done.
+INFO: [Common 17-83] Releasing license: Implementation
+219 Infos, 235 Warnings, 0 Critical Warnings and 0 Errors encountered.
+route_design completed successfully
+route_design: Time (s): cpu = 00:14:11 ; elapsed = 00:07:43 . Memory (MB): peak = 2889.293 ; gain = 150.121
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 8 CPUs
+report_timing_summary: Time (s): cpu = 00:00:21 ; elapsed = 00:00:07 . Memory (MB): peak = 2889.293 ; gain = 0.000
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 8 CPUs
+INFO: [Timing 38-78] ReportTimingParams: -max_paths 10 -nworst 1 -delay_type max -sort_by slack.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: min.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 8 CPUs
+INFO: [Timing 38-78] ReportTimingParams: -max_paths 10 -nworst 1 -delay_type min -sort_by slack.
+Command: report_drc -file E:/hls/k4board/20261004_152222/board/reports/drc.rpt
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'E:/Xilinx/Vivado/2024.2/data/ip'.
+INFO: [DRC 23-27] Running DRC with 8 threads
+INFO: [Vivado_Tcl 2-168] The results of DRC are in file E:/hls/k4board/20261004_152222/board/reports/drc.rpt.
+report_drc completed successfully
+report_io: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.069 . Memory (MB): peak = 2889.293 ; gain = 0.000
+INFO: [Timing 38-91] UpdateTimingParams: No interconnect No Cell Dly, Speed grade: -1, Delay Type: max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 8 CPUs
+INFO: [Timing 38-314] The report_cdc command only analyzes and reports clock domain crossing paths where clocks have been defined on both source and destination sides. Ports with no input delay constraint are skipped. Please run check_timing to verify there are no missing clock definitions in your design, nor any unconstrained input port.
+INFO: [Timing 38-91] UpdateTimingParams: Speed grade: -1, Delay Type: min_max.
+INFO: [Timing 38-191] Multithreading enabled for timing update using a maximum of 8 CPUs
+INFO: [Timing 38-35] Done setting XDC timing constraints.
+BOARD_STAGE routed_checkpoint setup_ns=0.109 hold_ns=0.027 pulse_ns=2.000 gate=0
+INFO: [Timing 38-480] Writing timing data to binary archive.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.134 . Memory (MB): peak = 2889.293 ; gain = 0.000
+Wrote PlaceDB: Time (s): cpu = 00:00:08 ; elapsed = 00:00:03 . Memory (MB): peak = 2889.293 ; gain = 0.000
+Wrote PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 2889.293 ; gain = 0.000
+Writing XDEF routing.
+Writing XDEF routing logical nets.
+Writing XDEF routing special nets.
+Wrote RouteStorage: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.499 . Memory (MB): peak = 2889.293 ; gain = 0.000
+Wrote Netlist Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.077 . Memory (MB): peak = 2889.293 ; gain = 0.000
+Wrote Device Cache: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.012 . Memory (MB): peak = 2889.293 ; gain = 0.000
+Write Physdb Complete: Time (s): cpu = 00:00:09 ; elapsed = 00:00:04 . Memory (MB): peak = 2889.293 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'E:/hls/k4board/20261004_152222/board/routed.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:10 ; elapsed = 00:00:05 . Memory (MB): peak = 2889.293 ; gain = 0.000
+Board signoff gate failed; reports and checkpoint retained
+    while executing
+"error "Board signoff gate failed; reports and checkpoint retained""
+    invoked from within
+"if {!$gate} {error "Board signoff gate failed; reports and checkpoint retained"}"
+    invoked from within
+"if {$variant eq "board"} {
+    if {![regexp {^board_([01])([01])([01])$} $recovery_mode -> board_sim board_impl board_bit]} {
+        error "Board mod..."
+    (file "E:\hls\k4board\20261004_152222\board\snapshot\implement_system.tcl" line 7)
+INFO: [Common 17-206] Exiting Vivado at Sun Oct  4 15:55:13 2026...

@@ -5,6 +5,8 @@ import hashlib
 import json
 import re
 import subprocess
+import sys
+from copy import deepcopy
 
 ROOT = Path(__file__).resolve().parents[2]
 TOOLS = Path("E:/Xilinx/Vivado/2024.2/gnu/riscv/nt/riscv64-unknown-elf/bin")
@@ -19,9 +21,50 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def board_vectors(out):
+    """Use the same verified public cases as the host-driven KAT runner."""
+    sys.path.insert(0, str(ROOT / "scripts/kat"))
+    from package_mlkem import ACVP_COMMIT, load_cases, pack_fixture, verify_roundtrip
+    all_cases, sources = load_cases(ROOT, 1024)
+    indices = [0, 1, 115]
+    cases = deepcopy([all_cases[i] for i in indices])
+    for index, case in enumerate(cases):
+        case["case_index"] = index
+    require([case["op"] for case in cases] == [1, 2, 3], "Board subset operation mismatch")
+    header = ["/* Generated from pinned public ACVP; never edit manually. */",
+              "#ifndef PICO_BOARD_VECTORS_H", "#define PICO_BOARD_VECTORS_H",
+              "#include <stdint.h>", "#define BOARD_CASES 3u"]
+    paths = []
+    for expected, direction in ((False, "input"), (True, "expected")):
+        words = pack_fixture(cases, 1024, expected)
+        fixture = out / f"board_{direction}.mem"
+        fixture.write_text("".join(f"{word:08x}\n" for word in words), encoding="ascii", newline="\n")
+        verify_roundtrip(fixture, cases, 1024, expected)
+        paths.append(fixture)
+        header += [f"#define BOARD_{direction.upper()}_WORDS {len(words)}u",
+                   f"static const uint32_t board_{direction}[{len(words)}] = {{"]
+        header += ["    " + ", ".join(f"UINT32_C(0x{word:08x})" for word in words[i:i+8]) + ","
+                   for i in range(0, len(words), 8)]
+        header.append("};")
+    header.append("#endif")
+    generated = out / "board_vectors.h"
+    generated.write_text("\n".join(header)+"\n", encoding="ascii", newline="\n")
+    paths.append(generated)
+    metadata = dict(original_indices=indices, local_indices=[0, 1, 2], cases=cases,
+        acvp_commit=ACVP_COMMIT, sources=sources,
+        manifest_sha256=sha(ROOT / "vectors/official_kat/acvp/SHA256SUMS"),
+        fixtures={p.name: sha(p) for p in paths}, roundtrip_verified=True)
+    paths += [ROOT / item["path"] for item in sources]
+    paths += [ROOT / "vectors/official_kat/acvp/SHA256SUMS",
+              ROOT / "scripts/kat/package_mlkem.py", ROOT / "scripts/kat/validate_acvp_json.py"]
+    return paths, metadata
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--tool-dir", type=Path, default=TOOLS)
+    parser.add_argument("--board", action="store_true",
+                        help="Build self-checking three-case board firmware in an independent directory")
     args = parser.parse_args()
     src = ROOT / "firmware/mlkem1024_keccak"
     common = ROOT / "firmware/mlkem_baseline"
@@ -29,8 +72,9 @@ def main():
     vendor = ROOT / "third_party/mlkem-native"
     lib = vendor / "mlkem"
     fixtures = ROOT / "tb/software/mlkem1024_suite"
-    out = ROOT / "build/keccak_cpu/kat"
-    evidence = ROOT / "results/keccak_cpu/kat"
+    mode = "board" if args.board else "kat"
+    out = ROOT / "build/keccak_cpu" / mode
+    evidence = ROOT / "results/keccak_cpu" / mode
     manifest = json.loads((vendor / "SOURCE_MANIFEST.json").read_text(encoding="utf-8"))
     for item in manifest["files"]:
         require(sha(vendor / item["path"]) == item["sha256"],
@@ -49,7 +93,10 @@ def main():
         require(result.returncode == 0, f"Command failed: {command}\n{result.stdout}{result.stderr}")
         return result.stdout
 
-    sources = [common / "startup.S", suite / "kat_suite.c", common / "runtime.c",
+    out.mkdir(parents=True, exist_ok=True)
+    evidence.mkdir(parents=True, exist_ok=True)
+    board_files, board_record = board_vectors(out) if args.board else ([], None)
+    sources = [common / "startup.S", src / "board_kat.c" if args.board else suite / "kat_suite.c", common / "runtime.c",
                src / "keccak_mmio.c", src / "fips202_hw.c"]
     sources += sorted((lib / "src").glob("*.c"))
     require(not any("fips202" in path.parts for path in sources), "Software FIPS 202 included")
@@ -59,14 +106,15 @@ def main():
     source_files.update(vendor / item["path"] for item in manifest["files"])
     source_files.update(fixtures / name for name in
         ["cases.json", "mlkem1024_input.mem", "mlkem1024_expected.mem"])
+    source_files.update(board_files)
     before = {p.relative_to(ROOT).as_posix(): sha(p) for p in sorted(source_files)}
-    out.mkdir(parents=True, exist_ok=True)
-    evidence.mkdir(parents=True, exist_ok=True)
     flags = ["-march=rv32im", "-mabi=ilp32", "-O3", "-std=c11", "-ffreestanding",
         "-fno-builtin", "-fno-pic", "-msmall-data-limit=0", "-ffunction-sections",
         "-fdata-sections", "-fno-tree-loop-distribute-patterns", "-fstack-usage",
         "-Wall", "-Wextra", "-Werror", "-I", str(src), "-I", str(common),
         "-I", str(lib), "-DMLK_CONFIG_FILE=<kat_config.h>"]
+    if args.board:
+        flags += ["-I", str(out)]
     commands, logs, objects = [], [], []
     for path in sources:
         obj = out / (path.stem + ".o")
@@ -74,9 +122,9 @@ def main():
         logs.append(run(command))
         commands.append(list(map(str, command)))
         objects.append(obj)
-    elf, binary, image = out / "kat.elf", out / "kat.bin", out / "kat.mem"
+    elf, binary, image = out / f"{mode}.elf", out / f"{mode}.bin", out / f"{mode}.mem"
     command = [tool("gcc"), *flags, "-nostdlib", "-nostartfiles",
-        "-Wl,--build-id=none", "-Wl,--gc-sections", f"-Wl,-Map,{out / 'kat.map'}",
+        "-Wl,--build-id=none", "-Wl,--gc-sections", f"-Wl,-Map,{out / (mode + '.map')}",
         "-T", src / "link.ld", *objects, "-lgcc", "-o", elf]
     logs.append(run(command))
     commands.append(list(map(str, command)))
@@ -122,7 +170,8 @@ def main():
         for path in sorted(out.glob("*.su")))
     (out / "stack_frames.txt").write_text(stack_frames, encoding="ascii")
     record = dict(status="BUILD_ONLY", parameter_set=1024, isa="rv32im",
-        scope="Official K4 KAT firmware using hardware-only FIPS 202; RTL results pending",
+        scope=("Standalone three-case official K4 board firmware; CPU compares expected bytes and return codes; RTL results pending"
+               if args.board else "Official K4 KAT firmware using hardware-only FIPS 202; RTL results pending"),
         compiler=run([tool("gcc"), "--version"]).splitlines()[0],
         compiler_sha256=sha(tool("gcc")), libgcc_path=str(libgcc), libgcc_sha256=sha(libgcc),
         ram_bytes=131072, stack_reserved=32768, binary_bytes=len(data),
@@ -138,6 +187,13 @@ def main():
             output_bytes=4096, reentrant=False, sha128x4_independent_contexts=True,
             first_squeeze="combined HASH", subsequent_squeeze="SQUEEZE",
             cpu_zeroization=True, accelerator_bram_erasure=False))
+    if args.board:
+        record.update(board_subset=board_record, case_count=3,
+                      generated_sha256={name: sha(out / name) for name in
+                          ("board.mem", "board_input.mem", "board_expected.mem", "board_vectors.h")},
+                      self_checking=True, host_mailbox=False,
+                      protocol="Existing KAT debug events and streams, without REQUEST/mailbox",
+                      completion="PASS or FAIL then infinite nop; reset clears BSS via startup")
     (evidence / "build.json").write_text(json.dumps(record, indent=2)+"\n",
                                          encoding="utf-8", newline="\n")
     print(f"KECCAK_KAT_BUILD_PASS image_bytes={len(data)} static_end={symbols['__image_end']} "
