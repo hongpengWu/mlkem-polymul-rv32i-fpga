@@ -13,10 +13,11 @@
 - K4 历史RTL版本已通过**145/145官方记录**，同CPU/RAM测试集API总周期比**3.803×**。
   KeyGen/Encaps/Decaps分别4.203×/3.636×/3.602×；[原始日志与汇总](results/keccak_cpu/kat/summary.md)。
   该版本完整系统OOC为LUT19,084、FF16,970、BRAM34.5、DSP4；内部setup −1.367 ns。
-- 当前`timing_decode_v3`优化RAM写控制与MMIO译码；10次硬件调用/216字、译码等价检查及官方子集3/3通过，同例周期未变。
+- 当前`timing_decode_v3`优化RAM写控制与MMIO译码；10次硬件调用/216字、译码等价检查及最终官方145/145通过，API总周期比3.8028×。
   100 MHz布线后内部setup/hold为+0.269/+0.029 ns；LUT19,003、FF17,005、BRAM34.5、DSP4。
-  OOC resetn边界hold仍为−1.194 ns，整体验收未通过；板级时序和实板后置。
-  开发只跑官方索引0、1、115子集；145条保留最终验收，历史全量结果不冒充新版本覆盖。
+  原OOC resetn边界hold −1.194 ns失败证据保留；独立板级时序已通过，实板待测。
+  开发默认只跑索引0、1、115；当前145条已独立验收，3,188次真实HLS调用匹配。
+  [当前全量证据](results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)。
   统一入口为[`run_flow.tcl`](scripts/mlkem1024_keccak/run_flow.tcl)顶部0/1开关，默认`FULL_KAT=0`。
 - ML-KEM-768/1024 RV32IM-fast CPU-only RTL 官方回归各通过 145/145，使用 128 KiB RAM / 32 KiB 栈。
 - K4 PYNQ-Z2 板级上板前签核已通过：真实 MMCM/复位三例子集 3/3、路由和 100 MHz 时序通过，
@@ -110,7 +111,7 @@ powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_hls_short.p
 ## 研究边界
 
 K4标准软件与Keccak硬件的完整RTL闭环及历史全量周期对照已完成，当前板级上板前签核也已完成。
-新版本按子集验证，稳定后执行全量验收并集中整理脚本与目录；实板烧录、现场周期和演示仍待完成。完整计划见
+当前版本最终145条已通过；bitstream内置3例独立自检。实板烧录、PS/PL控制、全量数据装载和周期/结果读回及Jupyter演示待完成。完整计划见
 [`docs/COMPETITION_ROADMAP.md`](docs/COMPETITION_ROADMAP.md)。
 
 更多入口：

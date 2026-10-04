@@ -40,9 +40,12 @@ K=3 后置扩展**；实板最后进行。旧“K3/K4 BaseMul 移植后返回 K2
 - 每个RTL版本使用独立CANDIDATE结果目录；续跑先核对版本，旧结果只供对照。
 - 主线稳定后统一整理目录、合并冗余入口；保留原始证据和所需冻结输入。
 
-当前`timing_decode_v3`已通过组件10次调用/216字、地址译码等价检查，以及官方子集3/3。
-子集85次硬件调用、同例周期与历史版本一致；证据在
-`results/keccak_cpu/candidates/timing_decode_v3/kat/`，不计作当前版本145/145。
+当前`timing_decode_v3`最终官方KAT **145/145** 已通过；19批最终PASS、唯一覆盖、
+官方输出、冻结输入哈希和3,188次真实HLS调用已独立复核。API周期CPU/加速为
+1,699,294,360 / 446,853,509，3.8028×；证据在
+`results/keccak_cpu/candidates/timing_decode_v3/kat/`。断点complete，当前版本无需重跑。
+调度日志`build/keccak_cpu/candidates/timing_decode_v3/final145_scheduler.log`；
+冻结输入保留在`E:/hls/k4kat_timing_decode_v3/`，19批与板级共用的18项核心/HLS输入哈希一致。
 `20261004_121837`完成布线后写DCP异常退出；保留失败证据，从综合检查点恢复实现。
 恢复批次`20261004_124354`已保存最终DCP/报告：100 MHz内部setup/hold +0.269/+0.029 ns，
 LUT19,003、FF17,005、BRAM36等效34.5、DSP4。全路径hold −1.194 ns仍在OOC resetn边界，
@@ -77,10 +80,12 @@ LUT19,003、FF17,005、BRAM36等效34.5、DSP4。全路径hold −1.194 ns仍在
    两组资源足够；CPU-only内部setup/hold +1.452/+0.051 ns，加速组 −1.367/+0.050 ns。
    [x] 当前v3已解耦程序RAM写控制和adapter ready反馈、简化MMIO译码，组件/子集/同例周期通过；原145条证据不改写。
    [x] 当前v3内部100 MHz时序已通过；完整布线与pulse width检查通过。
-   [x] 完成板级边界/时钟复位集成、3条官方子集、实现签核和bitstream；最终版本稳定后执行145条验收。
+   [x] 完成板级边界/时钟复位集成、3条官方子集、实现签核和bitstream；当前核心最终145条已验收。
    板级setup/hold/pulse +0.109/+0.027/+2.000 ns，bitstream尚未烧录实板。
 6. [ ] K=4 主线完成后再验证 K=3 扩展和其他 CPU 消融；K=2 历史对照继续冻结。
-7. [ ] 完成适用异常/故障检查、最终145条验收，最后进行 PYNQ-Z2 实板和演示。
+7. [x] 当前核心145条验收完成；组件错误返回和板级运行中复位恢复检查通过。
+8. [ ] PYNQ-Z2首次烧录与自检；PS/PL控制、全量数据装载、周期/结果读回和Jupyter待实现。
+   当前bitstream是3例独立PL自检，无PS/AXI主机接口，不能代替板上145条验证。
 
 ## 当前 K=4 HLS 进展及证据边界
 

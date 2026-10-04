@@ -34,6 +34,12 @@ D:/Tech/Library/bin/tclsh.exe scripts/mlkem1024_keccak/run_flow.tcl
 不能当作全量验收。HLS生成的新核必须完成验证与选择，入口不会自动替换`HLS_RUN`所指向的已验证核。
 默认复用已构建KAT固件；软件源码改变时需独立保留原固件/记录并重新构建，不能混入原结果。
 
+当前版本最终145条已完成，只读复核：
+
+```powershell
+python scripts/mlkem1024_keccak/collect_kat.py --results-dir results/keccak_cpu/candidates/timing_decode_v3/kat
+```
+
 历史完整145条证据只读核验：
 
 ```powershell

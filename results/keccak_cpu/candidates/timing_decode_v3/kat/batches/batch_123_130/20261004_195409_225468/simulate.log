@@ -1,0 +1,85 @@
+Time resolution is 1 ps
+MLKEM_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM_START cases=8 ram_bytes=131072 stack_bytes=32768 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+// Interrupt Monitor : interrupt for ap_done detected @ "6211705000"
+// Interrupt Monitor : interrupt for ap_done detected @ "15326575000"
+// Interrupt Monitor : interrupt for ap_done detected @ "16043135000"
+// Interrupt Monitor : interrupt for ap_done detected @ "16451405000"
+// Interrupt Monitor : interrupt for ap_done detected @ "16859675000"
+// Interrupt Monitor : interrupt for ap_done detected @ "17267945000"
+// Interrupt Monitor : interrupt for ap_done detected @ "18832885000"
+// Interrupt Monitor : interrupt for ap_done detected @ "19241155000"
+// Interrupt Monitor : interrupt for ap_done detected @ "19649425000"
+// Interrupt Monitor : interrupt for ap_done detected @ "20057695000"
+// Interrupt Monitor : interrupt for ap_done detected @ "21628025000"
+// Interrupt Monitor : interrupt for ap_done detected @ "22036295000"
+// Interrupt Monitor : interrupt for ap_done detected @ "22444565000"
+// Interrupt Monitor : interrupt for ap_done detected @ "22852835000"
+// Interrupt Monitor : interrupt for ap_done detected @ "24431925000"
+// Interrupt Monitor : interrupt for ap_done detected @ "24840195000"
+// Interrupt Monitor : interrupt for ap_done detected @ "25248465000"
+// Interrupt Monitor : interrupt for ap_done detected @ "25656735000"
+// Interrupt Monitor : interrupt for ap_done detected @ "27175215000"
+// Interrupt Monitor : interrupt for ap_done detected @ "27344015000"
+// Interrupt Monitor : interrupt for ap_done detected @ "27512855000"
+// Interrupt Monitor : interrupt for ap_done detected @ "27681765000"
+// Interrupt Monitor : interrupt for ap_done detected @ "28484585000"
+// Interrupt Monitor : interrupt for ap_done detected @ "28653385000"
+// Interrupt Monitor : interrupt for ap_done detected @ "28822225000"
+// Interrupt Monitor : interrupt for ap_done detected @ "28991135000"
+// Interrupt Monitor : interrupt for ap_done detected @ "29782725000"
+// Interrupt Monitor : interrupt for ap_done detected @ "51294565000"
+MLKEM_ROW,0,3,42,9,134,3,0,4593339,4,4736,32,78340,77316,0,0,1024,0,0,0,0,0x0001a0b0
+KECCAK_ROW,0,28,28,28,0,17856,2489,3792
+// Interrupt Monitor : interrupt for ap_done detected @ "56848825000"
+// Interrupt Monitor : interrupt for ap_done detected @ "65963695000"
+// Interrupt Monitor : interrupt for ap_done detected @ "66680255000"
+// Interrupt Monitor : interrupt for ap_done detected @ "67088525000"
+// Interrupt Monitor : interrupt for ap_done detected @ "67496795000"
+// Interrupt Monitor : interrupt for ap_done detected @ "67905065000"
+// Interrupt Monitor : interrupt for ap_done detected @ "69466595000"
+// Interrupt Monitor : interrupt for ap_done detected @ "69874865000"
+// Interrupt Monitor : interrupt for ap_done detected @ "70283135000"
+// Interrupt Monitor : interrupt for ap_done detected @ "70691405000"
+// Interrupt Monitor : interrupt for ap_done detected @ "72245975000"
+// Interrupt Monitor : interrupt for ap_done detected @ "72654245000"
+// Interrupt Monitor : interrupt for ap_done detected @ "73062515000"
+// Interrupt Monitor : interrupt for ap_done detected @ "73470785000"
+// Interrupt Monitor : interrupt for ap_done detected @ "75041195000"
+// Interrupt Monitor : interrupt for ap_done detected @ "75449465000"
+// Interrupt Monitor : interrupt for ap_done detected @ "75857735000"
+// Interrupt Monitor : interrupt for ap_done detected @ "76266005000"
+// Interrupt Monitor : interrupt for ap_done detected @ "77788105000"
+// Interrupt Monitor : interrupt for ap_done detected @ "77956905000"
+// Interrupt Monitor : interrupt for ap_done detected @ "78125745000"
+// Interrupt Monitor : interrupt for ap_done detected @ "78294655000"
+// Interrupt Monitor : interrupt for ap_done detected @ "79097475000"
+// Interrupt Monitor : interrupt for ap_done detected @ "79266275000"
+// Interrupt Monitor : interrupt for ap_done detected @ "79435115000"
+// Interrupt Monitor : interrupt for ap_done detected @ "79604025000"
+// Interrupt Monitor : interrupt for ap_done detected @ "80395615000"
+// Interrupt Monitor : interrupt for ap_done detected @ "101907455000"
+MLKEM_ROW,1,3,42,9,135,3,0,4590916,4,4736,32,78340,77316,0,0,1024,0,0,0,0,0x0001a0b0
+KECCAK_ROW,1,28,28,28,0,17856,2489,3792
+// Interrupt Monitor : interrupt for ap_done detected @ "106280515000"
+MLKEM_ROW,2,3,42,14,176,6,-5,75223,4,3168,0,0,0,0,0,0,0,0,0,0,0x0001fdf0
+KECCAK_ROW,2,1,1,1,0,1260,444,60
+// Interrupt Monitor : interrupt for ap_done detected @ "110541215000"
+MLKEM_ROW,3,3,42,14,177,6,0,75212,4,3168,0,0,0,0,0,0,0,0,0,0,0x0001fdf0
+KECCAK_ROW,3,1,1,1,0,1260,444,60
+// Interrupt Monitor : interrupt for ap_done detected @ "114801805000"
+MLKEM_ROW,4,3,42,14,178,6,0,75212,4,3168,0,0,0,0,0,0,0,0,0,0,0x0001fdf0
+KECCAK_ROW,4,1,1,1,0,1260,444,60
+// Interrupt Monitor : interrupt for ap_done detected @ "119062395000"
+MLKEM_ROW,5,3,42,14,179,6,0,75212,4,3168,0,0,0,0,0,0,0,0,0,0,0x0001fdf0
+KECCAK_ROW,5,1,1,1,0,1260,444,60
+// Interrupt Monitor : interrupt for ap_done detected @ "123322985000"
+MLKEM_ROW,6,3,42,14,180,6,-5,75223,4,3168,0,0,0,0,0,0,0,0,0,0,0x0001fdf0
+KECCAK_ROW,6,1,1,1,0,1260,444,60
+// Interrupt Monitor : interrupt for ap_done detected @ "127583685000"
+MLKEM_ROW,7,3,42,14,181,6,0,75212,4,3168,0,0,0,0,0,0,0,0,0,0,0x0001fdf0
+KECCAK_ROW,7,1,1,1,0,1260,444,60
+MLKEM_PASS cases=8 input_bytes=28480 output_bytes=64 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=12771915 all_m=156680 min_sp=0x0001a0b0 stack_used=24384
+KECCAK_PASS cases=8 starts=62 done=62 hash=62 squeeze=0
+$finish called at time : 127719465 ns : File "E:/hls/k4kat_timing_decode_v3/20261004_195409_225468/snapshot/tb/tb_mlkem1024_keccak_kat.sv" Line 357
+INFO: xsimkernel Simulation Memory Usage: 32296 KB (Peak: 32296 KB), Simulation CPU Usage: 177952 ms

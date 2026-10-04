@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "exit_code": 0,
+  "elapsed_seconds": 105.09400000004098,
+  "error": "",
+  "completed_utc": "2026-10-04T10:32:36.117895+00:00",
+  "input_manifest_sha256": "71604cee2a40a9306b7910cb57d5b63ab5ba4f20b3a00dc0ca159b077f7dac9d",
+  "output_sha256": {
+    "simulate.log": "2ac5ff9a8c47f006fa2ee50679407db6c7b394574eeb2f7c47fa5c9af145f160",
+    "console.txt": "bc1e2d97573c1ae6c2dec52f9b064b58dd087ace31e58f6e5d745f7d1efb1169"
+  }
+}

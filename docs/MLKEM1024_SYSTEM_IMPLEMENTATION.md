@@ -44,7 +44,7 @@ OOC resetn无HD.PARTPIN_LOCS导致边界hold不具备板级意义；已单独读
 - 当前v3（`timing_decode_v3`）：保留v1，针对16 KiB对齐MMIO窗口用高位比较和低位截取替代宽减法；
   非对齐参数保留原范围/减法分支。组件10次调用/216字及译码等价检查通过；
   官方子集3/3（原索引0、1、115）通过，同例周期与历史完全一致，85次真实硬件调用匹配。
-  [当前子集证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)。
+  [当前证据（现已补齐145/145）](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)。
   `20261004_121837`完成route_design后，在写入routed.dcp时异常退出（3221226356），
   未生成最终metrics；布局阶段WNS不作为最终结果。
 
@@ -61,8 +61,10 @@ setup/hold为**+0.269/+0.029 ns**；LUT/FF/BRAM36等效/DSP为**19,003/17,005/34
 （DPOP-1×2、DPOP-2×4、ZPS7×1），没有错误。最差hold确认为resetn至cpu_state边界。
 当前内部关键路径转为HLS FSM至state寄存器，9.606 ns中布线9.026 ns；
 当前RTL/HLS哈希与smoke、官方子集、恢复实现输入一致。
-开发只跑官方索引0、1、115及针对改动的检查，全部优化稳定后再执行145条最终验收；
-历史145/145、3.803×不能替代当前候选的回归。
+开发仍默认索引0、1、115及针对改动的检查。当前候选最终145/145已独立验收：
+19批最终PASS、官方输出、冻结输入哈希及3,188次HLS调用通过复核，API周期比3.8028×。
+19批与板级共用的18项CPU/系统/HLS输入哈希全部一致。核心145例使用邮箱RTL平台；
+下面板级固件和真实MMCM验证为3例；PS/PL控制、实板全量及Jupyter待实现。
 
 ## PYNQ-Z2 上板前签核
 

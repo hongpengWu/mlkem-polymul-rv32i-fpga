@@ -4,16 +4,24 @@
 [BENCHMARKS.md](BENCHMARKS.md) 和对应原始日志为准，长期阶段门见
 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 
-## 最新执行状态：K4内部时序通过，开发使用官方子集
+## 最新执行状态：K4当前版本145/145与板级实现签核通过
 
-当前候选`timing_decode_v3`将程序RAM写控制与adapter ready解耦，并以高位比较简化对齐MMIO窗口译码。
-10次硬件调用/216结果字通过；262,144个高位区域及16,384个窗口字节的译码等价检查通过。
-当前候选官方子集3/3通过，85次硬件调用（含4次续取）匹配，三例API周期与历史完全一致；
-[当前子集证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)独立保存。
-`20261004_124354`布线后100 MHz内部setup/hold为+0.269/+0.029 ns，LUT19,003、FF17,005、BRAM34.5、DSP4；
-OOC resetn边界hold −1.194 ns仍使整体验收失败，不能称板级时序通过。见[系统实现记录](MLKEM1024_SYSTEM_IMPLEMENTATION.md)。
-开发默认仅跑原官方索引0、1、115；稳定后再跑145条最终验收。使用`run_flow.tcl`顶部开关，
-每个候选独立归档并核对输入哈希；以下145/145、3.803×均属于2026-09-27历史RTL版本。
+当前`timing_decode_v3`最终官方RTL KAT **145/145** 已完成，19批唯一覆盖、每批最终PASS、
+官方输出及冻结输入哈希通过独立collector复核。3,188次真实HLS调用与预期匹配。
+同RV32IM-fast、128 KiB RAM / 32 KiB栈：CPU/加速API周期为1,699,294,360 / 446,853,509，
+完整测试集比值 **3.8028×**；最大观测栈24,384 B。19批仿真时长合计10,961.816秒，非芯片执行时间。
+[当前全量证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)独立保存，当前版本无需重跑。
+
+板级`20261004_162430`的100 MHz setup/hold/pulse为+0.109/+0.027/+2.000 ns；
+LUT/FF/BRAM36等效/DSP为19,030/16,963/34.5/4，bitstream及报告哈希已复核。
+19个KAT批次与板级共用的18项CPU/系统/HLS输入哈希全部一致。
+核心145例使用邮箱RTL测试平台；板级固件内置3例，真实MMCM及运行中BTN0复位恢复已验证。
+原OOC resetn边界负hold证据保留，不影响独立板级流程已完成的签核。
+
+**上板前核心验收完成，可进入首次烧录。** 现有bitstream是独立PL自检，仅时钟/按钮/LED端口，
+没有PS/AXI控制接口；实板全量数据装载、周期/结果读回和Jupyter演示仍待开发及验证。
+开发默认仍仅跑索引0、1、115，统一用`run_flow.tcl`顶部开关；无周期自动任务。
+以下2026-09-27段落保留历史数据；当前覆盖以本节及独立全量证据为准。
 
 2026-09-27 决策：**ML-KEM-1024（K=4）为优化与展示主线，K=2 冻结为历史对照，
 K=3 在主线完成后验证扩展。** 主加速器优先评估 Keccak/FIPS 202 主导工作量候选，
@@ -58,7 +66,7 @@ KeyGen / Encaps / Decaps分别 **4.203× / 3.636× / 3.602×**；含私钥重建
 145/145。算法区间分别为 **1,112,525,793** 和 **1,699,294,360 cycles**，最大观测栈分别为
 **18,432 B** 和 **24,464 B**；两组使用 **128 KiB RAM / 32 KiB 栈**，512 原基线仍为
 64/16 KiB。K=2（ML-KEM-512）CPU+PQC 加速链路也已通过 145/145，端到端为 0.9930×。
-K=4标准库CPU+Keccak已145/145官方RTL通过；系统OOC已完成但100 MHz时序待收敛，K=3硬件扩展后置。
+K=4当前CPU+Keccak已145/145官方RTL通过，100 MHz板级实现签核完成；K=3硬件扩展后置。
 证据见 [768 汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md)、
 [1024 汇总](../results/official_baseline/mlkem1024/rv32im_fast/summary.md) 和
 [自动续跑记录](ACCEL_KAT_AUTORUN.md)。
@@ -106,7 +114,7 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 工作范围 | ML-KEM-1024（K=4） | ML-KEM-512（K=2） | ML-KEM-768（K=3） |
 |---|---|---|---|
 | NIST 安全类别与定位 | 5，优化与展示主线 | 1，冻结历史对照 | 3，后置扩展 |
-| 官方公开向量正确性回归 | fast CPU及历史CPU+Keccak各145/145；当前候选按子集复验 | 三种 CPU 各 145/145；加速 145/145 | fast CPU 145/145；加速扩展待测 |
+| 官方公开向量正确性回归 | fast CPU及当前CPU+Keccak各145/145，历史证据保留 | 三种 CPU 各 145/145；加速 145/145 | fast CPU 145/145；加速扩展待测 |
 | CPU 基本性能与内存 | 128 KiB RAM / 32 KiB 栈；阶段占比待测 | 64 KiB RAM / 16 KiB 栈；已完成阶段分析 | 128 KiB RAM / 32 KiB 栈；保留已测数据 |
 | 加速器优化 | 报告驱动 Keccak/FIPS 202 HLS，随后批量接口与集成 | 保留 BaseMul 0.9930× 对照，不继续主线扫参 | 在 K=4 最终架构上验证兼容性 |
 | 设计空间与资源权衡 | 逐位等价、Core/Call/API 周期和系统资源/时序 | 历史证据 | 后置代表性结果 |
@@ -135,8 +143,8 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | K=2 标准库接口审计与历史 HLS 原型 | C 仿真 103/103、HLS 综合通过；137 cycles 为核心估算，II=1、估算 Fmax 150.83 MHz | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[K=2 HLS](../hls/mlkem512_basemul_k2/) |
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
 | K=2 PQC 加速器接入标准软件 | 冻结历史对照；CPU+驱动及官方 KAT 145/145 通过，端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
-| K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛 | [HLS 说明](../hls/mlkem1024_keccak/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
-| K=4 CPU+加速器系统 | 历史145/145、3.803×；当前候选组件10项、官方子集3/3；板级上板前签核与bitstream已完成，当前版本全量145待验收 | [板级证据](../results/keccak_cpu/board/20261004_162430/result.json) |
+| K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，当前100 MHz板级实现签核完成 | [HLS 说明](../hls/mlkem1024_keccak/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
+| K=4 CPU+加速器系统 | 当前候选145/145、3.8028×；组件10项与板级3例复位检查通过，实现签核和bitstream已完成 | [板级证据](../results/keccak_cpu/board/20261004_162430/result.json) |
 
 ### 当前官方用例覆盖
 
@@ -179,13 +187,13 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 顺序 | 任务 | 完成标志 | 当前状态 |
 |---|---|---|---|
 | 1 | 保存 K=2 历史对照和 K3/K4 CPU 基线 | 原始日志、配置、哈希及内存差异可追溯 | 已完成 |
-| 2 | K=4 报告驱动的精确 HLS 优化 | 保持 FIPS 202 逐位结果；C/COSIM、周期、资源和时序报告完整 | io0/io1 局部差分通过；独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛 |
+| 2 | K=4 报告驱动的精确 HLS 优化 | 保持 FIPS 202 逐位结果；C/COSIM、周期、资源和时序报告完整 | io0/io1局部差分及当前100 MHz板级实现签核完成 |
 | 3 | K=4 打包接口与 CPU 集成 | 明确上下文、搬运、启动、等待和读回契约 | 10次RTL组件调用通过，标准库适配完成 |
-| 4 | K=4 CPU+加速器官方 RTL KAT | 开发子集，最终145条逐字节通过且真实硬件调用证据完整 | 历史版本145/145；当前候选单独复验，不复用历史覆盖 |
-| 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 历史全量端到端3.803×；当前候选按同例周期复验，K4阶段占比独立待测 |
+| 4 | K=4 CPU+加速器官方 RTL KAT | 开发子集，最终145条逐字节通过且真实硬件调用证据完整 | 当前候选145/145独立验收通过；19批最终PASS |
+| 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 当前全量API周期比3.8028×；K4阶段占比独立待测 |
 | 6 | K=4 系统资源/时序与设计选择 | 同约束软件/硬件综合和布局布线，记录 LUT/FF/BRAM/DSP/WNS；独立 HLS 估算不替代系统结果 | 板级setup/hold/pulse +0.109/+0.027/+2.000 ns；19,030 LUT、16,963 FF、34.5 BRAM36、4 DSP |
 | 7 | K=3 扩展和其他 CPU 消融 | 在选定架构上补齐对应官方回归、基本性能和内存数据 | 后置 |
-| 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | K4板级子集、实现签核和bitstream已完成；最终145待执行 |
+| 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 当前核心145/145、板级3例及运行中复位、实现签核和bitstream已完成 |
 | 9 | 最后进行 PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 最后阶段 |
 
 K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，但扩展必须有独立硬件证据。
@@ -199,10 +207,10 @@ K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，�
 > 配置在 RTL 仿真中均通过全部 145 条固定版本 ML-KEM-512 官方记录。ML-KEM-768/1024
 > 的 RV32IM-fast CPU-only 官方记录也分别通过 145/145；K=2 的 BaseMul 独立
 > MMIO/BRAM/BIST、Vivado 2024.2 实现及 CPU+PQC 全流程已完成并冻结。当前主线是
-> K=4 Keccak/FIPS 202：局部 HLS 的 C/Verilog COSIM 差分通过，独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛；
+> K=4 Keccak/FIPS 202：局部 HLS 的 C/Verilog COSIM 差分通过，独立 IP OOC 实现已完成，当前100 MHz板级实现签核完成；
 > 历史版本CPU组件10项及标准库145条官方RTL记录已通过，同配置测试集API总周期比3.803×；
-> 当前RTL优化候选官方子集3/3及100 MHz内部setup/hold通过；板级真实MMCM集成、实现签核和bitstream已完成，
-> setup/hold/pulse为+0.109/+0.027/+2.000 ns；最终145条验收、K=3扩展和实板仍后置。
+> 当前RTL优化候选官方145/145及100 MHz内部setup/hold通过；板级真实MMCM集成、实现签核和bitstream已完成，
+> setup/hold/pulse为+0.109/+0.027/+2.000 ns；最终145条已验收，实板与Jupyter演示待完成，K=3扩展后置。
 
 全部对应回归完成后，可以描述所覆盖版本、参数集、操作和用例的结果一致性。
 公开向量离线回归不等于正式 CAVP 算法验证，也不等于 FIPS 140-3 / CMVP 密码模块认证；
