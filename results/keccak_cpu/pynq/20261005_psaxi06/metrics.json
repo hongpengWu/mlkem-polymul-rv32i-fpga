@@ -1,0 +1,11 @@
+{"passed": true,
+"rtl_subset_passed": true,
+"bd_validated": true,
+"physical_board_tested": false,
+"setup_ns": 0.302,
+"hold_ns": 0.026,
+"pulse_ns": 3.750,
+"drc_blockers": 0,
+"routing_errors": 0,
+"fully_routed_nets": 29758,
+"implementation_passed": true}

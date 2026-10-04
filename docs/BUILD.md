@@ -34,7 +34,7 @@ D:/Tech/Library/bin/tclsh.exe scripts/mlkem1024_keccak/run_flow.tcl
 不能当作全量验收。HLS生成的新核必须完成验证与选择，入口不会自动替换`HLS_RUN`所指向的已验证核。
 默认复用已构建KAT固件；软件源码改变时需独立保留原固件/记录并重新构建，不能混入原结果。
 
-当前版本最终145条已完成，只读复核：
+已冻结核心版本`timing_decode_v3`的145条已完成，只读复核（不代表新PS–PL overlay覆盖）：
 
 ```powershell
 python scripts/mlkem1024_keccak/collect_kat.py --results-dir results/keccak_cpu/candidates/timing_decode_v3/kat
@@ -55,7 +55,70 @@ python scripts/mlkem1024_keccak/collect_kat.py
 结果、91项冻结输入、仿真日志和routed DCP的SHA-256；RTL、HLS、固件或TB变化时拒绝复用。
 新目录记录恢复来源并重新执行签核门禁，原失败证据保持不变。
 
-## CPU-only baseline
+## K4 PS–PL / Jupyter入口
+
+当前部署包：`release/mlkem1024_pynq/`；项目：
+`E:/hls/k4pynq/20261005_psaxi06/project/k4_pynq.xpr`。
+最终物理设计保存在同批次`routed.dcp`，包含局部布局修复；查看最终实现时打开该DCP。
+100 MHz物理签核和包内哈希校验已通过，新overlay尚未上板。
+
+独立3例自检bitstream已有用户报告的LED0 PASS及BTN0复位后恢复；
+该观察不包含PS装载、结果读回或全量145例。交互式overlay使用独立的
+`scripts/mlkem1024_keccak/vivado_bd.tcl`。该Tcl参考Prompt3的PS/AXI、统一时钟复位、
+地址核验和配套`.bit/.hwh`导出方式，使用实际PYNQ-Z2的`xc7z020clg400-1`和已安装板卡preset。
+
+当前断点：`20261004_psaxi02`实际执行的AXI协议检查及官方索引0、1、115三例已PASS。
+`20261004_psaxi04`因复位极性/辅助复位接线与GP0接口元数据问题拒绝作为发布候选；
+保留其诊断证据，下一步使用修正后的`20261004_psaxi05`重新实现。run05尚无成功结论，
+新overlay尚未上板验证；旧核心145/145与3.8028×只作为历史RTL证据。
+
+```powershell
+E:/Xilinx/Vivado/2024.2/bin/vivado.bat -mode batch -notrace -source scripts/mlkem1024_keccak/vivado_bd.tcl
+```
+
+顶部`PREPARE/SIM/CREATE_BD/SYNTH/IMPL/EXPORT`为0/1开关，默认全开；环境变量`BD_<开关名>`
+可覆盖。8个工作线程；运行工程位于`E:/hls/k4pynq/<批次>/project/k4_pynq.xpr`。
+这些是PS–PL独立入口的开关；原`run_flow.tcl`继续管理核心/HLS回归与独立PL自检流程。
+`PREPARE`编译独立`--ps`固件并冻结RTL、HLS、固件、测试和官方向量；不会重跑旧145条回归。
+`SIM`检查AXI握手/错误响应/复位和三条官方记录。综合与实现必须通过时序、路由、DRC，
+并验证生成BD的复位极性、时钟与地址连接，才允许发布部署包。
+
+已通过的仿真可通过`BD_REUSE_SIM`复用：设置为原运行目录并设`BD_SIM=0`；入口逐项核对
+RTL/HLS/固件/TB/fixture哈希，保留来源。修改这些输入后必须重新仿真。
+
+仅通过门禁后发布到固定目录`release/mlkem1024_pynq/`，不建立多个并列部署目录。
+包内包含配套`k4_accel.bit/.hwh`、
+`mlkem1024.py`、`mlkem1024.ipynb`、`kat_vectors.json`和`release_manifest.json`。
+打开包内`README.txt`可查看该版本准确的XPR位置。整个目录上传到
+`/home/xilinx/jupyter_notebooks/mlkem1024/`，在Jupyter打开`mlkem1024.ipynb`。
+生成的大文件与EDA工程不进入Git；证据保存在`results/keccak_cpu/pynq/<批次>/`。
+
+BD结构是PS7 GP0→AXI互联→PicoRV32系统的AXI-Lite包装层，统一FCLK0 100 MHz与
+`proc_sys_reset`。PicoRV32继续执行ML-KEM，Keccak由PL硬件计算；ARM只装载、校验和显示。
+
+| PS物理地址 / 核内地址 | 用途 |
+|---|---|
+| `0x40000000..0x4001ffff` / `0x00000..0x1ffff` | 128 KiB程序RAM，双口访问；CPU复位时PS可写 |
+| `0x40010000` / `0x10000` | 8 KiB单例输入窗口 |
+| `0x40012000` / `0x12000` | 8 KiB结果窗口，预期结果只保留在PS |
+| `0x40020000/04` | 硬件ID `0x4b344158` / ABI版本1 |
+| `0x40020008` | CONTROL bit0：0复位、1运行 |
+| `0x4002000c/10` | 完成/错误状态 / CPU trap |
+| `0x40020014/18` | 100,000,000 Hz / RAM字节数 |
+| `0x40020040..6f` | 12项固件debug/profile字，API周期在`0x4002004c` |
+| `0x40020080..8f` | HLS启动、busy周期、缓冲写/读计数 |
+
+每条用例按“复位→装入输入→启动→读结果→PS逐字节校验”运行。Notebook默认3例，
+全量145需显式启用；只有145个唯一索引全部匹配才记全量通过。API周期、装载/读回耗时和
+Python总耗时分别记录。页面中的CPU-only值属于历史RTL参考，不能冒充现场软件基线或实板加速比。
+新AXI固件/双口RAM属于独立候选，旧核心145/145不转记为新overlay的完整硬件覆盖。
+新overlay的LED0表示单例执行/结果传输完成；官方PASS以Notebook逐字节校验为准。
+LED1表示固件错误或trap，LED2表示运行，LED3表示trap。
+
+板卡preset中的DDR DQS负偏斜会触发PSU-1..4警告，原始报告保留，未擅自改为零。
+overlay不重新初始化Linux使用的PS DDR；PL时序、路由与功能DRC仍须独立通过。
+
+## CPU-only baseline（旧入口）
 
 先构建三组固件和镜像：
 

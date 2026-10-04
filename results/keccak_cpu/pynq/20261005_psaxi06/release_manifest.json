@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "files": {
+    "k4_accel.bit": "8ecd6ba9f21fb6e3b51f5ea4c98c58090f85eb1002ee672a0d89bc151edf2cfb",
+    "k4_accel.hwh": "83bbb0f97a5be6c32946a13a86151cabc03203e829e154e99df57933bfe738cf",
+    "kat_vectors.json": "1f5711b102676bd08aa16d70bec317b160a39bb2d15183bcaf67f08e0a88b464",
+    "mlkem1024.ipynb": "a21e53d894b981b72e5d74d85987913ab368cc82808d25cc0255897fd4a58e73",
+    "mlkem1024.py": "832749e44c6f05cd840280bd5da7c4950303bf1625dab8c002ad636baa71bc90",
+    "README.txt": "5a830e07e859ca3862bd699f6ef13dc7d7e119eb67bd2729ce5c50c32261464f"
+  },
+  "generated_utc": "2026-10-04T16:26:22.504639+00:00",
+  "run_dir": "E:\\hls\\k4pynq\\20261005_psaxi06",
+  "input_manifest_sha256": "60715c4c8dc6397d51d89fd5c50a4c3ff6ad1d5a8a7dc84176fc8c05370cde4e",
+  "physical_board_tested": false,
+  "actual_collection_helper_sha256": "d647d6339004f7d360184a5f58f49856f1595c7131388d5368d6575a6c3f0fb5",
+  "hwh_source_check": {
+    "passed": true,
+    "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\project\\k4_pynq.gen\\sources_1\\bd\\system\\hw_handoff\\system.hwh",
+    "exported": "E:\\hls\\k4pynq\\20261005_psaxi06\\k4_accel.hwh",
+    "source_sha256": "83bbb0f97a5be6c32946a13a86151cabc03203e829e154e99df57933bfe738cf",
+    "exported_sha256": "83bbb0f97a5be6c32946a13a86151cabc03203e829e154e99df57933bfe738cf"
+  },
+  "overlay": {
+    "bitstream": "k4_accel.bit",
+    "base_address": 1073741824,
+    "address_range": 262144,
+    "id": 1261715800,
+    "abi": 1,
+    "frequency_hz": 100000000,
+    "ram_bytes": 131072
+  }
+}

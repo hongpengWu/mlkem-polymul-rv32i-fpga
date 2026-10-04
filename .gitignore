@@ -1,4 +1,6 @@
 /build/
+/NA/
+/release/mlkem1024_pynq/
 /.Xil/
 /hls/.Xil/
 /hls/mlkem512_basemul_k2/build/
@@ -60,6 +62,7 @@
 !/results/keccak_cpu/kat/**/*.log
 !/results/keccak_cpu/kat_candidate/**/simulate.log
 !/results/keccak_cpu/candidates/**/simulate.log
+!/results/keccak_cpu/pynq/**/simulate.log
 !/vivado/mlkem512_basemul_k2/basemul.xpr
 *.elf
 __pycache__/

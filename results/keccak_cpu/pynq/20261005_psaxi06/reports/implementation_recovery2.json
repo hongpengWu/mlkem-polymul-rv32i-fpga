@@ -1,0 +1,8 @@
+{
+  "reason": "Route succeeded; Vivado STATUS reports next enabled step, so verify route completion marker/checkpoint then reuse routed run",
+  "original_log": "implementation_recovery.log",
+  "frozen_manifest_sha256": "60715c4c8dc6397d51d89fd5c50a4c3ff6ad1d5a8a7dc84176fc8c05370cde4e",
+  "actual_tcl_sha256": "68f90c830f01f8beb0deae0692514f08dbb7e834bdedf0f48f733435de23cd5c",
+  "routed_checkpoint_sha256": "b0691c07869c3e03b92cdce7841093e408333e6afe5d690e4232fc462728bf0d",
+  "frozen_inputs_changed": false
+}

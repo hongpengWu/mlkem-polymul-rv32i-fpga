@@ -1,0 +1,8 @@
+{
+  "reason": "Unsupported launch_runs post_route_phys_opt_design step; synthesis complete, resume at route_design then explicit phys_opt_design Explore",
+  "original_log": "launch_failure.log",
+  "frozen_manifest_sha256": "60715c4c8dc6397d51d89fd5c50a4c3ff6ad1d5a8a7dc84176fc8c05370cde4e",
+  "actual_tcl_sha256": "18a84fe2faf9f7fab29fdb978287a0406919972517be7fdceed1fce4d5342a44",
+  "synthesis_checkpoint_sha256": "fbaab5fcba6dc1612047d09df076d065ac0e30e91d87a425dadd6e86ada514b8",
+  "frozen_inputs_changed": false
+}

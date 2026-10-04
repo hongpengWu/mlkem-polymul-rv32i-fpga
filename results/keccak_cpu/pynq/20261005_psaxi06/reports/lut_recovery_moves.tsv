@@ -1,0 +1,8 @@
+cell	from	to	clock_region	init
+system_i/k4_core/inst/system_i/cpu/picorv32_core/decoded_rs2_reg_rep_rep[1]	SLICE_X53Y66/AFF	SLICE_X57Y62/AFF	X1Y1	1'b0
+system_i/k4_core/inst/system_i/adapter_i/hls_i/base_fu_464_reg[7]	SLICE_X44Y89/BFF	SLICE_X44Y84/BFF	X0Y1	1'b0
+system_i/k4_core/inst/system_i/adapter_i/hls_i/cursor_3_fu_460_reg[3]_rep__1	SLICE_X47Y91/BFF	SLICE_X43Y83/BFF	X0Y1	1'b0
+system_i/k4_core/inst/system_i/adapter_i/hls_i/filled_fu_572_reg[28]	SLICE_X35Y92/DFF	SLICE_X29Y90/DFF	X0Y1	1'b0
+system_i/k4_core/inst/system_i/adapter_i/hls_i/written_fu_568_reg[3]	SLICE_X39Y88/DFF	SLICE_X39Y85/DFF	X0Y1	1'b0
+system_i/k4_core/inst/system_i/adapter_i/hls_i/cursor_2_reg_945_reg[6]	SLICE_X46Y90/CFF	SLICE_X40Y85/CFF	X0Y1	1'b0
+system_i/k4_core/inst/system_i/adapter_i/hls_i/cursor_6_reg_6692_reg[31]	SLICE_X36Y100/DFF	SLICE_X31Y100/DFF	X0Y2	1'b0

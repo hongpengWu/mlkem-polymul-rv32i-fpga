@@ -1,0 +1,18 @@
+{
+  "scope": "AXI wrapper RTL subset and Zynq PS block design physical implementation",
+  "physical_board_tested": false,
+  "run_dir": "E:\\hls\\k4pynq\\20261004_psaxi03",
+  "metrics": {
+    "passed": false,
+    "rtl_subset_passed": true,
+    "bd_validated": false,
+    "physical_board_tested": false
+  },
+  "output_sha256": {
+    "manifest.json": "6c25812477a1d3098217ced502af99f96551549e65250ba921bf826c6ed1d655",
+    "metrics.json": "6e6ebe3a47be33d725e1b83bfbe03b5191af52fb5ec9585518ee07f778ab7136",
+    "simulate.log": "4dd414d97f67c7bcebe2ed6a5722ef21e348d207f927aaf3c90849e6eb9187d1",
+    "simulation_reuse.json": "8d3cae268ab2582ec553d4728cbe2cac1459f04d0ac541d442d08996ac235e11"
+  },
+  "passed": false
+}

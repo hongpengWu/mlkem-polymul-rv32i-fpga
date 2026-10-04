@@ -1,0 +1,31 @@
+{
+  "source_run": "E:\\hls\\k4pynq\\20261004_psaxi02",
+  "source_manifest_sha256": "0408d0f11acf589cfa5f0c11eb96fc344222dd5ec77b6252431c868a55d78989",
+  "log_sha256": "4dd414d97f67c7bcebe2ed6a5722ef21e348d207f927aaf3c90849e6eb9187d1",
+  "same_simulation_inputs": [
+    "ps.mem",
+    "rtl/picorv32.v",
+    "rtl/mlkem1024_keccak_system.sv",
+    "rtl/keccak_mmio_adapter.sv",
+    "rtl/mlkem1024_keccak_axi.sv",
+    "tb/tb_mlkem1024_keccak_axi.sv",
+    "hls/mlkem1024_keccak_accel.v",
+    "hls/mlkem1024_keccak_accel_control_s_axi.v",
+    "hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v",
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v",
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v",
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v",
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v",
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v",
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat",
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v",
+    "hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v",
+    "hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v",
+    "hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v",
+    "hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v",
+    "hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v",
+    "board_input.mem",
+    "board_expected.mem"
+  ],
+  "scope": "Same RTL/HLS/firmware/TB/fixtures; orchestration-only repair"
+}

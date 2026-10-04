@@ -1,0 +1,9 @@
+{
+  "reason": "Export verified physical DCP to bitstream and pair with exact generated HWH from checked original BD",
+  "original_log": "implementation_recovery4.log",
+  "frozen_manifest_sha256": "60715c4c8dc6397d51d89fd5c50a4c3ff6ad1d5a8a7dc84176fc8c05370cde4e",
+  "actual_tcl_sha256": "7ca3969ffcbc5d07542b14231b45897ddd0fd94f9e7ed30eac84c2d5bf6a8adc",
+  "routed_checkpoint_sha256": "65b513819e81402aa6460f87c88fb252e8b39e0cec8daf482198df093d6a940d",
+  "actual_collector_sha256": "d647d6339004f7d360184a5f58f49856f1595c7131388d5368d6575a6c3f0fb5",
+  "frozen_inputs_changed": false
+}

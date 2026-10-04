@@ -1,0 +1,99 @@
+{
+  "scope": "AXI wrapper RTL subset and Zynq PS block design physical implementation",
+  "physical_board_tested": false,
+  "run_dir": "E:\\hls\\k4pynq\\20261005_psaxi06",
+  "metrics": {
+    "passed": false,
+    "rtl_subset_passed": true,
+    "bd_validated": true,
+    "physical_board_tested": false,
+    "setup_ns": 0.302,
+    "hold_ns": 0.026,
+    "pulse_ns": 3.75,
+    "drc_blockers": 0,
+    "routing_errors": 0,
+    "fully_routed_nets": 29758,
+    "implementation_passed": true
+  },
+  "output_sha256": {
+    "manifest.json": "60715c4c8dc6397d51d89fd5c50a4c3ff6ad1d5a8a7dc84176fc8c05370cde4e",
+    "metrics.json": "39e5e218bc2a9e9c4f4673ee1d183efd167ce5662977673cc492619ecf471348",
+    "simulate.log": "4dd414d97f67c7bcebe2ed6a5722ef21e348d207f927aaf3c90849e6eb9187d1",
+    "simulation_reuse.json": "8d3cae268ab2582ec553d4728cbe2cac1459f04d0ac541d442d08996ac235e11",
+    "reports\\cdc.rpt": "39ecbf11e8ac59cf2791fad11580e231b10bc5efed369a56b7e2bedae7758e3b",
+    "reports\\check_timing.rpt": "2dce3008c386c4cfb95fc47cea7ea7093e9e1a0340ff87bebeb96737f67b0879",
+    "reports\\clocks.rpt": "55968d5164fab68c913e12130e632ee2ea5fa015a6284e9ea3ae240616dd6fc7",
+    "reports\\drc.rpt": "21c60e1493f40d389da2472901308d263535996b24a95b416560845a4efdf6bb",
+    "reports\\drc_before_lut_repair.rpt": "b199218c1c90b9a8e239cd841db574ef3d233a1d258f54169f361745089ce132",
+    "reports\\drc_failure.json": "8c1cc323e8de36c5c5ae46a0549239468f134405ad8f2f9675c83d3e8be1f68e",
+    "reports\\hold_paths.rpt": "6c3228a07b556ea9c00d40c50a14cd7ef2dfade9699b30dd5753a5ee612663ad",
+    "reports\\implementation_recovery.json": "7361ef5abfdf6254ea305841183f23089bb510cfb592e28438c370c2fb848bc9",
+    "reports\\implementation_recovery.tcl": "18a84fe2faf9f7fab29fdb978287a0406919972517be7fdceed1fce4d5342a44",
+    "reports\\implementation_recovery2.json": "f53893e1e7d2e0d09897eb2746bee350f1d711dc7e4af79799945b086a5ae703",
+    "reports\\implementation_recovery2.tcl": "68f90c830f01f8beb0deae0692514f08dbb7e834bdedf0f48f733435de23cd5c",
+    "reports\\implementation_recovery3.json": "97466f0b9842ed10a06136bda7cf5189e99fc32a47f7c1e4b7adf70988e5f367",
+    "reports\\implementation_recovery3.tcl": "06cbba55f408fbdefb8898a5767f4cf9976e8ab56800bbd2b028b0f270a7d7ec",
+    "reports\\implementation_recovery4.json": "62f64fc1dfb7374a21fd2bf1a78270db9ca8a1eec60a8addda70f5703a3767c3",
+    "reports\\implementation_recovery4.tcl": "a1c90c2f3c33f7bbf1fa5532929d8bf36b8a71749e89152d619c6a51aa3a758f",
+    "reports\\lut_recovery_moves.tsv": "35ea3b23c213f98e33ba85478187324f93bc1f0e0b3f959d25da5b9eb8f59238",
+    "reports\\open_run_failure.json": "6de4a968569cad092394bef1fcdf8437342a19b3cf6b6feb66a75d04545e23b1",
+    "reports\\route_status.rpt": "dc8071629da71f922c2bd4588a91955b55163c588fb58d2ea538747f1598087b",
+    "reports\\setup_paths.rpt": "d96153808b8a79243b28d0d93ef854cf9b3a6175714fa2d275aedb5da66b65a9",
+    "reports\\system_bd.tcl": "67ca0eee0d39abdf8c0a0b27432ae35b4ceb51a7bae6552b418d2fd787653853",
+    "reports\\timing_summary.rpt": "2ac89f89d4d2d53520b8c9fb5c3028bbf005e35077b5c110f3f6b75d11a6a746",
+    "reports\\utilization.rpt": "22768341e451f9274abfdf7423d6ef05d8bad01ed0f5b1ec03bdb7bb2c47fc3a"
+  },
+  "actual_collection_helper_sha256": "70ae9a68d1ed12b83ddd1a26e64176a71fbaf8e0859ea562c83edf52e69c74dd",
+  "frozen_collection_helper_sha256": "70ae9a68d1ed12b83ddd1a26e64176a71fbaf8e0859ea562c83edf52e69c74dd",
+  "collection_helper_matches_frozen": true,
+  "bd_control_checks": {
+    "passed": true,
+    "reasons": [],
+    "details": {
+      "input_sha256": {
+        "project/k4_pynq.srcs/sources_1/bd/system/system.bd": "2e68a47d40164f7e3ab5ebfa3594e599649a1db1c1070d075f24fe403b736005",
+        "project/k4_pynq.srcs/sources_1/bd/system/ip/system_reset_100m_0/system_reset_100m_0.xci": "dea302b0a4184bb7b160bda979158bce3bceab9285fde4407432a9bf942ac216",
+        "project/k4_pynq.srcs/sources_1/bd/system/ip/system_locked_one_0/system_locked_one_0.xci": "efe1374ef136bdfa18f13fa694178fbd4b4ad95647e6a0276dff109c52a35f56",
+        "project/k4_pynq.srcs/sources_1/bd/system/ip/system_reset_zero_0/system_reset_zero_0.xci": "89bcd85c79d361306ff53003f2030e43b4d5982f3e2b87f54ade96c1c1769298",
+        "project/k4_pynq.srcs/sources_1/bd/system/ip/system_ps7_0/system_ps7_0.xci": "b53a7c6fc6a370cb896b78f2d26c1e29c2c710a8cc4de7b353c0cdfd8dd2e752",
+        "project/k4_pynq.gen/sources_1/bd/system/synth/system.v": "78acd4a3a04937c3d687e3b6bfd85a96a843e56897e49b60603ed646a301d1a5"
+      },
+      "reset": {
+        "external_active_level": 0,
+        "auxiliary_active_level": 0,
+        "auxiliary_constant": 1,
+        "auxiliary_driver": "locked_one",
+        "debug_constant": 0,
+        "lock_constant": 1
+      },
+      "clock": {
+        "PCW_FPGA0_PERIPHERAL_FREQMHZ": 100.0,
+        "PCW_ACT_FPGA0_PERIPHERAL_FREQMHZ": 100.0,
+        "PCW_M_AXI_GP0_FREQMHZ": 100.0
+      },
+      "address": {
+        "base": 1073741824,
+        "span": 262144
+      }
+    }
+  },
+  "host_artifact_checks": {
+    "mlkem1024.py": {
+      "frozen_sha256": "832749e44c6f05cd840280bd5da7c4950303bf1625dab8c002ad636baa71bc90",
+      "actual_sha256": "832749e44c6f05cd840280bd5da7c4950303bf1625dab8c002ad636baa71bc90",
+      "passed": true
+    },
+    "mlkem1024.ipynb": {
+      "frozen_sha256": "a21e53d894b981b72e5d74d85987913ab368cc82808d25cc0255897fd4a58e73",
+      "actual_sha256": "a21e53d894b981b72e5d74d85987913ab368cc82808d25cc0255897fd4a58e73",
+      "passed": true
+    },
+    "kat_vectors.json": {
+      "frozen_sha256": "1f5711b102676bd08aa16d70bec317b160a39bb2d15183bcaf67f08e0a88b464",
+      "actual_sha256": "1f5711b102676bd08aa16d70bec317b160a39bb2d15183bcaf67f08e0a88b464",
+      "passed": true
+    }
+  },
+  "frozen_input_errors": [],
+  "passed": false
+}

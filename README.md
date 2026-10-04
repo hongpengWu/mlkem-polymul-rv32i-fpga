@@ -6,7 +6,13 @@
 已有 CPU 官方基线和 K2 BaseMul 结果保留作为历史对照；最新路线见
 [项目进度](docs/PROJECT_STATUS.md)。
 
-当前状态（2026-10-04）：
+当前状态（2026-10-05）：
+
+- 新PS–PL交互式overlay已完成AXI协议/3条官方RTL用例与100 MHz物理签核，
+  setup/hold为+0.302/+0.026 ns。部署包固定在`release/mlkem1024_pynq/`，
+  含配套`.bit/.hwh`、Jupyter Notebook和145条官方向量；新overlay尚未上板验证。
+  [部署与独立BD Tcl入口](docs/BUILD.md#k4-pspl--jupyter入口) ·
+  [本次签核证据](results/keccak_cpu/pynq/20261005_psaxi06/result.json)
 
 - K4 Keccak 两种访存配置均通过 109 次 C/RTL 协同测试；向量为本地 FIPS 202 差分测试。
   独立核的优化、资源和时序见 [测量记录](results/hls/mlkem1024_keccak/summary.md)。
@@ -15,13 +21,13 @@
   该版本完整系统OOC为LUT19,084、FF16,970、BRAM34.5、DSP4；内部setup −1.367 ns。
 - 当前`timing_decode_v3`优化RAM写控制与MMIO译码；10次硬件调用/216字、译码等价检查及最终官方145/145通过，API总周期比3.8028×。
   100 MHz布线后内部setup/hold为+0.269/+0.029 ns；LUT19,003、FF17,005、BRAM34.5、DSP4。
-  原OOC resetn边界hold −1.194 ns失败证据保留；独立板级时序已通过，实板待测。
+  原OOC resetn边界hold −1.194 ns失败证据保留；独立板级时序已通过。
   开发默认只跑索引0、1、115；当前145条已独立验收，3,188次真实HLS调用匹配。
   [当前全量证据](results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)。
   统一入口为[`run_flow.tcl`](scripts/mlkem1024_keccak/run_flow.tcl)顶部0/1开关，默认`FULL_KAT=0`。
 - ML-KEM-768/1024 RV32IM-fast CPU-only RTL 官方回归各通过 145/145，使用 128 KiB RAM / 32 KiB 栈。
 - K4 PYNQ-Z2 板级上板前签核已通过：真实 MMCM/复位三例子集 3/3、路由和 100 MHz 时序通过，
-  packed LUT/FF/BRAM36 等效/DSP 为 19,030/16,963/34.5/4；bitstream 已生成但尚未烧录实板。
+  packed LUT/FF/BRAM36 等效/DSP 为 19,030/16,963/34.5/4；用户报告烧录后LED0 PASS及BTN0重启通过。
   [板级证据](results/keccak_cpu/board/20261004_162430/result.json)
 
 - ML-KEM-512 的 RV32I、RV32IM 迭代乘法、RV32IM 快速乘法三组 PicoRV32 RTL 回归各通过

@@ -6,12 +6,20 @@ module mlkem1024_keccak_system #(
     parameter integer RAM_ADDR_BITS = 15,
     parameter CPU_ENABLE_MUL = 1,
     parameter CPU_ENABLE_FAST_MUL = 1,
-    parameter CPU_ENABLE_DIV = 1
+    parameter CPU_ENABLE_DIV = 1,
+    parameter ENABLE_HOST = 0
 )(
     input wire clk, resetn,
     output wire trap,
     output wire [31:0] status_out,
-    output wire [383:0] profile_words
+    output wire [383:0] profile_words,
+    input wire host_en,
+    input wire [3:0] host_we,
+    input wire [RAM_ADDR_BITS-1:0] host_addr,
+    input wire [31:0] host_din,
+    output wire [31:0] host_dout,
+    output wire [31:0] hls_starts, hls_busy_cycles,
+    output wire [31:0] buffer_writes, buffer_reads
 );
     localparam [31:0] RAM_LIMIT = (1 << (RAM_ADDR_BITS+2));
     localparam [31:0] DBG_BASE = 32'h50000000;
@@ -104,8 +112,8 @@ module mlkem1024_keccak_system #(
         .bus_addr(accel_write_request ? commit_addr : c_araddr),
         .bus_wdata(commit_data),.bus_wstrb(commit_strb),
         .bus_ready(accel_bus_ready),.bus_rvalid(accel_bus_rvalid),.bus_rdata(accel_bus_rdata),
-        .accel_busy(),.accel_done(),.accel_error(),.transaction_count(),
-        .hls_cycles(),.buffer_writes(),.buffer_reads()
+        .accel_busy(),.accel_done(),.accel_error(),.transaction_count(hls_starts),
+        .hls_cycles(hls_busy_cycles),.buffer_writes(buffer_writes),.buffer_reads(buffer_reads)
     );
 
     // RAM writes are disjoint from the accelerator window, so they must not
@@ -114,6 +122,30 @@ module mlkem1024_keccak_system #(
     wire boot_write=write_pending && commit_is_ram;
     wire boot_read=local_ar_fire && read_sel_ram;
     wire [RAM_ADDR_BITS-1:0] boot_addr=boot_write ? commit_addr[RAM_ADDR_BITS+1:2] : c_araddr[RAM_ADDR_BITS+1:2];
+    // The optional host port does not change the CPU's one-cycle RAM latency.
+    // The enclosing AXI slave enforces ownership; reset never clears RAM.
+    generate if (ENABLE_HOST) begin: host_memory
+    xpm_memory_tdpram #(
+        .ADDR_WIDTH_A(RAM_ADDR_BITS),.ADDR_WIDTH_B(RAM_ADDR_BITS),.AUTO_SLEEP_TIME(0),
+        .BYTE_WRITE_WIDTH_A(8),.BYTE_WRITE_WIDTH_B(8),.CASCADE_HEIGHT(0),
+        .CLOCKING_MODE("common_clock"),.ECC_MODE("no_ecc"),.MEMORY_INIT_FILE(FIRMWARE_INIT_FILE),
+        .MEMORY_INIT_PARAM("0"),.MEMORY_OPTIMIZATION("true"),.MEMORY_PRIMITIVE("block"),
+        .MEMORY_SIZE(32*(1<<RAM_ADDR_BITS)),.MESSAGE_CONTROL(0),
+        .READ_DATA_WIDTH_A(32),.READ_DATA_WIDTH_B(32),.READ_LATENCY_A(1),.READ_LATENCY_B(1),
+        .READ_RESET_VALUE_A("0"),.READ_RESET_VALUE_B("0"),.RST_MODE_A("SYNC"),.RST_MODE_B("SYNC"),
+        .SIM_ASSERT_CHK(0),.USE_MEM_INIT(1),.WAKEUP_TIME("disable_sleep"),
+        .WRITE_DATA_WIDTH_A(32),.WRITE_DATA_WIDTH_B(32),
+        .WRITE_MODE_A("read_first"),.WRITE_MODE_B("read_first")
+    ) firmware_bram (
+        .clka(clk),.clkb(clk),.ena(boot_write || boot_read),.addra(boot_addr),.dina(commit_data),
+        .wea(boot_write ? commit_strb : 4'b0000),.douta(boot_rdata),
+        .enb(host_en),.addrb(host_addr),.dinb(host_din),.web(host_we),.doutb(host_dout),
+        .rsta(1'b0),.rstb(1'b0),.regcea(1'b1),.regceb(1'b1),.sleep(1'b0),
+        .injectsbiterra(1'b0),.injectdbiterra(1'b0),.injectsbiterrb(1'b0),.injectdbiterrb(1'b0),
+        .sbiterra(),.dbiterra(),.sbiterrb(),.dbiterrb()
+    );
+    end else begin: standalone_memory
+    assign host_dout=32'b0;
     xpm_memory_spram #(
         .ADDR_WIDTH_A(RAM_ADDR_BITS),.AUTO_SLEEP_TIME(0),.BYTE_WRITE_WIDTH_A(8),
         .CASCADE_HEIGHT(0),.ECC_MODE("no_ecc"),.MEMORY_INIT_FILE(FIRMWARE_INIT_FILE),
@@ -127,6 +159,7 @@ module mlkem1024_keccak_system #(
         .rsta(1'b0),.regcea(1'b1),.sleep(1'b0),.injectsbiterra(1'b0),.injectdbiterra(1'b0),
         .sbiterra(),.dbiterra()
     );
+    end endgenerate
     always @(posedge clk) begin
         if(!resetn) begin
             local_aw_hold<=0;local_w_hold<=0;local_bvalid<=0;local_rvalid<=0;

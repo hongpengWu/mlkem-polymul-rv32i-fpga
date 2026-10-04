@@ -1,0 +1,8 @@
+{
+  "reason": "Open completed routed DCP directly; project run metadata no longer permits open_run after strategy assignment",
+  "original_log": "implementation_recovery2.log",
+  "frozen_manifest_sha256": "60715c4c8dc6397d51d89fd5c50a4c3ff6ad1d5a8a7dc84176fc8c05370cde4e",
+  "actual_tcl_sha256": "06cbba55f408fbdefb8898a5767f4cf9976e8ab56800bbd2b028b0f270a7d7ec",
+  "routed_checkpoint_sha256": "b0691c07869c3e03b92cdce7841093e408333e6afe5d690e4232fc462728bf0d",
+  "frozen_inputs_changed": false
+}

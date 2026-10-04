@@ -1,16 +1,40 @@
 # 项目进度与执行记录
 
-更新时间：2026-10-04。本页汇总已完成工作、当前覆盖范围和下一步；详细数值以
+更新时间：2026-10-05。本页汇总已完成工作、当前覆盖范围和下一步；详细数值以
 [BENCHMARKS.md](BENCHMARKS.md) 和对应原始日志为准，长期阶段门见
 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 
-## 最新执行状态：K4当前版本145/145与板级实现签核通过
+## 最新执行状态：PS–PL部署包已生成，待网络恢复后实板验证
 
-当前`timing_decode_v3`最终官方RTL KAT **145/145** 已完成，19批唯一覆盖、每批最终PASS、
+`20261004_psaxi02`已实际执行并通过AXI协议检查及官方索引0、1、115三例。
+新路径包含PS可访问的双口RAM、单例输入/结果窗口及主机逐字节校验；
+这属于新AXI候选的3例RTL覆盖，不能继承旧核心的145/145覆盖或实板加速比。
+
+`20261005_psaxi06`已通过最终签核及部署包校验：100 MHz，setup/hold/pulse
+为+0.302/+0.026/+3.750 ns，29,758/29,758条网络完成布线，功能风险DRC为0。
+LUT/FF/BRAM36等效/DSP为19,759/17,585/34.5/4，分别占37.14%/16.53%/24.64%/1.82%。
+配套`.bit/.hwh`、Notebook、驱动与145条向量已发布到固定目录；
+[签核与哈希](../results/keccak_cpu/pynq/20261005_psaxi06/result.json)已归档。
+
+此前run04/05因复位连接或GP0元数据被拒绝；原证据保留。run06复用了相同输入的run02仿真，
+从已完成的综合/布线检查点恢复，修复7处工具生成的隐式LUT配对问题，仅移动FDRE，
+逐项验证INIT和连接保持不变。恢复Tcl及实际collector另行记录哈希，没有改写冻结输入。
+新overlay尚未上板验证；当前等待网线排查恢复Jupyter。PS–PL使用独立`vivado_bd.tcl`的
+`PREPARE/SIM/CREATE_BD/SYNTH/IMPL/EXPORT`开关，通过门禁后仅发布到
+`release/mlkem1024_pynq/`；构建与恢复方式见[BUILD.md](BUILD.md#k4-pspl--jupyter入口)。
+
+此前独立3例PL自检已有**用户报告的LED0 PASS及BTN0复位后恢复**。
+该实板观察与自动采集的PS–PL结果区分记录；不包含主机读回、板上145例或现场CPU-only对照。
+Notebook和驱动已具备装载、校验、计时分项与导出入口，后续需用新overlay完成实板验证。
+
+### 已冻结的核心与独立PL实现证据
+
+`timing_decode_v3`官方RTL KAT **145/145** 已完成，19批唯一覆盖、每批最终PASS、
 官方输出及冻结输入哈希通过独立collector复核。3,188次真实HLS调用与预期匹配。
 同RV32IM-fast、128 KiB RAM / 32 KiB栈：CPU/加速API周期为1,699,294,360 / 446,853,509，
 完整测试集比值 **3.8028×**；最大观测栈24,384 B。19批仿真时长合计10,961.816秒，非芯片执行时间。
-[当前全量证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)独立保存，当前版本无需重跑。
+[核心全量证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)独立保存，冻结版本无需重跑。
+**145/145和3.8028×属于该核心的历史RTL证据，不是新overlay的实板测量。**
 
 板级`20261004_162430`的100 MHz setup/hold/pulse为+0.109/+0.027/+2.000 ns；
 LUT/FF/BRAM36等效/DSP为19,030/16,963/34.5/4，bitstream及报告哈希已复核。
@@ -18,9 +42,9 @@ LUT/FF/BRAM36等效/DSP为19,030/16,963/34.5/4，bitstream及报告哈希已复�
 核心145例使用邮箱RTL测试平台；板级固件内置3例，真实MMCM及运行中BTN0复位恢复已验证。
 原OOC resetn边界负hold证据保留，不影响独立板级流程已完成的签核。
 
-**上板前核心验收完成，可进入首次烧录。** 现有bitstream是独立PL自检，仅时钟/按钮/LED端口，
-没有PS/AXI控制接口；实板全量数据装载、周期/结果读回和Jupyter演示仍待开发及验证。
-开发默认仍仅跑索引0、1、115，统一用`run_flow.tcl`顶部开关；无周期自动任务。
+该bitstream是独立PL自检，仅时钟/按钮/LED端口，没有PS/AXI控制接口。
+核心开发默认仍仅跑索引0、1、115，使用`run_flow.tcl`顶部开关；PS–PL使用上文独立入口。
+无周期自动任务。
 以下2026-09-27段落保留历史数据；当前覆盖以本节及独立全量证据为准。
 
 2026-09-27 决策：**ML-KEM-1024（K=4）为优化与展示主线，K=2 冻结为历史对照，
@@ -144,7 +168,8 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
 | K=2 PQC 加速器接入标准软件 | 冻结历史对照；CPU+驱动及官方 KAT 145/145 通过，端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
 | K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，当前100 MHz板级实现签核完成 | [HLS 说明](../hls/mlkem1024_keccak/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
-| K=4 CPU+加速器系统 | 当前候选145/145、3.8028×；组件10项与板级3例复位检查通过，实现签核和bitstream已完成 | [板级证据](../results/keccak_cpu/board/20261004_162430/result.json) |
+| K=4 CPU+加速器核心与独立PL自检 | 冻结核心145/145、历史RTL比值3.8028×；独立PL实现签核完成，用户报告3例LED0 PASS及BTN0复位恢复 | [独立PL证据](../results/keccak_cpu/board/20261004_162430/result.json) |
+| K=4 PS–PL / Jupyter overlay | run02实际AXI协议及3例PASS；run04拒绝发布，run05待重新实现；新overlay未上板 | [构建入口](BUILD.md#k4-pspl--jupyter入口) |
 
 ### 当前官方用例覆盖
 
@@ -154,8 +179,8 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | PicoRV32 RV32I RTL | 145 项所选记录通过 | 待测 | 待测 |
 | PicoRV32 RV32IM 迭代 RTL | 145 项所选记录通过 | 待测 | 待测 |
 | PicoRV32 RV32IM 快速 RTL | 145 项所选记录通过 | 145 项通过，128 KiB RAM | 145 项通过，128 KiB RAM |
-| CPU＋PQC 加速器标准软件 | 145 项 RTL 仿真通过；端到端 0.9930×，冻结历史对照 | 后置扩展 | 145项RTL通过；同配置API总周期比3.803× |
-| 本项目标准软件实板回归 | 最后执行 | 最后执行 | 最后执行 |
+| CPU＋PQC 加速器标准软件 | 145 项 RTL 仿真通过；端到端 0.9930×，冻结历史对照 | 后置扩展 | 冻结核心145项RTL通过，历史API周期比3.803×；新AXI候选3例通过 |
+| 本项目标准软件实板回归 | 最后执行 | 最后执行 | 独立3例自检LED0/BTN0由用户报告通过；PS–PL及145例待测 |
 
 主机的 435 项是 `75 + 165 + 195`，来自固定版本 FIPS203 keyGen、FIPS203 encapDecap
 和 FIPS203-tr1 encapDecap 数据集。历史 PicoRV32 的 435 次执行是同一512集合在三种CPU上各145项；
@@ -189,12 +214,12 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 1 | 保存 K=2 历史对照和 K3/K4 CPU 基线 | 原始日志、配置、哈希及内存差异可追溯 | 已完成 |
 | 2 | K=4 报告驱动的精确 HLS 优化 | 保持 FIPS 202 逐位结果；C/COSIM、周期、资源和时序报告完整 | io0/io1局部差分及当前100 MHz板级实现签核完成 |
 | 3 | K=4 打包接口与 CPU 集成 | 明确上下文、搬运、启动、等待和读回契约 | 10次RTL组件调用通过，标准库适配完成 |
-| 4 | K=4 CPU+加速器官方 RTL KAT | 开发子集，最终145条逐字节通过且真实硬件调用证据完整 | 当前候选145/145独立验收通过；19批最终PASS |
-| 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 当前全量API周期比3.8028×；K4阶段占比独立待测 |
+| 4 | K=4 CPU+加速器官方 RTL KAT | 开发子集，最终145条逐字节通过且真实硬件调用证据完整 | 冻结核心145/145；新AXI候选run02协议及3例PASS |
+| 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 历史核心API周期比3.8028×；PS–PL实板对照与K4阶段占比待测 |
 | 6 | K=4 系统资源/时序与设计选择 | 同约束软件/硬件综合和布局布线，记录 LUT/FF/BRAM/DSP/WNS；独立 HLS 估算不替代系统结果 | 板级setup/hold/pulse +0.109/+0.027/+2.000 ns；19,030 LUT、16,963 FF、34.5 BRAM36、4 DSP |
 | 7 | K=3 扩展和其他 CPU 消融 | 在选定架构上补齐对应官方回归、基本性能和内存数据 | 后置 |
-| 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 当前核心145/145、板级3例及运行中复位、实现签核和bitstream已完成 |
-| 9 | 最后进行 PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 最后阶段 |
+| 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 独立PL验收完成；新overlay的run04拒绝发布，run05待重新实现 |
+| 9 | PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 用户报告独立3例LED0/BTN0通过；新overlay与Jupyter实测待完成 |
 
 K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，但扩展必须有独立硬件证据。
 若不同参数集使用不同内存容量，报告中需明确，不能把不同配置的结果当作只改变算法参数的对照。
@@ -209,8 +234,9 @@ K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，�
 > MMIO/BRAM/BIST、Vivado 2024.2 实现及 CPU+PQC 全流程已完成并冻结。当前主线是
 > K=4 Keccak/FIPS 202：局部 HLS 的 C/Verilog COSIM 差分通过，独立 IP OOC 实现已完成，当前100 MHz板级实现签核完成；
 > 历史版本CPU组件10项及标准库145条官方RTL记录已通过，同配置测试集API总周期比3.803×；
-> 当前RTL优化候选官方145/145及100 MHz内部setup/hold通过；板级真实MMCM集成、实现签核和bitstream已完成，
-> setup/hold/pulse为+0.109/+0.027/+2.000 ns；最终145条已验收，实板与Jupyter演示待完成，K=3扩展后置。
+> 冻结核心官方145/145及独立PL实现签核完成，setup/hold/pulse为+0.109/+0.027/+2.000 ns；
+> 独立3例PL自检由用户报告LED0 PASS及BTN0复位恢复。新PS–PL run02实际AXI协议及3例通过，
+> run04拒绝发布、run05待重新实现；新overlay尚未上板，历史3.8028×不作为实板加速比。K=3扩展后置。
 
 全部对应回归完成后，可以描述所覆盖版本、参数集、操作和用例的结果一致性。
 公开向量离线回归不等于正式 CAVP 算法验证，也不等于 FIPS 140-3 / CMVP 密码模块认证；

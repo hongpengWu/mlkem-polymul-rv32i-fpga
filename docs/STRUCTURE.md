@@ -9,7 +9,7 @@ mlkem-polymul-rv32i-fpga/
 ├── rtl/
 │   ├── cpu/                    PicoRV32
 │   ├── benchmark/              CPU-only 固件 RAM 和可配置系统 wrapper
-│   └── accelerator/            HLS RTL、BRAM、MMIO adapter 和 PYNQ-Z2 BIST 顶层
+│   └── accelerator/            HLS/BRAM/MMIO、独立PL自检顶层与K4 AXI-Lite包装层
 ├── hls/
 │   ├── mlkem512_basemul_k2/    历史 K2 源码、TB、Tcl和导出 IP
 │   └── mlkem1024_keccak/      K4 主线源码、TB、Tcl和证据脚本，生成工程不入 Git
@@ -18,6 +18,7 @@ mlkem-polymul-rv32i-fpga/
 │   ├── mlkem_baseline/         官方 KeyGen 入口
 │   ├── mlkem512_suite/         完整 ML-KEM-512 官方套件入口
 │   ├── mlkem512_profile/       阶段 profiling 入口
+│   ├── mlkem1024_keccak/      K4硬件FIPS202、独立自检及PS单例固件
 │   └── images/                 CPU/ML-KEM 固件镜像
 ├── tb/
 │   ├── cpu/                    M 扩展和周期验证
@@ -30,9 +31,11 @@ mlkem-polymul-rv32i-fpga/
 │   ├── mlkem512_profile/       阶段测量
 │   ├── mlkem512_interface/     接口审计和软件 oracle
 │   ├── mlkem512_basemul_k2/    加速器 Vivado 仿真、实现和报告
+│   ├── mlkem1024_keccak/      核心run_flow与独立PS–PL vivado_bd入口
 │   └── kat/                    ACVP 结构检查和主机参考回归
+├── pynq/mlkem1024/             单一Notebook及便携主机驱动源码
 ├── vivado/                     CPU-only/ML-KEM 软件与独立加速器 XPR
-├── release/                    CPU-only 与独立加速器 bitstream
+├── release/                    历史bitstream；新overlay固定使用mlkem1024_pynq/
 ├── results/                    官方回归、CPU 实现、HLS 和加速器证据
 ├── vectors/official_kat/       固定版本 ACVP/FIPS 203 向量
 ├── third_party/                固定提交的 mlkem-native portable C
@@ -55,6 +58,11 @@ mlkem-polymul-rv32i-fpga/
   XPR 和固件镜像；`.runs`、`.sim`、`.cache` 等生成目录不进版本库。
 - `release/cpu_baseline_*` 是已有 CPU-only 实现产物。它们不是新 HLS 的 bitstream，也不
   代表 CPU+PL 加速系统已经完成。
+- K4 PS–PL使用独立`scripts/mlkem1024_keccak/vivado_bd.tcl`阶段开关；候选工程在
+  `E:/hls/k4pynq/<批次>/`，证据在`results/keccak_cpu/pynq/<批次>/`。
+  仅通过门禁的配套`.bit/.hwh`、Notebook/驱动、官方向量和manifest发布到固定
+  `release/mlkem1024_pynq/`，不为每批另建部署目录。run02协议/3例PASS，run04拒绝发布，
+  run05因元数据拒绝，run06已完成物理签核和发布；新overlay实板验证仍待进行。
 - `results/official_baseline/`、`results/official_reference/`、`results/cpu_baseline/` 和
   `results/accelerator_interface/` 只保存可审计证据；后者包含 HLS、RTL、板级 BIST 和
   Vivado 实现结果，旧完整加速器结果已移除。
@@ -65,5 +73,6 @@ Vitis HLS 和 Vivado 都会生成大量缓存、日志、波形和布局布线�
 只保留可复现入口、XPR、MEM、XCI、BIT/LTX 和报告；重新生成时不要把 `.Xil`、`.runs`、
 `.sim`、`.cache`、DCP 或临时目录加入 Git。
 
-K2 保留已验证的 native MMIO/BRAM adapter。K4 Keccak 使用独立接口契约，后续需完成
-CPU 总线仲裁、批量数据通路、软件调用及系统顶层，再建立自己的端到端证据。
+K2 保留已验证的native MMIO/BRAM adapter。K4核心集成与历史145例RTL证据已完成；
+独立3例PL自检由用户报告LED0/BTN0通过。新PS–PL路径另行保存AXI、实现及实板证据，
+不把历史3.8028×或用户的独立自检观察转记为新overlay的实测结果。
