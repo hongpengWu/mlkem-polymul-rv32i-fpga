@@ -1,0 +1,13 @@
+{
+  "exit_code": 1,
+  "elapsed_seconds": 29.984999999869615,
+  "completed_utc": "2026-10-04T04:41:51.206612+00:00",
+  "manifest_sha256": "658b9819c21256ad9930c53b8f8c64164762c17eb5119b57be9ca5509271138e",
+  "implementation_completed": false,
+  "timing_met": false,
+  "error": "[Errno 2] No such file or directory: 'E:\\\\hls\\\\k4sys\\\\20261004_124120\\\\keccak\\\\reports\\\\metrics.json'",
+  "report_sha256": {
+    "console.txt": "ff796c63144fdfcb213f3f20bc81948f69ff3119c5d47e7f5dbf9b11d04450fd",
+    "manifest.json": "658b9819c21256ad9930c53b8f8c64164762c17eb5119b57be9ca5509271138e"
+  }
+}

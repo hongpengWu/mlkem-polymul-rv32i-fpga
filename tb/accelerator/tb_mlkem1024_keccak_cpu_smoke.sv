@@ -19,14 +19,46 @@ module tb_mlkem1024_keccak_cpu_smoke;
     integer hls_starts=0, hls_dones=0, base;
     reg previous_start=0, previous_done=0;
     reg [31:0] previous_busy=0;
+    reg [31:0] decode_probe;
+    reg [31:0] reference_offset;
+    reg reference_hit;
+    integer region, byte_offset;
+    task check_decode;
+        begin
+            #1;
+            reference_offset = decode_probe - 32'h50010000;
+            reference_hit = decode_probe >= 32'h50010000 && reference_offset < 32'h4000;
+            if (dut.adapter_i.hit !== reference_hit ||
+                (reference_hit && dut.adapter_i.offset !== reference_offset))
+                $fatal(1,"KECCAK_CPU_SMOKE_FAIL address decode addr=%h",decode_probe);
+        end
+    endtask
     initial begin
         $readmemh("expected.mem", expected);
         $readmemh("meta.mem", metadata);
+        // Reset holds the CPU/adapter inactive. Compare the actual optimized
+        // decoder with the original range semantics, including all high-bit
+        // regions, both region boundaries, and every byte inside the window.
+        force dut.adapter_i.bus_addr = decode_probe;
+        for (region=0; region<262144; region=region+1) begin
+            decode_probe = region << 14;
+            check_decode;
+            decode_probe = (region << 14) | 32'h3fff;
+            check_decode;
+        end
+        for (byte_offset=0; byte_offset<16384; byte_offset=byte_offset+1) begin
+            decode_probe = 32'h50010000 + byte_offset;
+            check_decode;
+        end
+        release dut.adapter_i.bus_addr;
+        $display("KECCAK_DECODE_EQ_PASS high_regions=262144 window_bytes=16384");
         repeat(10) @(negedge clk);
         resetn=1;
     end
     always @(posedge clk) if (resetn) begin
         ticks=ticks+1;
+        if (dut.boot_write !== (dut.local_write_commit && dut.commit_addr < 32'h20000))
+            $fatal(1,"KECCAK_CPU_SMOKE_FAIL RAM write equivalence");
         if (dut.adapter_i.hls_i.ap_start && !previous_start) hls_starts=hls_starts+1;
         if (dut.adapter_i.hls_i.ap_done && !previous_done) hls_dones=hls_dones+1;
         previous_start=dut.adapter_i.hls_i.ap_start;

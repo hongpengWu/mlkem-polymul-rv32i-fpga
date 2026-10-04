@@ -48,16 +48,43 @@ def verify_snapshot(run, manifest):
             raise RuntimeError('Frozen input changed: ' + name)
 
 
-def completed_indices(cases):
+def version_inputs(inputs):
+    # Batch fixtures vary by selected cases. The scheduler Python is provenance,
+    # not an elaboration input; changing its resume checks does not change RTL.
+    excluded = {'run_kat.py', 'fixtures/mlkem1024_input.mem', 'fixtures/mlkem1024_expected.mem'}
+    return {name: info['sha256'] for name, info in inputs.items() if name not in excluded}
+
+
+def require_same_version(manifest, expected, evidence):
+    actual = version_inputs(manifest['inputs'])
+    changed = sorted(name for name in actual.keys() | expected.keys()
+                     if actual.get(name) != expected.get(name))
+    config = (manifest.get('parameter_set'), manifest.get('config'),
+              manifest.get('ram_bytes'), manifest.get('stack_bytes'))
+    if changed or config != (1024, 'rv32im_fast', 131072, 32768):
+        raise RuntimeError('Different KAT input version at ' + str(evidence) +
+                           '; use a new --results-dir and --build-dir. Changed: ' +
+                           ', '.join(changed or ['system configuration']))
+
+
+def completed_indices(cases, expected):
     from collect_kat import validate_log
     completed = set()
-    for result_file in sorted((EVIDENCE / 'batches').glob('*/*/result.json')):
+    for result_file in (EVIDENCE / 'batches').glob('*/*/result.json'):
+        if not result_file.with_name('manifest.json').is_file():
+            raise RuntimeError('Result has no input manifest: ' + str(result_file))
+    # Check all attempts, including failed/interrupted ones, before skipping any
+    # successful cases. A result root belongs to exactly one hardware version.
+    for manifest_file in sorted((EVIDENCE / 'batches').glob('*/*/manifest.json')):
+        manifest = json.loads(manifest_file.read_text())
+        require_same_version(manifest, expected, manifest_file.parent)
+        result_file = manifest_file.with_name('result.json')
+        if not result_file.exists():
+            continue
         result = json.loads(result_file.read_text())
         if not result.get('passed'):
             continue
         evidence = result_file.parent
-        manifest_file = evidence / 'manifest.json'
-        manifest = json.loads(manifest_file.read_text())
         if sha(manifest_file) != result['input_manifest_sha256'] or sha(evidence / 'simulate.log') != result['output_sha256']['simulate.log']:
             raise RuntimeError('Changed success evidence: ' + str(evidence))
         verify_snapshot(Path(manifest['run_dir']), manifest)
@@ -69,10 +96,13 @@ def completed_indices(cases):
     return completed
 
 
-def run_batch(args, cases, indices):
-    from collect_kat import validate_log
-    tool_guard()
+def current_input_pairs(args):
     build_file = EVIDENCE / 'build.json'
+    # Candidate roots may reuse the verified firmware record without rebuilding
+    # or modifying historical results. Existing records are never overwritten.
+    if not build_file.exists():
+        build_file.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(args.build_record, build_file)
     build = json.loads(build_file.read_text())
     for name, digest in build['source_sha256'].items():
         if sha(ROOT / name) != digest:
@@ -84,11 +114,6 @@ def run_batch(args, cases, indices):
     for name, info in selected.items():
         if sha(args.hls_run / 'p/sol1/syn/verilog' / name) != info['raw_sha256']:
             raise RuntimeError('HLS RTL differs from verified selection: ' + name)
-    tag = 'pilot_000_001_115' if indices == [0, 1, 115] else f'batch_{indices[0]:03}_{indices[-1]:03}'
-    run = args.run_root / datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-    run.mkdir(parents=True, exist_ok=False)
-    evidence = EVIDENCE / 'batches' / tag / run.name
-    evidence.mkdir(parents=True, exist_ok=False)
     pairs = [(ROOT / name, Path('rtl') / Path(name).name) for name in
              ('rtl/cpu/picorv32.v', 'rtl/accelerator/keccak_mmio_adapter.sv',
               'rtl/accelerator/mlkem1024_keccak_system.sv')]
@@ -99,20 +124,36 @@ def run_batch(args, cases, indices):
               (ROOT / build['firmware'], Path('fixtures/mlkem1024.mem'))]
     pairs += [(ROOT / name, Path('source') / name) for name in build['source_sha256']]
     pairs += [(args.hls_run / 'p/sol1/syn/verilog' / name, Path('hls') / name) for name in selected]
+    return pairs
+
+
+def run_batch(args, cases, indices, pairs, expected):
+    from collect_kat import validate_log
+    tool_guard()
+    for source, relative in pairs:
+        if relative.as_posix() in expected and sha(source) != expected[relative.as_posix()]:
+            raise RuntimeError('Input changed since scheduler start: ' + str(source))
+    tag = 'pilot_000_001_115' if indices == [0, 1, 115] else f'batch_{indices[0]:03}_{indices[-1]:03}'
+    run = args.run_root / datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+    run.mkdir(parents=True, exist_ok=False)
+    evidence = EVIDENCE / 'batches' / tag / run.name
+    evidence.mkdir(parents=True, exist_ok=False)
     frozen = {}
     for source, relative in pairs:
         target = run / 'snapshot' / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, target)
         frozen[relative.as_posix()] = dict(source=str(source), sha256=sha(target))
+    if version_inputs(frozen) != expected:
+        raise RuntimeError('Input changed while freezing snapshot; failed directory retained: ' + str(run))
     local_cases = deepcopy([cases[i] for i in indices])
     for local, case in enumerate(local_cases):
         case['case_index'] = local
-    for expected, suffix in ((False, 'input'), (True, 'expected')):
+    for is_expected, suffix in ((False, 'input'), (True, 'expected')):
         relative = f'fixtures/mlkem1024_{suffix}.mem'
         path = run / 'snapshot' / relative
-        path.write_text(''.join(f'{w:08x}\n' for w in pack_fixture(local_cases, 1024, expected)), encoding='ascii')
-        verify_roundtrip(path, local_cases, 1024, expected)
+        path.write_text(''.join(f'{w:08x}\n' for w in pack_fixture(local_cases, 1024, is_expected)), encoding='ascii')
+        verify_roundtrip(path, local_cases, 1024, is_expected)
         frozen[relative] = dict(source='Generated from pinned public ACVP cases', sha256=sha(path))
     cmd = [str(args.vivado), '-mode', 'batch', '-source', str(run / 'snapshot/run_kat.tcl'),
            '-tclargs', str(run), str(len(indices)), str(args.threads)]
@@ -160,6 +201,7 @@ def run_batch(args, cases, indices):
 
 
 def main():
+    global EVIDENCE, BUILD
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--remaining', action='store_true')
     parser.add_argument('--batch-size', type=int, default=8)
@@ -167,9 +209,17 @@ def main():
     parser.add_argument('--hls-run', type=Path, default=Path('E:/hls/k4_io1/opt02'))
     parser.add_argument('--run-root', type=Path, default=Path('E:/hls/k4kat'))
     parser.add_argument('--vivado', type=Path, default=Path('E:/Xilinx/Vivado/2024.2/bin/vivado.bat'))
+    parser.add_argument('--results-dir', type=Path, default=EVIDENCE,
+                        help='Evidence root; use a new root for an RTL candidate')
+    parser.add_argument('--build-dir', type=Path, default=BUILD,
+                        help='Progress/lock root paired with --results-dir')
+    parser.add_argument('--build-record', type=Path, default=EVIDENCE / 'build.json',
+                        help='Verified firmware record to seed a new result root')
     args = parser.parse_args()
     if not 1 <= args.batch_size <= 8 or not 1 <= args.threads <= 8 or not args.vivado.is_file():
         raise ValueError('Invalid batch size, threads or Vivado path')
+    EVIDENCE = args.results_dir.resolve()
+    BUILD = args.build_dir.resolve()
     BUILD.mkdir(parents=True, exist_ok=True)
     with (BUILD / 'kat.lock').open('a+b') as guard:
         guard.seek(0)
@@ -178,7 +228,10 @@ def main():
         guard.seek(0)
         msvcrt.locking(guard.fileno(), msvcrt.LK_NBLCK, 1)
         cases, _ = load_cases(ROOT, 1024)
-        completed = completed_indices(cases)
+        pairs = current_input_pairs(args)
+        expected = version_inputs({relative.as_posix(): {'sha256': sha(source)}
+                                   for source, relative in pairs})
+        completed = completed_indices(cases, expected)
         requested = list(range(len(cases))) if args.remaining else [0, 1, 115]
         pending = [i for i in requested if i not in completed]
         print(f'KECCAK_KAT_RESUME completed={len(completed)} pending={len(pending)}', flush=True)
@@ -187,14 +240,14 @@ def main():
                 print('KECCAK_KAT_STOP checkpoint preserved', flush=True)
                 return
             indices = pending[offset:offset + args.batch_size]
-            run_batch(args, cases, indices)
+            run_batch(args, cases, indices, pairs, expected)
             completed.update(indices)
             dump(BUILD / 'kat_progress.json', dict(status='checkpoint', completed_indices=sorted(completed)))
         print(f'KECCAK_KAT_REQUEST_COMPLETE unique_cases={len(completed)}/145', flush=True)
         if completed == set(range(145)):
             # Final strict aggregation runs once, in this scheduler; no heartbeat.
             subprocess.run([sys.executable, str(Path(__file__).with_name('collect_kat.py')),
-                            '--write'], cwd=ROOT, check=True)
+                            '--results-dir', str(EVIDENCE), '--write'], cwd=ROOT, check=True)
             dump(BUILD / 'kat_progress.json', dict(status='complete', completed_indices=sorted(completed)))
 
 

@@ -1,0 +1,63 @@
+{
+  "exit_code": 1,
+  "elapsed_seconds": 179.01600000006147,
+  "completed_utc": "2026-10-04T03:46:44.421343+00:00",
+  "manifest_sha256": "aad8678ab5e49b4948d8962ed29f799a6798c9203efb1c65cac4f396d496d55d",
+  "implementation_completed": true,
+  "timing_met": false,
+  "metrics": {
+    "scope": "Complete system OOC; not board timing or bitstream validation",
+    "variant": "cpu_only",
+    "top": "cpu_benchmark_system",
+    "part": "xc7z020clg400-1",
+    "clock_period_ns": 10.0,
+    "clock_uncertainty_ns": 0.1,
+    "hd_clk_src": "BUFGCTRL_X0Y0",
+    "io_min_ns": 0.0,
+    "io_max_ns": 2.0,
+    "ram_bytes": 131072,
+    "cpu_mul": 1,
+    "cpu_fast_mul": 1,
+    "cpu_div": 1,
+    "routed_setup_slack_ns": 0.228,
+    "routed_hold_slack_ns": -1.19,
+    "timing_met": false,
+    "lut_primitives": 1912,
+    "ff_primitives": 1388,
+    "ramb36_primitives": 32,
+    "ramb18_primitives": 0,
+    "bram36_equivalent": 32.0,
+    "dsp_primitives": 4,
+    "resource_count_note": "Primitive counts; report_utilization is authoritative for packed LUT and device totals",
+    "signoff_note": "timing_met checks routed worst setup/hold slack only; review DRC, pulse width, unconstrained paths and complete routing separately"
+  },
+  "resources": {
+    "lut": 1719.0,
+    "ff": 1388.0,
+    "bram36_tiles": 32.0,
+    "dsp": 4.0
+  },
+  "checkpoint_sha256": {
+    "synth.dcp": "29373c22cfcceb407f6087fbbe879a13dc242cd509d92ca2b60125ae5b3f8a79",
+    "routed.dcp": "7bcf927e336d6037059304b7dec7ac12bb796a68a0915c3ebbf9adb8bd2b0a91"
+  },
+  "error": "Vivado exit=1; inspect retained reports",
+  "report_sha256": {
+    "console.txt": "03e69eb026096f9bbab7b2d08df26093dcddd32f5ce6b3d2b0b40da474e17910",
+    "manifest.json": "aad8678ab5e49b4948d8962ed29f799a6798c9203efb1c65cac4f396d496d55d",
+    "reports/applied_routed.xdc": "2c946bf075a133af3d138734b36e518ebdcf1e9551ff6ebda1d33fd2240ef602",
+    "reports/applied_synth.xdc": "7e0e31bd58752b7408e8ebd09c20c452094a173eae6977aee7a093b91e64e47b",
+    "reports/check_timing.rpt": "2d39c0cccd3fdbace805356918199e2bbe1656d025b25d045f019e1b7215d071",
+    "reports/clocks.rpt": "49991926d7292f4b51010a7f5de964e32f5e0bda6d4aec6b7e81b6a1b3d9bf78",
+    "reports/drc.rpt": "c3a8b7ce3893058adc12917eec35b9dce7a6fd3f4ebecd2afed086dcbf2c939b",
+    "reports/hold_paths.rpt": "a33368a2669b04300cb1a44b1029427d70c599ee46273ed1e7259c11b8ed60f7",
+    "reports/metrics.json": "f98d0b6891d0762fbb15ff56a87bc08a1faee1fed159cd2e4403b29d2d0dbd14",
+    "reports/route_status.rpt": "52ef24143b67783f61d9a62e9e308043791d1fb206b4afea991a6866f3a68799",
+    "reports/setup_paths.rpt": "4e9ae966fe305298876f5a047e215b2715be13535e9b0d7264fc2fa9644a6905",
+    "reports/synth_clocks.rpt": "f385336e9bb71b8ce15708e40b8e4eccb6a26f027327a6bbeffc42d0992dc189",
+    "reports/synth_utilization.rpt": "77cfa8b6b19e462690c49ba0028efd3fc24aa1d54935e533fbf254e5854eda61",
+    "reports/timing_summary.rpt": "9ca69897ef6cc5e55e17a1cf825709046b9880e0a8e2abb2007de284f3d4e2ac",
+    "reports/utilization.rpt": "b3e994093a7ba35d88b68a2698598fc68f86d351fcc2a422422d0d64466d7ae8",
+    "reports/utilization_hierarchical.rpt": "63aa5a857506bbf157a8f41e6607c0eabdc41c7da1872426545a7d7f3811b6c9"
+  }
+}

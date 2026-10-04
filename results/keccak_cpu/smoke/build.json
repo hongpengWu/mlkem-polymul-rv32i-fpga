@@ -1,6 +1,6 @@
 {
   "scope": "Local FIPS 202 CPU-to-Keccak MMIO smoke; not official K4 KEM execution",
-  "created_utc": "2026-09-27T08:45:00.859311+00:00",
+  "created_utc": "2026-10-04T04:16:57.952515+00:00",
   "isa": "rv32im",
   "ram_bytes": 131072,
   "reserved_stack_bytes": 32768,
@@ -157,7 +157,7 @@
     "firmware/mlkem1024_keccak/keccak_mmio.c": "802f2452f28211c7a3d779151f2d14c3d12d33d5607e2f6bdcd959e32c6a0ab4",
     "firmware/mlkem1024_keccak/smoke.c": "efa17a5b323304ea3173673127619628986b7c51a2f480673a69d79658461e8e",
     "scripts/mlkem1024_keccak/build_smoke.py": "cdb49412230efd19272bc370efee651257531f553a455a3230fead39d7a1b23c",
-    "tb/accelerator/tb_mlkem1024_keccak_cpu_smoke.sv": "68803866db25c7ca8a41e8401abfce0fb13bf808615076d0118602f9c296400b"
+    "tb/accelerator/tb_mlkem1024_keccak_cpu_smoke.sv": "5380ab371abb0ad85ecac58c929839d8b8b683f39b0b22cd95817c0eaf9242af"
   },
   "generated_sha256": {
     "smoke_inputs.h": "1389812c078c8e6def6b4d57438ca03078906f03d83b3c1b0c3e881129f4a080",

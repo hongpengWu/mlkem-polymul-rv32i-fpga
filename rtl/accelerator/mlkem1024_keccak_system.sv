@@ -16,7 +16,12 @@ module mlkem1024_keccak_system #(
     localparam [31:0] RAM_LIMIT = (1 << (RAM_ADDR_BITS+2));
     localparam [31:0] DBG_BASE = 32'h50000000;
     localparam [31:0] ACC_BASE = 32'h50010000;
-    localparam [31:0] ACC_LIMIT = 32'h50014000;
+    // The direct RAM write path requires RAM and MMIO address spaces to be
+    // disjoint. Larger configurations would overlap DBG_BASE/ACC_BASE.
+    initial begin
+        if (RAM_ADDR_BITS < 1 || RAM_ADDR_BITS > 28)
+            $fatal(1, "RAM_ADDR_BITS must be in 1..28; RAM must not overlap MMIO");
+    end
     reg [31:0] debug_regs[0:15];
     integer i, byte_i;
     initial for(i=0;i<16;i=i+1) debug_regs[i]=0;
@@ -45,12 +50,15 @@ module mlkem1024_keccak_system #(
         .pcpi_wr(1'b0),.pcpi_rd(32'b0),.pcpi_wait(1'b0),.pcpi_ready(1'b0),
         .irq(32'b0),.eoi(),.trace_valid(),.trace_data()
     );
-    wire write_sel_ram=c_awaddr<RAM_LIMIT;
-    wire read_sel_ram=c_araddr<RAM_LIMIT;
+    // RAM_ADDR_BITS=15 maps 128 KiB at 0x00000000.  Testing the upper
+    // address bits avoids a wide comparator on the CPU ready/address path.
+    wire write_sel_ram=!c_awaddr[31:RAM_ADDR_BITS+2];
+    wire read_sel_ram=!c_araddr[31:RAM_ADDR_BITS+2];
     wire write_sel_dbg=c_awaddr[31:6]==DBG_BASE[31:6];
     wire read_sel_dbg=c_araddr[31:6]==DBG_BASE[31:6];
-    wire write_sel_acc=c_awaddr>=ACC_BASE && c_awaddr<ACC_LIMIT;
-    wire read_sel_acc=c_araddr>=ACC_BASE && c_araddr<ACC_LIMIT;
+    // The 16 KiB accelerator window is aligned to bit 14.
+    wire write_sel_acc=c_awaddr[31:14]==ACC_BASE[31:14];
+    wire read_sel_acc=c_araddr[31:14]==ACC_BASE[31:14];
     reg local_aw_hold,local_w_hold,local_bvalid,local_rvalid,local_read_is_ram;
     reg accel_read_pending;
     reg [31:0] local_awaddr,local_wdata,local_rdata;
@@ -68,7 +76,8 @@ module mlkem1024_keccak_system #(
     wire [31:0] commit_addr=local_aw_hold ? local_awaddr : c_awaddr;
     wire [31:0] commit_data=local_w_hold ? local_wdata : c_wdata;
     wire [3:0] commit_strb=local_w_hold ? local_wstrb : c_wstrb;
-    wire commit_is_acc=commit_addr>=ACC_BASE && commit_addr<ACC_LIMIT;
+    wire commit_is_acc=commit_addr[31:14]==ACC_BASE[31:14];
+    wire commit_is_ram=!commit_addr[31:RAM_ADDR_BITS+2];
     wire accel_bus_ready,accel_bus_rvalid;
     wire [31:0] accel_bus_rdata;
     wire local_write_commit=write_pending && (!commit_is_acc || accel_bus_ready);
@@ -99,7 +108,10 @@ module mlkem1024_keccak_system #(
         .hls_cycles(),.buffer_writes(),.buffer_reads()
     );
 
-    wire boot_write=local_write_commit && commit_addr<RAM_LIMIT;
+    // RAM writes are disjoint from the accelerator window, so they must not
+    // wait on accelerator ready.  This removes the ready feedback from the
+    // RAM address select while preserving the AXI write response behavior.
+    wire boot_write=write_pending && commit_is_ram;
     wire boot_read=local_ar_fire && read_sel_ram;
     wire [RAM_ADDR_BITS-1:0] boot_addr=boot_write ? commit_addr[RAM_ADDR_BITS+1:2] : c_araddr[RAM_ADDR_BITS+1:2];
     xpm_memory_spram #(

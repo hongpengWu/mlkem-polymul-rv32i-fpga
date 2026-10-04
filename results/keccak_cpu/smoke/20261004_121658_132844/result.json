@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "exit_code": 0,
+  "completed_utc": "2026-10-04T04:17:32.138993+00:00",
+  "scope": "PicoRV32 fast CPU plus Keccak local smoke, not official K4 KAT"
+}

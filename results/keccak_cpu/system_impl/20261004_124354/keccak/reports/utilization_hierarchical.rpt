@@ -1,0 +1,61 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sun Oct  4 12:52:31 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file E:/hls/k4sys/20261004_124354/keccak/reports/utilization_hierarchical.rpt
+| Design       : mlkem1024_keccak_system
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++---------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+|                               Instance                              |                                                  Module                                                 | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs  | RAMB36 | RAMB18 | DSP Blocks |
++---------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+| mlkem1024_keccak_system                                             |                                                                                                   (top) |      19003 |      18959 |      44 |    0 | 17005 |     34 |      1 |          4 |
+|   (mlkem1024_keccak_system)                                         |                                                                                                   (top) |          0 |          0 |       0 |    0 |   616 |      0 |      0 |          0 |
+|   adapter_i                                                         |                                                                                     keccak_mmio_adapter |      17246 |      17246 |       0 |    0 | 15616 |      2 |      1 |          0 |
+|     (adapter_i)                                                     |                                                                                     keccak_mmio_adapter |        109 |        109 |       0 |    0 |   257 |      2 |      1 |          0 |
+|     hls_i                                                           |                                                                                  mlkem1024_keccak_accel |      17138 |      17138 |       0 |    0 | 15359 |      0 |      0 |          0 |
+|       (hls_i)                                                       |                                                                                  mlkem1024_keccak_accel |       3002 |       3002 |       0 |    0 | 10454 |      0 |      0 |          0 |
+|       control_s_axi_U                                               |                                                                    mlkem1024_keccak_accel_control_s_axi |        202 |        202 |       0 |    0 |   135 |      0 |      0 |          0 |
+|       grp_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS_fu_2454      |                                     mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS |       3872 |       3872 |       0 |    0 |  1457 |      0 |      0 |          0 |
+|         (grp_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS_fu_2454)  |                                     mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS |       3124 |       3124 |       0 |    0 |  1455 |      0 |      0 |          0 |
+|         flow_control_loop_pipe_sequential_init_U                    |                                         mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init_3 |        748 |        748 |       0 |    0 |     2 |      0 |      0 |          0 |
+|       grp_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT_fu_2416     |                                    mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT |         20 |         20 |       0 |    0 |     7 |      0 |      0 |          0 |
+|         (grp_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT_fu_2416) |                                    mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT |          0 |          0 |       0 |    0 |     5 |      0 |      0 |          0 |
+|         flow_control_loop_pipe_sequential_init_U                    |                                         mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init_2 |         20 |         20 |       0 |    0 |     2 |      0 |      0 |          0 |
+|       grp_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT_fu_2422      |                                     mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT |       1663 |       1663 |       0 |    0 |  1614 |      0 |      0 |          0 |
+|         (grp_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT_fu_2422)  |                                     mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT |       1639 |       1639 |       0 |    0 |  1612 |      0 |      0 |          0 |
+|         flow_control_loop_pipe_sequential_init_U                    |                                         mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init_1 |         24 |         24 |       0 |    0 |     2 |      0 |      0 |          0 |
+|       grp_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT_fu_2559      |                                     mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT |        558 |        558 |       0 |    0 |    77 |      0 |      0 |          0 |
+|         (grp_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT_fu_2559)  |                                     mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT |         91 |         91 |       0 |    0 |    75 |      0 |      0 |          0 |
+|         flow_control_loop_pipe_sequential_init_U                    |                                         mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init_0 |        467 |        467 |       0 |    0 |     2 |      0 |      0 |          0 |
+|       grp_p_anonymous_namespace_keccak_f1600_fu_2505                |                                               mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600 |       7828 |       7828 |       0 |    0 |  1615 |      0 |      0 |          0 |
+|         (grp_p_anonymous_namespace_keccak_f1600_fu_2505)            |                                               mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600 |       2946 |       2946 |       0 |    0 |  1606 |      0 |      0 |          0 |
+|         flow_control_loop_pipe_sequential_init_U                    |                                           mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init |       4875 |       4875 |       0 |    0 |     2 |      0 |      0 |          0 |
+|         p_anonymous_namespace_ROUND_CONSTANTS_U                     | mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb |          7 |          7 |       0 |    0 |     7 |      0 |      0 |          0 |
+|   cpu                                                               |                                                                                            picorv32_axi |       1716 |       1672 |      44 |    0 |   773 |      0 |      0 |          4 |
+|     (cpu)                                                           |                                                                                            picorv32_axi |         10 |         10 |       0 |    0 |     0 |      0 |      0 |          0 |
+|     axi_adapter                                                     |                                                                                    picorv32_axi_adapter |          7 |          7 |       0 |    0 |     4 |      0 |      0 |          0 |
+|     picorv32_core                                                   |                                                                                                picorv32 |       1699 |       1655 |      44 |    0 |   769 |      0 |      0 |          4 |
+|       (picorv32_core)                                               |                                                                                                picorv32 |       1073 |       1029 |      44 |    0 |   532 |      0 |      0 |          0 |
+|       pcpi_div                                                      |                                                                                       picorv32_pcpi_div |        343 |        343 |       0 |    0 |   200 |      0 |      0 |          0 |
+|       pcpi_mul                                                      |                                                                                  picorv32_pcpi_fast_mul |        290 |        290 |       0 |    0 |    37 |      0 |      0 |          4 |
+|   firmware_bram                                                     |                                                                                        xpm_memory_spram |         42 |         42 |       0 |    0 |     0 |     32 |      0 |          0 |
+|     (firmware_bram)                                                 |                                                                                        xpm_memory_spram |         42 |         42 |       0 |    0 |     0 |      0 |      0 |          0 |
+|     xpm_memory_base_inst                                            |                                                                                         xpm_memory_base |          0 |          0 |       0 |    0 |     0 |     32 |      0 |          0 |
++---------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------+------------+------------+---------+------+-------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

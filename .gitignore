@@ -58,6 +58,8 @@
 !/results/accelerator_cpu/*.log
 !/results/accelerator_cpu/kat/**/*.log
 !/results/keccak_cpu/kat/**/*.log
+!/results/keccak_cpu/kat_candidate/**/simulate.log
+!/results/keccak_cpu/candidates/**/simulate.log
 !/vivado/mlkem512_basemul_k2/basemul.xpr
 *.elf
 __pycache__/

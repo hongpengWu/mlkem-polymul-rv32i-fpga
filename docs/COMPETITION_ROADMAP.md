@@ -73,8 +73,8 @@ LOOP_TRIPCOUNT 上界且周期/资源相同；RTL 对比已随报告归档，不
 | 历史 K=2 NTT 域 BaseMul HLS | hls/mlkem512_basemul_k2/ | 冻结的局部计算对照 | C 仿真/综合已通过 |
 | 独立 MMIO/BRAM/BIST 硬件路径 | rtl/accelerator/、vivado/mlkem512_basemul_k2/ | 先验证核、存储、控制和板级顶层 | RTL/BIST/100 MHz 实现通过，XPR/bitstream 已保存 |
 | K=2 CPU+PQC 集成系统 | results/accelerator_cpu/kat/ | 冻结的端到端对照 | RV32IM-fast 官方 KAT 145/145；0.9930× |
-| K=4 Keccak/FIPS 202 HLS | hls/mlkem1024_keccak/ | 当前主线 HLS 候选 | 局部 C/COSIM 差分通过；独立 IP OOC 实现已完成，系统OOC已测、100 MHz时序待收敛 |
-| K=4 CPU+加速器集成系统 | rtl/accelerator/、firmware/mlkem1024_keccak/ | 当前主线端到端对照 | 标准库已接入，官方 RTL KAT已145/145通过，系统OOC已测、100 MHz时序待收敛 |
+| K=4 Keccak/FIPS 202 HLS | hls/mlkem1024_keccak/ | 当前主线 HLS 候选 | 局部 C/COSIM 差分、独立IP OOC通过；当前集成系统内部100 MHz通过，板级边界待验收 |
+| K=4 CPU+加速器集成系统 | rtl/accelerator/、firmware/mlkem1024_keccak/ | 当前主线端到端对照 | 历史145/145；当前v3子集3/3和内部100 MHz通过，OOC边界hold及最终全量验收待完成 |
 
 当前数据记录在 [性能台账](BENCHMARKS.md) 和 [CPU 测量协议](CPU_BENCHMARK_PROTOCOL.md) 中。
 原 8 组输入来自本项目，仍作为“软件多项式乘法 baseline”；历史官方 KeyGen 单例独立记账。
@@ -385,6 +385,15 @@ K=4 CPU 驱动、RTL 接口、官方回归与系统实现证据。现有 `rtl/ac
 9. 展示 bitstream、日志和源码哈希；
 10. 说明功耗、安全和资源权衡。
 
+## 开发与交付规则（2026-10-04）
+
+K4主线优先形成可提交版本，再补支线。迭代采用代表性官方子集与定向验证，
+完整145条仅在最终候选验收时执行。统一使用顶部开关式Tcl入口；主线完成后集中
+整理文件结构，合并冗余脚本，保留来源、原始报告、冻结输入和可复现构建依赖。
+参考[Prompt2A/2B](https://github.com/hongpengWu/Prompt-Set-Design/tree/main/UKF_Prompt)
+与[S-Lib](https://github.com/hongpengWu/Prompt-Set-Design/blob/main/S_Lib_Catalog.md)的
+报告定位、单项策略、验证和回滚方法；密码计算保持逐位一致，不使用有损近似。
+
 ## 8. 当前执行队列
 
 2026-09-27补充：K4主机145条调用统计与CPU＋Keccak的10项/216字RTL接口闭环已完成。
@@ -395,7 +404,8 @@ K=4 CPU 驱动、RTL 接口、官方回归与系统实现证据。现有 `rtl/ac
 0.9930× 结果冻结保存；K3/K4 fast CPU 各 145/145 已完成。K=4 Keccak/FIPS 202 HLS
 的 io0/io1 C/COSIM 局部差分通过，独立 IP OOC 实现已完成。K=4标准库已接入，
 官方加速RTL145/145通过，KeyGen/Encaps/Decaps端到端4.203×/3.636×/3.602×，
-所选测试集API总周期比3.803×。同约束系统OOC已完成且资源足够，但加速组100 MHz内部setup −1.367 ns；下一步优先优化RAM写控制与MMIO ready反馈链。
+所选测试集API总周期比3.803×。历史系统OOC内部setup −1.367 ns；2026-10-04当前v3优化总线后，
+内部setup/hold +0.269/+0.029 ns，官方子集3/3周期不变；OOC resetn边界hold仍为负，板级签核待完成。
 自动续跑 `pqc-kat` 已**删除**，不再定时发送指令。
 
 - [x] 确定 K=4 主线、K=2 冻结历史、K=3 后置扩展，实板最后；
@@ -410,7 +420,9 @@ K=4 CPU 驱动、RTL 接口、官方回归与系统实现证据。现有 `rtl/ac
 - [x] 完成同 RV32IM-fast、128 KiB RAM / 32 KiB 栈的未插桩端到端对照，测试集总周期比3.803×；
 - [ ] 独立测量K=4加速后阶段周期及接口成本，按剩余瓶颈选择优化；
 - [x] 完成K=4软件/加速系统同约束OOC资源和时序报告；资源足够，加速组内部setup −1.367 ns；
-- [ ] 优先解耦RAM写控制和MMIO ready组合反馈，验证等价性和周期，再复验100 MHz时序；
+- [x] 当前v3已解耦RAM写控制并简化MMIO译码，组件/译码等价检查及官方子集3/3通过；同例周期不变；
+- [x] 当前v3最终布线的100 MHz内部setup/hold通过；资源LUT19,003、FF17,005、BRAM34.5、DSP4；
+- [ ] 完成板级时钟/复位边界和最终签核；版本稳定后执行145条最终验收，历史全量证据单独保留；
 - [ ] 后置验证 K=3 扩展与其他 CPU 消融，保留独立官方回归和内存配置记录；
 - [ ] 完成适用常数时间、故障检查和上板前系统/产物验收；
 - [ ] 最后完成 PYNQ-Z2 实板验证、演示和可复现证据包。

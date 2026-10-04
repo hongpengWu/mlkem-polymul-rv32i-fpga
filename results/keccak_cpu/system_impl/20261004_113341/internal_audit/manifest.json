@@ -1,0 +1,18 @@
+{
+  "recorded_utc": "2026-10-04T04:21:42.767705+00:00",
+  "recorded_after_analysis": true,
+  "scope": "Read-only audit of existing routed DCPs; no constraints or checkpoints changed",
+  "script_sha256": "a88d2318e077517228d57c7b54bd9b5c28a0a2f522c896eaa90787c7bf3aa952",
+  "checkpoint_sha256": {
+    "keccak": "ed796726a3bcc218998ba6cf352c01e2367eb436948c55c78edcdf31536f8624",
+    "cpu_only": "7bcf927e336d6037059304b7dec7ac12bb796a68a0915c3ebbf9adb8bd2b0a91"
+  },
+  "report_sha256": {
+    "cpu_only/internal_hold.rpt": "4ffaf454b9037c03b99654b0b82db291d71125580351d3cbcdfa32c38bfee25c",
+    "cpu_only/internal_metrics.json": "a71054d51f79d7bee3c2b4457f67ad9880685aabd3bad16c2df4a555a6350d59",
+    "cpu_only/internal_setup.rpt": "add816ce013360f0c0c88fd40588a1d22cfe79dd1d00103599c071225bb110fb",
+    "keccak/internal_hold.rpt": "ba9b28e2fc6d91d89aa745060f4d2d2c2a46f33fc6e8570a97c9c6461689e6e1",
+    "keccak/internal_metrics.json": "22fbc5627247adf8191b34edaf8f12f413e1d640a6b5f32619ada9ffad012573",
+    "keccak/internal_setup.rpt": "54b0bf134b9c5928eac2902a77740444f8d428f5f827603a65ffb95ab1fa0718"
+  }
+}

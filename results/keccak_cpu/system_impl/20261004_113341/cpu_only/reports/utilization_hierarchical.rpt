@@ -1,0 +1,40 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sun Oct  4 11:46:40 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_utilization -hierarchical -file E:/hls/k4sys/20261004_113341/cpu_only/reports/utilization_hierarchical.rpt
+| Design       : cpu_benchmark_system
+| Device       : xc7z020clg400-1
+| Speed File   : -1
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Utilization by Hierarchy
+
+1. Utilization by Hierarchy
+---------------------------
+
++--------------------------+------------------------+------------+------------+---------+------+------+--------+--------+------------+
+|         Instance         |         Module         | Total LUTs | Logic LUTs | LUTRAMs | SRLs |  FFs | RAMB36 | RAMB18 | DSP Blocks |
++--------------------------+------------------------+------------+------------+---------+------+------+--------+--------+------------+
+| cpu_benchmark_system     |                  (top) |       1719 |       1675 |      44 |    0 | 1388 |     32 |      0 |          4 |
+|   (cpu_benchmark_system) |                  (top) |          0 |          0 |       0 |    0 |  615 |      0 |      0 |          0 |
+|   cpu                    |           picorv32_axi |       1685 |       1641 |      44 |    0 |  773 |      0 |      0 |          4 |
+|     (cpu)                |           picorv32_axi |         12 |         12 |       0 |    0 |    0 |      0 |      0 |          0 |
+|     axi_adapter          |   picorv32_axi_adapter |          2 |          2 |       0 |    0 |    4 |      0 |      0 |          0 |
+|     picorv32_core        |               picorv32 |       1671 |       1627 |      44 |    0 |  769 |      0 |      0 |          4 |
+|       (picorv32_core)    |               picorv32 |       1053 |       1009 |      44 |    0 |  532 |      0 |      0 |          0 |
+|       pcpi_div           |      picorv32_pcpi_div |        341 |        341 |       0 |    0 |  200 |      0 |      0 |          0 |
+|       pcpi_mul           | picorv32_pcpi_fast_mul |        284 |        284 |       0 |    0 |   37 |      0 |      0 |          4 |
+|   firmware_bram          |       xpm_memory_spram |         35 |         35 |       0 |    0 |    0 |     32 |      0 |          0 |
+|     (firmware_bram)      |       xpm_memory_spram |         35 |         35 |       0 |    0 |    0 |      0 |      0 |          0 |
+|     xpm_memory_base_inst |        xpm_memory_base |          0 |          0 |       0 |    0 |    0 |     32 |      0 |          0 |
++--------------------------+------------------------+------------+------------+---------+------+------+--------+--------+------------+
+* Note: The sum of lower-level cells may be larger than their parent cells total, due to cross-hierarchy LUT combining
+
+

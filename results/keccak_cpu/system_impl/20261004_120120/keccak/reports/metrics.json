@@ -1,0 +1,14 @@
+{
+  "scope": "Complete system OOC; not board timing or bitstream validation",
+  "variant": "keccak", "top": "mlkem1024_keccak_system", "part": "xc7z020clg400-1",
+  "clock_period_ns": 10.0, "clock_uncertainty_ns": 0.1,
+  "hd_clk_src": "BUFGCTRL_X0Y0", "io_min_ns": 0.0, "io_max_ns": 2.0,
+  "ram_bytes": 131072, "cpu_mul": 1, "cpu_fast_mul": 1, "cpu_div": 1,
+  "routed_setup_slack_ns": -1.059, "routed_hold_slack_ns": -1.281,
+  "timing_met": false,
+  "lut_primitives": 21686, "ff_primitives": 17002,
+  "ramb36_primitives": 34, "ramb18_primitives": 1,
+  "bram36_equivalent": 34.5, "dsp_primitives": 4,
+  "resource_count_note": "Primitive counts; report_utilization is authoritative for packed LUT and device totals",
+  "signoff_note": "timing_met checks routed worst setup/hold slack only; review DRC, pulse width, unconstrained paths and complete routing separately"
+}

@@ -1,0 +1,497 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sun Oct  4 12:52:39 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_timing -delay_type min -max_paths 10 -file E:/hls/k4sys/20261004_124354/keccak/reports/hold_paths.rpt
+| Design       : mlkem1024_keccak_system
+| Device       : 7z020-clg400
+| Speed File   : -1  PRODUCTION 1.12 2019-11-22
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -1.194ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/cpu_state_reg[2]/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT6=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.753ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.753ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/resetn
+    SLICE_X20Y10         LUT6 (Prop_lut6_I1_O)        0.100     1.024 r  cpu/picorv32_core/cpu_state[2]_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/cpu_state0_out[2]
+    SLICE_X20Y10         FDRE                                         r  cpu/picorv32_core/cpu_state_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.753     1.753    cpu/picorv32_core/clk
+    SLICE_X20Y10         FDRE                                         r  cpu/picorv32_core/cpu_state_reg[2]/C
+                         clock pessimism              0.000     1.753    
+                         clock uncertainty            0.135     1.888    
+    SLICE_X20Y10         FDRE (Hold_fdre_C_D)         0.330     2.218    cpu/picorv32_core/cpu_state_reg[2]
+  -------------------------------------------------------------------
+                         required time                         -2.218    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.194    
+
+Slack (VIOLATED) :        -1.190ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/mem_wordsize_reg[1]/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT5=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.746ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.746ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/resetn
+    SLICE_X26Y11         LUT5 (Prop_lut5_I2_O)        0.100     1.024 r  cpu/picorv32_core/mem_wordsize[1]_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/mem_wordsize[1]_i_1_n_2
+    SLICE_X26Y11         FDRE                                         r  cpu/picorv32_core/mem_wordsize_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.746     1.746    cpu/picorv32_core/clk
+    SLICE_X26Y11         FDRE                                         r  cpu/picorv32_core/mem_wordsize_reg[1]/C
+                         clock pessimism              0.000     1.746    
+                         clock uncertainty            0.135     1.881    
+    SLICE_X26Y11         FDRE (Hold_fdre_C_D)         0.333     2.214    cpu/picorv32_core/mem_wordsize_reg[1]
+  -------------------------------------------------------------------
+                         required time                         -2.214    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.190    
+
+Slack (VIOLATED) :        -1.187ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/mem_wordsize_reg[0]/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT5=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.746ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.746ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/resetn
+    SLICE_X26Y11         LUT5 (Prop_lut5_I2_O)        0.100     1.024 r  cpu/picorv32_core/mem_wordsize[0]_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/mem_wordsize[0]_i_1_n_2
+    SLICE_X26Y11         FDRE                                         r  cpu/picorv32_core/mem_wordsize_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.746     1.746    cpu/picorv32_core/clk
+    SLICE_X26Y11         FDRE                                         r  cpu/picorv32_core/mem_wordsize_reg[0]/C
+                         clock pessimism              0.000     1.746    
+                         clock uncertainty            0.135     1.881    
+    SLICE_X26Y11         FDRE (Hold_fdre_C_D)         0.330     2.211    cpu/picorv32_core/mem_wordsize_reg[0]
+  -------------------------------------------------------------------
+                         required time                         -2.211    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.187    
+
+Slack (VIOLATED) :        -1.134ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/cpu_state_reg[6]/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT6=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.753ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.753ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 f  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/pcpi_div/resetn
+    SLICE_X21Y9          LUT6 (Prop_lut6_I2_O)        0.100     1.024 r  cpu/picorv32_core/pcpi_div/cpu_state[6]_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/cpu_state0_out[6]
+    SLICE_X21Y9          FDRE                                         r  cpu/picorv32_core/cpu_state_reg[6]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.753     1.753    cpu/picorv32_core/clk
+    SLICE_X21Y9          FDRE                                         r  cpu/picorv32_core/cpu_state_reg[6]/C
+                         clock pessimism              0.000     1.753    
+                         clock uncertainty            0.135     1.888    
+    SLICE_X21Y9          FDRE (Hold_fdre_C_D)         0.270     2.158    cpu/picorv32_core/cpu_state_reg[6]
+  -------------------------------------------------------------------
+                         required time                         -2.158    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.134    
+
+Slack (VIOLATED) :        -1.134ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/cpu_state_reg[7]/D
+                            (rising edge-triggered cell FDSE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT5=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.753ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.753ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/pcpi_div/resetn
+    SLICE_X21Y9          LUT5 (Prop_lut5_I4_O)        0.100     1.024 r  cpu/picorv32_core/pcpi_div/cpu_state[7]_i_3/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/pcpi_div_n_4
+    SLICE_X21Y9          FDSE                                         r  cpu/picorv32_core/cpu_state_reg[7]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.753     1.753    cpu/picorv32_core/clk
+    SLICE_X21Y9          FDSE                                         r  cpu/picorv32_core/cpu_state_reg[7]/C
+                         clock pessimism              0.000     1.753    
+                         clock uncertainty            0.135     1.888    
+    SLICE_X21Y9          FDSE (Hold_fdse_C_D)         0.270     2.158    cpu/picorv32_core/cpu_state_reg[7]
+  -------------------------------------------------------------------
+                         required time                         -2.158    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.134    
+
+Slack (VIOLATED) :        -1.133ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/is_compare_reg/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT6=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.753ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.753ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/resetn
+    SLICE_X17Y11         LUT6 (Prop_lut6_I4_O)        0.100     1.024 r  cpu/picorv32_core/is_compare_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/is_compare_i_1_n_2
+    SLICE_X17Y11         FDRE                                         r  cpu/picorv32_core/is_compare_reg/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.753     1.753    cpu/picorv32_core/clk
+    SLICE_X17Y11         FDRE                                         r  cpu/picorv32_core/is_compare_reg/C
+                         clock pessimism              0.000     1.753    
+                         clock uncertainty            0.135     1.888    
+    SLICE_X17Y11         FDRE (Hold_fdre_C_D)         0.269     2.157    cpu/picorv32_core/is_compare_reg
+  -------------------------------------------------------------------
+                         required time                         -2.157    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.133    
+
+Slack (VIOLATED) :        -1.132ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/pcpi_div/pcpi_wait_reg/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT5=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.752ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.752ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/pcpi_div/resetn
+    SLICE_X11Y13         LUT5 (Prop_lut5_I4_O)        0.100     1.024 r  cpu/picorv32_core/pcpi_div/pcpi_wait_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/pcpi_div/pcpi_wait0
+    SLICE_X11Y13         FDRE                                         r  cpu/picorv32_core/pcpi_div/pcpi_wait_reg/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.752     1.752    cpu/picorv32_core/pcpi_div/clk
+    SLICE_X11Y13         FDRE                                         r  cpu/picorv32_core/pcpi_div/pcpi_wait_reg/C
+                         clock pessimism              0.000     1.752    
+                         clock uncertainty            0.135     1.887    
+    SLICE_X11Y13         FDRE (Hold_fdre_C_D)         0.269     2.156    cpu/picorv32_core/pcpi_div/pcpi_wait_reg
+  -------------------------------------------------------------------
+                         required time                         -2.156    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.132    
+
+Slack (VIOLATED) :        -1.128ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/mem_do_rinst_reg/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT6=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.746ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.746ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/pcpi_div/resetn
+    SLICE_X25Y9          LUT6 (Prop_lut6_I4_O)        0.100     1.024 r  cpu/picorv32_core/pcpi_div/mem_do_rinst_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/pcpi_div_n_2
+    SLICE_X25Y9          FDRE                                         r  cpu/picorv32_core/mem_do_rinst_reg/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.746     1.746    cpu/picorv32_core/clk
+    SLICE_X25Y9          FDRE                                         r  cpu/picorv32_core/mem_do_rinst_reg/C
+                         clock pessimism              0.000     1.746    
+                         clock uncertainty            0.135     1.881    
+    SLICE_X25Y9          FDRE (Hold_fdre_C_D)         0.271     2.152    cpu/picorv32_core/mem_do_rinst_reg
+  -------------------------------------------------------------------
+                         required time                         -2.152    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.128    
+
+Slack (VIOLATED) :        -1.127ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/pcpi_div/pcpi_ready_reg/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT4=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.746ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.746ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/pcpi_div/resetn
+    SLICE_X11Y18         LUT4 (Prop_lut4_I2_O)        0.100     1.024 r  cpu/picorv32_core/pcpi_div/pcpi_ready_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/pcpi_div/pcpi_ready_i_1_n_2
+    SLICE_X11Y18         FDRE                                         r  cpu/picorv32_core/pcpi_div/pcpi_ready_reg/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.746     1.746    cpu/picorv32_core/pcpi_div/clk
+    SLICE_X11Y18         FDRE                                         r  cpu/picorv32_core/pcpi_div/pcpi_ready_reg/C
+                         clock pessimism              0.000     1.746    
+                         clock uncertainty            0.135     1.881    
+    SLICE_X11Y18         FDRE (Hold_fdre_C_D)         0.270     2.151    cpu/picorv32_core/pcpi_div/pcpi_ready_reg
+  -------------------------------------------------------------------
+                         required time                         -2.151    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.127    
+
+Slack (VIOLATED) :        -1.126ns  (arrival time - required time)
+  Source:                 resetn
+                            (input port clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            cpu/picorv32_core/pcpi_div/outsign_reg/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Hold (Min at Slow Process Corner)
+  Requirement:            0.000ns  (system_clk rise@0.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        1.024ns  (logic 0.100ns (9.762%)  route 0.924ns (90.238%))
+  Logic Levels:           1  (LUT5=1)
+  Input Delay:            0.000ns
+  Clock Path Skew:        1.746ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.746ns
+    Source Clock Delay      (SCD):    0.000ns
+    Clock Pessimism Removal (CPR):    -0.000ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                         input delay                  0.000     0.000    
+                                                      0.000     0.000 r  resetn (IN)
+                         net (fo=63, unset)           0.924     0.924    cpu/picorv32_core/pcpi_div/resetn
+    SLICE_X11Y18         LUT5 (Prop_lut5_I1_O)        0.100     1.024 r  cpu/picorv32_core/pcpi_div/outsign_i_1/O
+                         net (fo=1, routed)           0.000     1.024    cpu/picorv32_core/pcpi_div/outsign_i_1_n_2
+    SLICE_X11Y18         FDRE                                         r  cpu/picorv32_core/pcpi_div/outsign_reg/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17166, unset)        1.746     1.746    cpu/picorv32_core/pcpi_div/clk
+    SLICE_X11Y18         FDRE                                         r  cpu/picorv32_core/pcpi_div/outsign_reg/C
+                         clock pessimism              0.000     1.746    
+                         clock uncertainty            0.135     1.881    
+    SLICE_X11Y18         FDRE (Hold_fdre_C_D)         0.269     2.150    cpu/picorv32_core/pcpi_div/outsign_reg
+  -------------------------------------------------------------------
+                         required time                         -2.150    
+                         arrival time                           1.024    
+  -------------------------------------------------------------------
+                         slack                                 -1.126    
+
+
+
+

@@ -1,14 +1,17 @@
 # 验证记录
 
-更新时间：2026-09-27。本文只记录当前仍在仓库中的验证入口和证据；旧完整加速器的
+更新时间：2026-10-04。本文只记录当前仍在仓库中的验证入口和证据；旧完整加速器的
 板级仿真、实现报告和 bitstream 已随旧主线删除。
 
 ## 当前结果
 
 | 项目 | 状态 | 证据 |
 |---|---|---|
-| K4完整系统OOC布局布线 | 两组均完成且资源足够；CPU-only内部时序通过，加速组setup −1.367 ns，尚未收敛100 MHz | [完整系统实现报告](../results/keccak_cpu/system_impl/20260927_194022/summary.md) |
-| K4 CPU＋Keccak官方RTL KAT | PASS，19批145/145唯一覆盖，3,188次真实HLS调用、68次续取；同配置API总周期比3.803× | [全量证据](../results/keccak_cpu/kat/summary.md) |
+| K4历史完整系统OOC布局布线 | 两组均完成且资源足够；CPU-only内部时序通过，加速组setup −1.367 ns，尚未收敛100 MHz | [完整系统实现报告](../results/keccak_cpu/system_impl/20260927_194022/summary.md) |
+| K4历史CPU＋Keccak官方RTL KAT | PASS，19批145/145唯一覆盖，3,188次真实HLS调用、68次续取；同配置API总周期比3.803× | [全量证据](../results/keccak_cpu/kat/summary.md) |
+| K4当前timing_decode_v3组件/译码 | 10次硬件调用、216字及262,144个高位区域/16,384个窗口字节等价检查PASS | [当前smoke](../results/keccak_cpu/smoke/20261004_121658_132844/)、[实现记录](MLKEM1024_SYSTEM_IMPLEMENTATION.md) |
+| K4当前timing_decode_v3官方子集 | 原索引0、1、115全部PASS，3/145覆盖；85次调用含4次续取，同例周期与历史一致 | [当前子集证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md) |
+| K4当前timing_decode_v3系统OOC | 100 MHz内部setup/hold +0.269/+0.029 ns；资源足够、routed DCP已保存；边界hold −1.194 ns，整体timing_met=false | [恢复实现结果](../results/keccak_cpu/system_impl/20261004_124354/keccak/result.json) |
 | CPU-only 多项式 baseline | PASS，RV32I/RV32IM-iterative/RV32IM-fast 各 8 组、4096 项检查 | [`results/cpu_baseline/`](../results/cpu_baseline/) |
 | ML-KEM-512 官方 PicoRV32 回归 | PASS，三种 CPU 各 145/145 | [`results/official_baseline/mlkem512/`](../results/official_baseline/mlkem512/) |
 | ML-KEM-768 官方 PicoRV32 回归 | PASS，RV32IM-fast 145/145，128 KiB RAM/32 KiB栈 | [768汇总](../results/official_baseline/mlkem768/rv32im_fast/summary.md) |
@@ -25,11 +28,14 @@
 | CPU+PQC 官方 KAT | PASS，145/145 ML-KEM-512 | [`results/accelerator_cpu/kat/`](../results/accelerator_cpu/kat/)；端到端 0.9930×，当前为功能闭环而非性能收益 |
 | PYNQ-Z2 实板烧录 | 待完成 | 已生成 [`mlkem512_basemul_k2_validation.bit`](../release/mlkem512_basemul_k2/mlkem512_basemul_k2_validation.bit)，尚未上板 |
 
+开发统一使用`run_flow.tcl`顶部开关，默认官方索引0、1、115子集；145条只在最终候选稳定后验收。
+每个RTL版本独立归档并检查输入哈希。历史145/145和3.803×不自动计入当前版本，子集不代表全量通过。
+
 ## 官方数据口径
 
 主机端的 435 条记录覆盖 ML-KEM-512/768/1024；PicoRV32已完成
 ML-KEM-512三种CPU各145条，及ML-KEM-768/1024 RV32IM-fast各145条。CPU+PQC 加速版同样完成 145/145 条 ML-KEM-512 记录，
-并核验了每条记录的 MMIO 调用计数、核心周期和输出。K4 CPU＋Keccak也已完成145/145，
+并核验了每条记录的 MMIO 调用计数、核心周期和输出。K4历史CPU＋Keccak版本也已完成145/145，
 输入/输出分别核对287,360/199,360 B，覆盖密钥生成、封装、解封装、从种子重建及密钥检查；
 HASH/SQUEEZE、缓冲事务数、实际启动/完成、栈与两次rdcycle边界逐条验证。PicoRV32 的通过结果证明固定软件、
 输入、输出和 RTL 执行路径一致，不代表正式 CAVP 认证，也不代表实体板结果。

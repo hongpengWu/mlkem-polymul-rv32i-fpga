@@ -1,0 +1,113 @@
+{
+  "started_utc": "2026-10-04T04:00:08.240702+00:00",
+  "command": [
+    "E:\\Xilinx\\Vivado\\2024.2\\bin\\vivado.bat",
+    "-mode",
+    "batch",
+    "-source",
+    "E:\\hls\\k4cpu\\20261004_120008_033581\\snapshot\\run_smoke.tcl",
+    "-tclargs",
+    "E:\\hls\\k4cpu\\20261004_120008_033581"
+  ],
+  "hls_run": "E:\\hls\\k4_io1\\opt02",
+  "inputs": {
+    "rtl/picorv32.v": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\rtl\\cpu\\picorv32.v",
+      "sha256": "fd142889e8178ef67f1cff17cb2d18b3adae56fcae2badf7cbcc4c4f5ac7960e"
+    },
+    "rtl/keccak_mmio_adapter.sv": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\rtl\\accelerator\\keccak_mmio_adapter.sv",
+      "sha256": "f4541d79d159702896c3946a429c3eb2ee401cf81872bf887bc49375612d65e1"
+    },
+    "rtl/mlkem1024_keccak_system.sv": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\rtl\\accelerator\\mlkem1024_keccak_system.sv",
+      "sha256": "1ca74a89319ef155ba2a409dbda10b2fa8fdf54f23c9c03f44ada53d3d7a7b31"
+    },
+    "tb/tb_mlkem1024_keccak_cpu_smoke.sv": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\tb\\accelerator\\tb_mlkem1024_keccak_cpu_smoke.sv",
+      "sha256": "68803866db25c7ca8a41e8401abfce0fb13bf808615076d0118602f9c296400b"
+    },
+    "run_smoke.tcl": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\scripts\\mlkem1024_keccak\\run_smoke.tcl",
+      "sha256": "376e8e2e0a15123dea30f61e3ed5a304544f269b5cddf37a924cfe0dc720487b"
+    },
+    "build.json": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\results\\keccak_cpu\\smoke\\build.json",
+      "sha256": "d273d3ff8567d4f014bf36bc89edc0782e625cff721b214be68915d0150528a7"
+    },
+    "fixtures/smoke.mem": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\keccak_cpu\\smoke\\smoke.mem",
+      "sha256": "c459ab523da0bf362c2eeb6cc8c42230ca47baae3c95ae13dc1295dd36f1b8a8"
+    },
+    "fixtures/expected.mem": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\keccak_cpu\\smoke\\expected.mem",
+      "sha256": "d26b3c7846504b7480f8e3b51f2805e8f0c9dead925a260ed40655871e310da4"
+    },
+    "fixtures/meta.mem": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\keccak_cpu\\smoke\\meta.mem",
+      "sha256": "ac5ef92df7bf7eea8935a81b792233aa8f18e3f7c5f62ecfff6644bbefa3e8a9"
+    },
+    "hls/mlkem1024_keccak_accel.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel.v",
+      "sha256": "c706bac6ef2c11d10e203bcb5ea3e94251ade106b3247903b35d43b2ace22c44"
+    },
+    "hls/mlkem1024_keccak_accel_control_s_axi.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_control_s_axi.v",
+      "sha256": "22719db071993d81d8554eb829eee7253dddb7517a36b9452edb2f843a0ac34d"
+    },
+    "hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v",
+      "sha256": "da8f811f78c919dfbb33ee10a0a748f66932d4b962232cc73eefde996d1ffaaa"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v",
+      "sha256": "268a1393abbdd198038c2e2727ba72a38c4c72f0298204cb8656af9d982ef418"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v",
+      "sha256": "82925738a3cba7793683935682f45b1a2bf993ce895f546bc098dfb4a361790e"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v",
+      "sha256": "ce88d5644a6bf4faf656cf70fa9e0a3e2ff142380041668a3649c71f401f2b06"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v",
+      "sha256": "572e8805087f501c6b9d04caf1af959438baef206246a4dd4f761260dcca0ef0"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v",
+      "sha256": "699c42ad6572376bdba27519755260b02abbdcf3a55d99a6bbc12ee0c049dbaa"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat",
+      "sha256": "3b4b573ffc2d6db21d0a68b35505b743d37ef13e63964258f3c380ff5099a3aa"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v",
+      "sha256": "263b10a21225708ca7a362f00ca6ba081c74228265c180ec29899372f8dcc94a"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v",
+      "sha256": "341ec804cb11ba85ac1546a6e562db3e76764043e9a5f68966ed262607a0f615"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v",
+      "sha256": "a28c9ee9b4ac16fd7fec21af2850604cde49356aa215847094775d0bf3269acd"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v",
+      "sha256": "dcb7a9915d32c24ba66f70bb48bd360b7d5ef1ef32d21a70f83411f5906a544f"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v",
+      "sha256": "9e01d007176896d427ce883048f1b9175bb51bbac7eccbb6fb0fa6f0344dc4fd"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v": {
+      "source": "E:\\hls\\k4_io1\\opt02\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v",
+      "sha256": "5b904d2aeede80e6c785db810e2aa2948fe42da224b71ef4adf0140e0f929511"
+    }
+  },
+  "ram_bytes": 131072,
+  "stack_bytes": 32768
+}

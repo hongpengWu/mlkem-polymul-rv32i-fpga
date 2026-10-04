@@ -41,8 +41,18 @@ module keccak_mmio_adapter #(
     reg gie_shadow;
     reg [1:0] ier_shadow;
     reg [7:0] command_shadow;
-    wire [31:0] offset = bus_addr - BASE_ADDR;
-    wire hit = bus_addr >= BASE_ADDR && offset < 32'h4000;
+    wire [31:0] offset;
+    wire hit;
+    generate if (BASE_ADDR[13:0] == 0) begin: aligned_decode
+        // A 16 KiB aligned window needs no subtractor in the ready path.
+        // Outside this window, offset is ignored because fire is false.
+        assign offset = {18'b0, bus_addr[13:0]};
+        assign hit = bus_addr[31:14] == BASE_ADDR[31:14];
+    end else begin: general_decode
+        // Retain the parameterized semantics for unaligned base addresses.
+        assign offset = bus_addr - BASE_ADDR;
+        assign hit = bus_addr >= BASE_ADDR && offset < 32'h4000;
+    end endgenerate
     wire aligned = offset[1:0] == 2'b00;
     wire control_window = offset < 32'h40;
     wire input_window = offset >= 32'h1000 && offset < 32'h1800;

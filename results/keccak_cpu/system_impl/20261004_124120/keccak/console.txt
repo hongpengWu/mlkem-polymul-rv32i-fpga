@@ -1,0 +1,94 @@
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Sun Oct  4 12:41:23 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source {E:\hls\k4sys\20261004_124120\keccak\snapshot\implement_system.tcl}
+# if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2"}
+# if {[llength $argv] ni {2 3}} {error "Expected run_dir variant(cpu_only|keccak) ?resume_synth?"}
+# lassign $argv run variant recovery_mode
+# if {$recovery_mode ni {{} resume_synth}} {error "Invalid recovery mode"}
+# set run [file normalize $run]
+# if {$variant ni {cpu_only keccak}} {error "Invalid variant: $variant"}
+# set snapshot [file join $run snapshot]
+# set reports [file join $run reports]
+# file mkdir $reports
+# set top [expr {$variant eq "cpu_only" ? "cpu_benchmark_system" : "mlkem1024_keccak_system"}]
+# set part xc7z020clg400-1
+# set_param general.maxThreads 8
+# if {$recovery_mode eq "resume_synth"} {
+#     # Python has verified the original manifest, unchanged design/configuration
+#     # and copied checkpoint hash. The old run stays immutable.
+#     puts "SYSTEM_OOC_STAGE variant=$variant stage=resume_synthesis threads=[get_param general.maxThreads]"
+#     open_checkpoint [file join $run synth.dcp]
+#     if {[get_property NAME [current_design]] ne $top ||
+#         [get_property PART [current_design]] ne $part} {
+#         error "Recovered checkpoint top/part mismatch"
+#     }
+# } else {
+#     create_project -in_memory -part $part
+#     set_property target_language Verilog [current_project]
+#     set_property XPM_LIBRARIES {XPM_MEMORY} [current_project]
+#     set sources [concat [glob -nocomplain [file join $snapshot rtl *.v]] \
+#                         [glob -nocomplain [file join $snapshot rtl *.sv]]]
+#     if {[llength $sources] == 0} {error "Missing frozen system RTL"}
+#     foreach f $sources {
+#         if {[file extension $f] eq ".sv"} {read_verilog -sv $f} else {read_verilog $f}
+#     }
+#     if {$variant eq "keccak"} {
+#         set hls_files [glob [file join $snapshot hls *.v]]
+#         foreach f $hls_files {read_verilog $f}
+#         foreach f [glob [file join $snapshot hls *.dat]] {add_files -norecurse $f}
+#     }
+#     set firmware [file join $snapshot firmware.mem]
+#     set constraints [file join $snapshot system.xdc]
+#     if {![file exists $firmware] || ![file exists $constraints]} {error "Missing frozen firmware/XDC"}
+#     add_files -norecurse $firmware
+#     set_property file_type {Memory Initialization Files} [get_files $firmware]
+#     read_xdc $constraints
+#     puts "SYSTEM_OOC_STAGE variant=$variant stage=synthesis threads=[get_param general.maxThreads]"
+#     synth_design -top $top -part $part -mode out_of_context \
+#         -generic {FIRMWARE_INIT_FILE=firmware.mem RAM_ADDR_BITS=15 CPU_ENABLE_MUL=1 CPU_ENABLE_FAST_MUL=1 CPU_ENABLE_DIV=1}
+# }
+SYSTEM_OOC_STAGE variant=keccak stage=resume_synthesis threads=8
+Command: open_checkpoint E:/hls/k4sys/20261004_124120/keccak/synth.dcp
+
+Starting open_checkpoint Task
+
+Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.043 . Memory (MB): peak = 340.105 ; gain = 6.223
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.982 . Memory (MB): peak = 739.285 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 1222 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
+INFO: [Project 1-479] Netlist was created with Vivado 2024.2
+INFO: [Project 1-570] Preparing netlist for logic optimization
+Read ShapeDB Complete: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.056 . Memory (MB): peak = 867.906 ; gain = 2.844
+INFO: [Timing 38-478] Restoring timing data from binary archive.
+INFO: [Timing 38-479] Binary timing data restore complete.
+INFO: [Project 1-856] Restoring constraints from binary archive.
+INFO: [Project 1-853] Binary constraint restore complete.
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.008 . Memory (MB): peak = 1485.508 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+  A total of 14 instances were transformed.
+  RAM32M => RAM32M (RAMD32(x6), RAMS32(x2)): 10 instances
+  RAM32X1D => RAM32X1D (RAMD32(x2)): 4 instances
+
+INFO: [Project 1-604] Checkpoint was created with Vivado v2024.2 (64-bit) build 5239630
+open_checkpoint: Time (s): cpu = 00:00:23 ; elapsed = 00:00:25 . Memory (MB): peak = 1485.508 ; gain = 1164.727
+Recovered checkpoint top/part mismatch
+    while executing
+"error "Recovered checkpoint top/part mismatch""
+    invoked from within
+"if {[get_property NAME [current_design]] ne $top ||
+        [get_property PART [current_design]] ne $part} {
+        error "Recovered checkpoint top/p..."
+    invoked from within
+"if {$recovery_mode eq "resume_synth"} {
+    # Python has verified the original manifest, unchanged design/configuration
+    # and copied checkpoint ha..."
+    (file "E:\hls\k4sys\20261004_124120\keccak\snapshot\implement_system.tcl" line 15)
+INFO: [Common 17-206] Exiting Vivado at Sun Oct  4 12:41:50 2026...

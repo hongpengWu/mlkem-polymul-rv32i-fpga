@@ -1,0 +1,65 @@
+{
+  "keccak": {
+    "exit_code": 1,
+    "elapsed_seconds": 765.5319999998901,
+    "completed_utc": "2026-10-04T04:14:06.801837+00:00",
+    "manifest_sha256": "a95850be8443e190573c5a8f880bddcf9ef67ab5f186e07f951267613a78f52d",
+    "implementation_completed": true,
+    "timing_met": false,
+    "metrics": {
+      "scope": "Complete system OOC; not board timing or bitstream validation",
+      "variant": "keccak",
+      "top": "mlkem1024_keccak_system",
+      "part": "xc7z020clg400-1",
+      "clock_period_ns": 10.0,
+      "clock_uncertainty_ns": 0.1,
+      "hd_clk_src": "BUFGCTRL_X0Y0",
+      "io_min_ns": 0.0,
+      "io_max_ns": 2.0,
+      "ram_bytes": 131072,
+      "cpu_mul": 1,
+      "cpu_fast_mul": 1,
+      "cpu_div": 1,
+      "routed_setup_slack_ns": -1.059,
+      "routed_hold_slack_ns": -1.281,
+      "timing_met": false,
+      "lut_primitives": 21686,
+      "ff_primitives": 17002,
+      "ramb36_primitives": 34,
+      "ramb18_primitives": 1,
+      "bram36_equivalent": 34.5,
+      "dsp_primitives": 4,
+      "resource_count_note": "Primitive counts; report_utilization is authoritative for packed LUT and device totals",
+      "signoff_note": "timing_met checks routed worst setup/hold slack only; review DRC, pulse width, unconstrained paths and complete routing separately"
+    },
+    "resources": {
+      "lut": 19048.0,
+      "ff": 17002.0,
+      "bram36_tiles": 34.5,
+      "dsp": 4.0
+    },
+    "checkpoint_sha256": {
+      "synth.dcp": "86dc250a5cbad28e7131f7c4aec95bfcffe985429978908e511279cbb49ca850",
+      "routed.dcp": "bbdb404d11650b71888b0c37e3f7e1113b791024dcf7d93c3ced8bfe5b21ee11"
+    },
+    "error": "Vivado exit=1; inspect retained reports",
+    "report_sha256": {
+      "console.txt": "9b2ca1d96ca17c5bff8079b83aeee2a482b7869de54c6dc1e8081006b1eed093",
+      "manifest.json": "a95850be8443e190573c5a8f880bddcf9ef67ab5f186e07f951267613a78f52d",
+      "reports/applied_routed.xdc": "5b182854373d21c7a1df0a670f4751a2993ab42edf8655006e7d99e4546b97cf",
+      "reports/applied_synth.xdc": "91596785b198469862c8e2fb5344370f707c3a4d3768a3c158773c8b11af9e9c",
+      "reports/check_timing.rpt": "315be3e28b3edf5e3b2322f340e4cca614e170839e2940d82c664a3202d5545f",
+      "reports/clocks.rpt": "ef45ddd6be8c766b2250833f65ccc6c9a0e94f61acfb4e5ac649bf0413f76920",
+      "reports/drc.rpt": "7b88837639ab5f33ed173efdd8a35b522ccba89185b7541afaf62d0d00f6cf12",
+      "reports/hold_paths.rpt": "d44eab05c0f1d7b82f73c181bdb50ffd77fc614c781c0753235459c46a2246ac",
+      "reports/metrics.json": "c668c36b2ee02c5d1023270da3fc78a5145b4b07605065bbfd2230bb20ddafbc",
+      "reports/route_status.rpt": "3aebba22bfc4996f8bc28930ff4bb94aaa664f7ddffd90290c07c187e10405d0",
+      "reports/setup_paths.rpt": "928a269325483ef185f82f545fab17c72b09f82ea12b9509ed1a26f3acc2274b",
+      "reports/synth_clocks.rpt": "d08fde782f276b3de39b5f94aef3e627912264e433ee598e25cb188cc0ce48b7",
+      "reports/synth_utilization.rpt": "1036df79fcb07ec6f68c4a46de0ef1f9ad87b7da3671eec06c1cbe8b6ea2ea91",
+      "reports/timing_summary.rpt": "f03cbca613ac2e89309cbd34cc6e4f4d182f167ce91de2355fdf386da256760a",
+      "reports/utilization.rpt": "8b5b6c7a70d088d0d4b07eab11a47312d408189287ce7cb73343eeb75e1afc6a",
+      "reports/utilization_hierarchical.rpt": "60e286187dd05459aa5e1ceedfdf63e51c4f8b7bcc04d4931c5fda6bf8c7c7be"
+    }
+  }
+}

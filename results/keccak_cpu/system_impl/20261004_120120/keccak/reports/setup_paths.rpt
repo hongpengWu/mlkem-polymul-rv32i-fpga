@@ -1,0 +1,761 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2024.2 (win64) Build 5239630 Fri Nov 08 22:35:27 MST 2024
+| Date         : Sun Oct  4 12:14:00 2026
+| Host         : DESKTOP-H0SRFHK running 64-bit major release  (build 9200)
+| Command      : report_timing -delay_type max -max_paths 10 -file E:/hls/k4sys/20261004_120120/keccak/reports/setup_paths.rpt
+| Design       : mlkem1024_keccak_system
+| Device       : 7z020-clg400
+| Speed File   : -1  PRODUCTION 1.12 2019-11-22
+| Design State : Routed
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack (VIOLATED) :        -1.059ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            local_aw_hold_reg/D
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.755ns  (logic 2.723ns (25.319%)  route 8.032ns (74.681%))
+  Logic Levels:           12  (CARRY4=2 LUT2=2 LUT3=1 LUT4=1 LUT5=1 LUT6=5)
+  Clock Path Skew:        -0.138ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.495ns = ( 11.495 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 r  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 r  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 r  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.706     9.497    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X31Y8          LUT6 (Prop_lut6_I4_O)        0.124     9.621 r  cpu/picorv32_core/accel_read_pending_i_4/O
+                         net (fo=3, routed)           0.176     9.797    cpu/picorv32_core/accel_read_pending_i_4_n_2
+    SLICE_X31Y8          LUT6 (Prop_lut6_I3_O)        0.124     9.921 r  cpu/picorv32_core/debug_regs[11][31]_i_2/O
+                         net (fo=61, routed)          0.938    10.859    cpu/picorv32_core/debug_regs[11][31]_i_2_n_2
+    SLICE_X30Y4          LUT4 (Prop_lut4_I2_O)        0.124    10.983 r  cpu/picorv32_core/local_aw_hold_i_1/O
+                         net (fo=1, routed)           1.520    12.503    cpu_n_263
+    SLICE_X32Y4          FDRE                                         r  local_aw_hold_reg/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.495    11.495    clk
+    SLICE_X32Y4          FDRE                                         r  local_aw_hold_reg/C
+                         clock pessimism              0.115    11.610    
+                         clock uncertainty           -0.135    11.475    
+    SLICE_X32Y4          FDRE (Setup_fdre_C_D)       -0.031    11.444    local_aw_hold_reg
+  -------------------------------------------------------------------
+                         required time                         11.444    
+                         arrival time                         -12.503    
+  -------------------------------------------------------------------
+                         slack                                 -1.059    
+
+Slack (VIOLATED) :        -0.649ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            adapter_i/output_mem_reg/DIADI[24]
+                            (rising edge-triggered cell RAMB36E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.128ns  (logic 2.723ns (26.886%)  route 7.405ns (73.114%))
+  Logic Levels:           12  (CARRY4=2 LUT2=2 LUT3=1 LUT4=1 LUT5=1 LUT6=5)
+  Clock Path Skew:        -0.145ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.590ns = ( 11.590 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.013ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.816     9.608    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X38Y9          LUT6 (Prop_lut6_I4_O)        0.124     9.732 r  cpu/picorv32_core/output_mem_reg_i_53_comp_4/O
+                         net (fo=48, routed)          0.198     9.930    cpu/picorv32_core/host_write
+    SLICE_X38Y9          LUT4 (Prop_lut4_I3_O)        0.124    10.054 r  cpu/picorv32_core/input_mem_reg_i_43/O
+                         net (fo=25, routed)          0.874    10.928    adapter_i/hls_i/p_2_out
+    SLICE_X50Y11         LUT6 (Prop_lut6_I3_O)        0.124    11.052 r  adapter_i/hls_i/output_mem_reg_i_19/O
+                         net (fo=1, routed)           0.824    11.876    adapter_i/hls_i_n_141
+    RAMB36_X3Y2          RAMB36E1                                     r  adapter_i/output_mem_reg/DIADI[24]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.590    11.590    adapter_i/clk
+    RAMB36_X3Y2          RAMB36E1                                     r  adapter_i/output_mem_reg/CLKARDCLK
+                         clock pessimism              0.013    11.603    
+                         clock uncertainty           -0.135    11.468    
+    RAMB36_X3Y2          RAMB36E1 (Setup_ramb36e1_CLKARDCLK_DIADI[24])
+                                                     -0.241    11.227    adapter_i/output_mem_reg
+  -------------------------------------------------------------------
+                         required time                         11.227    
+                         arrival time                         -11.876    
+  -------------------------------------------------------------------
+                         slack                                 -0.649    
+
+Slack (VIOLATED) :        -0.622ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            adapter_i/input_mem_reg/DIBDI[9]
+                            (rising edge-triggered cell RAMB18E1 clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.107ns  (logic 2.723ns (26.941%)  route 7.384ns (73.059%))
+  Logic Levels:           12  (CARRY4=2 LUT2=2 LUT3=1 LUT4=1 LUT5=2 LUT6=4)
+  Clock Path Skew:        -0.139ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.596ns = ( 11.596 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.013ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.816     9.608    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X38Y9          LUT6 (Prop_lut6_I4_O)        0.124     9.732 r  cpu/picorv32_core/output_mem_reg_i_53_comp_4/O
+                         net (fo=48, routed)          0.198     9.930    cpu/picorv32_core/host_write
+    SLICE_X38Y9          LUT4 (Prop_lut4_I3_O)        0.124    10.054 r  cpu/picorv32_core/input_mem_reg_i_43/O
+                         net (fo=25, routed)          0.864    10.918    cpu/picorv32_core/mem_wstrb_reg[3]_0
+    SLICE_X49Y1          LUT5 (Prop_lut5_I1_O)        0.124    11.042 r  cpu/picorv32_core/input_mem_reg_i_33/O
+                         net (fo=1, routed)           0.814    11.855    adapter_i/DIBDI[1]
+    RAMB18_X3Y0          RAMB18E1                                     r  adapter_i/input_mem_reg/DIBDI[9]
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.596    11.596    adapter_i/clk
+    RAMB18_X3Y0          RAMB18E1                                     r  adapter_i/input_mem_reg/CLKBWRCLK
+                         clock pessimism              0.013    11.609    
+                         clock uncertainty           -0.135    11.474    
+    RAMB18_X3Y0          RAMB18E1 (Setup_ramb18e1_CLKBWRCLK_DIBDI[9])
+                                                     -0.241    11.233    adapter_i/input_mem_reg
+  -------------------------------------------------------------------
+                         required time                         11.233    
+                         arrival time                         -11.855    
+  -------------------------------------------------------------------
+                         slack                                 -0.622    
+
+Slack (VIOLATED) :        -0.604ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            debug_regs_reg[10][7]/CE
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.209ns  (logic 2.847ns (27.888%)  route 7.362ns (72.112%))
+  Logic Levels:           13  (CARRY4=2 LUT2=3 LUT3=1 LUT5=1 LUT6=6)
+  Clock Path Skew:        -0.055ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.578ns = ( 11.578 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.706     9.497    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X31Y8          LUT6 (Prop_lut6_I4_O)        0.124     9.621 f  cpu/picorv32_core/accel_read_pending_i_4/O
+                         net (fo=3, routed)           0.176     9.797    cpu/picorv32_core/accel_read_pending_i_4_n_2
+    SLICE_X31Y8          LUT6 (Prop_lut6_I3_O)        0.124     9.921 f  cpu/picorv32_core/debug_regs[11][31]_i_2/O
+                         net (fo=61, routed)          0.625    10.546    cpu/picorv32_core/debug_regs[11][31]_i_2_n_2
+    SLICE_X24Y8          LUT6 (Prop_lut6_I0_O)        0.124    10.670 f  cpu/picorv32_core/debug_regs[10][31]_i_2/O
+                         net (fo=4, routed)           0.438    11.108    cpu/picorv32_core/debug_regs[10][31]_i_2_n_2
+    SLICE_X25Y8          LUT2 (Prop_lut2_I1_O)        0.124    11.232 r  cpu/picorv32_core/debug_regs[10][7]_i_1/O
+                         net (fo=8, routed)           0.725    11.957    cpu_n_184
+    SLICE_X21Y7          FDRE                                         r  debug_regs_reg[10][7]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.578    11.578    clk
+    SLICE_X21Y7          FDRE                                         r  debug_regs_reg[10][7]/C
+                         clock pessimism              0.115    11.693    
+                         clock uncertainty           -0.135    11.558    
+    SLICE_X21Y7          FDRE (Setup_fdre_C_CE)      -0.205    11.353    debug_regs_reg[10][7]
+  -------------------------------------------------------------------
+                         required time                         11.353    
+                         arrival time                         -11.957    
+  -------------------------------------------------------------------
+                         slack                                 -0.604    
+
+Slack (VIOLATED) :        -0.597ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            adapter_i/reads_reg_reg[10]/CE
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.118ns  (logic 2.723ns (26.913%)  route 7.395ns (73.087%))
+  Logic Levels:           12  (CARRY4=2 LUT2=3 LUT3=1 LUT5=2 LUT6=4)
+  Clock Path Skew:        -0.139ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.494ns = ( 11.494 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.382     9.173    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X35Y9          LUT6 (Prop_lut6_I4_O)        0.124     9.297 f  cpu/picorv32_core/input_mem_reg_i_47/O
+                         net (fo=5, routed)           1.140    10.437    cpu/picorv32_core/mem_addr_reg[12]_0
+    SLICE_X44Y8          LUT5 (Prop_lut5_I0_O)        0.124    10.561 f  cpu/picorv32_core/reads_reg[0]_i_3/O
+                         net (fo=4, routed)           0.502    11.063    cpu/picorv32_core/reads_reg[0]_i_3_n_2
+    SLICE_X38Y9          LUT2 (Prop_lut2_I0_O)        0.124    11.187 r  cpu/picorv32_core/reads_reg[0]_i_1/O
+                         net (fo=32, routed)          0.679    11.866    adapter_i/host_read
+    SLICE_X40Y7          FDRE                                         r  adapter_i/reads_reg_reg[10]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.494    11.494    adapter_i/clk
+    SLICE_X40Y7          FDRE                                         r  adapter_i/reads_reg_reg[10]/C
+                         clock pessimism              0.115    11.609    
+                         clock uncertainty           -0.135    11.474    
+    SLICE_X40Y7          FDRE (Setup_fdre_C_CE)      -0.205    11.269    adapter_i/reads_reg_reg[10]
+  -------------------------------------------------------------------
+                         required time                         11.269    
+                         arrival time                         -11.866    
+  -------------------------------------------------------------------
+                         slack                                 -0.597    
+
+Slack (VIOLATED) :        -0.597ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            adapter_i/reads_reg_reg[11]/CE
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.118ns  (logic 2.723ns (26.913%)  route 7.395ns (73.087%))
+  Logic Levels:           12  (CARRY4=2 LUT2=3 LUT3=1 LUT5=2 LUT6=4)
+  Clock Path Skew:        -0.139ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.494ns = ( 11.494 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.382     9.173    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X35Y9          LUT6 (Prop_lut6_I4_O)        0.124     9.297 f  cpu/picorv32_core/input_mem_reg_i_47/O
+                         net (fo=5, routed)           1.140    10.437    cpu/picorv32_core/mem_addr_reg[12]_0
+    SLICE_X44Y8          LUT5 (Prop_lut5_I0_O)        0.124    10.561 f  cpu/picorv32_core/reads_reg[0]_i_3/O
+                         net (fo=4, routed)           0.502    11.063    cpu/picorv32_core/reads_reg[0]_i_3_n_2
+    SLICE_X38Y9          LUT2 (Prop_lut2_I0_O)        0.124    11.187 r  cpu/picorv32_core/reads_reg[0]_i_1/O
+                         net (fo=32, routed)          0.679    11.866    adapter_i/host_read
+    SLICE_X40Y7          FDRE                                         r  adapter_i/reads_reg_reg[11]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.494    11.494    adapter_i/clk
+    SLICE_X40Y7          FDRE                                         r  adapter_i/reads_reg_reg[11]/C
+                         clock pessimism              0.115    11.609    
+                         clock uncertainty           -0.135    11.474    
+    SLICE_X40Y7          FDRE (Setup_fdre_C_CE)      -0.205    11.269    adapter_i/reads_reg_reg[11]
+  -------------------------------------------------------------------
+                         required time                         11.269    
+                         arrival time                         -11.866    
+  -------------------------------------------------------------------
+                         slack                                 -0.597    
+
+Slack (VIOLATED) :        -0.597ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            adapter_i/reads_reg_reg[8]/CE
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.118ns  (logic 2.723ns (26.913%)  route 7.395ns (73.087%))
+  Logic Levels:           12  (CARRY4=2 LUT2=3 LUT3=1 LUT5=2 LUT6=4)
+  Clock Path Skew:        -0.139ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.494ns = ( 11.494 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.382     9.173    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X35Y9          LUT6 (Prop_lut6_I4_O)        0.124     9.297 f  cpu/picorv32_core/input_mem_reg_i_47/O
+                         net (fo=5, routed)           1.140    10.437    cpu/picorv32_core/mem_addr_reg[12]_0
+    SLICE_X44Y8          LUT5 (Prop_lut5_I0_O)        0.124    10.561 f  cpu/picorv32_core/reads_reg[0]_i_3/O
+                         net (fo=4, routed)           0.502    11.063    cpu/picorv32_core/reads_reg[0]_i_3_n_2
+    SLICE_X38Y9          LUT2 (Prop_lut2_I0_O)        0.124    11.187 r  cpu/picorv32_core/reads_reg[0]_i_1/O
+                         net (fo=32, routed)          0.679    11.866    adapter_i/host_read
+    SLICE_X40Y7          FDRE                                         r  adapter_i/reads_reg_reg[8]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.494    11.494    adapter_i/clk
+    SLICE_X40Y7          FDRE                                         r  adapter_i/reads_reg_reg[8]/C
+                         clock pessimism              0.115    11.609    
+                         clock uncertainty           -0.135    11.474    
+    SLICE_X40Y7          FDRE (Setup_fdre_C_CE)      -0.205    11.269    adapter_i/reads_reg_reg[8]
+  -------------------------------------------------------------------
+                         required time                         11.269    
+                         arrival time                         -11.866    
+  -------------------------------------------------------------------
+                         slack                                 -0.597    
+
+Slack (VIOLATED) :        -0.597ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            adapter_i/reads_reg_reg[9]/CE
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.118ns  (logic 2.723ns (26.913%)  route 7.395ns (73.087%))
+  Logic Levels:           12  (CARRY4=2 LUT2=3 LUT3=1 LUT5=2 LUT6=4)
+  Clock Path Skew:        -0.139ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.494ns = ( 11.494 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.382     9.173    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X35Y9          LUT6 (Prop_lut6_I4_O)        0.124     9.297 f  cpu/picorv32_core/input_mem_reg_i_47/O
+                         net (fo=5, routed)           1.140    10.437    cpu/picorv32_core/mem_addr_reg[12]_0
+    SLICE_X44Y8          LUT5 (Prop_lut5_I0_O)        0.124    10.561 f  cpu/picorv32_core/reads_reg[0]_i_3/O
+                         net (fo=4, routed)           0.502    11.063    cpu/picorv32_core/reads_reg[0]_i_3_n_2
+    SLICE_X38Y9          LUT2 (Prop_lut2_I0_O)        0.124    11.187 r  cpu/picorv32_core/reads_reg[0]_i_1/O
+                         net (fo=32, routed)          0.679    11.866    adapter_i/host_read
+    SLICE_X40Y7          FDRE                                         r  adapter_i/reads_reg_reg[9]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.494    11.494    adapter_i/clk
+    SLICE_X40Y7          FDRE                                         r  adapter_i/reads_reg_reg[9]/C
+                         clock pessimism              0.115    11.609    
+                         clock uncertainty           -0.135    11.474    
+    SLICE_X40Y7          FDRE (Setup_fdre_C_CE)      -0.205    11.269    adapter_i/reads_reg_reg[9]
+  -------------------------------------------------------------------
+                         required time                         11.269    
+                         arrival time                         -11.866    
+  -------------------------------------------------------------------
+                         slack                                 -0.597    
+
+Slack (VIOLATED) :        -0.587ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            adapter_i/reads_reg_reg[4]/CE
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.109ns  (logic 2.723ns (26.936%)  route 7.386ns (73.064%))
+  Logic Levels:           12  (CARRY4=2 LUT2=3 LUT3=1 LUT5=2 LUT6=4)
+  Clock Path Skew:        -0.138ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.495ns = ( 11.495 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.382     9.173    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X35Y9          LUT6 (Prop_lut6_I4_O)        0.124     9.297 f  cpu/picorv32_core/input_mem_reg_i_47/O
+                         net (fo=5, routed)           1.140    10.437    cpu/picorv32_core/mem_addr_reg[12]_0
+    SLICE_X44Y8          LUT5 (Prop_lut5_I0_O)        0.124    10.561 f  cpu/picorv32_core/reads_reg[0]_i_3/O
+                         net (fo=4, routed)           0.502    11.063    cpu/picorv32_core/reads_reg[0]_i_3_n_2
+    SLICE_X38Y9          LUT2 (Prop_lut2_I0_O)        0.124    11.187 r  cpu/picorv32_core/reads_reg[0]_i_1/O
+                         net (fo=32, routed)          0.670    11.857    adapter_i/host_read
+    SLICE_X40Y6          FDRE                                         r  adapter_i/reads_reg_reg[4]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.495    11.495    adapter_i/clk
+    SLICE_X40Y6          FDRE                                         r  adapter_i/reads_reg_reg[4]/C
+                         clock pessimism              0.115    11.610    
+                         clock uncertainty           -0.135    11.475    
+    SLICE_X40Y6          FDRE (Setup_fdre_C_CE)      -0.205    11.270    adapter_i/reads_reg_reg[4]
+  -------------------------------------------------------------------
+                         required time                         11.270    
+                         arrival time                         -11.857    
+  -------------------------------------------------------------------
+                         slack                                 -0.587    
+
+Slack (VIOLATED) :        -0.587ns  (required time - arrival time)
+  Source:                 cpu/picorv32_core/mem_addr_reg[23]/C
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Destination:            adapter_i/reads_reg_reg[5]/CE
+                            (rising edge-triggered cell FDRE clocked by system_clk  {rise@0.000ns fall@5.000ns period=10.000ns})
+  Path Group:             system_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            10.000ns  (system_clk rise@10.000ns - system_clk rise@0.000ns)
+  Data Path Delay:        10.109ns  (logic 2.723ns (26.936%)  route 7.386ns (73.064%))
+  Logic Levels:           12  (CARRY4=2 LUT2=3 LUT3=1 LUT5=2 LUT6=4)
+  Clock Path Skew:        -0.138ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    1.495ns = ( 11.495 - 10.000 ) 
+    Source Clock Delay      (SCD):    1.748ns
+    Clock Pessimism Removal (CPR):    0.115ns
+  Clock Uncertainty:      0.135ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE + UU
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+    User Uncertainty         (UU):    0.100ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock system_clk rise edge)
+                                                      0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=17163, unset)        1.748     1.748    cpu/picorv32_core/clk
+    SLICE_X29Y0          FDRE                                         r  cpu/picorv32_core/mem_addr_reg[23]/C
+  -------------------------------------------------------------------    -------------------
+    SLICE_X29Y0          FDRE (Prop_fdre_C_Q)         0.456     2.204 f  cpu/picorv32_core/mem_addr_reg[23]/Q
+                         net (fo=9, routed)           0.778     2.982    cpu/picorv32_core/Q[21]
+    SLICE_X29Y3          LUT3 (Prop_lut3_I0_O)        0.124     3.106 f  cpu/picorv32_core/xpm_memory_base_inst_i_24/O
+                         net (fo=2, routed)           0.316     3.422    cpu/picorv32_core/xpm_memory_base_inst_i_24_n_2
+    SLICE_X30Y3          LUT5 (Prop_lut5_I0_O)        0.124     3.546 f  cpu/picorv32_core/control_addr[5]_i_10/O
+                         net (fo=3, routed)           1.075     4.621    cpu/picorv32_core/control_addr[5]_i_10_n_2
+    SLICE_X32Y3          LUT6 (Prop_lut6_I0_O)        0.124     4.745 f  cpu/picorv32_core/control_addr[5]_i_6/O
+                         net (fo=34, routed)          0.700     5.445    cpu/picorv32_core/control_addr[5]_i_6_n_2
+    SLICE_X32Y7          LUT6 (Prop_lut6_I5_O)        0.124     5.569 r  cpu/picorv32_core/context_mem_reg_i_88/O
+                         net (fo=45, routed)          0.658     6.228    cpu/picorv32_core/local_aw_hold_reg_0
+    SLICE_X33Y9          LUT2 (Prop_lut2_I0_O)        0.124     6.352 r  cpu/picorv32_core/context_mem_reg_i_201/O
+                         net (fo=1, routed)           0.000     6.352    cpu/picorv32_core/context_mem_reg_i_201_n_2
+    SLICE_X33Y9          CARRY4 (Prop_carry4_S[0]_CO[3])
+                                                      0.532     6.884 r  cpu/picorv32_core/context_mem_reg_i_182/CO[3]
+                         net (fo=1, routed)           0.000     6.884    cpu/picorv32_core/context_mem_reg_i_182_n_2
+    SLICE_X33Y10         CARRY4 (Prop_carry4_CI_O[3])
+                                                      0.313     7.197 f  cpu/picorv32_core/context_mem_reg_i_181/O[3]
+                         net (fo=1, routed)           0.430     7.626    cpu/picorv32_core/adapter_i/offset[26]
+    SLICE_X32Y10         LUT2 (Prop_lut2_I1_O)        0.306     7.932 f  cpu/picorv32_core/context_mem_reg_i_166/O
+                         net (fo=1, routed)           0.735     8.667    cpu/picorv32_core/context_mem_reg_i_166_n_2
+    SLICE_X34Y8          LUT6 (Prop_lut6_I1_O)        0.124     8.791 f  cpu/picorv32_core/context_mem_reg_i_143_comp/O
+                         net (fo=11, routed)          0.382     9.173    cpu/picorv32_core/context_mem_reg_i_143_n_2
+    SLICE_X35Y9          LUT6 (Prop_lut6_I4_O)        0.124     9.297 f  cpu/picorv32_core/input_mem_reg_i_47/O
+                         net (fo=5, routed)           1.140    10.437    cpu/picorv32_core/mem_addr_reg[12]_0
+    SLICE_X44Y8          LUT5 (Prop_lut5_I0_O)        0.124    10.561 f  cpu/picorv32_core/reads_reg[0]_i_3/O
+                         net (fo=4, routed)           0.502    11.063    cpu/picorv32_core/reads_reg[0]_i_3_n_2
+    SLICE_X38Y9          LUT2 (Prop_lut2_I0_O)        0.124    11.187 r  cpu/picorv32_core/reads_reg[0]_i_1/O
+                         net (fo=32, routed)          0.670    11.857    adapter_i/host_read
+    SLICE_X40Y6          FDRE                                         r  adapter_i/reads_reg_reg[5]/CE
+  -------------------------------------------------------------------    -------------------
+
+                         (clock system_clk rise edge)
+                                                     10.000    10.000 r  
+                                                      0.000    10.000 r  clk (IN)
+                         net (fo=17163, unset)        1.495    11.495    adapter_i/clk
+    SLICE_X40Y6          FDRE                                         r  adapter_i/reads_reg_reg[5]/C
+                         clock pessimism              0.115    11.610    
+                         clock uncertainty           -0.135    11.475    
+    SLICE_X40Y6          FDRE (Setup_fdre_C_CE)      -0.205    11.270    adapter_i/reads_reg_reg[5]
+  -------------------------------------------------------------------
+                         required time                         11.270    
+                         arrival time                         -11.857    
+  -------------------------------------------------------------------
+                         slack                                 -0.587    
+
+
+
+

@@ -1,6 +1,13 @@
 # K4 Keccak CPU 接口与移植断点
 
-2026-09-27：已完成实际 RV32IM-fast CPU＋Keccak 的 RTL 组件闭环，并通过标准库的
+2026-10-04：当前`timing_decode_v3`优化RAM写控制与对齐MMIO译码，组件10次调用/216字及译码等价检查通过；
+当前官方子集3/3通过（索引0、1、115），85次硬件调用匹配，同例API周期与历史完全一致；
+[当前证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)。100 MHz布线后内部setup/hold
++0.269/+0.029 ns；OOC resetn边界hold −1.194 ns仍失败，板级时序待做。
+开发默认仅该子集，145条留到最终候选稳定后运行。
+以下全量数字属于2026-09-27历史RTL版本，不能自动继承。
+
+历史版本已完成实际 RV32IM-fast CPU＋Keccak 的 RTL 组件闭环，并通过标准库的
 custom FIPS202 provider 接入完整 K4 API。官方系统RTL KAT已145/145通过；K2 和 CPU-only 基线保持冻结。
 
 代表性官方RTL用例原索引0、1、115已3/3通过，覆盖KeyGen、Encaps、带SHAKE续取的
@@ -17,8 +24,8 @@ custom FIPS202 provider 接入完整 K4 API。官方系统RTL KAT已145/145通�
   输出/返回值一致；8,683 次标量 Keccak 置换。此结果是主机调用次数，不是 CPU 阶段周期。
 - [CPU 硬件闭环](../results/keccak_cpu/smoke/README.md)：10 次调用、216 个结果字、
   10 次真实 HLS 启动/完成，四种模式、上下文交错、续取及错误返回全部通过。
-- 首版接口按32-bit打包搬运；每次恢复和保存208B上下文。没有DMA、零拷贝或完整KEM加速比声明。
-- 新系统RTL默认128KiB程序RAM，固件预留32KiB栈；CPU+存储+桥+Keccak的OOC布局布线已完成，资源足够，100 MHz内部setup −1.367 ns待优化。
+- 首版接口按32-bit打包搬运；每次恢复和保存208B上下文，无DMA或零拷贝；完整API加速比见历史全量结果。
+- 新系统RTL默认128KiB程序RAM，固件预留32KiB栈；当前v3系统OOC资源足够，100 MHz内部setup/hold +0.269/+0.029 ns，边界hold另行验收。
 
 ## 地址及协议
 
@@ -60,7 +67,7 @@ SHAKE256 33→128和1600→32、SHAKE128每lane 34→504，必要时续取168。
 3. 已完成代表用例及145条可恢复加速RTL回归，逐字节官方输出、返回值和硬件调用计数均通过。
 4. 已与同CPU、同128/32KiB配置的未插桩K4软件基线对比完整API周期；
    计入打包、搬运、上下文、命令与等待开销，再决定是否保留状态于硬件、添加多context槽或DMA。
-5. 完整系统OOC已完成；优先优化程序RAM写控制与adapter ready组合反馈以收敛100 MHz，再完成板级时钟/复位及烧录产物，实板最后。
+5. 当前v3已通过100 MHz内部setup/hold；后续完成板级时钟/复位、全量最终验收与烧录产物，实板最后。
 
 组件构建入口为 `scripts/mlkem1024_keccak/build_smoke.py` 和 `run_smoke.py`；
 完整系统使用 `build_kat.py`、`run_kat.py` 和 `collect_kat.py`。
@@ -69,13 +76,13 @@ SHAKE256 33→128和1600→32、SHAKE128每lane 34→504，必要时续取168。
 provider共享6 KiB打包缓冲，非可重入；SHAKE128拥有34 B输入副本并保留任意次数的块续取，
 单条命令最多4096 B输出。CPU中间量清零计入API周期；加速器BRAM擦除尚待实现和验证。
 
-运行方法：先 `python scripts/mlkem1024_keccak/run_kat.py` 验证原索引0、1、115，
-再 `python scripts/mlkem1024_keccak/run_kat.py --remaining` 仅运行未通过的用例，每批最多8条。
-当前已全量完成，无需重跑；只读验收使用`python scripts/mlkem1024_keccak/collect_kat.py`。
-`python scripts/mlkem1024_keccak/collect_kat.py --partial --write` 汇总代表性结果；
-全量成功后调度器自动运行不带`--partial`的严格汇总，必须145条唯一覆盖。
-`build/keccak_cpu/kat_progress.json` 保存当前运行目录/断点；创建`build/keccak_cpu/STOP`
-可在当前批结束后停止，恢复前移除该标记。运行中的冻结输入不能改动。
+运行使用`scripts/mlkem1024_keccak/run_flow.tcl`顶部开关：默认`KAT_SUBSET=1`、`FULL_KAT=0`，
+只验证原索引0、1、115；最终验收才启用全量。每个`CANDIDATE`使用独立结果/断点目录，
+续跑先核对RTL、HLS、固件、TB和构建输入哈希，禁止跨版本复用PASS。
+历史全集不重跑；只读复核使用`python scripts/mlkem1024_keccak/collect_kat.py`。
+统一入口按所选结果目录调用collector，子集使用`--partial`，最终全量必须145条唯一覆盖。
+当前候选的进度及STOP标记位于`build/keccak_cpu/candidates/<CANDIDATE>/`；STOP在当前批结束后生效，
+恢复前移除。历史断点仍保留在`build/keccak_cpu/`；运行中的冻结输入不能改动。
 机器为Ryzen 7 6800H（8核16线程）；Vivado `general.maxThreads=8`，xelab使用auto。
 RTL逐周期仿真不承诺8倍并行提速。本轮不重复独立HLS综合/实现。
 

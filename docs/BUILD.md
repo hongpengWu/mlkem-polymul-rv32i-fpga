@@ -11,21 +11,38 @@
 - Windows PowerShell、Python 3
 - RISC-V GCC 工具链（路径通过 `RISCV_TOOLCHAIN_BIN` 或脚本参数配置）
 
-## K4 CPU＋Keccak官方RTL系统
+## K4 主线统一入口
 
-完整145条已运行通过。日常核验只执行：
+日常迭代从一个Tcl入口运行，顶部开关选择HLS、smoke、官方子集和系统实现：
+
+```powershell
+D:/Tech/Library/bin/tclsh.exe scripts/mlkem1024_keccak/run_flow.tcl
+```
+
+默认`KAT_SUBSET=1`、`FULL_KAT=0`、`COLLECT=1`，仅执行索引0、1、115；
+同版本已完成的记录核验后跳过。HLS开关包含`CSIM/CSYNTH/COSIM/VIVADO_SYN/VIVADO_IMPL/EXPORT`；
+`SMOKE=1`默认先编译组件固件，`IMPLEMENTATION=1`只实现当前加速组，不重复冻结CPU基线。
+每次改RTL后换`CANDIDATE`，否则哈希检查拒绝混合版本；结果位于
+`results/keccak_cpu/candidates/<CANDIDATE>/kat/`。底层Python负责固件、冻结哈希、断点与汇总，
+既有Tcl负责EDA阶段；主线完成后统一精简重复入口。
+
+实现工具异常退出但已有完整`synth.dcp`时，可设置`RESUME_SYNTH`为原运行目录，
+关闭KAT、开启`IMPLEMENTATION`，从综合检查点恢复布局布线。入口核验原输入和配置，
+在新目录保留恢复来源及哈希；原失败证据不覆盖。时序报告在最终检查点之前保存。
+
+最终候选才设`FULL_KAT=1`，顺序补齐145条，每批最多8条。子集汇总状态为PARTIAL，
+不能当作全量验收。HLS生成的新核必须完成验证与选择，入口不会自动替换`HLS_RUN`所指向的已验证核。
+默认复用已构建KAT固件；软件源码改变时需独立保留原固件/记录并重新构建，不能混入原结果。
+
+历史完整145条证据只读核验：
 
 ```powershell
 python scripts/mlkem1024_keccak/collect_kat.py
 ```
 
-新版本需要回归时，使用`build_kat.py`构建固件、`run_kat.py`跑代表用例，
-`run_kat.py --remaining`顺序补齐，每批最多8条；不得覆盖历史结果或活动快照。
-入口均位于`scripts/mlkem1024_keccak/`，构建/运行限制详见
-[CPU接口文档](MLKEM1024_KECCAK_CPU_INTERFACE.md)。Vivado/xelab使用8线程；
-全部19批结果位于`results/keccak_cpu/kat/`，完整冻结工程保留在`E:/hls/k4kat/`，
-HLS生成RTL/IP/缓存不进入Git。当前collector严格验收需保留对应外部冻结快照，
-不能只凭仓库中的日志重建其原始输入。
+该历史结果在`results/keccak_cpu/kat/`，原始冻结工程在`E:/hls/k4kat/`。
+当前RTL修改不改写历史证据。实现原始setup/hold失败仍保留，内部寄存器时序另列；
+系统OOC不代替板级签核。HLS生成RTL/IP、DCP和缓存不进入Git。
 
 ## CPU-only baseline
 
