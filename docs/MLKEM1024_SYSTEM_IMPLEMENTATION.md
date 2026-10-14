@@ -15,7 +15,7 @@ CPU-only基线保持冻结；当前候选与历史全量验证范围分开记录
 板级时钟/复位、外部接口、最终bitstream与实板验证仍须独立完成。
 两组总线逻辑不同，因此资源差额表示整个集成系统的增量成本，不能全称为Keccak核成本。
 
-统一入口为`scripts/mlkem1024_keccak/run_flow.tcl`顶部`IMPLEMENTATION`开关，
+统一入口为`mainline/k4/flow.tcl`顶部`IMPLEMENTATION`开关，
 开发只实现当前加速组，不重复CPU-only；底层为`implement_system.py --keccak-source current --variants keccak`。
 综合→逻辑优化→布局→物理优化→布线依次执行。
 每轮使用新的短路径`E:/hls/k4sys/<时间>/`，其中保存冻结输入、完整控制台日志、

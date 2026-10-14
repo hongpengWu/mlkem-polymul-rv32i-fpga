@@ -18,6 +18,8 @@ import statistics
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+from source_provenance import verified_source
 sys.path.insert(0, str(ROOT / "scripts/kat"))
 from package_mlkem import ACVP_COMMIT, load_cases, pack_fixture  # noqa: E402
 
@@ -92,11 +94,16 @@ def verify_inputs(path, cases, config, ram_bytes, stack_bytes):
         postprocess_only = name in {"scripts/mlkem_suite/resume.py",
                                     "scripts/mlkem_suite/collect.py"}
         if not postprocess_only and (not source.is_file() or sha(source) != wanted):
-            require(snapshot_path.is_file(), f"Missing snapshot provenance for changed input: {name}")
-            source = (path.parent / "run_snapshot" / name).resolve()
-            require(source.is_relative_to(path.parent.resolve() / "run_snapshot") and
-                    source.is_file() and sha(source) == wanted,
-                    f"Changed or missing simulation input (including archived snapshot): {name}")
+            if snapshot_path.is_file():
+                source = (path.parent / "run_snapshot" / name).resolve()
+                require(source.is_relative_to(path.parent.resolve() / "run_snapshot") and
+                        source.is_file() and sha(source) == wanted,
+                        f"Changed or missing simulation input (including archived snapshot): {name}")
+            else:
+                # Reorganization preserved source after the run; verify its
+                # bytes against the original run hash without rewriting it or
+                # calling the preservation an execution-before snapshot.
+                source = verified_source(source, wanted)
         verified[name] = source
     official, _ = load_cases(ROOT, level)
     by_identity = {tuple(c[name] for name in ("dataset_id", "vsId", "tgId", "tcId")): c for c in official}

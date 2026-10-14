@@ -1,6 +1,6 @@
 # ML-KEM-512 K=2 cached BaseMul HLS
 
-这是当前维护的 HLS 设计，直接对应 portable ML-KEM 的
+这是保留作历史对照的 K2 HLS 设计，直接对应 portable ML-KEM 的
 `polyvec_basemul_acc_montgomery_cached()` 接口。它独立于已经移除的旧完整时域乘法核。
 
 顶层 `mlkem512_basemul_acc_k2` 接收两个 NTT 域多项式向量和显式 `mulcache`，输出 K=2
@@ -29,6 +29,10 @@ testbench 覆盖零输入、边界和确定性随机输入，共 103 个检查�
 powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_hls_short.ps1
 ```
 
+先将 `vitis_hls` 加入 PATH，或设置 `PQC_VITIS_HLS` / `-VitisHls` 指定安装位置。
+短路径默认使用当前仓库所在盘的 `pqc-build/k2`；可用 `PQC_HLS_BUILD_ROOT`
+或 `-BuildRoot` 覆盖，源码依赖均从脚本目录解析，不依赖启动终端的位置。
+
 脚本会复制源文件、TB、Tcl 和配置到短路径，调用 `vitis_hls.bat`，再把报告和导出 IP
 归档回仓库。也可以在本目录执行 `vitis_hls -f run_hls.tcl`。本地工程、缓存和临时日志
 不提交；源码、配置和 `ip/*.zip` 是可复现输入。
@@ -36,5 +40,6 @@ powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_hls_short.p
 已验证结果：C 仿真 103/103，II=1，估算 137 cycles、150.83 MHz，DSP/LUT/FF/BRAM
 估算为 12/310/599/0。完整证据在 [`results/accelerator_interface/hls_synthesis/`](../../results/accelerator_interface/hls_synthesis/)。
 
-该 IP 使用 `ap_ctrl_hs + ap_memory`，还没有 AXI wrapper 或 Vivado 顶层。接入时必须新建
-adapter，并将核心、事务、CPU API 和完整 KEM 周期分别记录。
+该 IP 使用 `ap_ctrl_hs + ap_memory`。历史集成 adapter 与 Vivado 顶层保留在
+`rtl/accelerator/`，核心、事务、CPU API 和完整 KEM 周期在 `results/` 中分别记录。
+当前 K4 主线见 [`mainline/k4/`](../../mainline/k4/)。

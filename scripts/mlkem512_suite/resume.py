@@ -9,6 +9,8 @@ import subprocess
 import sys
 
 from collect import ROOT, RESULTS, CONFIGS, sha, payload_bytes, require
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import tool_path
 from collect_resumed import validate_checkpoint, validate_batch
 
 sys.path.insert(0, str(ROOT / 'scripts/kat'))
@@ -108,7 +110,7 @@ def run_batch(batch_dir, vivado, fixture, builds, original_hashes):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--vivado', type=Path, default=Path('E:/Xilinx/Vivado/2024.2/bin/vivado.bat'))
+    parser.add_argument('--vivado', type=Path, default=None)
     parser.add_argument('--workers', type=int, default=4)
     parser.add_argument('--batch-size', type=int, default=8)
     parser.add_argument('--prepare-only', action='store_true')
@@ -128,7 +130,7 @@ def main():
           f'pending_batches={len(pending)} workers={args.workers}', flush=True)
     if args.prepare_only:
         return
-    require(args.vivado.is_file(), f'Vivado not found: {args.vivado}')
+    args.vivado = tool_path('vivado', args.vivado)
     if args.max_batches is not None:
         require(args.max_batches > 0, 'max-batches must be positive')
         pending = pending[:args.max_batches]

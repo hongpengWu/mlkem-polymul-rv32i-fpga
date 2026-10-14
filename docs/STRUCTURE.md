@@ -1,78 +1,86 @@
-# 目录与维护规则
+# 目录与复现导航
 
-`24-2hp` 只保留当前可复现成果：CPU-only baseline、官方 KAT 软件回归和新的标准接口
-BaseMul HLS 及其独立 MMIO/BRAM/PYNQ-Z2 验证路径，以及新 K4 Keccak HLS 主线。旧完整时域核、旧 AXI wrapper、旧
-板级顶层、transfer 固件及其工程已整体删除，避免出现“源码已删但 XPR 仍引用”的失效结构。
+2026-10-14：新开发分支为 `default`。K4 主线源码已集中到 `mainline/k4/`，
+两个人工维护的 Tcl 入口为 `flow.tcl` 与 `bd_axi.tcl`。
+完整运行说明见 [主线 README](../mainline/k4/README.md)。
 
 ```text
-mlkem-polymul-rv32i-fpga/
-├── rtl/
-│   ├── cpu/                    PicoRV32
-│   ├── benchmark/              CPU-only 固件 RAM 和可配置系统 wrapper
-│   └── accelerator/            HLS/BRAM/MMIO、独立PL自检顶层与K4 AXI-Lite包装层
-├── hls/
-│   ├── mlkem512_basemul_k2/    历史 K2 源码、TB、Tcl和导出 IP
-│   └── mlkem1024_keccak/      K4 主线源码、TB、Tcl和证据脚本，生成工程不入 Git
-├── firmware/
-│   ├── cpu_baseline/           软件多项式 baseline
-│   ├── mlkem_baseline/         官方 KeyGen 入口
-│   ├── mlkem512_suite/         完整 ML-KEM-512 官方套件入口
-│   ├── mlkem512_profile/       阶段 profiling 入口
-│   ├── mlkem1024_keccak/      K4硬件FIPS202、独立自检及PS单例固件
-│   └── images/                 CPU/ML-KEM 固件镜像
-├── tb/
-│   ├── cpu/                    M 扩展和周期验证
-│   ├── software/               多项式、KeyGen、完整 KEM testbench 与 fixture
-│   └── accelerator/            MMIO、BRAM、板级 BIST TB 和向量
-├── scripts/
-│   ├── cpu_baseline/           CPU 构建、仿真、实现和汇总
-│   ├── mlkem_baseline/         KeyGen 构建和仿真
-│   ├── mlkem512_suite/         145 条记录的批处理、恢复和汇总
-│   ├── mlkem512_profile/       阶段测量
-│   ├── mlkem512_interface/     接口审计和软件 oracle
-│   ├── mlkem512_basemul_k2/    加速器 Vivado 仿真、实现和报告
-│   ├── mlkem1024_keccak/      核心run_flow与独立PS–PL vivado_bd入口
-│   └── kat/                    ACVP 结构检查和主机参考回归
-├── pynq/mlkem1024/             单一Notebook及便携主机驱动源码
-├── vivado/                     CPU-only/ML-KEM 软件与独立加速器 XPR
-├── release/                    历史bitstream；新overlay固定使用mlkem1024_pynq/
-├── results/                    官方回归、CPU 实现、HLS 和加速器证据
-├── vectors/official_kat/       固定版本 ACVP/FIPS 203 向量
-├── third_party/                固定提交的 mlkem-native portable C
-├── constraints/                PYNQ-Z2 XDC，供新硬件顶层使用
-└── docs/                       构建、验证、性能和路线记录
+仓库/
+├── mainline/k4/        当前K4源码、固件、TB、约束、Notebook和两个Tcl入口
+├── results/            统一证据根目录；历史结果内容保持原样
+├── release/            板上部署包
+├── build/              不入Git的生成工程和中间文件
+├── rtl/cpu/            共用PicoRV32
+├── third_party/        固定版本ML-KEM C库
+├── vectors/            固定官方测试数据
+├── scripts/            共用工具、官方数据工具及历史CPU/K2流程
+├── firmware/           共用启动代码、CPU-only/K2固件和历史镜像
+├── hls/                历史K2源码与旧本地HLS生成目录
+├── rtl/benchmark/      CPU-only存储与系统包装
+├── rtl/accelerator/    历史K2硬件
+├── tb/                 共用CPU/软件测试、历史K2测试
+├── constraints/        历史K2约束
+├── vivado/             历史CPU-only/K2工程
+└── docs/               进度、构建、性能与历史说明
 ```
 
-## 保留边界
+## 日常入口
 
-- `rtl/cpu/`、`rtl/benchmark/`、`firmware/`、`tb/cpu/`、`tb/software/` 是软件 baseline 和
-  官方 KAT 的执行输入，不随新 HLS 改动。
-- `hls/mlkem512_basemul_k2/` 冻结为历史对照，保留其可复现入口和已有 IP。
-- `hls/mlkem1024_keccak/` 是新主线：`src/`、`tb/`、`scripts/`、`run_hls.tcl`。
-  构建在 `E:/hls/` 短路径；新生成的工程、RTL、IP、波形、缓存不入 Git。
-  `results/hls/mlkem1024_keccak/` 只归档精选报告、运行清单、源码快照和哈希。
-- `rtl/accelerator/`、`tb/accelerator/` 和 `scripts/mlkem512_basemul_k2/` 共同构成独立
-  MMIO/BRAM 验证路径；`vivado/mlkem512_basemul_k2/basemul.xpr` 是可直接打开的
-  Vivado 2024.2 工程，`release/mlkem512_basemul_k2/` 保存匹配的 bitstream。
-- `vivado/cpu_baseline_*`、`vivado/mlkem_keygen_*`、`vivado/mlkem512_*` 只保存可打开的
-  XPR 和固件镜像；`.runs`、`.sim`、`.cache` 等生成目录不进版本库。
-- `release/cpu_baseline_*` 是已有 CPU-only 实现产物。它们不是新 HLS 的 bitstream，也不
-  代表 CPU+PL 加速系统已经完成。
-- K4 PS–PL使用独立`scripts/mlkem1024_keccak/vivado_bd.tcl`阶段开关；候选工程在
-  `E:/hls/k4pynq/<批次>/`，证据在`results/keccak_cpu/pynq/<批次>/`。
-  仅通过门禁的配套`.bit/.hwh`、Notebook/驱动、官方向量和manifest发布到固定
-  `release/mlkem1024_pynq/`，不为每批另建部署目录。run02协议/3例PASS，run04拒绝发布，
-  run05因元数据拒绝，run06已完成物理签核和发布；新overlay实板验证仍待进行。
-- `results/official_baseline/`、`results/official_reference/`、`results/cpu_baseline/` 和
-  `results/accelerator_interface/` 只保存可审计证据；后者包含 HLS、RTL、板级 BIST 和
-  Vivado 实现结果，旧完整加速器结果已移除。
+| 工作 | 位置 |
+|---|---|
+| 看进度 | [PROJECT_STATUS.md](PROJECT_STATUS.md) |
+| HLS加速器算法与测试 | [mainline/k4/hls/](../mainline/k4/hls/) |
+| CPU、存储、MMIO与AXI硬件 | [mainline/k4/rtl/](../mainline/k4/rtl/) |
+| RISC-V上的C程序 | [mainline/k4/firmware/](../mainline/k4/firmware/) |
+| 系统与AXI仿真 | [mainline/k4/tb/](../mainline/k4/tb/) |
+| Jupyter演示源码 | [mainline/k4/pynq/](../mainline/k4/pynq/) |
+| HLS、核心及独立PL流程 | [flow.tcl](../mainline/k4/flow.tcl) |
+| BD、AXI和overlay流程 | [bd_axi.tcl](../mainline/k4/bd_axi.tcl) |
+| 上板配套文件 | [release/mlkem1024_pynq/](../release/mlkem1024_pynq/) |
+| 迁移映射与验证 | [results/reorganization/](../results/reorganization/) |
 
-## 生成文件规则
+主线的 `scripts/` 是两个 Tcl 调用的 Python 辅助工具，承担编译、输入快照、
+官方输出校验和证据归档；没有把这些必要检查删掉。
+共用CPU、第三方库和官方数据通过仓库相对路径引用，不再复制一份。
 
-Vitis HLS 和 Vivado 都会生成大量缓存、日志、波形和布局布线数据库。根目录 `.gitignore`
-只保留可复现入口、XPR、MEM、XCI、BIT/LTX 和报告；重新生成时不要把 `.Xil`、`.runs`、
-`.sim`、`.cache`、DCP 或临时目录加入 Git。
+## results/ 中保存什么
 
-K2 保留已验证的native MMIO/BRAM adapter。K4核心集成与历史145例RTL证据已完成；
-独立3例PL自检由用户报告LED0/BTN0通过。新PS–PL路径另行保存AXI、实现及实板证据，
-不把历史3.8028×或用户的独立自检观察转记为新overlay的实测结果。
+| 子目录 | 内容 |
+|---|---|
+| `official_reference/` | 主机端三种参数的官方参考验证 |
+| `official_baseline/` | 512/768/1024的CPU-only官方验证 |
+| `cpu_baseline/` | 早期多项式和不同CPU配置实验 |
+| `accelerator_interface/` | 历史独立K2 HLS/MMIO/板级证据 |
+| `accelerator_cpu/` | 历史CPU+K2 BaseMul结果 |
+| `hls/mlkem1024_keccak/` | K4 HLS基线、优化和物理实现证据 |
+| `keccak_cpu/` | K4核心、板级、PS–PL分阶段结果 |
+| `reorganization/` | 新旧路径映射、文件一致性与迁移验证 |
+
+K4当前全量核心证据在 `keccak_cpu/candidates/timing_decode_v3/kat/`；
+已发布overlay证据在 `keccak_cpu/pynq/20261005_psaxi06/`。
+日期和批次子目录记录具体运行，失败和中断不会被归并成PASS。
+TB负责定义检查，日志和输入哈希负责证明某一版本实际运行过，两者不能互相替代。
+
+## 外部短路径构建与历史文件
+
+新流程的构建根目录可配置，源码不依赖固定的 `E:/hls/`。
+旧 `E:/hls/` 保留HLS优化、核心KAT、系统实现、独立板级和PS–PL的原始工程，
+不改写其中冻结的来源路径或哈希。此类历史绝对路径是来源记录，不是新复现流程的依赖。
+
+现有已发布overlay的历史工程是 `E:/hls/k4pynq/20261005_psaxi06/project/k4_pynq.xpr`，
+最终修复后的实现是同批次 `routed.dcp`。XPR用于浏览BD和工程，DCP保存最终实现状态。
+旧独立三例自检的 `E:/hls/k4board/20261004_162430/board/board.bit` 与当前交互overlay不同。
+
+`E:/pqc/` 外层的 `rtl/`、`scripts/`、`tb/` 是早期K2留稿，内容并非完全重复；
+`prompt_ref_tmp/` 是参考提示词仓库。此次主线迁移不把它们并入产品源码。
+`.Xil/` 是工具缓存，`NA/` 是生成的PS摘要；`.git/` 是版本历史。
+
+## 产物和维护边界
+
+- `.c/.S` 是CPU固件；HLS `.cpp` 描述硬件；`.sv/.v` 是硬件或仿真平台；Python在PS/电脑上运行。
+- `.mem` 是存储镜像，用于仿真或RAM初始化；`.xdc` 是引脚/时序约束。
+- `.xpr` 是Vivado工程；`.dcp` 是实现检查点；`.bit/.hwh` 是PYNQ配套部署文件。
+- `.log/.rpt`、manifest、snapshot是执行证据；`.ipynb` 是演示Notebook。
+- 新生成的HLS工程、RTL/IP、波形、DCP及本地归档不提交Git；必要摘要与哈希提交到results。
+- 不入Git不代表可以删除。冻结输入、已发布产物、失败证据和续跑依赖保留。
+- 当前K4核心145/145与3.8028×属于RTL证据，不能记成新overlay的板上实测。

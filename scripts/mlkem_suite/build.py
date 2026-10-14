@@ -3,7 +3,8 @@ from pathlib import Path
 import argparse, hashlib, json, re, subprocess, sys
 
 ROOT = Path(__file__).resolve().parents[2]
-TOOLS = Path('E:/Xilinx/Vivado/2024.2/gnu/riscv/nt/riscv64-unknown-elf/bin')
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import riscv_tool
 M_OPS = {'mul', 'mulh', 'mulhsu', 'mulhu', 'div', 'divu', 'rem', 'remu'}
 
 
@@ -19,7 +20,7 @@ def require(condition, message):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--parameter-set', type=int, required=True, choices=(768, 1024))
-    parser.add_argument('--tool-dir', type=Path, default=TOOLS)
+    parser.add_argument('--tool-dir', type=Path, default=None)
     parser.add_argument('--ram-bytes', type=int, default=None)
     parser.add_argument('--stack-bytes', type=int, default=None)
     args = parser.parse_args()
@@ -44,7 +45,7 @@ def main():
         require(digest(vendor / entry['path']) == entry['sha256'], f'Vendored source changed: {entry["path"]}')
 
     def tool(name):
-        path = args.tool_dir / ('riscv64-unknown-elf-' + name + '.exe')
+        path = riscv_tool(name, args.tool_dir)
         require(path.is_file(), f'Missing tool: {path}')
         return path
 

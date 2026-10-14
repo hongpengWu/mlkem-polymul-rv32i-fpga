@@ -1,8 +1,11 @@
 """Run parameterized CPU-only ML-KEM suites in Vivado/XSim 2024.2."""
 from pathlib import Path
+import sys
 import argparse, concurrent.futures, hashlib, json, subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import tool_path
 CONFIGS = ('rv32i', 'rv32im_iterative', 'rv32im_fast')
 
 
@@ -46,8 +49,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--parameter-set', type=int, required=True, choices=(768, 1024))
     parser.add_argument('--config', choices=CONFIGS)
-    parser.add_argument('--vivado', type=Path, default=Path('E:/Xilinx/Vivado/2024.2/bin/vivado.bat'))
+    parser.add_argument('--vivado', type=Path, default=None)
     args = parser.parse_args()
+    args.vivado = tool_path('vivado', args.vivado)
     configs = [args.config] if args.config else list(CONFIGS)
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(configs)) as pool:
         for future in concurrent.futures.as_completed([pool.submit(run, args.parameter_set, c, args.vivado) for c in configs]):

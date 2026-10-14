@@ -13,110 +13,75 @@
 
 ## K4 主线统一入口
 
-日常迭代从一个Tcl入口运行，顶部开关选择HLS、smoke、官方子集和系统实现：
+当前开发分支是 `default`。源码集中在 [mainline/k4](../mainline/k4/README.md)，
+只维护 `flow.tcl` 和 `bd_axi.tcl` 两个 Tcl 入口。使用 Vivado/Vitis HLS 2024.2。
+工具从 PATH、AMD设置脚本的环境变量或 `PQC_VIVADO/PQC_VITIS_HLS/PQC_RISCV_TOOL_DIR`
+定位；脚本不固定开发者的安装盘符。
+
+默认 `CHECK_ONLY=1`，用于预检，不启动耗时流程：
 
 ```powershell
-D:/Tech/Library/bin/tclsh.exe scripts/mlkem1024_keccak/run_flow.tcl
+tclsh mainline/k4/flow.tcl
+tclsh mainline/k4/bd_axi.tcl
 ```
 
-默认`KAT_SUBSET=1`、`FULL_KAT=0`、`COLLECT=1`，仅执行索引0、1、115；
-同版本已完成的记录核验后跳过。HLS开关包含`CSIM/CSYNTH/COSIM/VIVADO_SYN/VIVADO_IMPL/EXPORT`；
-`SMOKE=1`默认先编译组件固件，`IMPLEMENTATION=1`只实现当前加速组，不重复冻结CPU基线。
-每次改RTL后换`CANDIDATE`，否则哈希检查拒绝混合版本；结果位于
-`results/keccak_cpu/candidates/<CANDIDATE>/kat/`。底层Python负责固件、冻结哈希、断点与汇总，
-既有Tcl负责EDA阶段；主线完成后统一精简重复入口。
+顶部开关或 `FLOW_<名称>` 配置 HLS、SMOKE、KAT_SUBSET、FULL_KAT、IMPLEMENTATION、
+BOARD_SIM/BOARD_IMPL；实际执行设置 `FLOW_CHECK_ONLY=0`。
+`BUILD_KAT` 在 KAT/系统实现前编译固件，`BUILD_SMOKE` 和 `BUILD_BOARD` 管理对应固件。
+开发使用官方索引0、1、115；`FULL_KAT=1`才启用145例，不把仅启动的仿真记为PASS。
 
-实现工具异常退出但已有完整`synth.dcp`时，可设置`RESUME_SYNTH`为原运行目录，
-关闭KAT、开启`IMPLEMENTATION`，从综合检查点恢复布局布线。入口核验原输入和配置，
-在新目录保留恢复来源及哈希；原失败证据不覆盖。时序报告在最终检查点之前保存。
-
-最终候选才设`FULL_KAT=1`，顺序补齐145条，每批最多8条。子集汇总状态为PARTIAL，
-不能当作全量验收。HLS生成的新核必须完成验证与选择，入口不会自动替换`HLS_RUN`所指向的已验证核。
-默认复用已构建KAT固件；软件源码改变时需独立保留原固件/记录并重新构建，不能混入原结果。
-
-已冻结核心版本`timing_decode_v3`的145条已完成，只读复核（不代表新PS–PL overlay覆盖）：
+HLS复现示例：
 
 ```powershell
-python scripts/mlkem1024_keccak/collect_kat.py --results-dir results/keccak_cpu/candidates/timing_decode_v3/kat
+$env:FLOW_HLS='1'
+$env:FLOW_CHECK_ONLY='0'
+tclsh mainline/k4/flow.tcl
 ```
 
-历史完整145条证据只读核验：
+默认 `CSIM/CSYNTH/COSIM=1`，IP导出和IP物理实现由 `EXPORT/VIVADO_SYN/VIVADO_IMPL` 控制。
+HLS工具运行的是同一个 `flow.tcl` 的内部worker，不存在另一个维护入口。
+选择成功的HLS运行目录后设置 `FLOW_HLS_RUN`（或Python入口的 `PQC_HLS_RUN`），
+后续核对源码、109条差分事务和对应C/RTL报告及输入哈希。
+AMD工具遇到长路径限制时可设置 `FLOW_SHORT_ROOT` 为外部短目录；源码仍维护在仓库。
+
+CPU组件验证示例（先设置已通过的 `FLOW_HLS_RUN`）：
 
 ```powershell
-python scripts/mlkem1024_keccak/collect_kat.py
+$env:FLOW_HLS='0'
+$env:FLOW_SMOKE='1'
+$env:FLOW_CHECK_ONLY='0'
+tclsh mainline/k4/flow.tcl
 ```
 
-该历史结果在`results/keccak_cpu/kat/`，原始冻结工程在`E:/hls/k4kat/`。
-当前RTL修改不改写历史证据。实现原始setup/hold失败仍保留，内部寄存器时序另列；
-系统OOC不代替板级签核。HLS生成RTL/IP、DCP和缓存不进入Git。
-
-板级仿真通过后，如只需修正约束或物理实现，可设置`RESUME_BOARD`为原运行目录，
-同时使用`BOARD_SIM=0`、`BOARD_IMPL=1`、`BOARD_BITSTREAM=1`。恢复入口会核对manifest、
-结果、91项冻结输入、仿真日志和routed DCP的SHA-256；RTL、HLS、固件或TB变化时拒绝复用。
-新目录记录恢复来源并重新执行签核门禁，原失败证据保持不变。
+完整测试的历史证据保持原样，迁移后新运行不覆盖旧manifest。
+当前冻结核心全量汇总为
+[145例结果](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)。
 
 ## K4 PS–PL / Jupyter入口
 
-当前部署包：`release/mlkem1024_pynq/`；项目：
-`E:/hls/k4pynq/20261005_psaxi06/project/k4_pynq.xpr`。
-最终物理设计保存在同批次`routed.dcp`，包含局部布局修复；查看最终实现时打开该DCP。
-100 MHz物理签核和包内哈希校验已通过，新overlay尚未上板。
-
-独立3例自检bitstream已有用户报告的LED0 PASS及BTN0复位后恢复；
-该观察不包含PS装载、结果读回或全量145例。交互式overlay使用独立的
-`scripts/mlkem1024_keccak/vivado_bd.tcl`。该Tcl参考Prompt3的PS/AXI、统一时钟复位、
-地址核验和配套`.bit/.hwh`导出方式，使用实际PYNQ-Z2的`xc7z020clg400-1`和已安装板卡preset。
-
-当前断点：`20261004_psaxi02`实际执行的AXI协议检查及官方索引0、1、115三例已PASS。
-`20261004_psaxi04`因复位极性/辅助复位接线与GP0接口元数据问题拒绝作为发布候选；
-保留其诊断证据，下一步使用修正后的`20261004_psaxi05`重新实现。run05尚无成功结论，
-新overlay尚未上板验证；旧核心145/145与3.8028×只作为历史RTL证据。
-
 ```powershell
-E:/Xilinx/Vivado/2024.2/bin/vivado.bat -mode batch -notrace -source scripts/mlkem1024_keccak/vivado_bd.tcl
+$env:BD_CHECK_ONLY='0'
+vivado -mode batch -notrace -source mainline/k4/bd_axi.tcl
 ```
 
-顶部`PREPARE/SIM/CREATE_BD/SYNTH/IMPL/EXPORT`为0/1开关，默认全开；环境变量`BD_<开关名>`
-可覆盖。8个工作线程；运行工程位于`E:/hls/k4pynq/<批次>/project/k4_pynq.xpr`。
-这些是PS–PL独立入口的开关；原`run_flow.tcl`继续管理核心/HLS回归与独立PL自检流程。
-`PREPARE`编译独立`--ps`固件并冻结RTL、HLS、固件、测试和官方向量；不会重跑旧145条回归。
-`SIM`检查AXI握手/错误响应/复位和三条官方记录。综合与实现必须通过时序、路由、DRC，
-并验证生成BD的复位极性、时钟与地址连接，才允许发布部署包。
+`PREPARE/SIM/CREATE_BD/SYNTH/IMPL/EXPORT`均可通过顶部或 `BD_<名称>` 覆盖。
+默认先预检；启用真实执行前选好HLS运行和PYNQ-Z2板卡文件。
+板卡路径由 `PQC_BOARD_DIR` 或已安装Vivado板卡目录发现。
+`BD_SHORT_ROOT` 配置短构建区；`BD_RUN_DIR`选择断点。相对路径按仓库根解析。
 
-已通过的仿真可通过`BD_REUSE_SIM`复用：设置为原运行目录并设`BD_SIM=0`；入口逐项核对
-RTL/HLS/固件/TB/fixture哈希，保留来源。修改这些输入后必须重新仿真。
+`PREPARE`编译PS单例固件并冻结RTL、HLS、官方子集和Notebook；`SIM`检查AXI协议和三例。
+`CREATE_BD`构建PS7 GP0、AXI互联、PicoRV32系统、统一100MHz时钟及复位。
+综合/布局布线和EXPORT须经过时序、路由、DRC及地址/复位连接门禁。
+`BD_REUSE_SIM`仅允许复用输入哈希完全匹配的成功仿真。
 
-仅通过门禁后发布到固定目录`release/mlkem1024_pynq/`，不建立多个并列部署目录。
-包内包含配套`k4_accel.bit/.hwh`、
-`mlkem1024.py`、`mlkem1024.ipynb`、`kat_vectors.json`和`release_manifest.json`。
-打开包内`README.txt`可查看该版本准确的XPR位置。整个目录上传到
-`/home/xilinx/jupyter_notebooks/mlkem1024/`，在Jupyter打开`mlkem1024.ipynb`。
-生成的大文件与EDA工程不进入Git；证据保存在`results/keccak_cpu/pynq/<批次>/`。
+固定部署目录是 `release/mlkem1024_pynq/`，包含配套 `.bit/.hwh`、
+Notebook、驱动、145条向量及发布清单。现有包仍为20261005_psaxi06历史签核产物，
+100MHz setup/hold/pulse为+0.302/+0.026/+3.750ns，新overlay实板验证待完成。
+本次目录验证不自动替换已发布包。
 
-BD结构是PS7 GP0→AXI互联→PicoRV32系统的AXI-Lite包装层，统一FCLK0 100 MHz与
-`proc_sys_reset`。PicoRV32继续执行ML-KEM，Keccak由PL硬件计算；ARM只装载、校验和显示。
-
-| PS物理地址 / 核内地址 | 用途 |
-|---|---|
-| `0x40000000..0x4001ffff` / `0x00000..0x1ffff` | 128 KiB程序RAM，双口访问；CPU复位时PS可写 |
-| `0x40010000` / `0x10000` | 8 KiB单例输入窗口 |
-| `0x40012000` / `0x12000` | 8 KiB结果窗口，预期结果只保留在PS |
-| `0x40020000/04` | 硬件ID `0x4b344158` / ABI版本1 |
-| `0x40020008` | CONTROL bit0：0复位、1运行 |
-| `0x4002000c/10` | 完成/错误状态 / CPU trap |
-| `0x40020014/18` | 100,000,000 Hz / RAM字节数 |
-| `0x40020040..6f` | 12项固件debug/profile字，API周期在`0x4002004c` |
-| `0x40020080..8f` | HLS启动、busy周期、缓冲写/读计数 |
-
-每条用例按“复位→装入输入→启动→读结果→PS逐字节校验”运行。Notebook默认3例，
-全量145需显式启用；只有145个唯一索引全部匹配才记全量通过。API周期、装载/读回耗时和
-Python总耗时分别记录。页面中的CPU-only值属于历史RTL参考，不能冒充现场软件基线或实板加速比。
-新AXI固件/双口RAM属于独立候选，旧核心145/145不转记为新overlay的完整硬件覆盖。
-新overlay的LED0表示单例执行/结果传输完成；官方PASS以Notebook逐字节校验为准。
-LED1表示固件错误或trap，LED2表示运行，LED3表示trap。
-
-板卡preset中的DDR DQS负偏斜会触发PSU-1..4警告，原始报告保留，未擅自改为零。
-overlay不重新初始化Linux使用的PS DDR；PL时序、路由与功能DRC仍须独立通过。
+上传整个包至PYNQ的 `/home/xilinx/jupyter_notebooks/mlkem1024/` 后打开Notebook。
+ARM负责装载、控制和结果校验，ML-KEM仍由PL的PicoRV32与Keccak执行。
+原始145/145与3.8028×属于核心RTL证据，不是新overlay实板结果。
 
 ## CPU-only baseline（旧入口）
 

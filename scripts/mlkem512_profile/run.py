@@ -9,6 +9,8 @@ import subprocess
 import sys
 
 from build import ROOT, BUILD, RESULTS, sha, require, save
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import tool_path
 sys.path.insert(0, str(ROOT / 'scripts/kat'))
 from package_mlkem512 import pack_fixture, verify_roundtrip
 
@@ -81,7 +83,7 @@ def run_batch(directory, vivado, manifest, cases):
 def main():
     from collect import validate_batch
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--vivado',type=Path,default=Path('E:/Xilinx/Vivado/2024.2/bin/vivado.bat'))
+    parser.add_argument('--vivado',type=Path,default=None)
     parser.add_argument('--workers',type=int,default=4)
     parser.add_argument('--max-batches',type=int)
     parser.add_argument('--prepare-only',action='store_true')
@@ -98,6 +100,7 @@ def main():
         else: pending.append(directory)
     print(f'PROFILE_RESUME passed_batches={len(jobs)-len(pending)} pending_batches={len(pending)}',flush=True)
     if args.prepare_only:return
+    args.vivado = tool_path('vivado', args.vivado)
     if args.max_batches is not None:
         require(args.max_batches>0,'Positive batch limit required')
         pending=pending[:args.max_batches]

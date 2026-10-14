@@ -1,0 +1,353 @@
+
+****** Vivado v2024.2 (64-bit)
+  **** SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+  **** IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+  **** SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+  **** Start of session at: Wed Oct 14 15:42:11 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source {E:\pqc-build\k4\smoke\structure_check\20261014_154208_086843\snapshot\run_smoke.tcl}
+# set HLS 0
+# set CSIM 1
+# set CSYNTH 1
+# set COSIM 1
+# set VIVADO_SYN 0
+# set VIVADO_IMPL 0
+# set EXPORT 0
+# set SMOKE 0
+# set BUILD_SMOKE 1
+# set BUILD_KAT 1
+# set KAT_SUBSET 0
+# set FULL_KAT 0
+# set IMPLEMENTATION 0
+# set BUILD_BOARD 0
+# set BOARD_SIM 0
+# set BOARD_IMPL 0
+# set BOARD_BITSTREAM 0
+# set COLLECT 0
+# set CHECK_ONLY 1
+# set CANDIDATE structure_check
+# set PYTHON python
+# set VIVADO ""
+# set VITIS_HLS ""
+# set HLS_RUN build/k4/selected_hls
+# set SHORT_ROOT build/k4
+# set RESUME_SYNTH ""
+# set RESUME_BOARD ""
+# set max_threads 8
+# set FLOW_FILE [file normalize [info script]]
+# set MAIN [file dirname $FLOW_FILE]
+# set ROOT [file normalize [file join $MAIN ../..]]
+# set SCRIPT_DIR [file join $MAIN scripts]
+# set CUR_DIR [pwd]
+# set WORKER ""
+# if {![info exists argv]} {set argv {}}
+# if {[info exists ::env(FLOW_WORKER)]} {set WORKER $::env(FLOW_WORKER)}
+# if {[llength $argv] && [lindex $argv 0] eq "--worker"} {
+#     if {[llength $argv] < 2} {error "--worker needs hls|smoke|kat|implementation|internal-timing"}
+#     set WORKER [lindex $argv 1]
+#     set argv [lrange $argv 2 end]
+# }
+# if {$WORKER ni {{} hls smoke kat implementation internal-timing}} {error "Unknown worker: $WORKER"}
+# if {$WORKER eq "hls"} {
+# # Vitis HLS 2024.2 worker; switches are forwarded as HLS_<NAME>.
+# set CSIM 1
+# set CSYNTH 1
+# set COSIM 1
+# set VIVADO_SYN 0
+# set VIVADO_IMPL 0
+# set EXPORT 0
+# set IO_OPT 1
+# 
+# set max_threads 8
+# set XPART xc7z020-clg400-1
+# set CLKP 10.0
+# set SOLN sol1
+# set TOP mlkem1024_keccak_accel
+# set HLS_SOURCE [file join $MAIN hls]
+# if {![file isdirectory [file join $HLS_SOURCE src]]} {set HLS_SOURCE $MAIN}
+# if {![file isdirectory [file join $HLS_SOURCE src]]} {error "Missing HLS source or frozen snapshot beside flow.tcl"}
+# set CUR_DIR [pwd]
+# 
+# foreach setting {CSIM CSYNTH COSIM VIVADO_SYN VIVADO_IMPL EXPORT IO_OPT} {
+#     if {[info exists ::env(HLS_$setting)]} {set $setting $::env(HLS_$setting)}
+#     if {[set $setting] ni {0 1}} {error "$setting must be 0 or 1"}
+# }
+# if {($VIVADO_SYN || $VIVADO_IMPL) && !$EXPORT} {
+#     error "Set EXPORT=1 to request Vivado synthesis/implementation."
+# }
+# if {!$CSIM && !$CSYNTH && !$COSIM && !$EXPORT} {error "No stage selected."}
+# set PYTHON python
+# if {[info exists ::env(HLS_PYTHON)]} {set PYTHON $::env(HLS_PYTHON)}
+# set BUILD_ROOT [file join $ROOT build k4]
+# if {[info exists ::env(HLS_BUILD_ROOT)]} {set BUILD_ROOT $::env(HLS_BUILD_ROOT)}
+# set RUN_ID "[clock format [clock seconds] -format %Y%m%d_%H%M%S]_[pid]"
+# set REUSE 0
+# if {!$CSYNTH && ($COSIM || $EXPORT)} {
+#     if {![info exists ::env(HLS_RUN_ID)]} {
+#         error "CSYNTH=0 with COSIM/EXPORT needs HLS_RUN_ID of a successful matching run."
+#     }
+#     set REUSE 1
+# }
+# if {[info exists ::env(HLS_RUN_ID)]} {set RUN_ID $::env(HLS_RUN_ID)}
+# if {![regexp {^[A-Za-z0-9_-]+$} $RUN_ID]} {error "Unsafe HLS_RUN_ID"}
+# if {[file pathtype $BUILD_ROOT] ne "absolute"} {set BUILD_ROOT [file join $ROOT $BUILD_ROOT]}
+# set RUN_DIR [file normalize [file join $BUILD_ROOT hls io$IO_OPT $RUN_ID]]
+# set PROJ [file join $RUN_DIR p]
+# set HELPER [file join $HLS_SOURCE scripts collect_reports.py]
+# set EXPORT_FLOW none
+# if {$VIVADO_IMPL} {set EXPORT_FLOW impl} elseif {$VIVADO_SYN} {set EXPORT_FLOW syn}
+# 
+# # Freeze inputs and acquire an exclusive lock; never reset an old/active project.
+# exec $PYTHON $HELPER prepare --source-dir $HLS_SOURCE --flow-script $FLOW_FILE --run-dir $RUN_DIR \
+#     --reuse $REUSE --pid [pid] --io-opt $IO_OPT --part $XPART --clock $CLKP \
+#     --stages $CSIM $CSYNTH $COSIM $EXPORT --export-flow $EXPORT_FLOW
+# puts "INFO: K4 HLS run directory: $RUN_DIR"
+# set SNAPSHOT [file join $RUN_DIR snapshot]
+# if {[regexp {\s} $SNAPSHOT]} {error "Use a short HLS_BUILD_ROOT without spaces."}
+# set FLAGS "-I$SNAPSHOT/src -std=c++14 -DKECCAK_IO_OPT=$IO_OPT"
+# set opened 0
+# set failed [catch {
+#     cd $RUN_DIR
+#     if {[llength [info commands set_param]]} {set_param general.maxThreads $max_threads}
+#     open_project $PROJ
+#     set opened 1
+#     if {!$REUSE} {
+#         add_files [file join $SNAPSHOT src mlkem1024_keccak_accel.cpp] -cflags $FLAGS
+#         add_files [file join $SNAPSHOT src mlkem1024_keccak_accel.h] -cflags $FLAGS
+#         add_files -tb [file join $SNAPSHOT tb tb_mlkem1024_keccak_accel.cpp] -cflags $FLAGS
+#         set_top $TOP
+#         open_solution $SOLN -flow_target vivado
+#         set_part $XPART
+#         create_clock -period $CLKP -name default
+#         set_clock_uncertainty 10%
+#         config_compile -pipeline_loops 0
+#     } else {
+#         open_solution $SOLN
+#     }
+#     if {$CSIM} {
+#         exec $PYTHON $HELPER stage --run-dir $RUN_DIR --stage CSIM --status running
+#         csim_design
+#         exec $PYTHON $HELPER stage --run-dir $RUN_DIR --stage CSIM --status pass
+#     }
+#     if {$CSYNTH} {
+#         exec $PYTHON $HELPER stage --run-dir $RUN_DIR --stage CSYNTH --status running
+#         csynth_design
+#         exec $PYTHON $HELPER stage --run-dir $RUN_DIR --stage CSYNTH --status pass
+#     }
+#     if {$COSIM} {
+#         exec $PYTHON $HELPER stage --run-dir $RUN_DIR --stage COSIM --status running
+#         cosim_design -rtl verilog -tool xsim
+#         exec $PYTHON $HELPER stage --run-dir $RUN_DIR --stage COSIM --status pass
+#     }
+#     if {$EXPORT} {
+#         exec $PYTHON $HELPER stage --run-dir $RUN_DIR --stage EXPORT --status running
+#         export_design -format ip_catalog -rtl verilog -flow $EXPORT_FLOW
+#         exec $PYTHON $HELPER stage --run-dir $RUN_DIR --stage EXPORT --status pass
+#     }
+#     exec $PYTHON $HELPER collect --run-dir $RUN_DIR --strict
+# } problem options]
+# if {$opened} {catch {close_project}}
+# if {$failed} {
+#     catch {exec $PYTHON $HELPER fail --run-dir $RUN_DIR --message $problem}
+#     catch {exec $PYTHON $HELPER collect --run-dir $RUN_DIR}
+# }
+# catch {exec $PYTHON $HELPER release --run-dir $RUN_DIR --pid [pid]}
+# cd $CUR_DIR
+# if {$failed} {return -options $options $problem}
+# puts "INFO: Requested K4 HLS stages completed; metrics: $RUN_DIR/reports/metrics.json"
+# exit
+#     return
+# }
+# if {$WORKER eq "smoke"} {
+# # Frozen CPU + Keccak integration smoke; no synthesis or baseline mutation.
+# if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2"}
+# if {[llength $argv] != 1} {error "Expected unique frozen run directory"}
+# set run [file normalize [lindex $argv 0]]
+# set snapshot [file join $run snapshot]
+# create_project keccakcpu [file join $run p] -part xc7z020clg400-1
+# set_property target_language Verilog [current_project]
+# set_property XPM_LIBRARIES {XPM_MEMORY} [current_project]
+# foreach f [glob [file join $snapshot rtl *]] {add_files -norecurse $f}
+# foreach f [glob [file join $snapshot hls *.v]] {add_files -norecurse $f}
+# foreach f [glob [file join $snapshot hls *.dat]] {
+#     add_files -norecurse $f
+# }
+# set fw [file join $snapshot fixtures smoke.mem]
+# add_files -norecurse $fw
+# set_property file_type {Memory Initialization Files} [get_files $fw]
+# set_property top mlkem1024_keccak_system [get_filesets sources_1]
+# add_files -fileset sim_1 -norecurse [file join $snapshot tb tb_mlkem1024_keccak_cpu_smoke.sv]
+# foreach name {expected.mem meta.mem} {
+#     set f [file join $snapshot fixtures $name]
+#     add_files -fileset sim_1 -norecurse $f
+#     set_property file_type {Memory Initialization Files} [get_files $f]
+# }
+# set_property top tb_mlkem1024_keccak_cpu_smoke [get_filesets sim_1]
+# set_property xsim.simulate.runtime all [get_filesets sim_1]
+# set_property xsim.elaborate.debug_level off [get_filesets sim_1]
+# update_compile_order -fileset sources_1
+# update_compile_order -fileset sim_1
+# launch_simulation -simset sim_1
+# close_sim
+# set logfile [file join $run p keccakcpu.sim sim_1 behav xsim simulate.log]
+# set fp [open $logfile r]
+# set log [read $fp]
+# close $fp
+# file copy $logfile [file join $run simulate.txt]
+# if {[string first "KECCAK_CPU_SMOKE_PASS" $log] < 0 || [regexp -nocase {fatal:|ERROR:|KECCAK_CPU_SMOKE_FAIL} $log]} {
+#     error "CPU Keccak smoke failed; see $logfile"
+# }
+# close_project
+# puts "KECCAK_CPU_RUN_PASS"
+#     return
+# }
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 448.672 ; gain = 124.621
+Command: launch_simulation  -simset sim_1
+INFO: [Vivado 12-12493] Simulation top is 'tb_mlkem1024_keccak_cpu_smoke'
+WARNING: [Vivado 12-13340] Unable to auto find GCC executables from simulator install path! (path not set)
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-72] Using boost library from 'E:/Xilinx/Vivado/2024.2/tps/boost_1_72_0'
+INFO: [USF-XSim-7] Finding pre-compiled libraries...
+INFO: [USF-XSim-11] File 'E:/Xilinx/Vivado/2024.2/data/xsim/xsim.ini' copied to run dir:'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_mlkem1024_keccak_cpu_smoke' in fileset 'sim_1'...
+INFO: [SIM-utils-43] Exported 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat'
+INFO: [SIM-utils-43] Exported 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim/smoke.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim/expected.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim/meta.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim/expected.mem'
+INFO: [SIM-utils-43] Exported 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim/meta.mem'
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -L uvm -prj tb_mlkem1024_keccak_cpu_smoke_vlog.prj"
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_control_s_axi.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_control_s_axi
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_43_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_45_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_49_5_24_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_51_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_accel_sparsemux_9_5_64_1_1
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/rtl/picorv32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module picorv32
+INFO: [VRFC 10-311] analyzing module picorv32_regs
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_fast_mul
+INFO: [VRFC 10-311] analyzing module picorv32_pcpi_div
+INFO: [VRFC 10-311] analyzing module picorv32_axi
+INFO: [VRFC 10-311] analyzing module picorv32_axi_adapter
+INFO: [VRFC 10-311] analyzing module picorv32_wb
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/rtl/keccak_mmio_adapter.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module keccak_mmio_adapter
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/rtl/mlkem1024_keccak_system.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mlkem1024_keccak_system
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/tb/tb_mlkem1024_keccak_cpu_smoke.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_mlkem1024_keccak_cpu_smoke
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
+INFO: [USF-XSim-69] 'compile' step finished in '4' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim'
+"xelab --incr --debug off --relax --mt 2 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem1024_keccak_cpu_smoke_behav xil_defaultlib.tb_mlkem1024_keccak_cpu_smoke xil_defaultlib.glbl -log elaborate.log"
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: E:/Xilinx/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug off --relax --mt 2 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip -L xpm --snapshot tb_mlkem1024_keccak_cpu_smoke_behav xil_defaultlib.tb_mlkem1024_keccak_cpu_smoke xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+WARNING: [VRFC 10-5021] port 'host_en' is not connected on this instance [E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/tb/tb_mlkem1024_keccak_cpu_smoke.sv:10]
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.picorv32_axi_adapter
+Compiling module xil_defaultlib.picorv32_pcpi_fast_mul
+Compiling module xil_defaultlib.picorv32_pcpi_div
+Compiling module xil_defaultlib.picorv32(ENABLE_COUNTERS=1'b1,EN...
+Compiling module xil_defaultlib.picorv32_axi(ENABLE_COUNTERS64=1...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_flow_cont...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_p_anonymo...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_p_anonymo...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_mlkem1024...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_control_s...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel_sparsemux...
+Compiling module xil_defaultlib.mlkem1024_keccak_accel
+Compiling module xil_defaultlib.keccak_mmio_adapter_default
+Compiling module xpm.xpm_memory_base(MEMORY_TYPE=0,ME...
+Compiling module xpm.xpm_memory_spram(MEMORY_SIZE=104...
+Compiling module xil_defaultlib.mlkem1024_keccak_system(FIRMWARE...
+Compiling module xil_defaultlib.tb_mlkem1024_keccak_cpu_smoke
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_mlkem1024_keccak_cpu_smoke_behav
+run_program: Time (s): cpu = 00:00:00 ; elapsed = 00:00:13 . Memory (MB): peak = 452.594 ; gain = 0.000
+INFO: [USF-XSim-69] 'elaborate' step finished in '13' seconds
+INFO: [USF-XSim-4] XSim::Simulate design
+INFO: [USF-XSim-61] Executing 'SIMULATE' step in 'E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/p/keccakcpu.sim/sim_1/behav/xsim'
+INFO: [USF-XSim-98] *** Running xsim
+   with args "tb_mlkem1024_keccak_cpu_smoke_behav -key {Behavioral:sim_1:Functional:tb_mlkem1024_keccak_cpu_smoke} -tclbatch {tb_mlkem1024_keccak_cpu_smoke.tcl} -log {simulate.log}"
+INFO: [USF-XSim-8] Loading simulator feature
+Time resolution is 1 ps
+source tb_mlkem1024_keccak_cpu_smoke.tcl
+## run all
+KECCAK_DECODE_EQ_PASS high_regions=262144 window_bytes=16384
+// Interrupt Monitor : interrupt for ap_done detected @ "1101775000"
+KECCAK_CPU_CALL_PASS call=0 mode=2 command=0 input=1568 output=32 return=0 cpu_cycles=16683 hardware_busy=1260 cumulative_writes=444 cumulative_reads=60
+// Interrupt Monitor : interrupt for ap_done detected @ "1502385000"
+KECCAK_CPU_CALL_PASS call=1 mode=1 command=0 input=1600 output=32 return=0 cpu_cycles=16944 hardware_busy=1276 cumulative_writes=896 cumulative_reads=120
+// Interrupt Monitor : interrupt for ap_done detected @ "1767185000"
+KECCAK_CPU_CALL_PASS call=2 mode=3 command=0 input=64 output=64 return=0 cpu_cycles=4983 hardware_busy=207 cumulative_writes=964 cumulative_reads=188
+// Interrupt Monitor : interrupt for ap_done detected @ "2050665000"
+KECCAK_CPU_CALL_PASS call=3 mode=0 command=0 input=34 output=13 return=0 cpu_cycles=4321 hardware_busy=133 cumulative_writes=1025 cumulative_reads=244
+// Interrupt Monitor : interrupt for ap_done detected @ "2308625000"
+KECCAK_CPU_CALL_PASS call=4 mode=1 command=0 input=33 output=7 return=0 cpu_cycles=4259 hardware_busy=123 cumulative_writes=1086 cumulative_reads=298
+// Interrupt Monitor : interrupt for ap_done detected @ "2568125000"
+KECCAK_CPU_CALL_PASS call=5 mode=0 command=1 input=0 output=491 return=0 cpu_cycles=8341 hardware_busy=735 cumulative_writes=1138 cumulative_reads=473
+// Interrupt Monitor : interrupt for ap_done detected @ "2938155000"
+KECCAK_CPU_CALL_PASS call=6 mode=0 command=1 input=0 output=168 return=0 cpu_cycles=5395 hardware_busy=296 cumulative_writes=1190 cumulative_reads=567
+// Interrupt Monitor : interrupt for ap_done detected @ "3228615000"
+KECCAK_CPU_CALL_PASS call=7 mode=0 command=2 input=0 output=0 return=0 cpu_cycles=3815 hardware_busy=31 cumulative_writes=1242 cumulative_reads=619
+// Interrupt Monitor : interrupt for ap_done detected @ "3488275000"
+KECCAK_CPU_CALL_PASS call=8 mode=0 command=1 input=0 output=17 return=-2 cpu_cycles=3773 hardware_busy=5 cumulative_writes=1294 cumulative_reads=671
+// Interrupt Monitor : interrupt for ap_done detected @ "3755255000"
+KECCAK_CPU_CALL_PASS call=9 mode=2 command=0 input=0 output=31 return=-1 cpu_cycles=3773 hardware_busy=4 cumulative_writes=1346 cumulative_reads=723
+KECCAK_CPU_SMOKE_PASS calls=10 words=216 hls_starts=10 hls_dones=10 cpu=rv32im_fast total_cycles=326618
+$finish called at time : 3806945 ns : File "E:/pqc-build/k4/smoke/structure_check/20261014_154208_086843/snapshot/tb/tb_mlkem1024_keccak_cpu_smoke.sv" Line 105
+xsim: Time (s): cpu = 00:00:00 ; elapsed = 00:00:06 . Memory (MB): peak = 458.191 ; gain = 5.598
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_mlkem1024_keccak_cpu_smoke_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for all
+launch_simulation: Time (s): cpu = 00:00:01 ; elapsed = 00:00:23 . Memory (MB): peak = 458.191 ; gain = 9.520
+INFO: [Simtcl 6-16] Simulation closed
+KECCAK_CPU_RUN_PASS
+INFO: [Common 17-206] Exiting Vivado at Wed Oct 14 15:42:53 2026...

@@ -85,7 +85,7 @@ LUT19,003、FF17,005、BRAM36等效34.5、DSP4。全路径hold −1.194 ns仍在
 4. [x] K4主机145条官方记录调用统计已完成；CPU＋Keccak接口10次真实RTL调用/216字通过。
    见 [接口与移植断点](MLKEM1024_KECCAK_CPU_INTERFACE.md)。
    [x] 已完成标准库FIPS202适配、固件编译及完整官方RTL KAT145/145。
-   官方加速系统入口为`scripts/mlkem1024_keccak/run_kat.py`，续跑加`--remaining`，
+   官方加速系统入口为`mainline/k4/scripts/run_kat.py`，续跑加`--remaining`，
    日志/证据独立保存在`results/keccak_cpu/kat/`，短路径冻结项目在`E:/hls/k4kat/`。
    当前进程/断点读取`build/keccak_cpu/kat_progress.json`；不要再运行CPU-only批次。
    全部145条唯一覆盖、19批最终PASS、3,188次真实HLS调用（含68次SQUEEZE）均通过。
@@ -108,7 +108,7 @@ LUT19,003、FF17,005、BRAM36等效34.5、DSP4。全路径hold −1.194 ns仍在
 
 ## 当前 K=4 HLS 进展及证据边界
 
-- 目录 `hls/mlkem1024_keccak/` 支持 SHAKE128/256、SHA3-256/512；32-bit BRAM 输入/输出
+- 目录 `mainline/k4/hls/` 支持 SHAKE128/256、SHA3-256/512；32-bit BRAM 输入/输出
   为 2048/4096 B，26 个 `uint64` 上下文，命令为 HASH/SQUEEZE/CLEAR。
 - io0、io1 均已完成 C 仿真与 Verilog COSIM 的 109 笔本地 `hashlib` 差分事务，
   这不是ML-KEM-1024官方KAT；另有CPU组件闭环10项及完整CPU+Keccak官方145/145通过。
@@ -117,7 +117,7 @@ LUT19,003、FF17,005、BRAM36等效34.5、DSP4。全路径hold −1.194 ns仍在
   14,612/17,008/2/0、8.622 ns。全 TB 周期不能直接当作完整 ML-KEM 加速比。
 - 独立 IP `opt01` OOC 布局布线已通过当前10 ns时钟约束：WNS/WHS +0.279/+0.098 ns，
   LUT/FF=16,885/15,320，外部存储与CPU未计入；完整系统OOC现已测得加速组setup −1.367 ns。`opt02` 只修正 LOOP_TRIPCOUNT
-  上界且周期/资源相同，RTL 对比随报告归档。细节见 [HLS 说明](../hls/mlkem1024_keccak/README.md)
+  上界且周期/资源相同，RTL 对比随报告归档。细节见 [HLS 说明](../mainline/k4/hls/README.md)
   和 [结果汇总](../results/hls/mlkem1024_keccak/summary.md)。
 
 ## 检查规则

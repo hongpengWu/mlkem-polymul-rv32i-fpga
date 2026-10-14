@@ -1,5 +1,5 @@
-set project_dir [file normalize [file join [pwd] mlkem512_basemul_k2_vivado]]
 set root_dir [file normalize [file dirname [info script]]]
+set project_dir [file join $root_dir mlkem512_basemul_k2_vivado]
 
 open_project -reset $project_dir
 set_top mlkem512_basemul_acc_k2

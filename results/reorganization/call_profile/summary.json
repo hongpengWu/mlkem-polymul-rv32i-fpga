@@ -1,0 +1,199 @@
+{
+  "scope": "Host algorithmic call/permutation counts; not PicoRV32 cycles or accelerator speedup",
+  "parameter_set": "ML-KEM-1024",
+  "cases": 145,
+  "matches": 145,
+  "fips202_api_calls": 2217,
+  "scalar_permutations": 8683,
+  "x4_permute_calls": 1397,
+  "permutation_definition": "One 24-round Keccak-f[1600] on one 1600-bit state; x4 counts are already included as four scalar permutations",
+  "operations": {
+    "decapsulation": {
+      "cases": 20,
+      "matches": 20,
+      "scalar_permutations_total": 1656,
+      "scalar_permutations_min": 82,
+      "scalar_permutations_max": 86,
+      "scalar_permutations_mean": 82.8,
+      "continuation_cases": 4,
+      "continuation_api_calls": 4,
+      "expected_return_counts": {
+        "0": 20
+      }
+    },
+    "decapsulationKeyCheck": {
+      "cases": 20,
+      "matches": 20,
+      "scalar_permutations_total": 240,
+      "scalar_permutations_min": 12,
+      "scalar_permutations_max": 12,
+      "scalar_permutations_mean": 12.0,
+      "continuation_cases": 0,
+      "continuation_api_calls": 0,
+      "expected_return_counts": {
+        "-5": 10,
+        "0": 10
+      }
+    },
+    "decapsulationSeed": {
+      "cases": 10,
+      "matches": 10,
+      "scalar_permutations_total": 1510,
+      "scalar_permutations_min": 151,
+      "scalar_permutations_max": 151,
+      "scalar_permutations_mean": 151.0,
+      "continuation_cases": 0,
+      "continuation_api_calls": 0,
+      "expected_return_counts": {
+        "0": 10
+      }
+    },
+    "encapsulation": {
+      "cases": 50,
+      "matches": 50,
+      "scalar_permutations_total": 3532,
+      "scalar_permutations_min": 70,
+      "scalar_permutations_max": 78,
+      "scalar_permutations_mean": 70.64,
+      "continuation_cases": 7,
+      "continuation_api_calls": 8,
+      "expected_return_counts": {
+        "0": 50
+      }
+    },
+    "encapsulationKeyCheck": {
+      "cases": 20,
+      "matches": 20,
+      "scalar_permutations_total": 0,
+      "scalar_permutations_min": 0,
+      "scalar_permutations_max": 0,
+      "scalar_permutations_mean": 0.0,
+      "continuation_cases": 0,
+      "continuation_api_calls": 0,
+      "expected_return_counts": {
+        "0": 10,
+        "-4": 10
+      }
+    },
+    "keyGen": {
+      "cases": 25,
+      "matches": 25,
+      "scalar_permutations_total": 1745,
+      "scalar_permutations_min": 69,
+      "scalar_permutations_max": 73,
+      "scalar_permutations_mean": 69.8,
+      "continuation_cases": 5,
+      "continuation_api_calls": 5,
+      "expected_return_counts": {
+        "0": 25
+      }
+    }
+  },
+  "call_shapes": [
+    {
+      "algorithm": "SHA3-256",
+      "phase": "oneshot",
+      "lanes": 1,
+      "input_bytes_per_lane": 1568,
+      "output_bytes_per_lane": 32,
+      "api_calls": 135,
+      "lane_calls": 135,
+      "scalar_permutations": 1620
+    },
+    {
+      "algorithm": "SHA3-512",
+      "phase": "oneshot",
+      "lanes": 1,
+      "input_bytes_per_lane": 33,
+      "output_bytes_per_lane": 64,
+      "api_calls": 35,
+      "lane_calls": 35,
+      "scalar_permutations": 35
+    },
+    {
+      "algorithm": "SHA3-512",
+      "phase": "oneshot",
+      "lanes": 1,
+      "input_bytes_per_lane": 64,
+      "output_bytes_per_lane": 64,
+      "api_calls": 80,
+      "lane_calls": 80,
+      "scalar_permutations": 80
+    },
+    {
+      "algorithm": "SHAKE128",
+      "phase": "absorb",
+      "lanes": 4,
+      "input_bytes_per_lane": 34,
+      "output_bytes_per_lane": 0,
+      "api_calls": 460,
+      "lane_calls": 1840,
+      "scalar_permutations": 0
+    },
+    {
+      "algorithm": "SHAKE128",
+      "phase": "continuation_squeeze",
+      "lanes": 4,
+      "input_bytes_per_lane": 0,
+      "output_bytes_per_lane": 168,
+      "api_calls": 17,
+      "lane_calls": 68,
+      "scalar_permutations": 68
+    },
+    {
+      "algorithm": "SHAKE128",
+      "phase": "initial_squeeze",
+      "lanes": 4,
+      "input_bytes_per_lane": 0,
+      "output_bytes_per_lane": 504,
+      "api_calls": 460,
+      "lane_calls": 1840,
+      "scalar_permutations": 5520
+    },
+    {
+      "algorithm": "SHAKE256",
+      "phase": "oneshot",
+      "lanes": 1,
+      "input_bytes_per_lane": 1600,
+      "output_bytes_per_lane": 32,
+      "api_calls": 30,
+      "lane_calls": 30,
+      "scalar_permutations": 360
+    },
+    {
+      "algorithm": "SHAKE256",
+      "phase": "oneshot",
+      "lanes": 1,
+      "input_bytes_per_lane": 33,
+      "output_bytes_per_lane": 128,
+      "api_calls": 1000,
+      "lane_calls": 1000,
+      "scalar_permutations": 1000
+    }
+  ],
+  "hls_mapping": {
+    "input_capacity_bytes": 2048,
+    "output_capacity_bytes": 4096,
+    "max_observed_input_bytes_per_lane": 1600,
+    "max_observed_output_bytes_per_call_per_lane": 504,
+    "max_observed_shake128_stream_output_bytes_per_lane": 672,
+    "observed_shapes_fit": true,
+    "logical_scalar_commands": {
+      "HASH": 3120,
+      "SQUEEZE": 68
+    },
+    "continuation_commands": 68,
+    "shake128_stream_length_histogram": {
+      "504": 443,
+      "672": 17
+    },
+    "notes": [
+      "Map each x4 call to four independent scalar contexts/commands; x4 lane outputs are separate streams.",
+      "Combine SHAKE128 absorb plus first squeeze as HASH(34,504); save four contexts until sampling completes.",
+      "Additional rejection-sampling blocks require SQUEEZE(0,168) on the same lane context, never a fresh HASH.",
+      "Observed stream maxima are not a proof of a bound for all seeds; rejection sampling must retain continuation support.",
+      "The 3168-byte expanded secret key is not hashed whole: H(ek) takes 1568 bytes; J(z||c) takes 1600 bytes.",
+      "Command counts exclude optional CLEAR operations, CPU packing/transfers, arbitration and rejection sampling."
+    ]
+  }
+}

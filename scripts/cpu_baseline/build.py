@@ -1,9 +1,11 @@
 """Build the SAME C baseline for RV32I and RV32IM, with inspectable evidence."""
 from pathlib import Path
+import sys
 import argparse, hashlib, json, re, subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_TOOLS = Path('E:/Xilinx/Vivado/2024.2/gnu/riscv/nt/riscv64-unknown-elf/bin')
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import riscv_tool
 M_OPS = {'mul', 'mulh', 'mulhsu', 'mulhu', 'div', 'divu', 'rem', 'remu'}
 
 def digest(path):
@@ -11,10 +13,10 @@ def digest(path):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--tool-dir', type=Path, default=DEFAULT_TOOLS)
+    parser.add_argument('--tool-dir', type=Path, default=None)
     args = parser.parse_args()
     def tool(name):
-        path = args.tool_dir/('riscv64-unknown-elf-' + name + '.exe')
+        path = riscv_tool(name, args.tool_dir)
         if not path.is_file():
             raise RuntimeError(f'Missing tool: {path}')
         return str(path)

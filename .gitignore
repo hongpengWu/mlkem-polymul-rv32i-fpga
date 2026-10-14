@@ -1,4 +1,8 @@
 /build/
+/results/_local_archive/
+/mainline/k4/hls/*_prj/
+/mainline/k4/hls/reports/
+/mainline/k4/hls/.Xil/
 /NA/
 /release/mlkem1024_pynq/
 /.Xil/

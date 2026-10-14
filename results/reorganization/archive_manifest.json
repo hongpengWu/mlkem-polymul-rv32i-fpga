@@ -1,0 +1,21 @@
+{
+  "created_utc": "2026-10-14T07:37:54.395511+00:00",
+  "scope": "Historical original bytes, local archive excluded from Git; paths are provenance, not fresh build dependencies",
+  "archives": [
+    {
+      "archive": "results/_local_archive/external_runs_before_structure.zip",
+      "original_root": "E:/hls",
+      "files": 10745,
+      "bytes": 616990817,
+      "sha256": "4a1ffba8081b322e090dff4611a092414647a1f3057be886ea4d44dd91765103",
+      "crc_verified": true,
+      "originals_retained": true
+    },
+    {
+      "archive": "results/_local_archive/pre_migration_source.zip",
+      "git_commit": "9ab4377196294bb94f425036e88a45296067b5a9",
+      "bytes": 3390613,
+      "sha256": "05ad4d7282894fb11d1e83f4433ec61da323d18686b2ce851a4ffae5d1e5f55a"
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 本仓库保存面向 PYNQ-Z2 的 ML-KEM/CRYSTALS-Kyber 研究工程。当前主线为
 **ML-KEM-1024（K4）的 Keccak/SHAKE 软硬件协同加速**，以完整 API 收益和资源成本
-指导架构。专用 HLS 入口见 [hls/mlkem1024_keccak](hls/mlkem1024_keccak/README.md)。
+指导架构。专用 HLS 入口见 [hls/mlkem1024_keccak](mainline/k4/hls/README.md)。
 已有 CPU 官方基线和 K2 BaseMul 结果保留作为历史对照；最新路线见
 [项目进度](docs/PROJECT_STATUS.md)。
 
@@ -24,7 +24,7 @@
   原OOC resetn边界hold −1.194 ns失败证据保留；独立板级时序已通过。
   开发默认只跑索引0、1、115；当前145条已独立验收，3,188次真实HLS调用匹配。
   [当前全量证据](results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)。
-  统一入口为[`run_flow.tcl`](scripts/mlkem1024_keccak/run_flow.tcl)顶部0/1开关，默认`FULL_KAT=0`。
+  统一入口为[`run_flow.tcl`](mainline/k4/flow.tcl)顶部0/1开关，默认`FULL_KAT=0`。
 - ML-KEM-768/1024 RV32IM-fast CPU-only RTL 官方回归各通过 145/145，使用 128 KiB RAM / 32 KiB 栈。
 - K4 PYNQ-Z2 板级上板前签核已通过：真实 MMCM/复位三例子集 3/3、路由和 100 MHz 时序通过，
   packed LUT/FF/BRAM36 等效/DSP 为 19,030/16,963/34.5/4；用户报告烧录后LED0 PASS及BTN0重启通过。
@@ -42,37 +42,22 @@
 - K2 RV32IM-fast＋BaseMul 已通过完整145条官方RTL回归；端到端为0.9930×。
   核心、搬运和完整API周期分别记录；K2结果不代表K4 Keccak系统性能。
 
-## 目录
+## 目录与复现
+
+当前开发分支为 **`default`**，K4源码统一在 **[mainline/k4/](mainline/k4/README.md)**。
 
 ```text
-rtl/cpu/                 PicoRV32 RTL
-rtl/benchmark/           CPU-only 固件 RAM、时钟/复位和可配置 CPU wrapper
-rtl/accelerator/         HLS 生成 RTL、BRAM、MMIO adapter 和 PYNQ-Z2 BIST 顶层
-hls/mlkem512_basemul_k2/ K=2 NTT 域 cached BaseMul HLS、TB、Tcl、短路径脚本和 IP
-hls/mlkem1024_keccak/   K4 Keccak/SHAKE HLS、TB、Tcl与证据脚本（生成工程在E:/hls）
-firmware/cpu_baseline/   CPU-only 多项式 baseline
-firmware/mlkem_baseline/ 官方 KeyGen 入口
-firmware/mlkem512_suite/ ML-KEM-512 完整官方套件入口
-firmware/mlkem512_profile/ 阶段 profiling 入口
-firmware/images/         可复现的 CPU/ML-KEM 固件镜像
-tb/cpu/                  RV32IM 指令验证
-tb/software/             多项式、KeyGen、完整 ML-KEM-512 软件 testbench
-tb/accelerator/          MMIO、BRAM、板级 BIST 仿真与确定性向量
-scripts/cpu_baseline/    三种 CPU 配置的构建、仿真、实现和汇总
-scripts/mlkem_baseline/  KeyGen 构建与仿真
-scripts/mlkem512_suite/  145 条官方记录的分批运行与恢复
-scripts/mlkem512_profile/阶段 profiling
-scripts/mlkem512_interface/接口审计和 BaseMul oracle
-scripts/kat/             ACVP JSON 检查和主机端参考回归
-scripts/mlkem512_basemul_k2/ 独立加速器 Vivado 仿真、实现、报告和 bitstream 脚本
-vivado/                  可直接打开的 CPU-only/ML-KEM 软件和独立加速器 XPR
-release/                 CPU-only baseline 与独立加速器 bitstream
-results/                 官方回归、CPU 资源、HLS 综合和加速器实现证据
-vectors/official_kat/    固定版本 FIPS 203/ACVP 输入与预期结果
-third_party/             固定提交的 mlkem-native portable C 子集
-docs/                    构建、验证、性能和路线记录
-constraints/             PYNQ-Z2 时钟、引脚及复位约束
+mainline/k4/   当前HLS、RTL、固件、TB、约束、Notebook和两个Tcl入口
+results/       统一历史与新增验证证据
+release/       配套部署包
+build/         本地生成工程，不提交Git
 ```
+
+主流程使用 `mainline/k4/flow.tcl`，PS–PL流程使用 `mainline/k4/bd_axi.tcl`。
+工具由PATH/环境变量定位，仓库依赖以脚本位置解析；短构建目录可配置。
+共用CPU、标准库、官方向量及历史基线保留原位。
+详见 [目录说明](docs/STRUCTURE.md)、[构建说明](docs/BUILD.md) 和
+[迁移验证记录](results/reorganization/)。
 
 ## 软件 baseline
 
@@ -99,7 +84,7 @@ python scripts/mlkem512_suite/collect_resumed.py --check
 [`results/official_baseline/mlkem512/summary.md`](results/official_baseline/mlkem512/summary.md)。
 这是真实 RTL 仿真证据，不等同于 CAVP 认证或实体板验收。
 
-## 新 HLS
+## 历史 K2 HLS 对照
 
 新核只实现标准库 `polyvec_basemul_acc_montgomery_cached()` 的 ML-KEM-512 `K=2` NTT 域
 向量点积：输入 `a[2][256]`、`b[2][256]`、`b_cache[2][128]`，输出 `result[256]`。

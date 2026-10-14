@@ -1,15 +1,18 @@
 """Build a CPU-executed MMIO smoke image; expectations remain only in RTL TB."""
 from pathlib import Path
+import sys
 import argparse
 import hashlib
 import json
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import riscv_tool
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tool-dir', type=Path, default=Path('E:/Xilinx/Vivado/2024.2/gnu/riscv/nt/riscv64-unknown-elf/bin'))
+    parser.add_argument('--tool-dir', type=Path, default=None)
     args = parser.parse_args()
     out = ROOT / 'build/mlkem512_accel'
     out.mkdir(parents=True, exist_ok=True)
@@ -23,7 +26,7 @@ def main():
         rows.append('{'+','.join(groups)+'}')
     header=out/'smoke_inputs.h'
     header.write_text('static const struct { int16_t a[2][256], b[2][256], cache[2][128]; } smoke_inputs[3] = {\n'+',\n'.join(rows)+'\n};\n', encoding='ascii')
-    def tool(name): return args.tool_dir / f'riscv64-unknown-elf-{name}.exe'
+    def tool(name): return riscv_tool(name, args.tool_dir)
     def run(cmd):
         p = subprocess.run(list(map(str,cmd)), cwd=ROOT, capture_output=True, text=True)
         if p.returncode: raise RuntimeError(p.stdout+p.stderr)

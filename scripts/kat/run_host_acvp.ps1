@@ -8,18 +8,25 @@ does not copy the reference implementation into the FPGA project.
 [CmdletBinding()]
 param(
     [switch]$SkipBuild,
-    [string]$BashPath
+    [string]$BashPath,
+    [string]$SourceRoot
 )
 
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
-$source = Join-Path $root 'build\kat_sources\mlkem-native'
+$source = if ([string]::IsNullOrWhiteSpace($SourceRoot)) {
+    Join-Path $root 'build\kat_sources\mlkem-native'
+} else { [IO.Path]::GetFullPath($SourceRoot) }
 $vectors = Join-Path $root 'vectors\official_kat\acvp'
 $results = Join-Path $root 'results\official_reference'
 $validator = Join-Path $root 'scripts\kat\validate_acvp_json.py'
 
 if (-not (Test-Path -LiteralPath $source)) {
-    throw "Pinned mlkem-native source is missing: $source"
+    throw "Pinned full mlkem-native checkout is missing: $source. Clone https://github.com/pq-code-package/mlkem-native at b3ba7b32773e657dd37f6f87bce82528459ad8a4 there, or pass -SourceRoot. The vendored portable-only library excludes the upstream ACVP client."
+}
+$sourceCommit = (& git -C $source rev-parse HEAD | Out-String).Trim()
+if ($LASTEXITCODE -ne 0 -or $sourceCommit -ne 'b3ba7b32773e657dd37f6f87bce82528459ad8a4') {
+    throw 'Host ACVP requires the recorded mlkem-native commit b3ba7b32773e657dd37f6f87bce82528459ad8a4.'
 }
 if (-not (Test-Path -LiteralPath $vectors)) {
     throw "Checked-in ACVP vectors are missing: $vectors"
@@ -32,12 +39,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 if ([string]::IsNullOrWhiteSpace($BashPath)) {
-    $candidates = @(
-        'D:\Git\bin\bash.exe',
-        'E:\Xilinx\Vitis\2024.2\tps\win64\git-2.45.0\bin\bash.exe',
-        'E:\Xilinx\Vitis\2024.2\tps\win64\git-2.41.0\bin\bash.exe'
-    )
-    $BashPath = $candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    $BashPath = & python (Join-Path $root 'scripts/tool_paths.py') bash
+    if ($LASTEXITCODE -ne 0) { throw 'Set PQC_BASH or pass -BashPath.' }
 }
 if ([string]::IsNullOrWhiteSpace($BashPath) -or -not (Test-Path -LiteralPath $BashPath)) {
     throw 'Git Bash was not found. Install Git for Windows or pass -BashPath.'
@@ -86,7 +89,7 @@ foreach ($run in $runs) {
 
 $metadata = [ordered]@{
     reference = 'mlkem-native'
-    source = 'build/kat_sources/mlkem-native'
+    source = if ([string]::IsNullOrWhiteSpace($SourceRoot)) { 'build/kat_sources/mlkem-native' } else { $source }
     mlkem_native_commit = 'b3ba7b32773e657dd37f6f87bce82528459ad8a4'
     acvp_server_commit = '975de31eb83d87039ec88934fdc47d8c312b892d'
     vector_root = 'vectors/official_kat/acvp'

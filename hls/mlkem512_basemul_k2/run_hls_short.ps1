@@ -1,11 +1,19 @@
 param(
-    [string]$BuildRoot = 'E:\hlsk2',
-    [string]$VitisHls = 'E:\Xilinx\Vitis_HLS\2024.2\bin\vitis_hls.bat'
+    [string]$BuildRoot = $env:PQC_HLS_BUILD_ROOT,
+    [string]$VitisHls
 )
 
 $ErrorActionPreference = 'Stop'
 $sourceRoot = (Resolve-Path $PSScriptRoot).Path
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+if ([string]::IsNullOrWhiteSpace($BuildRoot)) {
+    # Keep AMD-generated filenames short on any checkout drive.
+    $BuildRoot = Join-Path ([IO.Path]::GetPathRoot($repoRoot)) 'pqc-build/k2'
+}
+if ([string]::IsNullOrWhiteSpace($VitisHls)) {
+    $VitisHls = & python (Join-Path $repoRoot 'scripts/tool_paths.py') vitis_hls
+    if ($LASTEXITCODE -ne 0) { throw 'Set PQC_VITIS_HLS or pass -VitisHls.' }
+}
 $stageRoot = [IO.Path]::GetFullPath($BuildRoot)
 
 New-Item -ItemType Directory -Force -Path $stageRoot | Out-Null

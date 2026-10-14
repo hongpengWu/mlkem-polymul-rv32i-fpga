@@ -5,9 +5,12 @@ import csv
 import hashlib
 import json
 import re
+import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from source_provenance import verified_source
 RESULTS = ROOT / 'results/official_baseline/keygen512_tc1'
 CONFIGS = {'rv32i': (0, 0, 0, 0),
            'rv32im_iterative': (1, 0, 1, 1),
@@ -28,7 +31,7 @@ def sha(path):
 
 
 def verify_hash(path, wanted):
-    require(path.is_file() and sha(path) == wanted, f'Changed or missing input: {path}')
+    verified_source(path, wanted)
 
 
 def one_line(log, prefix):

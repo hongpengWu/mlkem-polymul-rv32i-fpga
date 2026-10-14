@@ -1,7 +1,11 @@
+param([string]$Vivado)
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 Set-Location $root
-$vivado = 'E:\Xilinx\Vivado\2024.2\bin\vivado.bat'
+if ([string]::IsNullOrWhiteSpace($Vivado)) {
+    $Vivado = & python (Join-Path $root 'scripts/tool_paths.py') vivado
+    if ($LASTEXITCODE -ne 0) { throw 'Set PQC_VIVADO or pass -Vivado.' }
+}
 $base = Join-Path $root 'results\official_baseline\mlkem512\batches\rv32im_fast'
 $names = @('batch_000_007','batch_008_015','batch_016_023','batch_024_031','batch_032_037')
 foreach ($name in $names) {

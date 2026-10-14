@@ -8,7 +8,8 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
-TOOLS = Path('E:/Xilinx/Vivado/2024.2/gnu/riscv/nt/riscv64-unknown-elf/bin')
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import riscv_tool
 M_OPS = {'mul', 'mulh', 'mulhsu', 'mulhu', 'div', 'divu', 'rem', 'remu'}
 RAM_BYTES = 65536
 RESULTS = ROOT / 'results/official_baseline/keygen512_tc1'
@@ -25,7 +26,7 @@ def require(condition, message):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tool-dir', type=Path, default=TOOLS)
+    parser.add_argument('--tool-dir', type=Path, default=None)
     args = parser.parse_args()
     vendor = ROOT / 'third_party/mlkem-native'
     src = ROOT / 'firmware/mlkem_baseline'
@@ -48,7 +49,7 @@ def main():
                '--parameter-set', '512', '--tc-id', '1', '--out-dir', fixtures]).strip())
 
     def tool(name):
-        path = args.tool_dir / ('riscv64-unknown-elf-' + name + '.exe')
+        path = riscv_tool(name, args.tool_dir)
         require(path.is_file(), f'Missing tool: {path}')
         return path
 

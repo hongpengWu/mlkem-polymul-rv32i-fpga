@@ -49,14 +49,14 @@ K=4 的平台适配必须由实测延迟、存储需求和实现报告支撑。K
 fast CPU+PQC 官方 KAT 145/145、端到端 0.9930×，现作为冻结历史对照。
 详细 K=2 瓶颈见 [阶段分析](MLKEM512_PROFILE.md)，其阶段占比不作为 K=4 实测数据。
 
-K=4 的 `hls/mlkem1024_keccak/` 已支持四种 FIPS 202 模式、HASH/SQUEEZE/CLEAR、
+K=4 的 `mainline/k4/hls/` 已支持四种 FIPS 202 模式、HASH/SQUEEZE/CLEAR、
 2048/4096 B 的 32-bit BRAM 输入/输出和 26 个 `uint64` 上下文。io0/io1 均通过 C 与
 Verilog COSIM 的 109 笔本地 `hashlib` 差分事务，尚不构成官方 ML-KEM KAT。
 所选 `opt02` 优化版全 TB 为 75,280 cycles，基线 1,314,553 cycles；HLS 估算优化版
 LUT/FF/BRAM18K/DSP = 15,244/15,385/2/0、8.895 ns，基线为
 14,612/17,008/2/0、8.622 ns。独立 IP `opt01` 已完成 OOC 布局布线：100 MHz、WNS/WHS +0.279/+0.098 ns、16,885 LUT/15,320 FF；`opt02` 只修正
 LOOP_TRIPCOUNT 上界且周期/资源相同；RTL 对比已随报告归档，不作为完整系统或实板通过声明。
-见 [HLS 说明](../hls/mlkem1024_keccak/README.md) 和
+见 [HLS 说明](../mainline/k4/hls/README.md) 和
 [结果汇总](../results/hls/mlkem1024_keccak/summary.md)。
 
 | 已有内容 | 位置 | 作用 | 状态 |
@@ -73,8 +73,8 @@ LOOP_TRIPCOUNT 上界且周期/资源相同；RTL 对比已随报告归档，不
 | 历史 K=2 NTT 域 BaseMul HLS | hls/mlkem512_basemul_k2/ | 冻结的局部计算对照 | C 仿真/综合已通过 |
 | 独立 MMIO/BRAM/BIST 硬件路径 | rtl/accelerator/、vivado/mlkem512_basemul_k2/ | 先验证核、存储、控制和板级顶层 | RTL/BIST/100 MHz 实现通过，XPR/bitstream 已保存 |
 | K=2 CPU+PQC 集成系统 | results/accelerator_cpu/kat/ | 冻结的端到端对照 | RV32IM-fast 官方 KAT 145/145；0.9930× |
-| K=4 Keccak/FIPS 202 HLS | hls/mlkem1024_keccak/ | 当前主线 HLS 候选 | 局部 C/COSIM 差分、独立IP OOC通过；当前集成系统内部100 MHz通过，板级边界待验收 |
-| K=4 CPU+加速器集成系统 | rtl/accelerator/、firmware/mlkem1024_keccak/ | 当前主线端到端对照 | 历史145/145；当前v3子集3/3和内部100 MHz通过，OOC边界hold及最终全量验收待完成 |
+| K=4 Keccak/FIPS 202 HLS | mainline/k4/hls/ | 当前主线 HLS 候选 | 局部 C/COSIM 差分、独立IP OOC通过；当前集成系统内部100 MHz通过，板级边界待验收 |
+| K=4 CPU+加速器集成系统 | rtl/accelerator/、mainline/k4/firmware/ | 当前主线端到端对照 | 历史145/145；当前v3子集3/3和内部100 MHz通过，OOC边界hold及最终全量验收待完成 |
 
 当前数据记录在 [性能台账](BENCHMARKS.md) 和 [CPU 测量协议](CPU_BENCHMARK_PROTOCOL.md) 中。
 原 8 组输入来自本项目，仍作为“软件多项式乘法 baseline”；历史官方 KeyGen 单例独立记账。
@@ -205,7 +205,7 @@ K=2 的独立实现与 0.9930× 集成结果只作为历史参考。
 - 明确计算、搬运、等待和校验各占多少周期；
 - 得到未经优化的 CPU+PQC 硬件系统 baseline。
 
-当前交付物：`hls/mlkem1024_keccak/` 与 `results/hls/mlkem1024_keccak/`；后续补充
+当前交付物：`mainline/k4/hls/` 与 `results/hls/mlkem1024_keccak/`；后续补充
 K=4 CPU 驱动、RTL 接口、官方回归与系统实现证据。现有 `rtl/accelerator/`、
 `vivado/mlkem512_basemul_k2/`、`results/accelerator_interface/` 和
 `results/accelerator_cpu/kat/` 继续作为 K=2 历史证据保存。

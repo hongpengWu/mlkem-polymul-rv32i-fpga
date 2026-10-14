@@ -69,17 +69,17 @@ SHAKE256 33→128和1600→32、SHAKE128每lane 34→504，必要时续取168。
    计入打包、搬运、上下文、命令与等待开销，再决定是否保留状态于硬件、添加多context槽或DMA。
 5. 当前v3已通过100 MHz内部setup/hold；后续完成板级时钟/复位、全量最终验收与烧录产物，实板最后。
 
-组件构建入口为 `scripts/mlkem1024_keccak/build_smoke.py` 和 `run_smoke.py`；
+组件构建入口为 `mainline/k4/scripts/build_smoke.py` 和 `run_smoke.py`；
 完整系统使用 `build_kat.py`、`run_kat.py` 和 `collect_kat.py`。
 固件镜像17,824 B，静态占用36,676 B；与CPU-only一致使用128 KiB RAM / 32 KiB栈。
 构建检查全部FIPS202符号来自硬件provider，不链接软件Keccak，也无软件回退。
 provider共享6 KiB打包缓冲，非可重入；SHAKE128拥有34 B输入副本并保留任意次数的块续取，
 单条命令最多4096 B输出。CPU中间量清零计入API周期；加速器BRAM擦除尚待实现和验证。
 
-运行使用`scripts/mlkem1024_keccak/run_flow.tcl`顶部开关：默认`KAT_SUBSET=1`、`FULL_KAT=0`，
+运行使用`mainline/k4/flow.tcl`顶部开关：默认`KAT_SUBSET=1`、`FULL_KAT=0`，
 只验证原索引0、1、115；最终验收才启用全量。每个`CANDIDATE`使用独立结果/断点目录，
 续跑先核对RTL、HLS、固件、TB和构建输入哈希，禁止跨版本复用PASS。
-历史全集不重跑；只读复核使用`python scripts/mlkem1024_keccak/collect_kat.py`。
+历史全集不重跑；只读复核使用`python mainline/k4/scripts/collect_kat.py`。
 统一入口按所选结果目录调用collector，子集使用`--partial`，最终全量必须145条唯一覆盖。
 当前候选的进度及STOP标记位于`build/keccak_cpu/candidates/<CANDIDATE>/`；STOP在当前批结束后生效，
 恢复前移除。历史断点仍保留在`build/keccak_cpu/`；运行中的冻结输入不能改动。

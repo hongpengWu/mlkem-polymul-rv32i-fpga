@@ -15,10 +15,13 @@ import math
 from pathlib import Path
 import re
 import statistics
+import sys
 import xml.etree.ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from source_provenance import verified_source
 BASELINE = ROOT / "results/official_baseline/mlkem512"
 RESULTS = BASELINE / "profile"
 FIXTURES = ROOT / "tb/software/mlkem512_suite"
@@ -46,8 +49,9 @@ def sha(path):
 
 
 def verify_hash(path, wanted):
-    require(isinstance(wanted, str) and re.fullmatch(r"[0-9a-f]{64}", wanted) and
-            Path(path).is_file() and sha(path) == wanted, f"Changed or missing input: {path}")
+    require(isinstance(wanted, str) and re.fullmatch(r"[0-9a-f]{64}", wanted),
+            f"Invalid hash: {path}")
+    verified_source(path, wanted)
 
 
 def root_path(name):

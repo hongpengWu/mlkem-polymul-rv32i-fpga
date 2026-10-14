@@ -1,0 +1,2462 @@
+[
+  {
+    "case_index": 0,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 51,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "b78619e4fceeeb86dee3fedb945eca6da61dae312771ef8fa871951d391bd7b6",
+      "dk": "925ed6f1cf0379ede29d8209432d6e08c73ed0423883febf85416343f4fa1f86"
+    }
+  },
+  {
+    "case_index": 1,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 51,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "50354ab14ee479abefa58be0dce589fcd8710dbbc38cfddd9cca2ac8cb3992dd",
+      "k": "8820cec73cf9f60b1e81f3051f67e537e4e6460e8ee54df9bc2bf44b97de2230"
+    }
+  },
+  {
+    "case_index": 2,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 96,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "27a776157ec07849b87b5166cce0356d2659f9b4e03e2c33280cab75a0a05bab"
+    }
+  },
+  {
+    "case_index": 3,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 116,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "7da7c7c196f533d3a17db115764ef55f226b60fae2571482b3df4e7f17245071"
+    }
+  },
+  {
+    "case_index": 4,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 156,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 5,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 146,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 6,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 159,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 7,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 148,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 8,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 52,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 73,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "ek": "a5de1425ea855091c848e1ae423b8d51e5514db52b5df12142e3d4836f2cccaa",
+      "dk": "f04f9c44dace43240b6ebb8e7bb2d59edb3c7c56e013a04481c901cd550d457c"
+    }
+  },
+  {
+    "case_index": 9,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 53,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "0162a6f9d7b7357cc6a17ed00d0e6ec48784035ba5af5ce514671c352d1bffa9",
+      "dk": "2c57f7bf79e50a23da33345f3979f2576f5b74698e739bea97de677e53dfdf94"
+    }
+  },
+  {
+    "case_index": 10,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 54,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "518cfa9204bd5e278343d1e0865d4bd327f8aa2b563bf882ce49f5ce176fcc81",
+      "dk": "f9e62b032aa178239d2f1dd2f94be3fbe35add6604bcc2af06cfc05a35040ce3"
+    }
+  },
+  {
+    "case_index": 11,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 55,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "e282e47d38cec05dffe756cd41ee7b943dfec68b00d0221c300aa0f8090c072a",
+      "dk": "5183091d1c1ac86f3024341bdc0622bd07e23bb064f663ccbf0a66f80bc02023"
+    }
+  },
+  {
+    "case_index": 12,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 56,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "eddfd1f177c59874c28f53cd645d4290acdecbe6409001731fc038247b0023c3",
+      "dk": "40de26e25c7016fe01a1928b7126c5126e440f9936ceff903c526c99595618b4"
+    }
+  },
+  {
+    "case_index": 13,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 57,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "2d60c8cf6fdf9c2e24558950a83519fec0c46f0225d732ad644d2cc4975b8e01",
+      "dk": "531695514668da27f0fc3ada6647c0e32ff219cece9cbdafcf41e4ee8c52776f"
+    }
+  },
+  {
+    "case_index": 14,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 58,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "effe3ad5b0896c8be54d3e69bfe89e712b6b8757768c1274a0b8b06b0114f5b0",
+      "dk": "64cde5aed97c7747b4755dccc11f91cd9c9a609fd8a18d559baff2625ac76644"
+    }
+  },
+  {
+    "case_index": 15,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 59,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "255e2ec37b720cad0b1e6533cbb4a79783d91d39abb8a7bf952153730da923ed",
+      "dk": "fb9d7a2dec6d9026f44215318198046772996798cde36459ec8700480d13e365"
+    }
+  },
+  {
+    "case_index": 16,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 60,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "ab8fdf3ef1ac5e08d8df42fc3064f0f69cf507bc62344a1e82bb4a0b264bf27f",
+      "dk": "26b10fff5a73dbb447f796224f42b629282557e6a7f82d9b719d1a95ce391dce"
+    }
+  },
+  {
+    "case_index": 17,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 61,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "e7a13677c5b26eac0629ab8381ce3c4eea7c6540f4644fa05b5bb97df2bf0c9f",
+      "dk": "822d13eb5e3d21b678b00d2d729ecd0d3c68f60d0e013e463871409a2cd97691"
+    }
+  },
+  {
+    "case_index": 18,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 62,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "6ef1cffd57ed02f21c197a86636fe7bd75440cbbbd966a36ed2e845b9b83400d",
+      "dk": "f8139a67c82fbcbf44892278881db9ce482f3cd7f40cd9e4c3eafb5cabd44a48"
+    }
+  },
+  {
+    "case_index": 19,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 63,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "1868f43f43e3393bed3ac7c44e770849d130a0354a0c11c7c3507a1eadce68bf",
+      "dk": "915e880faddcc38336b9ccc4a22fe0473d028541eebf3f7b6a831c529efe59ed"
+    }
+  },
+  {
+    "case_index": 20,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 64,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "a8b7375fc4982ed0fa86da95f8de2ab209efb4adb17d4ec0cf516eff4ddc9e01",
+      "dk": "a81577ebf9d6934d20f0db5d0894635cfcfeac1b1613dce4b12d96613ea48c51"
+    }
+  },
+  {
+    "case_index": 21,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 65,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "2c95024713d6065889e87d55d10e8e46279f95f288758356f615c89f9642a4af",
+      "dk": "44e4647a2fb79fa74e86fe537aa4b0f536b28656ee7105b03fda5e0dd88a2368"
+    }
+  },
+  {
+    "case_index": 22,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 66,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "2e053b3f16b303eb5ff704fad28752ceb09db1dc5b823b52d2390a856acbfcf5",
+      "dk": "9b3f03aaff1c07d52af271c9436ccdb79cf7e83e5c06809eea25aac28cef7246"
+    }
+  },
+  {
+    "case_index": 23,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 67,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "dd1626c1f9b6a7f98c289becf12f79d20117edcd6eb6859b5ef79561dda38236",
+      "dk": "a9ef98d94011439e2cd257fb304555cc15421f28a7295975061314034aad9ecf"
+    }
+  },
+  {
+    "case_index": 24,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 68,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 73,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "ek": "03dab43374dc0330a293f2a78f6437f83515ab8422eecc4f894cf1ee47f32a60",
+      "dk": "2e881f8ea0a8af02420b93f269e644c11df24e4aa9cc6a41eee2213f48324f83"
+    }
+  },
+  {
+    "case_index": 25,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 69,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "6f696e5a5d23ac96c2387dd3c6f9aa8dae6589fe5decefeabca51d5b55f343f9",
+      "dk": "8abaf6c3c01fe1241a1a527a89c2f5679e25747318eb72cf9503e096f6b1822c"
+    }
+  },
+  {
+    "case_index": 26,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 70,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "c01e835324c24bb31ad8466dcd2bb5cb13d4facd9b8ea28c33284e60b597a0ca",
+      "dk": "297a47c46c0d8183370f6f46e9b3b504332ee4906e48ec0a29d65eda3e249a87"
+    }
+  },
+  {
+    "case_index": 27,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 71,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "d23fbc164958fd99cfd6eb410af70e436519c850741c30dae2e09081e49460c7",
+      "dk": "f562efe8d986b093c703949c2e2bfbbd6eba7cf3d9be64d515a0b1eb4d1a35dd"
+    }
+  },
+  {
+    "case_index": 28,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 72,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 73,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "ek": "3f3354b4b47b7d337f2dc69f65988bef98956c01210b6c10b6c54f6d720ca076",
+      "dk": "f9e16e29b4cb8ff70eb34363e6a78f0b35685ba56ae9729adaa7a8fa0dbc8d67"
+    }
+  },
+  {
+    "case_index": 29,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 73,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 73,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "ek": "55038b0fd285ec0c208be0932bf5b17ed207c8506548e8de0315b7edab1fbbce",
+      "dk": "cf7c06ea99d15d5c90a0afa094df438ad653f29d8709a6da22f0139404b3f4aa"
+    }
+  },
+  {
+    "case_index": 30,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 74,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 18,
+    "scalar_permutations": 69,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "ek": "ff2957977efa86c802bab64c66c346f066dea24ae92d91fcf7801c63a494a56c",
+      "dk": "3bea3d2c3b26e0f86970a4d36f0fdeaa6f3ce020de5c395baaac291083d8e5a6"
+    }
+  },
+  {
+    "case_index": 31,
+    "dataset": "fips203/ML-KEM-keyGen",
+    "tgId": 3,
+    "tcId": 75,
+    "operation": "keyGen",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 73,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "ek": "4c1461f4ab5472565b2e83aabeaf6577960a9e205bafd1f06527da8abadc1a8d",
+      "dk": "3b88310592bf40bb3de00377eb7ebbb329805fe96f80ba673a0bbaffbddbc733"
+    }
+  },
+  {
+    "case_index": 32,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 52,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 74,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "c": "68329f83934a1c821535d0d0016ce4e63082b74b83d1b48b3a6ac1f536db8973",
+      "k": "d8db771faa66ee75f1d18c119ddfca949371145e637629bfe6e005990250f255"
+    }
+  },
+  {
+    "case_index": 33,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 53,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "7071fc186a75a3f67aa2c2533bedc44369016bcc80f6cd2b537faec5da75d6f2",
+      "k": "13467e8dcaeadc4fd9577600bf9101eb5f740565c44eb83287cee84db0f38933"
+    }
+  },
+  {
+    "case_index": 34,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 54,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "bf0422af3f22f54bc8624d4ff863a4e9f3d30dc3f584a8e807a28f478f8dbc1e",
+      "k": "f5699670ab87b8df3b2c282cc1bfe5fdd0d325cbace395657edb3f9fa9794b24"
+    }
+  },
+  {
+    "case_index": 35,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 55,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "972d6ca2245d659e84dea0dde810717c7ccdbdcf967b7fd87217346c03f58313",
+      "k": "c140b10622da219df6ac53452bcde218147bc05f49e99ed69af4b8dc9b66b1eb"
+    }
+  },
+  {
+    "case_index": 36,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 56,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "878624f082e5035021fe830efb06d0ddb84c41282bca8636b7f1e682826f4ec7",
+      "k": "8a5660a481a19d59ef608a196ef673ffeddc84243e8e77dc5ffcf9338c2e2c82"
+    }
+  },
+  {
+    "case_index": 37,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 57,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 74,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "c": "ac194a02b36af4e8c21a47236685339136668792860d081c7ee48928894c0e44",
+      "k": "3d2f306cf590a050ba2d22e4ba81accac3e935ee821a1ec525a1a8d4fcba3c9f"
+    }
+  },
+  {
+    "case_index": 38,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 58,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 74,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "c": "42600e78d2aeb8fb098da287cfebe5ca2964c1a6efd7261bdc7d5d75764ca0ed",
+      "k": "c6e4d840b581168c8535b2a81c5283e8d18a2354c3cbb9b74f341bafaf2a24f0"
+    }
+  },
+  {
+    "case_index": 39,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 59,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "c1b34df2c40f1eaf4dfbfaeb7579a5d4fae3bff3df340df5f15d33bcb17f03a2",
+      "k": "d86393feb525bd2bf90a1f085f2c087b61eb7af11af65a694f6f53b6c940349c"
+    }
+  },
+  {
+    "case_index": 40,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 60,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "b1c885cdd8b2dc1fa618c63251897c07d9dc4e46315b41bb33c9dc0d98b9dda1",
+      "k": "9bbd75489e2fdaf6493d1e7d974f56ad05a1ce05378be5c2315f1227f74392f3"
+    }
+  },
+  {
+    "case_index": 41,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 61,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "a996f3bf2c14e3a0e00afb31c787f11438bd9273f1b4877d67b774b5b56591b9",
+      "k": "d788c958f63545ef56916292cf13527ed3de6df715a382d6165196c5427a3b83"
+    }
+  },
+  {
+    "case_index": 42,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 62,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "1afa0a0a57521bb796bae8cee27a3c0c95ee2f474eeb5ab8c15680e706e0c6f3",
+      "k": "fbcc75a1209d3d98fcf9f28b9f13c884bf22303ce852caefc2ff5379f7811a2d"
+    }
+  },
+  {
+    "case_index": 43,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 63,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "c38ac8dba356a60cea7496ee9271b3ad3c756d6d2dfe1cd1600f0b94ac2e21e6",
+      "k": "ec338a16776652fb69fe9c595c669185f64333a4a4d91e1ecccff81b838ef79f"
+    }
+  },
+  {
+    "case_index": 44,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 64,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "b95b3b702b59fa633581b827fc26e9f324a6b5d6643d82b863e402e452645b9a",
+      "k": "28113dce5a53118ebde9cb6613f74054c6e60845e1e30b65827cec6347ad4e85"
+    }
+  },
+  {
+    "case_index": 45,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 65,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "097d3847bfdd0db5be03b6408c286554af3dd0938afa23ac4578dd3f2907bc3b",
+      "k": "635c4388fc4c74c08ea2f112fea31893c338d78db0458924f9220c919109025e"
+    }
+  },
+  {
+    "case_index": 46,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 66,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "6407487c60b4f7ea13c7dabd3ec7b72e4dec0ed8cb885c42d198ca8cffb30a11",
+      "k": "a98b01787f3203b5ffff474ca5b6f75c0715489d4ebc76cd0d0e7646271e9785"
+    }
+  },
+  {
+    "case_index": 47,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 67,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "70d42e78306ea66e5184d3c804094ee9b7b16c8e9aa9dcf74a1af470d6da7296",
+      "k": "fbedf084fb224d9163e522dd4c98babc8cab0278b43ec2ec077a9308e062040e"
+    }
+  },
+  {
+    "case_index": 48,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 68,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "ee776bea6973f8990268e729c26c9fa17b19b2d36b32b9ac060172f689424450",
+      "k": "031785d33d5cb304b2f78831263d6e5fe0a4d931bde093f305eb7205dc2cbac7"
+    }
+  },
+  {
+    "case_index": 49,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 69,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "3822365c00e36f7d08067d958e98284b75118cc5961effa602417c0918a4759c",
+      "k": "3b68890cc1a09ca214f81a18c82ebb840e95f33df2341b1f59e304df806ca8a3"
+    }
+  },
+  {
+    "case_index": 50,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 70,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 74,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "c": "f3855f56a65c898f2fb46496c74d9641a1699ed6bf459e7f7f7ccfce53f765bd",
+      "k": "61a6cb118e77ef1738eeeffea18e0bf60fe5cb0e84d04c2923dbf4a457c3856f"
+    }
+  },
+  {
+    "case_index": 51,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 71,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "4fb945f74d4262ffb2518fc51d6b32710cf8046e84d291e1317e685397d82e60",
+      "k": "9f933286dbbad4f3d3c278175a517dd97025d61539801e56fcf76710d9363040"
+    }
+  },
+  {
+    "case_index": 52,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 72,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "b408302378e2551000c520cb061426606392cff110ba2e1e8595e793774e359f",
+      "k": "3c221ff7873df2ff7581f9c960d62608ce0e42f0b1767c9ad5ceca9cea0d22e9"
+    }
+  },
+  {
+    "case_index": 53,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 73,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "23ae2b724330d5787a626ca871e2f5e4db08e2ed083e0ef6c21c4971038e0506",
+      "k": "f9b858fe1f5c5d41c8b915f6b108062dd9e60775175190eb6ad19c6e14c39a1f"
+    }
+  },
+  {
+    "case_index": 54,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 74,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "7e1f1d21f3ef506e856dbf914a468daef092480f5c3fa44fe68f56749aeaa19d",
+      "k": "43ae119d1b8c6e38d65c3032d5e8d1559a96b1f51e88063677e644ff6a81abe3"
+    }
+  },
+  {
+    "case_index": 55,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 75,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "ba6d42399974abd430c918c2e2285ff4bda080678f4b258758d7c0acd667683c",
+      "k": "8b7ca4585f1a8d0ad97584e9164d5332ab4d2f1b7831677489c0a0bd20ab337d"
+    }
+  },
+  {
+    "case_index": 56,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 97,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "7f4991837e42d7955956f65e24f5c1725d2bce4accc92558cc9bc66f381048f9"
+    }
+  },
+  {
+    "case_index": 57,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 98,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "6104107d18a9073c8179f3b08703f71274e339c96f0923f77a5918380188a829"
+    }
+  },
+  {
+    "case_index": 58,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 99,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "95e5570ceb327d92c3997a93a627257d81ff9d8655d0012a54e8576c8678a31d"
+    }
+  },
+  {
+    "case_index": 59,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 100,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "c66b6b8fd16bafdea42d8d5a67b4bbdc473d14214d6812a436e6e4294f37bdd6"
+    }
+  },
+  {
+    "case_index": 60,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 101,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "9ca30e07c2b03da9a76b1e19e40a48eff5e4d1d11849ac70fa30bdf98a4ec097"
+    }
+  },
+  {
+    "case_index": 61,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 102,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "8c4d274b6d0fd19423c0df281af60fdfecf73587cf6f252dd6e1b64918b16130"
+    }
+  },
+  {
+    "case_index": 62,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 103,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 21,
+    "scalar_permutations": 86,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "k": "89b7ea6aad33f80d113a9689bc4877f8a21d115c00944e2bf7aad77d71780313"
+    }
+  },
+  {
+    "case_index": 63,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 104,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "dd23312bb1134a4649cd17f90c15f7d3240eb19bf114fcc8ffd9e96427884c8f"
+    }
+  },
+  {
+    "case_index": 64,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 6,
+    "tcId": 105,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "e61682f06394688206ec1ba1078b89459fbeaa7f4fb594435d39143c3851f608"
+    }
+  },
+  {
+    "case_index": 65,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 147,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 66,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 149,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 67,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 150,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 68,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 151,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 69,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 152,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 70,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 153,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 71,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 154,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 72,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 11,
+    "tcId": 155,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 73,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 157,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 74,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 158,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 75,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 160,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 76,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 161,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 77,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 162,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 78,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 163,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 79,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 164,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 80,
+    "dataset": "fips203/ML-KEM-encapDecap",
+    "tgId": 12,
+    "tcId": 165,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 81,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 51,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "ff83455668c596362ebd6031b8b1301ee48f3ea5272e9b6f9ae6412b8da6f9b3",
+      "k": "33814cf7b6814d4e4bfada1750d110ff2c4f5e82d9748b5205157303ee1e81ef"
+    }
+  },
+  {
+    "case_index": 82,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 52,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "f38cc393e858f53c75f2f40c602e0d7faa1d1fbebe88a3af159e4fcd05c84cd6",
+      "k": "76b04e3aef5a21f3fd0b3e4282520bf7b827044c2143edfc23777575b90f0a43"
+    }
+  },
+  {
+    "case_index": 83,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 53,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "9a64e8ecdbb309f803a5c97b40e48d21f03caf00630ae66e6938b146094ecb9b",
+      "k": "493783170f89139a4021514f1e84671b3d3cef08170cdf7150a992d83654f876"
+    }
+  },
+  {
+    "case_index": 84,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 54,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 21,
+    "scalar_permutations": 78,
+    "x4_permute_calls": 14,
+    "continuation_api_calls": 2,
+    "output_sha256": {
+      "c": "4d8ca110c07037588daf6089ba39c7d0209a91a9616103d9c0192668ac860a47",
+      "k": "f2273f5b036ad31f6b98ffb0efd701d69cd3000f2e37fdb8bcd71241ddf8e956"
+    }
+  },
+  {
+    "case_index": 85,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 55,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "b9a49298a32dd60d76f86faaec4f2bb035d70788e72d69d07d08cecc09dd9b38",
+      "k": "c6293e920edd1184ee6f4e1162f76dabed26e4fe32b2bbc1c1b3762c0ced9982"
+    }
+  },
+  {
+    "case_index": 86,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 56,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "9b85e20d28f90082be4d81e3e434c381a1fa3db2ee3c13dd4868cc138ed23663",
+      "k": "891304971e587f2d24f1427c3be57cc85792a1aa15a8595bb3cd5dc67c4fe332"
+    }
+  },
+  {
+    "case_index": 87,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 57,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "c5b2d92bd426e2d6574a6e5f36f4376e5f35499fbf7cfcb4765ceb02066c828b",
+      "k": "2f1fb931c07a4b5927f5cdf1ce42062589dc974c1295c00ecb6e1d0b3214d7d5"
+    }
+  },
+  {
+    "case_index": 88,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 58,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "02878463d4df604a6f266b77aacf0e4de6b8d0925ec071e3f8bdeda7ea7145db",
+      "k": "cd3b0088a93b3be7050d7f5e65d2113c9e60882e7a1e6fa1c74a2a69eb415067"
+    }
+  },
+  {
+    "case_index": 89,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 59,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "9cd5a94907ff97d1cbbf45039e5739a115639a7f820c12a82bb394a47624f00d",
+      "k": "1613f017c93a64d48e11987ff8ddd80e3df6b2fa2b4d0ea26417caaf452e00a3"
+    }
+  },
+  {
+    "case_index": 90,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 60,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 74,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "c": "142d22947fff03820642f15b7bcf719e1226832519822675be55dcd4bcffde29",
+      "k": "cd277adbeaf783cb75b256bdced98c79368a91e6e46052719a9f4f55b7c81cb7"
+    }
+  },
+  {
+    "case_index": 91,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 61,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "14f9068cfa1b767ff8caefda3e09945ed9f57e521e6fc8550b77a51bbc40584c",
+      "k": "604f7a1d4871ea47822896af7057ce38c9775ffdee6ac0b128d0d49efc3e1963"
+    }
+  },
+  {
+    "case_index": 92,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 62,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "1d3df7c2362b1b857af5e6db7ae485e4296b3809d7df28342d6656f28d2d941c",
+      "k": "38a948d9590fb65cc2e2167fc4a82efeb2c45f6fd02e8d587a972d39b8f2011f"
+    }
+  },
+  {
+    "case_index": 93,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 63,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "9dabc07d252544cc4b32fb5c66f062a79954c8157b6b3740fed01cc72aa66678",
+      "k": "9b0ad525b38bbde652a35ed7d0cf81e0d88e04a82556e42d57c518d568d02d5d"
+    }
+  },
+  {
+    "case_index": 94,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 64,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "5a363864d272d6a6614d8a0c9228c67738cd644030782a208fd15ea8d9b69355",
+      "k": "bd8a579b30a33149b04a5db8f12ffe3c9ab322a161a356bc9205ce404c9dee5e"
+    }
+  },
+  {
+    "case_index": 95,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 65,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "f549fc82d3c51836d65e352a09567ca924c98395311d3397231026d8197a6122",
+      "k": "9b15b08be1810fca947842e154f2014e19752c5bf529a70f73b431700a765389"
+    }
+  },
+  {
+    "case_index": 96,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 66,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 74,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "c": "811420af148ab6ee327c2f604d0aca33ce4845b825fc578fa9ab635a545452ac",
+      "k": "19927229578d85c7d10e045c70e074f4b281c72f014d838e260fa9668955bac6"
+    }
+  },
+  {
+    "case_index": 97,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 67,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "1b7d99b3e37da155e3ac6fa854e0204b7ff3332cfb03078235f1d786012bd58f",
+      "k": "9632ec903297e4dec8943a876ce908dd59232806fc8f866bb34490415886602b"
+    }
+  },
+  {
+    "case_index": 98,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 68,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "a06c52532044d99c62400fdf8be7cb3481b1749fc4a3d8951afb97702ea2c47e",
+      "k": "4a45bd5f0cc086303488cd8b414079f2a36f6529ab1e1e84be00a66fa4c25441"
+    }
+  },
+  {
+    "case_index": 99,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 69,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "b1556023dcfb903d64560a5cb7e10e8a3c3265db3caf9286d1e3ce4bce00a929",
+      "k": "260fb208cf8bb999c35f87f2fd4f7f3bf8b9c2cf9bc5b058b622c768a8dc2cf3"
+    }
+  },
+  {
+    "case_index": 100,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 70,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "5aae8a2520f32c409552ee3365e6151cd8708c07d6088ac94b7d5a052e930da6",
+      "k": "e36c268d22893b004b352862778278973586ee576338b46cfd014f8be37e4a04"
+    }
+  },
+  {
+    "case_index": 101,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 71,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "8544a43100b1497f123bf66ad1b3525538a76c938b1c168ca6fa39b141d51a3f",
+      "k": "6b669772644e5a3aeb7c99127afb535e5973da5df36080958b9ea107f4e9a644"
+    }
+  },
+  {
+    "case_index": 102,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 72,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "d8d2d6f186a19f732101cc41369ab898d7c121ab350a0989534f7e5b46480d3e",
+      "k": "c4fdbe216c8a16484ed4d3a2c8a9d6d81c1539beb9389672db552c1bb161895b"
+    }
+  },
+  {
+    "case_index": 103,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 73,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "c3c551e314eba56c3a606959c9c24d5daf0ff0d59c6c3a3acaee0ca740cc6263",
+      "k": "f06f8d1372680eee8f57119bf62708861d3e9287d981b03a69c5fa89cdc4ea92"
+    }
+  },
+  {
+    "case_index": 104,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 74,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "b2337f761ffebc2e4affbb91defa68453efcc768fe718a855d209b591fab9282",
+      "k": "3d7042da46432e691d9cd7a151abd8eb858a2f22854a35b9adaab03a670c23b5"
+    }
+  },
+  {
+    "case_index": 105,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 3,
+    "tcId": 75,
+    "operation": "encapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 19,
+    "scalar_permutations": 70,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "c": "8b32704ebdbdfef05eefaadaf1ed1a8131db31812be4ff00aee6eeef8800599c",
+      "k": "7ba4ebc671af55246d2ebf6f280d884940a49337facaa372db2a60e9d27154e6"
+    }
+  },
+  {
+    "case_index": 106,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 117,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "e836f549c46463524c913ce117ae4d3bce0eb4d8bda16fbbc1e321f007e8a721"
+    }
+  },
+  {
+    "case_index": 107,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 118,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "e99ef01acbe53b70cc5a60d7979f04065b103f561a82f1a9c9a440c7364f2bbb"
+    }
+  },
+  {
+    "case_index": 108,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 119,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "ed8bb06fd66dc6fd091a30c2fa9e1f8e98c49bdbff2c209ad0bee27ea0d8b4eb"
+    }
+  },
+  {
+    "case_index": 109,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 120,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "71cad98a6cf5af5aff05193d8a363d1d68f3869c120a7f5636f27063770fba03"
+    }
+  },
+  {
+    "case_index": 110,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 121,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "2560c3a3ef0d7516f42acfe98f249cd34e1830a43804da9f68dd979db442e342"
+    }
+  },
+  {
+    "case_index": 111,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 122,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "1bf680ff6f102fce1576d4d51f34cb55c5a3e6f23fa0180d63ed1666436ba734"
+    }
+  },
+  {
+    "case_index": 112,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 123,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "41107aa02eb0b0182164d07ac38de1d10ac5b80f6b0dfa511ba54a84849fa4c5"
+    }
+  },
+  {
+    "case_index": 113,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 124,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "004cbf727145595f78c3fadf45a781ee31c0c01f8827b577409e8ba7a97c221e"
+    }
+  },
+  {
+    "case_index": 114,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 8,
+    "tcId": 125,
+    "operation": "decapsulationSeed",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 38,
+    "scalar_permutations": 151,
+    "x4_permute_calls": 24,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "965f938de485860f22ccd7dc9e162d9ece369a5947d3f5cd36444845f471e535"
+    }
+  },
+  {
+    "case_index": 115,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 126,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 21,
+    "scalar_permutations": 86,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "k": "fe3239be5a1f1fb49d544a01efb40cbecfbd9cad47a2c41a2b77b2d8553d5093"
+    }
+  },
+  {
+    "case_index": 116,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 127,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "da92a8954a576a61a33c71430fbd7850b71eba4bac30c522d5f19e6925b4e701"
+    }
+  },
+  {
+    "case_index": 117,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 128,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 21,
+    "scalar_permutations": 86,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "k": "05fc5a9b3acba2d71e6869ab36568e124f88afc5f414cee1f610fba01637512c"
+    }
+  },
+  {
+    "case_index": 118,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 129,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 21,
+    "scalar_permutations": 86,
+    "x4_permute_calls": 13,
+    "continuation_api_calls": 1,
+    "output_sha256": {
+      "k": "c90533d3d0d12fbed7543a196e89a4a51fd7e3e474ab9e67f8469c59ee3023c9"
+    }
+  },
+  {
+    "case_index": 119,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 130,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "def5e85652a5e04726eb2af3e02ab2ee49a2e318a10fc3323f77e976268c3b91"
+    }
+  },
+  {
+    "case_index": 120,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 131,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "a979130e60df9cdecd6cbc6105e9375b1df2f454752da3d8ef5839e403024010"
+    }
+  },
+  {
+    "case_index": 121,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 132,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "3fc2fbb1f1f5f78dec2722711383e26e5550aad7dd7f3c1ae22f4fa98a09fed4"
+    }
+  },
+  {
+    "case_index": 122,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 133,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "b0621de9297cd7894be2e75d92f3e55ad2663dcc498d12477f77cf7c59b46134"
+    }
+  },
+  {
+    "case_index": 123,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 134,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "8a5994ae3814ad353a5e177bb144be471eacba1e0a4f62e63d06ab8d714dbe90"
+    }
+  },
+  {
+    "case_index": 124,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 9,
+    "tcId": 135,
+    "operation": "decapsulation",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 20,
+    "scalar_permutations": 82,
+    "x4_permute_calls": 12,
+    "continuation_api_calls": 0,
+    "output_sha256": {
+      "k": "34393cc8a3c08e0c8890599db0010f88792a3fa33726add63857cbeb01f3b6bd"
+    }
+  },
+  {
+    "case_index": 125,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 176,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 126,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 177,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 127,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 178,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 128,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 179,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 129,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 180,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 130,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 181,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 131,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 182,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 132,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 183,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 133,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 184,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 134,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 14,
+    "tcId": 185,
+    "operation": "decapsulationKeyCheck",
+    "expected_return": -5,
+    "actual_return": -5,
+    "match": true,
+    "fips202_api_calls": 1,
+    "scalar_permutations": 12,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 135,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 186,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 136,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 187,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 137,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 188,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 138,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 189,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 139,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 190,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 140,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 191,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 141,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 192,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 142,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 193,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": -4,
+    "actual_return": -4,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 143,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 194,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  },
+  {
+    "case_index": 144,
+    "dataset": "fips203-tr1/ML-KEM-encapDecap",
+    "tgId": 15,
+    "tcId": 195,
+    "operation": "encapsulationKeyCheck",
+    "expected_return": 0,
+    "actual_return": 0,
+    "match": true,
+    "fips202_api_calls": 0,
+    "scalar_permutations": 0,
+    "x4_permute_calls": 0,
+    "continuation_api_calls": 0,
+    "output_sha256": {}
+  }
+]

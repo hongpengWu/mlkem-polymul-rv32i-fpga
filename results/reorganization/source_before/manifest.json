@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "preserved_at": "2026-10-14",
+  "source_commit": "9ab4377196294bb94f425036e88a45296067b5a9",
+  "source_archive_sha256": "05ad4d7282894fb11d1e83f4433ec61da323d18686b2ce851a4ffae5d1e5f55a",
+  "provenance": "Source bytes preserved during folder reorganization after the historical runs. This is not an execution-before input snapshot. Each consumer must compare these exact bytes to the original hash already recorded by its run. Historical run manifests are unchanged.",
+  "files": {
+    "scripts/cpu_baseline/build.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/cpu_baseline/build.py",
+      "sha256": "5b65a40d0f8d09fe1cb716af0d7e77655d0881f5b23c3bbad2e17a43d4bc53cb",
+      "bytes": 6163
+    },
+    "scripts/kat/run_host_acvp.ps1": {
+      "preserved_path": "results/reorganization/source_before/scripts/kat/run_host_acvp.ps1",
+      "sha256": "0768416f28cdc2e90f55e319857f41fd275436fdbb7bdbc5e23f1c1d7e903619",
+      "bytes": 4365
+    },
+    "scripts/mlkem512_accel/build_kat.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_accel/build_kat.py",
+      "sha256": "1b86cd60b96e11ad7290947eb2fe887a3be9a0873bc455bb6938e8ccb7172433",
+      "bytes": 4295
+    },
+    "scripts/mlkem512_accel/build_smoke.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_accel/build_smoke.py",
+      "sha256": "5f6f87be90f0c2c62755891901788dcae05ccefcef1fbf632d95f0e19a868f59",
+      "bytes": 3183
+    },
+    "scripts/mlkem512_accel/run_missing_batches.ps1": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_accel/run_missing_batches.ps1",
+      "sha256": "f5f3b194f9c1a2935c899c12013ce9518f2b4cd2d8c815de7aa0158a51173b9f",
+      "bytes": 1386
+    },
+    "scripts/mlkem512_profile/build.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_profile/build.py",
+      "sha256": "87fcf4a6c1225464cc803a64466677c44402d24cf32a4855c8be38ef8203f382",
+      "bytes": 12207
+    },
+    "scripts/mlkem512_profile/collect.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_profile/collect.py",
+      "sha256": "da6e8dc9cfcad713c752615b6a5c11af4a8197dac7012eac97095936288178c7",
+      "bytes": 38226
+    },
+    "scripts/mlkem512_profile/run.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_profile/run.py",
+      "sha256": "d933c9ca5df2f055ef4d20fff7b94e501140a5daf3f7dca700ce544556bad18f",
+      "bytes": 6833
+    },
+    "scripts/mlkem512_suite/build.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_suite/build.py",
+      "sha256": "743ba2e0040d7694a20a761d46c3300a8aa2c5baf5b099fd24fb5d210b838f4b",
+      "bytes": 8136
+    },
+    "scripts/mlkem512_suite/collect.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_suite/collect.py",
+      "sha256": "267323d59f3a024bfbe2002a86add6f4bcd1cd34c7e83bb370cd67bb31430e3a",
+      "bytes": 19462
+    },
+    "scripts/mlkem512_suite/resume.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_suite/resume.py",
+      "sha256": "853cd18b18b89718d0f37f5afc449af22d9334570a9fd1e0a057d620cf8c1fe2",
+      "bytes": 8137
+    },
+    "scripts/mlkem512_suite/run.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem512_suite/run.py",
+      "sha256": "6b4a36ed3fa38eeba1fc91070da8f8b43479763a9e8af09ce46f4be6b09a4290",
+      "bytes": 2717
+    },
+    "scripts/mlkem_baseline/build.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem_baseline/build.py",
+      "sha256": "f8270359f254c09aecb0daf558c93cb288d6955f62b829566b8b4c63684008a1",
+      "bytes": 7659
+    },
+    "scripts/mlkem_baseline/collect.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem_baseline/collect.py",
+      "sha256": "416561b6c0931c75bd96c6bae81d30f75cb46e67f83e4e1426313ea7c97b4e61",
+      "bytes": 12539
+    },
+    "scripts/mlkem_suite/build.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem_suite/build.py",
+      "sha256": "1cb1c711fd4c88ed57b2e5d6cc8d181984d7c4ce8f8df6c90894ec678ee01e01",
+      "bytes": 9334
+    },
+    "scripts/mlkem_suite/collect.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem_suite/collect.py",
+      "sha256": "ddded65868429c01e15e87e226521902069c0e13a50c5733049b83da747439dd",
+      "bytes": 18249
+    },
+    "scripts/mlkem_suite/resume.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem_suite/resume.py",
+      "sha256": "e9577c427651ee8a37cbbb9a5cfaba83d36564f9553e86b4fe4b1a3010eaf1ae",
+      "bytes": 11219
+    },
+    "scripts/mlkem_suite/run.py": {
+      "preserved_path": "results/reorganization/source_before/scripts/mlkem_suite/run.py",
+      "sha256": "c15c6570498c821b1793f0d26576f9615acacca2a2a23d6f3000b340a372012b",
+      "bytes": 2917
+    },
+    "firmware/mlkem_baseline/startup.S": {
+      "preserved_path": "results/reorganization/source_before/firmware/mlkem_baseline/startup.S",
+      "sha256": "9ee9dafaad8f9d0c4054ce27527fc2de94031bfa46a0e0ffff03c57c78254372",
+      "bytes": 398,
+      "original_git_blob": "02facca556e971dab4cfd7e8d2d8717f769e549c",
+      "origin": "Exact historical blob recovered from Git object database; preserved after reorganization, not a newly recorded execution-before snapshot."
+    }
+  }
+}

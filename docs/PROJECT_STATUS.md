@@ -4,6 +4,13 @@
 [BENCHMARKS.md](BENCHMARKS.md) 和对应原始日志为准，长期阶段门见
 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 
+## 2026-10-14 目录重组（default分支）
+
+K4源码、固件、TB、约束与Notebook迁到 `mainline/k4/`；两个人工维护的Tcl入口为
+`flow.tcl`、`bd_axi.tcl`。工具路径改为PATH/环境变量发现，项目依赖以脚本位置解析。
+旧历史结果和发布包保持原样；迁移验证不替代既有全量验收或实板验证。
+验证结果及路径映射见 [results/reorganization](../results/reorganization/)。
+
 ## 最新执行状态：PS–PL部署包已生成，待网络恢复后实板验证
 
 `20261004_psaxi02`已实际执行并通过AXI协议检查及官方索引0、1、115三例。
@@ -53,7 +60,7 @@ K=3 在主线完成后验证扩展。** 主加速器优先评估 Keccak/FIPS 202
 CPU 集成和 K=4 官方 RTL KAT，随后给出同 CPU、同 RAM 的未插桩端到端对照与系统
 资源/时序，实板最后进行。K=2 的 Keccak 71%–81% 占比仅属于 K=2；K=4 占比尚未测量。
 
-`hls/mlkem1024_keccak/` 已实现 SHAKE128/256、SHA3-256/512，32-bit BRAM 输入/输出
+`mainline/k4/hls/` 已实现 SHAKE128/256、SHA3-256/512，32-bit BRAM 输入/输出
 容量为 2048/4096 B，上下文为 26 个 `uint64`，支持 HASH/SQUEEZE/CLEAR。
 io0、io1 均通过 C 仿真与 Verilog COSIM 的 109 笔本地 `hashlib` 差分事务；这不是
 ML-KEM 官方 KAT。优化版全 testbench 实测 **75,280 cycles**，基线 **1,314,553 cycles**。
@@ -61,7 +68,7 @@ ML-KEM 官方 KAT。优化版全 testbench 实测 **75,280 cycles**，基线 **1
 基线为 **14,612/17,008/2/0**、**8.622 ns**。独立 IP OOC 布局布线已完成：100 MHz、WNS/WHS +0.279/+0.098 ns，
 16,885 LUT、15,320 FF；外部存储和 CPU 未计入，完整系统时序另见下文。`opt02` 相比 `opt01` 只修正长非对齐续读的 LOOP_TRIPCOUNT 上界，
 周期/资源不变；物理证据来自 `opt01`，RTL 对比与归档说明见
-[K=4 HLS 说明](../hls/mlkem1024_keccak/README.md) 与
+[K=4 HLS 说明](../mainline/k4/hls/README.md) 与
 [HLS 结果汇总](../results/hls/mlkem1024_keccak/summary.md)。
 
 自动续跑 `pqc-kat` 已按用户要求删除，不再周期性发送指令。
@@ -167,7 +174,7 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | K=2 标准库接口审计与历史 HLS 原型 | C 仿真 103/103、HLS 综合通过；137 cycles 为核心估算，II=1、估算 Fmax 150.83 MHz | [接口契约](MLKEM512_ACCELERATOR_INTERFACE.md)、[K=2 HLS](../hls/mlkem512_basemul_k2/) |
 | 独立 MMIO/BRAM/BIST 与 Vivado 实现 | RTL 3 组、768 个系数及接口检查通过；核心实测 136 cycles；BIST、100 MHz 实现和 bitstream 已完成 | [RTL 证据](../results/accelerator_interface/rtl_sim/)、[实现报告](../results/accelerator_interface/vivado_impl/) |
 | K=2 PQC 加速器接入标准软件 | 冻结历史对照；CPU+驱动及官方 KAT 145/145 通过，端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
-| K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，当前100 MHz板级实现签核完成 | [HLS 说明](../hls/mlkem1024_keccak/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
+| K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，当前100 MHz板级实现签核完成 | [HLS 说明](../mainline/k4/hls/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
 | K=4 CPU+加速器核心与独立PL自检 | 冻结核心145/145、历史RTL比值3.8028×；独立PL实现签核完成，用户报告3例LED0 PASS及BTN0复位恢复 | [独立PL证据](../results/keccak_cpu/board/20261004_162430/result.json) |
 | K=4 PS–PL / Jupyter overlay | run02实际AXI协议及3例PASS；run04拒绝发布，run05待重新实现；新overlay未上板 | [构建入口](BUILD.md#k4-pspl--jupyter入口) |
 

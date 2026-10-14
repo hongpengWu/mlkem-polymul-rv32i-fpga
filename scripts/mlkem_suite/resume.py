@@ -11,6 +11,8 @@ import sys
 import uuid
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import tool_path
 sys.path.insert(0, str(ROOT / 'scripts/kat'))
 from package_mlkem import load_cases, pack_fixture, verify_roundtrip
 from collect import validate_log
@@ -112,7 +114,7 @@ def main():
     p.add_argument('--batch-size', type=int, default=8)
     p.add_argument('--prepare-only', action='store_true')
     p.add_argument('--max-batches', type=int)
-    p.add_argument('--vivado', type=Path, default=Path('E:/Xilinx/Vivado/2024.2/bin/vivado.bat'))
+    p.add_argument('--vivado', type=Path, default=None)
     args = p.parse_args()
     if not 1 <= args.batch_size <= 145 or (args.max_batches is not None and args.max_batches < 1):
         p.error('Invalid batch size/count')
@@ -149,7 +151,7 @@ def main():
         print(f'RESUME level={level} passed={len(jobs)-len(pending)} pending={len(pending)}', flush=True)
         if args.prepare_only:
             return
-        assert args.vivado.is_file(), f'Missing Vivado: {args.vivado}'
+        args.vivado = tool_path('vivado', args.vivado)
         if args.max_batches is not None:
             pending = pending[:args.max_batches]
         isa = 'rv32i' if config == 'rv32i' else 'rv32im'

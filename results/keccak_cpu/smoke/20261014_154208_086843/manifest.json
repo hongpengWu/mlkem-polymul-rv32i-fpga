@@ -1,0 +1,171 @@
+{
+  "started_utc": "2026-10-14T07:42:08.497432+00:00",
+  "command": [
+    "E:\\Xilinx\\Vivado\\2024.2\\bin\\vivado.bat",
+    "-mode",
+    "batch",
+    "-source",
+    "E:\\pqc-build\\k4\\smoke\\structure_check\\20261014_154208_086843\\snapshot\\run_smoke.tcl",
+    "-tclargs",
+    "--worker",
+    "smoke",
+    "E:\\pqc-build\\k4\\smoke\\structure_check\\20261014_154208_086843"
+  ],
+  "hls_run": "E:\\pqc-build\\k4\\hls\\io1\\structure01",
+  "inputs": {
+    "rtl/picorv32.v": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\rtl\\cpu\\picorv32.v",
+      "sha256": "fd142889e8178ef67f1cff17cb2d18b3adae56fcae2badf7cbcc4c4f5ac7960e"
+    },
+    "rtl/keccak_mmio_adapter.sv": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\mainline\\k4\\rtl\\keccak_mmio_adapter.sv",
+      "sha256": "e5994f3e83c1a5f34e6333ee8ad63d0ece8e325873209103eeba3cdaefa1100f"
+    },
+    "rtl/mlkem1024_keccak_system.sv": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\mainline\\k4\\rtl\\mlkem1024_keccak_system.sv",
+      "sha256": "d1e3045e0ebbc15473e7051572a7b7ea80ce7f296f446dbb2ba52a17a9b981a6"
+    },
+    "tb/tb_mlkem1024_keccak_cpu_smoke.sv": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\mainline\\k4\\tb\\tb_mlkem1024_keccak_cpu_smoke.sv",
+      "sha256": "5380ab371abb0ad85ecac58c929839d8b8b683f39b0b22cd95817c0eaf9242af"
+    },
+    "run_smoke.tcl": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\mainline\\k4\\flow.tcl",
+      "sha256": "50d4df6279a1c610836273c3331637ea1c2766c1f9994411f3cb0ae67473a280"
+    },
+    "build.json": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\k4\\smoke\\build.json",
+      "sha256": "6e87f42632867e2b834c628a08f5491a8c179fc5a8c6c8ca668cf3a440717664"
+    },
+    "fixtures/smoke.mem": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\k4\\smoke\\smoke.mem",
+      "sha256": "c459ab523da0bf362c2eeb6cc8c42230ca47baae3c95ae13dc1295dd36f1b8a8"
+    },
+    "fixtures/expected.mem": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\k4\\smoke\\expected.mem",
+      "sha256": "d26b3c7846504b7480f8e3b51f2805e8f0c9dead925a260ed40655871e310da4"
+    },
+    "fixtures/meta.mem": {
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\k4\\smoke\\meta.mem",
+      "sha256": "ac5ef92df7bf7eea8935a81b792233aa8f18e3f7c5f62ecfff6644bbefa3e8a9"
+    },
+    "hls/mlkem1024_keccak_accel.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel.v",
+      "sha256": "c706bac6ef2c11d10e203bcb5ea3e94251ade106b3247903b35d43b2ace22c44"
+    },
+    "hls/mlkem1024_keccak_accel_control_s_axi.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_control_s_axi.v",
+      "sha256": "22719db071993d81d8554eb829eee7253dddb7517a36b9452edb2f843a0ac34d"
+    },
+    "hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v",
+      "sha256": "da8f811f78c919dfbb33ee10a0a748f66932d4b962232cc73eefde996d1ffaaa"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v",
+      "sha256": "268a1393abbdd198038c2e2727ba72a38c4c72f0298204cb8656af9d982ef418"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v",
+      "sha256": "82925738a3cba7793683935682f45b1a2bf993ce895f546bc098dfb4a361790e"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v",
+      "sha256": "ce88d5644a6bf4faf656cf70fa9e0a3e2ff142380041668a3649c71f401f2b06"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v",
+      "sha256": "572e8805087f501c6b9d04caf1af959438baef206246a4dd4f761260dcca0ef0"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v",
+      "sha256": "699c42ad6572376bdba27519755260b02abbdcf3a55d99a6bbc12ee0c049dbaa"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat",
+      "sha256": "3b4b573ffc2d6db21d0a68b35505b743d37ef13e63964258f3c380ff5099a3aa"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v",
+      "sha256": "263b10a21225708ca7a362f00ca6ba081c74228265c180ec29899372f8dcc94a"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v",
+      "sha256": "341ec804cb11ba85ac1546a6e562db3e76764043e9a5f68966ed262607a0f615"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v",
+      "sha256": "a28c9ee9b4ac16fd7fec21af2850604cde49356aa215847094775d0bf3269acd"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v",
+      "sha256": "dcb7a9915d32c24ba66f70bb48bd360b7d5ef1ef32d21a70f83411f5906a544f"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v",
+      "sha256": "9e01d007176896d427ce883048f1b9175bb51bbac7eccbb6fb0fa6f0344dc4fd"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\verilog\\mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v",
+      "sha256": "5b904d2aeede80e6c785db810e2aa2948fe42da224b71ef4adf0140e0f929511"
+    },
+    "hls_provenance/manifest.json": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\manifest.json",
+      "sha256": "f53cb0d972af8f397b7e14b6e8de9ca4daf91c55a97f3f35661e8db79df3ce9d"
+    },
+    "hls_provenance/p/sol1/csim/report/mlkem1024_keccak_accel_csim.log": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\csim\\report\\mlkem1024_keccak_accel_csim.log",
+      "sha256": "8ffabba4104e743babb2c6d861cdd6ab8fd1a79dcd81b2590795031e00b10055"
+    },
+    "hls_provenance/p/sol1/sim/report/mlkem1024_keccak_accel_cosim.rpt": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\sim\\report\\mlkem1024_keccak_accel_cosim.rpt",
+      "sha256": "b08dcaa849153ea0fbf6190bd751fc56f22092196a42a049e8583d2dd7b65705"
+    },
+    "hls_provenance/p/sol1/syn/report/mlkem1024_keccak_accel_csynth.xml": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\p\\sol1\\syn\\report\\mlkem1024_keccak_accel_csynth.xml",
+      "sha256": "db5d4b7bfafd6d575c01faad41ba482f25c45e47b05607fc2ac0de3c7cfe74de"
+    },
+    "hls_provenance/reports/metrics.json": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\reports\\metrics.json",
+      "sha256": "d11927fe7c3b5cb79fae46394a100bf4a5a1f022ae8a964be60df82a5b71084e"
+    },
+    "hls_provenance/state.json": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\state.json",
+      "sha256": "3d7b0890af25535cbf975ba7fbbec2b58862d94c878e783b0b3c027c206088ae"
+    },
+    "hls_provenance/snapshot/src/mlkem1024_keccak_accel.cpp": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\snapshot\\src\\mlkem1024_keccak_accel.cpp",
+      "sha256": "6a6d53401ff832bd330ebd9dceafab4dc181a870e3a7a59d8fd3b31ebfc70890"
+    },
+    "hls_provenance/snapshot/src/mlkem1024_keccak_accel.h": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\snapshot\\src\\mlkem1024_keccak_accel.h",
+      "sha256": "4624879159b68e25c9a71be894703d964a2429e04fd1f8dec5b9381a6aa0d0cd"
+    },
+    "hls_provenance/snapshot/tb/generated_keccak_vectors.h": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\snapshot\\tb\\generated_keccak_vectors.h",
+      "sha256": "ba12ce46154195b133b5923a9c8b4ea7393cc79423cfd780a977aa6f33143150"
+    },
+    "hls_provenance/snapshot/tb/local_fips202_vectors.json": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\snapshot\\tb\\local_fips202_vectors.json",
+      "sha256": "d50529577a9b1107dacfa579af5d3e79bda2c2f3b36a1f9a47ca329dd2cd27fa"
+    },
+    "hls_provenance/snapshot/tb/README.md": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\snapshot\\tb\\README.md",
+      "sha256": "60dae902d863b5848e626efad8dec3d561eb2e9b793d82fd0bc80a8f97d7af75"
+    },
+    "hls_provenance/snapshot/tb/tb_mlkem1024_keccak_accel.cpp": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\snapshot\\tb\\tb_mlkem1024_keccak_accel.cpp",
+      "sha256": "e6cecdd0e864bd9113eb6c400533d01fd5169d897bba168d0b7bdb45d513d54f"
+    },
+    "hls_provenance/snapshot/tb/vector_manifest.json": {
+      "source": "E:\\pqc-build\\k4\\hls\\io1\\structure01\\snapshot\\tb\\vector_manifest.json",
+      "sha256": "ac6b7de06d6df07363e21f91f702e484a2ab654a21ce9a01832b027d2328faef"
+    },
+    "hls_selection.json": {
+      "source": "E:\\pqc-build\\k4\\smoke\\structure_check\\20261014_154208_086843\\hls_selection.json",
+      "sha256": "eb8a422456064cfc2620994aa48a49c85edff8b9e277f2352d76e6c0902d0123"
+    }
+  },
+  "ram_bytes": 131072,
+  "stack_bytes": 32768
+}

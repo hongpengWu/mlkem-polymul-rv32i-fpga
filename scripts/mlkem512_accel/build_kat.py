@@ -6,12 +6,15 @@ import hashlib
 import json
 import subprocess
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import riscv_tool
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--tool-dir',type=Path,default=Path('E:/Xilinx/Vivado/2024.2/gnu/riscv/nt/riscv64-unknown-elf/bin'))
+    p.add_argument('--tool-dir',type=Path,default=None)
     args=p.parse_args()
     vendor=ROOT/'third_party/mlkem-native'; lib=vendor/'mlkem'
     common=ROOT/'firmware/mlkem_baseline'; suite=ROOT/'firmware/mlkem512_suite'
@@ -21,7 +24,7 @@ def main():
     manifest=json.loads((vendor/'SOURCE_MANIFEST.json').read_text())
     for entry in manifest['files']:
         if digest(vendor/entry['path'])!=entry['sha256']: raise RuntimeError('Vendor changed: '+entry['path'])
-    def tool(name): return args.tool_dir/f'riscv64-unknown-elf-{name}.exe'
+    def tool(name): return riscv_tool(name, args.tool_dir)
     def run(cmd):
         result=subprocess.run(list(map(str,cmd)),cwd=ROOT,text=True,capture_output=True)
         if result.returncode: raise RuntimeError(result.stdout+result.stderr)

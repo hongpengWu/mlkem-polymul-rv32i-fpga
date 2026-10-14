@@ -1,5 +1,6 @@
 """Build a separate RV32IM-fast phase-instrumented copy; never rewrite the baseline."""
 from pathlib import Path
+import sys
 import argparse
 import difflib
 import hashlib
@@ -8,9 +9,10 @@ import re
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from tool_paths import riscv_tool
 BUILD = ROOT / 'build/mlkem512_profile'
 RESULTS = ROOT / 'results/official_baseline/mlkem512/profile'
-TOOLS = Path('E:/Xilinx/Vivado/2024.2/gnu/riscv/nt/riscv64-unknown-elf/bin')
 
 # Existing function boundaries; scalar Montgomery/Barrett helpers remain inline
 # within NTT/INTT/basemul so the measured program is not flooded with markers.
@@ -80,7 +82,7 @@ def body_offsets(text, name):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--tool-dir', type=Path, default=TOOLS)
+    parser.add_argument('--tool-dir', type=Path, default=None)
     args = parser.parse_args()
     baseline = ROOT / 'results/official_baseline/mlkem512'
     baseline_manifest = json.loads((baseline / 'build_manifest.json').read_text(encoding='utf-8'))
@@ -135,7 +137,7 @@ def main():
     (RESULTS / 'instrumentation.patch').write_text(''.join(patches), encoding='utf-8', newline='\n')
     profile = ROOT / 'firmware/mlkem512_profile'
     def tool(name):
-        p = args.tool_dir / f'riscv64-unknown-elf-{name}.exe'
+        p = riscv_tool(name, args.tool_dir)
         require(p.is_file(), f'Missing compiler tool: {p}')
         return p
     def run(command):
