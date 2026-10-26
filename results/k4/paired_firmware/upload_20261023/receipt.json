@@ -1,0 +1,94 @@
+{
+  "status": "UPLOADED_AND_SHA256_VERIFIED",
+  "created_utc": "2026-10-23T14:18:42.395237+00:00",
+  "endpoint": {
+    "host": "172.19.76.8",
+    "port": 2222,
+    "username": "xilinx",
+    "board_ip": "192.168.137.2",
+    "host_key_sha256": "SHA256:lDbP4BZnzlsqmJp05WSr4cseNsJK8ltrSqkoJD7IDAE"
+  },
+  "remote_directory": "/home/xilinx/jupyter_notebooks/mlkem1024_paired_20261023",
+  "files": {
+    "accelerated.mem": {
+      "sha256": "673cc0933ec1ad275f83c35db7115d4ccd205f67e99ea39d7823aad70c624035",
+      "bytes": 294912,
+      "remote_readback_verified": true
+    },
+    "accelerated_build.json": {
+      "sha256": "f3cabe1f8ff3a0efd0f28a150ed60cc341c2248703c0f3342f9408ea1abb9372",
+      "bytes": 26537,
+      "remote_readback_verified": true
+    },
+    "cpu_only.mem": {
+      "sha256": "3c3c1916d8a178414fdd8fdbd379f7bbe6807116dbf413c32b659256d41b985e",
+      "bytes": 294912,
+      "remote_readback_verified": true
+    },
+    "cpu_only_build.json": {
+      "sha256": "6603a6085ed3f1448f63f67eb24db27c845fc53f708d245d9b608a341cc46d63",
+      "bytes": 27794,
+      "remote_readback_verified": true
+    },
+    "host_checks.txt": {
+      "sha256": "3f0d4c47176a21dc0223563ca219fd6f1758c180672dfead72fed0ea76f0069e",
+      "bytes": 2068,
+      "remote_readback_verified": true
+    },
+    "k4_accel.bit": {
+      "sha256": "8ecd6ba9f21fb6e3b51f5ea4c98c58090f85eb1002ee672a0d89bc151edf2cfb",
+      "bytes": 1851436,
+      "remote_readback_verified": true
+    },
+    "k4_accel.hwh": {
+      "sha256": "83bbb0f97a5be6c32946a13a86151cabc03203e829e154e99df57933bfe738cf",
+      "bytes": 140202,
+      "remote_readback_verified": true
+    },
+    "kat_vectors.json": {
+      "sha256": "1f5711b102676bd08aa16d70bec317b160a39bb2d15183bcaf67f08e0a88b464",
+      "bytes": 2072395,
+      "remote_readback_verified": true
+    },
+    "mlkem1024.ipynb": {
+      "sha256": "da073314ebc638d049eddd4df8966d6d8abf9318adf6f8ffb224defb0a747731",
+      "bytes": 13241,
+      "remote_readback_verified": true
+    },
+    "mlkem1024.py": {
+      "sha256": "4c167f4ccb524cfa4e535ce0b2a7daf65d05e8c31d76530f308039894df3532c",
+      "bytes": 58448,
+      "remote_readback_verified": true
+    },
+    "paired_rtl_manifest.json": {
+      "sha256": "0ae1f3a9c2fe882ee059598824a5605a941ef40ae794d69e7d61c7499bd3e134",
+      "bytes": 8481,
+      "remote_readback_verified": true
+    },
+    "paired_rtl_result.json": {
+      "sha256": "ce292ad7439052a384ea27e9fb52e3f8c9df4a702d12eed3a917dd9802edc1be",
+      "bytes": 2382,
+      "remote_readback_verified": true
+    },
+    "published_release_manifest.json": {
+      "sha256": "33f45b917a0999a7df03e80430fea4a85e8223be5e59fd6fe3cb91ed6dab0cd4",
+      "bytes": 1559,
+      "remote_readback_verified": true
+    },
+    "README.txt": {
+      "sha256": "7594ded11edab61b26173f8a375d28b540a42c7aa52bcff5f21801a028cc1cd5",
+      "bytes": 988,
+      "remote_readback_verified": true
+    },
+    "release_manifest.json": {
+      "sha256": "aa0fe8532033d30052e6c4d7d9ca0d36617630cc99330c8d139edaff4ea7d0d4",
+      "bytes": 2679,
+      "remote_readback_verified": true
+    }
+  },
+  "total_bytes": 4798034,
+  "local_bundle": "build/transfer/mlkem1024_paired_20261023",
+  "board_tests_run": false,
+  "overlay_programmed": false,
+  "next_action": "User opens mlkem1024.ipynb and selects Kernel -> Restart & Run All"
+}

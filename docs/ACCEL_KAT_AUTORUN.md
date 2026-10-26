@@ -1,9 +1,16 @@
 # KAT 无人值守续跑
 
-更新时间：2026-10-05。当前方向是 **K=4 / ML-KEM-1024 主线，K=2 冻结历史对照，
-K=3 后置扩展**；实板最后进行。旧“K3/K4 BaseMul 移植后返回 K2 优化”队列已撤销。
+更新时间：2026-10-26。当前方向是 **K=4 / ML-KEM-1024 主线，K=2 冻结历史对照，
+K=3 后置扩展**；K4加速组和同板CPU-only对照均已完成145/145。旧“K3/K4 BaseMul移植后返回K2优化”队列已撤销。
 自动续跑 `pqc-kat` 已按用户要求删除，不再周期性发送指令。本文件仅作为人工续接断点。
-用户已授权本轮 HLS 建模、优化及审查后提交推送 `24-2hp`；原始分支和冻结基线不改。
+当前发布分支为 `last`；`24-2hp` 是历史开发分支，原始分支和冻结基线不改。
+
+## 当前人工续接断点（2026-10-16）
+
+板上验证已完成，本文件保留续接规则和历史断点说明，不再启动新的长任务。
+加速组 `FULL_PASS 145/145` 证据在 `results/keccak_cpu/board/20261016_full145/`；
+同板CPU-only/加速配对证据在 `results/k4/paired_firmware/board_20261023/`。
+历史RTL、PS–PL和实板数据仍按证据层级分别引用。
 
 ## 已完成
 
@@ -36,8 +43,8 @@ K=3 后置扩展**；实板最后进行。旧“K3/K4 BaseMul 移植后返回 K2
 - 优先完成K4主线；K3、其他CPU消融等支线后置。
 - 日常迭代只跑官方子集（默认索引0、1、115，覆盖KeyGen/Encaps/Decaps）与针对改动的smoke/边界检查。
 - 最终候选完成后再跑145条全量验收；子集不能记为145/145。
-- 核心/HLS及独立PL流程使用`run_flow.tcl`顶部0/1开关，默认`FULL_KAT=0`。
-- PS–PL使用独立`vivado_bd.tcl`及`PREPARE/SIM/CREATE_BD/SYNTH/IMPL/EXPORT`开关；
+- 核心/HLS及独立PL流程使用`mainline/k4/flow.tcl`顶部0/1开关，默认`FULL_KAT=0`。
+- PS–PL使用独立`mainline/k4/bd_axi.tcl`及`PREPARE/SIM/CREATE_BD/SYNTH/IMPL/EXPORT`开关；
   通过门禁后只发布到`release/mlkem1024_pynq/`，不新增并列部署目录。
 - 每个RTL版本使用独立CANDIDATE结果目录；续跑先核对版本，旧结果只供对照。
 - 主线稳定后统一整理目录、合并冗余入口；保留原始证据和所需冻结输入。
@@ -51,8 +58,8 @@ setup/hold/pulse +0.302/+0.026/+3.750 ns，功能风险DRC为0，29,758条网络
 LUT/FF/BRAM36等效/DSP为19,759/17,585/34.5/4；配套文件与哈希校验通过。
 固定部署目录`release/mlkem1024_pynq/`；项目`E:/hls/k4pynq/20261005_psaxi06/project/k4_pynq.xpr`。
 恢复记录及7处隐式LUT配对布局修复见该批次reports；未改写冻结输入，无需重跑旧KAT。
-下一步为网络恢复后上传目录、运行Notebook默认3例，再显式开启板上145例并收集结果。
-新overlay未上板验证；已有Notebook默认3例，全量145必须显式启用并逐例校验。
+K=4 PYNQ-Z2 overlay 已上传并完成 Notebook 官方全量 `FULL_PASS 145/145`。
+实板原始证据位于 `results/keccak_cpu/board/20261016_full145/`；默认三例适合现场演示，全量 JSON 作为归档验收。
 此前独立3例PL自检已有用户报告的LED0 PASS和BTN0复位后恢复；这不代替新overlay实测。
 
 ### 已冻结的核心断点
@@ -104,7 +111,12 @@ LUT19,003、FF17,005、BRAM36等效34.5、DSP4。全路径hold −1.194 ns仍在
 7. [x] 当前核心145条验收完成；组件错误返回和板级运行中复位恢复检查通过。
 8. [x] PYNQ-Z2独立3例自检：用户报告LED0 PASS及BTN0复位后恢复；无PS/AXI主机读回。
 9. [x] 新PS–PL overlay：run02实际AXI协议及3例PASS；run06物理签核和部署包校验通过。
-10. [ ] 网络恢复后验证Jupyter装载、周期/结果读回和证据导出；板上全量145另行显式启用。
+10. [x] PYNQ-Z2 Jupyter 装载、周期/结果读回、证据导出及官方145条全量实板运行通过。
+11. [x] 2026-10-23完成同条件CPU-only固件、成对Notebook、14项主机检查与真实RTL切换7/7；
+    `results/k4/paired_firmware/rtl_01/`保留三次128 KiB全镜像回读与官方输出证据。
+    [x] 用户已运行新Notebook并回传ZIP；两组各145条、60次代表例重复及6项恢复专项通过。
+    独立复核原始输出、输入、artifact/全RAM哈希及硬件计数；API 3.802806×、PS整批2.297581×。
+    证据在`results/k4/paired_firmware/board_20261023/`，无需重跑，下一步为报告定稿与演示演练。
 
 ## 当前 K=4 HLS 进展及证据边界
 

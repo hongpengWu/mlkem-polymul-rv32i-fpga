@@ -1,4 +1,4 @@
-"""Build ML-KEM-1024 KAT with exclusively hardware FIPS 202; no RTL run."""
+"""Build ML-KEM-1024 KAT; PS mode also supports a software-only FIPS 202 control."""
 from pathlib import Path
 import argparse
 import hashlib
@@ -67,7 +67,13 @@ def main():
                        help="Build self-checking three-case board firmware in an independent directory")
     modes.add_argument("--ps", action="store_true",
                        help="Build one-case PS shared-RAM firmware without embedded vectors or answers")
+    parser.add_argument("--cpu-only", action="store_true",
+                        help="With --ps only: use frozen portable software FIPS 202, without accelerator/MMIO code")
+    parser.add_argument("--output-dir", type=Path,
+                        help="Independent build directory within this repository (relative paths use the repository root)")
     args = parser.parse_args()
+    if args.cpu_only and not args.ps:
+        parser.error("--cpu-only requires --ps")
     src = ROOT / "mainline/k4/firmware"
     common = ROOT / "firmware/mlkem_baseline"
     suite = ROOT / "firmware/mlkem_suite"
@@ -77,7 +83,13 @@ def main():
     mode = "ps" if args.ps else "board" if args.board else "kat"
     linker = src / ("ps_link.ld" if args.ps else "link.ld")
     main_source = src / "ps_kat.c" if args.ps else src / "board_kat.c" if args.board else suite / "kat_suite.c"
-    out = ROOT / "build/k4" / mode
+    out = (args.output_dir if args.output_dir and args.output_dir.is_absolute()
+           else ROOT / args.output_dir if args.output_dir
+           else ROOT / "build/k4" / ("ps_cpu_only" if args.cpu_only else mode)).resolve()
+    require(out.is_relative_to(ROOT), "Output directory must be within the repository")
+    if args.output_dir:
+        require(not out.exists() or not any(out.iterdir()),
+                "Explicit output directory must be new or empty; preserve existing build evidence: " + str(out))
     evidence = out
     manifest = json.loads((vendor / "SOURCE_MANIFEST.json").read_text(encoding="utf-8"))
     for item in manifest["files"]:
@@ -100,14 +112,23 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     evidence.mkdir(parents=True, exist_ok=True)
     board_files, board_record = board_vectors(out) if args.board else ([], None)
-    sources = [common / "startup.S", main_source, common / "runtime.c",
-               src / "keccak_mmio.c", src / "fips202_hw.c"]
+    sources = [common / "startup.S", main_source, common / "runtime.c"]
+    provider_sources = (sorted((lib / "src/fips202").glob("*.c")) if args.cpu_only
+                        else [src / "keccak_mmio.c", src / "fips202_hw.c"])
+    sources += provider_sources
     sources += sorted((lib / "src").glob("*.c"))
-    require(not any("fips202" in path.parts for path in sources), "Software FIPS 202 included")
+    if args.cpu_only:
+        require({path.name for path in provider_sources} == {"fips202.c", "fips202x4.c", "keccakf1600.c"},
+                "Unexpected portable software FIPS 202 source set")
+        require(not any(path.name in {"keccak_mmio.c", "fips202_hw.c"} for path in sources),
+                "Hardware provider included in CPU-only build")
+    else:
+        require(not any("fips202" in path.parts for path in sources), "Software FIPS 202 included")
     source_files = set(sources + [Path(__file__).resolve(), Path(__file__).with_name("paths.py"),
         ROOT / "scripts/tool_paths.py", common / "kat_protocol.h",
-        linker, src / "kat_config.h", src / "keccak_mmio.h",
-        src / "fips202_hw.h", src / "fips202x4_hw.h", vendor / "SOURCE_MANIFEST.json"])
+        linker, src / "kat_config.h", vendor / "SOURCE_MANIFEST.json"])
+    if not args.cpu_only:
+        source_files.update(src / name for name in ("keccak_mmio.h", "fips202_hw.h", "fips202x4_hw.h"))
     source_files.update(vendor / item["path"] for item in manifest["files"])
     source_files.update(fixtures / name for name in
         ["cases.json", "mlkem1024_input.mem", "mlkem1024_expected.mem"])
@@ -120,6 +141,8 @@ def main():
         "-I", str(lib), "-DMLK_CONFIG_FILE=<kat_config.h>"]
     if args.board:
         flags += ["-I", str(out)]
+    if args.cpu_only:
+        flags += ["-DPICO_K4_CPU_ONLY=1"]
     commands, logs, objects = [], [], []
     for path in sources:
         obj = out / (path.stem + ".o")
@@ -152,14 +175,20 @@ def main():
     needed = ["sha3_256", "sha3_512", "shake256", "shake128x4_absorb_once",
               "shake128x4_squeezeblocks", "shake128x4_init", "shake128x4_release"]
     provider_symbols = ["pico_mlkem1024_" + name for name in needed]
-    provider_nm = run([tool("nm"), "--defined-only", out / "fips202_hw.o"])
+    provider_nm = "\n".join(run([tool("nm"), "--defined-only", out / (path.stem + ".o")])
+                            for path in provider_sources)
     for symbol in provider_symbols:
         require(symbol in symbols and re.search(r"\b" + re.escape(symbol) + r"$", provider_nm, re.M),
-                "Missing hardware provider symbol: " + symbol)
-    require("keccak_mmio_run" in symbols, "MMIO path not linked")
-    forbidden = [name for name in symbols
-                 if re.search(r"keccakf1600|keccak_absorb|keccak_squeeze|KeccakF1600", name)]
-    require(not forbidden, "Software Keccak present: " + str(forbidden))
+                "Missing selected FIPS 202 provider symbol: " + symbol)
+    software_keccak = sorted(name for name in symbols
+                            if re.search(r"keccakf1600|keccak_absorb|keccak_squeeze|KeccakF1600", name))
+    hardware_mmio = sorted(name for name in symbols if name.startswith("keccak_mmio_"))
+    if args.cpu_only:
+        require(software_keccak, "Software Keccak permutation not linked")
+        require(not hardware_mmio, "Hardware MMIO symbols in CPU-only build: " + str(hardware_mmio))
+    else:
+        require("keccak_mmio_run" in symbols, "MMIO path not linked")
+        require(not software_keccak, "Software Keccak present: " + str(software_keccak))
     dump = run([tool("objdump"), "-d", elf])
     attrs = run([tool("readelf"), "-A", elf])
     require("rv32i" in attrs and "m2p0" in attrs, "Wrong ISA")
@@ -194,13 +223,22 @@ def main():
         firmware=image.relative_to(ROOT).as_posix(), firmware_sha256=sha(image),
         elf_sha256=sha(elf), source_sha256=before, flags=flags, commands=commands,
         compiled_sources=[p.relative_to(ROOT).as_posix() for p in sources],
-        provider_symbols=provider_symbols, excluded_software_fips202=True,
-        software_keccak_symbols=forbidden, mlkem_native_commit=manifest["source_commit"],
+        fips202_provider="portable_software" if args.cpu_only else "hardware_mmio",
+        cpu_only=args.cpu_only, provider_symbols=provider_symbols,
+        excluded_software_fips202=not args.cpu_only,
+        excluded_hardware_fips202=args.cpu_only,
+        software_keccak_symbols=software_keccak, hardware_mmio_symbols=hardware_mmio,
+        mlkem_native_commit=manifest["source_commit"],
+        symbol_sha256=sha(out / "symbols.txt"), provider_symbol_sha256=sha(out / "provider_symbols.txt"),
+        object_sha256={path.name: sha(path) for path in objects},
         linker_sha256=sha(linker),
         provider_limits=dict(shake128_pending_input_bytes=34, input_bytes=2048,
             output_bytes=4096, reentrant=False, sha128x4_independent_contexts=True,
             first_squeeze="combined HASH", subsequent_squeeze="SQUEEZE",
             cpu_zeroization=True, accelerator_bram_erasure=False))
+    if args.cpu_only:
+        record["provider_limits"] = dict(implementation="Pinned mlkem-native portable FIPS 202",
+                                         accelerator_access=False)
     if args.board:
         record.update(board_subset=board_record, case_count=3,
                       generated_sha256={name: sha(out / name) for name in
@@ -226,7 +264,8 @@ def main():
     (evidence / "build.json").write_text(json.dumps(record, indent=2)+"\n",
                                          encoding="utf-8", newline="\n")
     print(f"KECCAK_KAT_BUILD_PASS image_bytes={len(data)} static_end={symbols['__image_end']} "
-          f"stack_reserved=32768 no_software_keccak=1 firmware={image}")
+          f"stack_reserved=32768 no_software_keccak={int(not args.cpu_only)} "
+          f"provider={record['fips202_provider']} firmware={image}")
 
 
 if __name__ == "__main__":

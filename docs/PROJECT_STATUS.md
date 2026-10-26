@@ -1,17 +1,85 @@
 # 项目进度与执行记录
 
-更新时间：2026-10-05。本页汇总已完成工作、当前覆盖范围和下一步；详细数值以
+更新时间：2026-10-26。本页汇总已完成工作、当前覆盖范围和下一步；详细数值以
 [BENCHMARKS.md](BENCHMARKS.md) 和对应原始日志为准，长期阶段门见
 [COMPETITION_ROADMAP.md](COMPETITION_ROADMAP.md)。
 
-## 2026-10-14 目录重组（default分支）
+## 2026-10-14 目录重组（last分支）
+
+竞赛报告母稿已整理为 [COMPETITION_REPORT.md](COMPETITION_REPORT.md)，图示、证据边界
+和板级 TODO 均集中维护于该文件。
 
 K4源码、固件、TB、约束与Notebook迁到 `mainline/k4/`；两个人工维护的Tcl入口为
 `flow.tcl`、`bd_axi.tcl`。工具路径改为PATH/环境变量发现，项目依赖以脚本位置解析。
 旧历史结果和发布包保持原样；迁移验证不替代既有全量验收或实板验证。
 验证结果及路径映射见 [results/reorganization](../results/reorganization/)。
 
-## 最新执行状态：PS–PL部署包已生成，待网络恢复后实板验证
+## 最新执行状态：K=4 同板配对正确性与性能验证完成
+
+2026-10-23用户运行配对Notebook并回传原始ZIP，独立复核已通过：
+
+| 验收项 | 实板结果 |
+|---|---|
+| CPU-only / CPU+Keccak官方记录 | 两组各145/145，逐字节输出与返回码一致 |
+| API周期总和 | 1,699,293,290 → 446,852,439，**3.802806×** |
+| PS整批墙钟 | 22.135448812 → 9.634239928 s，**2.297581×** |
+| 三种操作重复 | 每模式0/1/115各10次，共60次通过；固定例周期无波动 |
+| 控制恢复 | 两模式各完成后复位、错误magic拒绝、主机超时后恢复，共6项通过 |
+| 固件装载 | 8次完整128 KiB RAM读回哈希匹配 |
+
+[原始ZIP、逐阶段JSON及独立复核结果](../results/k4/paired_firmware/board_20261023/summary.md)
+已归档。CPU-only的硬件启动/busy/缓冲读写全部为零；加速组3188次HLS启动匹配官方负载。
+性能比较固定同一bitstream、RV32IM-fast、100 MHz、128 KiB RAM / 32 KiB栈和编译条件，
+不再缺少同板CPU-only数据。PS墙钟包含传输/轮询/校验，固件切换、JSON写盘和网络传输另计。
+
+**竞赛报告的核心功能、性能和实现数据已经齐备**，已填入报告母稿。接下来是正式排版、
+图表和现场演示演练；功耗/能耗需要仪器，长期稳定性、侧信道与ARM对照属于后续扩展。
+
+### 历史加速组首次全量实板验收
+
+2026-10-16，`mlkem1024_pynq_work` overlay 在 PYNQ-Z2 上完成官方记录
+`FULL_PASS 145/145`。覆盖索引 `0..144`，真实测量类型为 `PYNQ_BOARD_AXI_LIVE`；
+板上 API 周期总和为 **446,852,439 cycles**，批量墙钟约 **9.563 s**。
+逐条输出、返回值、输入身份和硬件计数保存在
+`results/keccak_cpu/board/20261016_full145/board_full_20261016.json`，证据 SHA-256 为
+`2b90b932ceaccfa7e148d6143deb398c58b961e78811741b4b871c907fb38934`。
+
+独立 `verify.py` 再次确认 145 条唯一覆盖、官方输出/返回值、3,188 次 HLS 启动和
+缓冲区计数。该结果是加速 overlay 的真实功能与周期实板证据；当时尚无CPU-only实板对照。
+本轮配对测量另行归档，保留两次原始值；官方向量通过不代表 CAVP 认证。
+
+### 配对版本准备与验收记录
+
+2026-10-23恢复 SSH 上传通道后，先完成准备与上传，由用户在 Jupyter 运行并回传证据。
+已有加速组145条原始证据继续保留；新一对测试已补齐同板性能对照。
+
+1. **已构建两组匹配固件**：`build/k4/paired_20261023/{cpu_only,accelerated}/`。
+   共用 `ps_kat.c`、链接脚本、RV32IM/O3、同版本库与编译器、128 KiB RAM / 32 KiB栈。
+   CPU-only ELF只含软件FIPS202，Keccak MMIO符号不存在；加速镜像与原发布镜像字节相同。
+2. **一键 Notebook 已完成**：同一 bitstream、100 MHz，CPU复位期间写入完整128 KiB固件，
+   全部RAM读回并核验SHA-256后才运行。默认两组各145条、0/1/115各10次重复，
+   完成后复位、非法magic、短超时恢复三项专项；逐阶段保存成功和失败JSON并提供ZIP下载。
+   14项主机测试与Notebook模拟整流程通过，Python3.6语法检查通过；模拟不作为实板数据。
+3. **真实RTL子集7/7通过**：发布overlay原RTL/HLS保持冻结，加速三例→CPU-only三例→
+   加速一例，三次128 KiB全镜像读回、官方输出及两组硬件计数全部通过。
+   CPU-only三例为13,046,690 / 13,908,285 / 17,088,701周期、全部硬件计数为零；
+   加速为3,120,941 / 3,841,521 / 4,658,615周期，切回后KeyGen周期一致。
+   [原始RTL证据](../results/k4/paired_firmware/rtl_01/result.json)独立归档；未重跑旧145条RTL。
+4. **实板配对已通过并独立复核**：两组官方145条、代表例重复、限定恢复专项全部通过，
+   比值从本轮原始实测重算。固件装载、读回和JSON写盘单列；短超时仅证明主机
+   deadline→复位→重新运行，不代表HLS忙时中途复位或长期可靠性。
+
+若采用同一 bitstream 切换固件，结论是同硬件上启用/停用加速服务的性能对照，
+不代表移除加速器后的资源或功耗差异。当前无定时任务。
+
+**上传已完成**：板上目录 `/home/xilinx/jupyter_notebooks/mlkem1024_paired_20261023/`，
+15个文件、4,798,034字节，全部通过远端读回SHA-256核对。
+[上传回执及本次主机快照](../results/k4/paired_firmware/upload_20261023/receipt.json)已归档。
+上传阶段未远程加载overlay或运行测试；随后用户自行运行Notebook并回传证据ZIP。
+本次测试不需要重跑，原始ZIP SHA-256为
+`830e7fbd94c1e8ca621203514bce866ed2c8efffb5ffe214ac19f8159a7d37e6`。
+
+### 已完成的 PS–PL 实现
 
 `20261004_psaxi02`已实际执行并通过AXI协议检查及官方索引0、1、115三例。
 新路径包含PS可访问的双口RAM、单例输入/结果窗口及主机逐字节校验；
@@ -26,13 +94,13 @@ LUT/FF/BRAM36等效/DSP为19,759/17,585/34.5/4，分别占37.14%/16.53%/24.64%/1
 此前run04/05因复位连接或GP0元数据被拒绝；原证据保留。run06复用了相同输入的run02仿真，
 从已完成的综合/布线检查点恢复，修复7处工具生成的隐式LUT配对问题，仅移动FDRE，
 逐项验证INIT和连接保持不变。恢复Tcl及实际collector另行记录哈希，没有改写冻结输入。
-新overlay尚未上板验证；当前等待网线排查恢复Jupyter。PS–PL使用独立`vivado_bd.tcl`的
+新 overlay 已完成 Jupyter 全量 145 条运行；默认三例仍适合作为现场快速演示。PS–PL使用独立`mainline/k4/bd_axi.tcl`的
 `PREPARE/SIM/CREATE_BD/SYNTH/IMPL/EXPORT`开关，通过门禁后仅发布到
 `release/mlkem1024_pynq/`；构建与恢复方式见[BUILD.md](BUILD.md#k4-pspl--jupyter入口)。
 
 此前独立3例PL自检已有**用户报告的LED0 PASS及BTN0复位后恢复**。
-该实板观察与自动采集的PS–PL结果区分记录；不包含主机读回、板上145例或现场CPU-only对照。
-Notebook和驱动已具备装载、校验、计时分项与导出入口，后续需用新overlay完成实板验证。
+该历史观察与本次自动采集的PS–PL结果分开记录；本次全量实板证据见上方归档。
+Notebook和驱动已完成装载、校验、计时分项、全量运行与证据导出。
 
 ### 已冻结的核心与独立PL实现证据
 
@@ -50,7 +118,7 @@ LUT/FF/BRAM36等效/DSP为19,030/16,963/34.5/4，bitstream及报告哈希已复�
 原OOC resetn边界负hold证据保留，不影响独立板级流程已完成的签核。
 
 该bitstream是独立PL自检，仅时钟/按钮/LED端口，没有PS/AXI控制接口。
-核心开发默认仍仅跑索引0、1、115，使用`run_flow.tcl`顶部开关；PS–PL使用上文独立入口。
+核心开发默认仍仅跑索引0、1、115，使用`mainline/k4/flow.tcl`顶部开关；PS–PL使用上文独立入口。
 无周期自动任务。
 以下2026-09-27段落保留历史数据；当前覆盖以本节及独立全量证据为准。
 
@@ -176,7 +244,7 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | K=2 PQC 加速器接入标准软件 | 冻结历史对照；CPU+驱动及官方 KAT 145/145 通过，端到端 0.9930× | [CPU 接口验证](MLKEM512_CPU_ACCEL_SMOKE.md)、[KAT 汇总](../results/accelerator_cpu/kat/summary.md) |
 | K=4 Keccak/FIPS 202 HLS | io0/io1 的 C 与 Verilog COSIM 均通过 109 笔本地差分事务；独立 IP OOC 实现已完成，当前100 MHz板级实现签核完成 | [HLS 说明](../mainline/k4/hls/README.md)、[结果汇总](../results/hls/mlkem1024_keccak/summary.md) |
 | K=4 CPU+加速器核心与独立PL自检 | 冻结核心145/145、历史RTL比值3.8028×；独立PL实现签核完成，用户报告3例LED0 PASS及BTN0复位恢复 | [独立PL证据](../results/keccak_cpu/board/20261004_162430/result.json) |
-| K=4 PS–PL / Jupyter overlay | run02实际AXI协议及3例PASS；run04拒绝发布，run05待重新实现；新overlay未上板 | [构建入口](BUILD.md#k4-pspl--jupyter入口) |
+| K=4 PS–PL / Jupyter overlay | PYNQ-Z2 实板官方 145/145 `FULL_PASS`；446,852,439 API cycles；约9.563 s批量墙钟 | [实板全量证据](../results/keccak_cpu/board/20261016_full145/README.md) |
 
 ### 当前官方用例覆盖
 
@@ -187,7 +255,7 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | PicoRV32 RV32IM 迭代 RTL | 145 项所选记录通过 | 待测 | 待测 |
 | PicoRV32 RV32IM 快速 RTL | 145 项所选记录通过 | 145 项通过，128 KiB RAM | 145 项通过，128 KiB RAM |
 | CPU＋PQC 加速器标准软件 | 145 项 RTL 仿真通过；端到端 0.9930×，冻结历史对照 | 后置扩展 | 冻结核心145项RTL通过，历史API周期比3.803×；新AXI候选3例通过 |
-| 本项目标准软件实板回归 | 最后执行 | 最后执行 | 独立3例自检LED0/BTN0由用户报告通过；PS–PL及145例待测 |
+| 本项目标准软件实板回归 | 后置 | 后置 | K=4同板两组各145/145；API 3.802806×，PS整批2.297581× |
 
 主机的 435 项是 `75 + 165 + 195`，来自固定版本 FIPS203 keyGen、FIPS203 encapDecap
 和 FIPS203-tr1 encapDecap 数据集。历史 PicoRV32 的 435 次执行是同一512集合在三种CPU上各145项；
@@ -222,11 +290,11 @@ MMIO/BRAM 路径已验证。这些结果说明核心周期改善不能替代端�
 | 2 | K=4 报告驱动的精确 HLS 优化 | 保持 FIPS 202 逐位结果；C/COSIM、周期、资源和时序报告完整 | io0/io1局部差分及当前100 MHz板级实现签核完成 |
 | 3 | K=4 打包接口与 CPU 集成 | 明确上下文、搬运、启动、等待和读回契约 | 10次RTL组件调用通过，标准库适配完成 |
 | 4 | K=4 CPU+加速器官方 RTL KAT | 开发子集，最终145条逐字节通过且真实硬件调用证据完整 | 冻结核心145/145；新AXI候选run02协议及3例PASS |
-| 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 历史核心API周期比3.8028×；PS–PL实板对照与K4阶段占比待测 |
+| 5 | K=4 未插桩端到端公平对照 | 同 RV32IM-fast、128 KiB RAM / 32 KiB 栈，完整 API 周期含接口成本；阶段占比独立测量 | 同板API 3.802806×、PS整批2.297581×；更细K4阶段占比后置 |
 | 6 | K=4 系统资源/时序与设计选择 | 同约束软件/硬件综合和布局布线，记录 LUT/FF/BRAM/DSP/WNS；独立 HLS 估算不替代系统结果 | 板级setup/hold/pulse +0.109/+0.027/+2.000 ns；19,030 LUT、16,963 FF、34.5 BRAM36、4 DSP |
 | 7 | K=3 扩展和其他 CPU 消融 | 在选定架构上补齐对应官方回归、基本性能和内存数据 | 后置 |
-| 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 独立PL验收完成；新overlay的run04拒绝发布，run05待重新实现 |
-| 9 | PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 用户报告独立3例LED0/BTN0通过；新overlay与Jupyter实测待完成 |
+| 8 | 完成上板前验收 | 系统回归、适用异常/故障检查、实现时序与匹配烧录产物准备完毕 | 已完成 |
+| 9 | PYNQ-Z2 实板和演示 | 功能、周期读回及适用板级功耗数据，与仿真/实现证据对应 | 两组官方145/145、60次重复、6项恢复与同板加速比完成；演示演练及可选功耗待补 |
 
 K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，但扩展必须有独立硬件证据。
 若不同参数集使用不同内存容量，报告中需明确，不能把不同配置的结果当作只改变算法参数的对照。
@@ -243,7 +311,8 @@ K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，�
 > 历史版本CPU组件10项及标准库145条官方RTL记录已通过，同配置测试集API总周期比3.803×；
 > 冻结核心官方145/145及独立PL实现签核完成，setup/hold/pulse为+0.109/+0.027/+2.000 ns；
 > 独立3例PL自检由用户报告LED0 PASS及BTN0复位恢复。新PS–PL run02实际AXI协议及3例通过，
-> run04拒绝发布、run05待重新实现；新overlay尚未上板，历史3.8028×不作为实板加速比。K=3扩展后置。
+> 新 overlay 已在 PYNQ-Z2 上完成官方145/145；实板 API 周期总和为446,852,439，
+> 批量墙钟约9.563秒。历史3.8028×仍不作为实板加速比，因为同配置 CPU-only 尚未上板对照。K=3扩展后置。
 
 全部对应回归完成后，可以描述所覆盖版本、参数集、操作和用例的结果一致性。
 公开向量离线回归不等于正式 CAVP 算法验证，也不等于 FIPS 140-3 / CMVP 密码模块认证；
@@ -274,9 +343,10 @@ K=2 不再进入主线优化队列；K=3 无需重复 K=4 的每一轮扫参，�
 137 cycles、II=1 和估算 Fmax 150.83 MHz；该快照当时尚未进行完整 Vivado 工程接入、
 AXI 适配、CPU 接入或官方 KAT 硬件回归，后续记录已补充这些结果。
 
-2026-09-25 后续：独立 MMIO/BRAM/BIST 验证与 Vivado 实现完成，保存
-`vivado/mlkem512_basemul_k2/basemul.xpr`、`release/mlkem512_basemul_k2/` 和
-`results/accelerator_interface/` 中的证据。现有 CPU baseline 保持不变；RV32IM-fast 的
+2026-09-25 后续：独立 MMIO/BRAM/BIST 验证与 Vivado 实现完成，交付 bitstream 保存在
+`release/mlkem512_basemul_k2/`，实现报告和验证证据保存在 `results/accelerator_interface/`。
+当时的 `vivado/mlkem512_basemul_k2/basemul.xpr` 是本地生成工程；XPR/MEM 不随仓库克隆，
+需通过构建脚本重建后才能在 Vivado 中直接打开。现有 CPU baseline 保持不变；RV32IM-fast 的
 145 条 ML-KEM-512 官方 KAT 已计入搬运、等待和读回成本，结果为 CPU+PQC 697,154,629
 cycles 对 CPU-only 692,273,249 cycles（0.9930×）。下一步应降低接口开销，再开展
 768/1024 扩展和新的实现对照。

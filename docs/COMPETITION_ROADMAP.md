@@ -1,6 +1,7 @@
 # ML-KEM FPGA 竞赛路线图
 
-更新日期：2026-09-27。最新完成情况与近期执行顺序见 [项目进度](PROJECT_STATUS.md)。
+计划基线日期：2026-09-27；当前状态快照：2026-10-26。本文分阶段计划和当时状态保留为历史路线图，
+最新完成情况与近期执行顺序以[项目进度](PROJECT_STATUS.md)和[性能台账](BENCHMARKS.md)为准。
 
 ## 1. 项目定位
 
@@ -66,12 +67,12 @@ LOOP_TRIPCOUNT 上界且周期/资源相同；RTL 对比已随报告归档，不
 | 8 组边界、稠密和随机输入 | tb/software/ | 可重复的局部回归与周期测试 | 已完成 |
 | 独立负卷积 oracle | scripts/cpu_baseline/generate_vectors.py | 防止 TB 和软件共用同一错误 | 已完成 |
 | CPU-only PicoRV32 系统 | rtl/benchmark/ | 隔离 CPU 软件性能 | 已完成 |
-| CPU-only Vivado 工程 | vivado/cpu_baseline_* | 同条件资源、时序和 bitstream 对照 | 已完成 |
+| CPU-only Vivado 工程 | `scripts/cpu_baseline/` 生成至本地 `vivado/cpu_baseline_*` | 同条件资源、时序和 bitstream 对照 | 已完成；清洁克隆后由脚本重建，XPR/MEM不随仓库提供 |
 | 主机 ML-KEM 官方回归 | results/official_reference/ | 三参数集 KeyGen/Encaps/Decaps 等 435 用例 | 已通过，CPU RTL 覆盖独立记录 |
 | PicoRV32 ML-KEM-512 官方全集 | firmware/mlkem512_suite/、results/official_baseline/mlkem512/ | 标准便携 C 的完整 API 调用基线 | 三组各 145 条已通过，64 KiB RAM，仅 RTL 仿真 |
 | 历史官方 KeyGen 首例 | firmware/mlkem_baseline/、results/official_baseline/keygen512_tc1/ | 首次标准算法执行闭环，独立保留 | 三组 tcId=1 已通过，不替代当前全量分布 |
 | 历史 K=2 NTT 域 BaseMul HLS | hls/mlkem512_basemul_k2/ | 冻结的局部计算对照 | C 仿真/综合已通过 |
-| 独立 MMIO/BRAM/BIST 硬件路径 | rtl/accelerator/、vivado/mlkem512_basemul_k2/ | 先验证核、存储、控制和板级顶层 | RTL/BIST/100 MHz 实现通过，XPR/bitstream 已保存 |
+| 独立 MMIO/BRAM/BIST 硬件路径 | rtl/accelerator/、脚本生成的本地 `vivado/mlkem512_basemul_k2/` | 先验证核、存储、控制和板级顶层 | RTL/BIST/100 MHz 实现通过；bitstream 保留于 release，Vivado 工程由脚本重建 |
 | K=2 CPU+PQC 集成系统 | results/accelerator_cpu/kat/ | 冻结的端到端对照 | RV32IM-fast 官方 KAT 145/145；0.9930× |
 | K=4 Keccak/FIPS 202 HLS | mainline/k4/hls/ | 当前主线 HLS 候选 | 局部 C/COSIM 差分、独立IP OOC通过；当前集成系统内部100 MHz通过，板级边界待验收 |
 | K=4 CPU+加速器集成系统 | rtl/accelerator/、mainline/k4/firmware/ | 当前主线端到端对照 | 历史145/145；当前v3子集3/3和内部100 MHz通过，OOC边界hold及最终全量验收待完成 |

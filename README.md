@@ -2,17 +2,24 @@
 
 本仓库保存面向 PYNQ-Z2 的 ML-KEM/CRYSTALS-Kyber 研究工程。当前主线为
 **ML-KEM-1024（K4）的 Keccak/SHAKE 软硬件协同加速**，以完整 API 收益和资源成本
-指导架构。专用 HLS 入口见 [hls/mlkem1024_keccak](mainline/k4/hls/README.md)。
+指导架构。专用 HLS 入口见 [mainline/k4/hls](mainline/k4/hls/README.md)。
 已有 CPU 官方基线和 K2 BaseMul 结果保留作为历史对照；最新路线见
 [项目进度](docs/PROJECT_STATUS.md)。
 
-当前状态（2026-10-05）：
+当前状态（2026-10-26）：
 
-- 新PS–PL交互式overlay已完成AXI协议/3条官方RTL用例与100 MHz物理签核，
-  setup/hold为+0.302/+0.026 ns。部署包固定在`release/mlkem1024_pynq/`，
-  含配套`.bit/.hwh`、Jupyter Notebook和145条官方向量；新overlay尚未上板验证。
+- 新PS–PL交互式overlay已完成AXI协议、100 MHz物理签核，并在 PYNQ-Z2 上完成官方 `145/145 FULL_PASS`，
+  setup/hold为+0.302/+0.026 ns。配套部署包已纳入`release/mlkem1024_pynq/`，
+  含配套`.bit/.hwh`、Jupyter Notebook和145条官方向量；板上 API 总计446,852,439 cycles，批量墙钟约9.563 s。
   [部署与独立BD Tcl入口](docs/BUILD.md#k4-pspl--jupyter入口) ·
-  [本次签核证据](results/keccak_cpu/pynq/20261005_psaxi06/result.json)
+  [本次签核证据](results/keccak_cpu/pynq/20261005_psaxi06/result.json) ·
+  [145条实板证据与复核](results/keccak_cpu/board/20261016_full145/README.md)
+
+- **同板对照已完成：实板API加速3.8028×，PS整批加速2.2976×。** 两组各145条官方记录全部通过，
+  API周期1,699,293,290 → 446,852,439；包含PS传输/校验的整批墙钟22.135 → 9.634秒。
+  同RV32IM-fast、100 MHz、128 KiB RAM / 32 KiB栈、同bitstream切换软件/硬件FIPS202服务。
+  代表例两组共60次重复、6项恢复检查均通过；
+  [实板原始证据与复核](results/k4/paired_firmware/board_20261023/summary.md) · [分层计时](docs/BENCHMARKS.md)。
 
 - K4 Keccak 两种访存配置均通过 109 次 C/RTL 协同测试；向量为本地 FIPS 202 差分测试。
   独立核的优化、资源和时序见 [测量记录](results/hls/mlkem1024_keccak/summary.md)。
@@ -24,9 +31,9 @@
   原OOC resetn边界hold −1.194 ns失败证据保留；独立板级时序已通过。
   开发默认只跑索引0、1、115；当前145条已独立验收，3,188次真实HLS调用匹配。
   [当前全量证据](results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)。
-  统一入口为[`run_flow.tcl`](mainline/k4/flow.tcl)顶部0/1开关，默认`FULL_KAT=0`。
+  统一入口为[`flow.tcl`](mainline/k4/flow.tcl)顶部0/1开关，默认`FULL_KAT=0`。
 - ML-KEM-768/1024 RV32IM-fast CPU-only RTL 官方回归各通过 145/145，使用 128 KiB RAM / 32 KiB 栈。
-- K4 PYNQ-Z2 板级上板前签核已通过：真实 MMCM/复位三例子集 3/3、路由和 100 MHz 时序通过，
+- 此前独立 PL 自检已通过：真实 MMCM/复位三例、路由和 100 MHz 时序通过，
   packed LUT/FF/BRAM36 等效/DSP 为 19,030/16,963/34.5/4；用户报告烧录后LED0 PASS及BTN0重启通过。
   [板级证据](results/keccak_cpu/board/20261004_162430/result.json)
 
@@ -44,13 +51,18 @@
 
 ## 目录与复现
 
-当前开发分支为 **`default`**，K4源码统一在 **[mainline/k4/](mainline/k4/README.md)**。
+当前发布分支为 **`last`**，K4源码统一在 **[mainline/k4/](mainline/k4/README.md)**。
+
+竞赛工程报告见 [docs/COMPETITION_REPORT.md](docs/COMPETITION_REPORT.md)，其中区分
+RTL/仿真、PS-PL 实现和 PYNQ-Z2 实板数据。
+报告 DOCX、配套模板和图片生成脚本集中在[`docs/competition/`](docs/competition/README.md)，
+按其中步骤可从仓库根目录重建。
 
 ```text
 mainline/k4/   当前HLS、RTL、固件、TB、约束、Notebook和两个Tcl入口
 results/       统一历史与新增验证证据
-release/       配套部署包
-build/         本地生成工程，不提交Git
+release/       配套部署包和少量发布bitstream
+build/         本地生成工程和中间文件，不提交Git
 ```
 
 主流程使用 `mainline/k4/flow.tcl`，PS–PL流程使用 `mainline/k4/bd_axi.tcl`。
@@ -59,10 +71,38 @@ build/         本地生成工程，不提交Git
 详见 [目录说明](docs/STRUCTURE.md)、[构建说明](docs/BUILD.md) 和
 [迁移验证记录](results/reorganization/)。
 
+`release/mlkem1024_pynq/` 是可选的预构建部署包：`.bit`、`.hwh`、驱动、Notebook、
+145条向量和 manifest 必须保留在同一目录。manifest 中记录的旧构建目录只用于追溯，
+运行时不访问该路径；从源码复现时使用上面的仓库相对路径。包内 README 是生成时的记录，
+板上全量及配对实测以本仓库相应原始证据为准。
+
+## 从干净克隆开始
+
+下面的预检不启动 Vivado、Vitis HLS、XSim 或 KAT。要求 Python 3.10 或更新版本；若安装了 `tclsh`，
+会顺带检查两个 Tcl 入口的语法及 `CHECK_ONLY` 路径。命令均从仓库根目录运行：
+
+```powershell
+git clone https://github.com/hongpengWu/mlkem-polymul-rv32i-fpga.git
+Set-Location mlkem-polymul-rv32i-fpga
+git checkout last
+python scripts/check_repository.py --paired-dir release/mlkem1024_pynq
+tclsh mainline/k4/flow.tcl
+tclsh mainline/k4/bd_axi.tcl
+```
+
+预检核对 Python/Notebook 语法、官方向量及SHA-256、生成的K4 fixture、第三方源码清单、
+发布包文件哈希和 Tcl 输入路径。通过表示文件与轻量路径检查通过；它不替代 C/RTL 仿真、
+综合、布局布线或实板测试。工具版本、所需环境变量、阶段开关和运行命令见
+[`docs/BUILD.md`](docs/BUILD.md) 与 [`mainline/k4/README.md`](mainline/k4/README.md)。
+
+`release_manifest.json` 和冻结历史证据可能保留采集时的绝对路径，作为来源记录；
+复现脚本不读取这些路径，发布包只按本地文件名和哈希装载。新运行目录从 Tcl 入口相对仓库根解析，
+工具安装位置通过 `PATH` 或环境变量提供。
+
 ## 软件 baseline
 
-使用 Vivado 2024.2 可打开 `vivado/cpu_baseline_<config>/cpu_baseline.xpr`，或重新构建
-三组 CPU-only 工程：
+使用 Vivado 2024.2 通过脚本生成并运行三组 CPU-only 工程。生成的 Vivado 项目保存在
+被忽略的 `vivado/` 本地构建目录；源码仓库不保留含开发机绝对路径的 `.xpr` 快照：
 
 ```powershell
 python scripts/cpu_baseline/build.py
@@ -101,9 +141,14 @@ powershell -ExecutionPolicy Bypass -File hls/mlkem512_basemul_k2/run_hls_short.p
 
 ## 研究边界
 
-K4标准软件与Keccak硬件的完整RTL闭环及历史全量周期对照已完成，当前板级上板前签核也已完成。
-当前版本最终145条已通过；bitstream内置3例独立自检。实板烧录、PS/PL控制、全量数据装载和周期/结果读回及Jupyter演示待完成。完整计划见
+K4标准软件与Keccak硬件的完整RTL闭环、板级签核和 PYNQ-Z2 全量实板验证已完成。
+独立 PL 自检 bitstream 内置3例；本次 PS–PL overlay 由 Jupyter 动态装载145条输入，
+完成结果核对、周期读回和证据导出。完整计划见
 [`docs/COMPETITION_ROADMAP.md`](docs/COMPETITION_ROADMAP.md)。
+
+同条件CPU-only实板对照、代表例重复和限定恢复专项已完成；接下来完善报告和演示。
+功耗、长期稳定性、K3扩展和其他CPU消融后置。
+官方公开向量通过不等同于 CAVP/FIPS 认证。
 
 更多入口：
 

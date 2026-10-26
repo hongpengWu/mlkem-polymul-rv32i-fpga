@@ -1,13 +1,84 @@
 # 性能与资源数据表
 
-更新时间：2026-10-04。表中只列已完成且仍有源码/日志证据的结果。100 MHz 时间换算仅用于
-仿真周期的直观展示；新 HLS 估算不等同于端到端系统性能。
+更新时间：2026-10-23。表中区分RTL周期、HLS估算、物理签核和实板测量，
+100 MHz时间换算注明对应运行条件；局部HLS结果不等同于完整系统性能。
 
 当前`timing_decode_v3`最终145/145已通过独立复核：19批最终PASS，3,188次真实HLS调用。
 CPU/加速API总周期1,699,294,360 / 446,853,509，**3.802800×**；最大观测栈24,384 B。
 19批仿真时长合计10,961.816秒，非芯片执行时间。
 [当前全量证据](../results/keccak_cpu/candidates/timing_decode_v3/kat/summary.md)独立保存。
-下方历史统计保留原口径；当前版本各操作API周期与其一致，板级签核见文末，实板待测。
+下方历史统计保留原口径；当前版本各操作API周期与其一致，板级签核见文末。
+
+## K4 同板CPU-only / CPU+Keccak实测（2026-10-23）
+
+两组在同一PYNQ-Z2、同一bitstream上运行，由PS在CPU复位期间切换固件；均为
+RV32IM-fast、100 MHz、128 KiB RAM / 32 KiB栈、相同mlkem-native和编译器/O3。
+PYNQ 2.5、Python 3.6.5、Linux 4.19；同序官方记录各145条全部通过。
+原始ZIP、逐条输出及独立重新计算的结果见
+[实板配对归档](../results/k4/paired_firmware/board_20261023/summary.md)。
+
+| 指标 | CPU-only | CPU+Keccak | CPU / 加速 |
+|---|---:|---:|---:|
+| 官方记录 | 145/145 | 145/145 | — |
+| API原始周期总和 | 1,699,293,290 | 446,852,439 | **3.802806×** |
+| API时间（100 MHz换算） | 16.99293290 s | 4.46852439 s | 3.802806× |
+| PS逐例墙钟之和 | 22.128231089 s | 9.627048410 s | **2.298548×** |
+| PS整批墙钟（含循环/记录开销） | 22.135448812 s | 9.634239928 s | **2.297581×** |
+| PS上传 / 等待 / 下载 | 2.641141 / 17.470323 / 1.817394 s | 2.641346 / 4.981152 / 1.813158 s | — |
+| 主机校验时间 | 0.019061 s | 0.016702 s | — |
+| 固件装载及全RAM读回（单列） | 2.197310 s | 2.170197 s | — |
+| HLS启动 / busy cycles | 0 / 0 | 3,188 / 1,980,263 | — |
+| 缓冲写 / 读（32-bit事务） | 0 / 0 | 257,851 / 435,632 | — |
+
+API包含软件和加速器驱动，PS墙钟进一步包含复位、邮箱清空/传输、轮询和逐字节校验。
+两项墙钟均不含overlay下载、固件切换、JSON写盘和浏览器网络传输；装载成本单列。
+API包含于等待、HLS busy包含于API，不能叠加。PS搬入/读回合计约4.46秒，两组基本一致，
+解释了整体收益从API的3.80倍下降为PS整批的2.30倍；`API-busy`不能解释为纯搬运耗时。
+同一bitstream在CPU-only模式仍保留加速器，结论为同软核启用硬件服务的收益，
+不代表相对ARM的软件性能或移除加速器后的面积/功耗差异。
+
+| 操作 | 记录数 | CPU-only cycles | CPU+Keccak cycles | API加速比 |
+|---|---:|---:|---:|---:|
+| KeyGen | 25 | 329,299,932 | 78,355,067 | 4.202663× |
+| Encaps | 50 | 700,468,526 | 192,648,502 | 3.635993× |
+| Decaps | 20 | 331,730,752 | 92,092,680 | 3.602140× |
+| 从种子重建私钥并Decaps | 10 | 295,059,840 | 77,103,770 | 3.826789× |
+| 公钥检查（含有效/无效） | 20 | 5,148,150 | 5,148,150 | 1.000000× |
+| 私钥检查（含有效/无效） | 20 | 37,586,090 | 1,504,270 | 24.986266× |
+
+代表索引0/1/115各10次、两组共60次全部通过；每个固定输入的API周期在10次间完全相同。
+PS逐例墙钟中位数如下，P95使用最近秩定义，10次时P95等于最大值：
+
+| 操作/索引 | CPU中位数 / P95（ms） | 加速中位数 / P95（ms） |
+|---|---:|---:|
+| KeyGen / 0 | 193.987 / 194.425 | 94.677 / 95.225 |
+| Encaps / 1 | 175.892 / 176.121 | 75.316 / 75.517 |
+| Decaps / 115 | 198.003 / 198.236 | 73.611 / 73.783 |
+
+两组分别执行完成后复位、错误邮箱magic拒绝、主机短超时后恢复，共6项通过；
+两条预期TimeoutError保存在注入证据中，后续官方例均正确。
+重复统计来自同一次会话、CPU组先运行；它验证本次重复性，不是长期可靠性或侧信道恒时证明。
+
+## K4 历史PS–PL加速overlay实板（2026-10-16）
+
+PYNQ-Z2、PYNQ 2.5、Python 3.6.5；PL RV32IM-fast、128 KiB RAM / 32 KiB栈、
+100 MHz设计时钟。官方145条唯一记录全部通过，独立复核为 `INDEPENDENT_FULL145_CHECK_PASS`。
+
+| 指标 | 实板测量 |
+|---|---:|
+| CPU+Keccak API周期总和 | 446,852,439 cycles |
+| API时间（按100 MHz换算） | 4.46852439 s |
+| PS整批墙钟 | 9.563158574 s |
+| PS上传 / 等待 / 下载 / 校验合计 | 2.639931 / 4.993475 / 1.765965 / 0.017257 s |
+| HLS启动 / busy周期 | 3,188 / 1,980,263 |
+| 缓冲写 / 读（32-bit事务） | 257,851 / 435,632 |
+| CPU-only同板数据 / 实板加速比 | 本次未测；2026-10-23配对实测见上方 |
+
+API执行包含于PS等待，HLS busy包含于API；这些区间不能相加。
+PS整批墙钟还包含循环与记录开销，不含overlay加载与浏览器网络传输。
+本次API总和比历史RTL加速组少1,070周期，两者分别保留原值；
+历史CPU-only RTL的1,699,294,360周期不能与本次实板值相除后宣称实板加速比。
+[原始JSON、哈希与复核入口](../results/keccak_cpu/board/20261016_full145/README.md)。
 
 ## K4 历史CPU＋Keccak完整官方RTL对照（145/145）
 
@@ -119,7 +190,7 @@ ML-KEM-512 固定版本 145 条记录；这不是三个参数集各 145 条。
 768全程1,147,835,590 cycles，1024全程1,747,426,461 cycles，包含启动和传输，不代替算法区间。
 128 KiB为本次验证配置，未证明是最小容量；32 KiB为栈预留，18,432/24,464 B为测试集观测值。
 512的64/16 KiB口径不同，不能把所有差异归因于参数规模。上表两组均为纯CPU；K4加速RTL结果另列于本文首表，K3硬件扩展、
-K4系统时序优化和实板仍待完成。
+K4后续已完成当前版本时序签核与两组全量实板配对；当前实测数据见本文顶部。
 
 ## 主机端官方参考回归
 
@@ -139,9 +210,11 @@ K4系统时序优化和实板仍待完成。
 
 | 配置 | Vivado 工程 | BIT | 报告目录 |
 |---|---|---|---|
-| RV32I | [`vivado/cpu_baseline_rv32i/cpu_baseline.xpr`](../vivado/cpu_baseline_rv32i/cpu_baseline.xpr) | [`release/cpu_baseline_rv32i/cpu_baseline_rv32i.bit`](../release/cpu_baseline_rv32i/cpu_baseline_rv32i.bit) | [`results/cpu_baseline/rv32i/`](../results/cpu_baseline/rv32i/) |
-| RV32IM 迭代 | [`vivado/cpu_baseline_rv32im_iterative/cpu_baseline.xpr`](../vivado/cpu_baseline_rv32im_iterative/cpu_baseline.xpr) | [`release/cpu_baseline_rv32im_iterative/cpu_baseline_rv32im_iterative.bit`](../release/cpu_baseline_rv32im_iterative/cpu_baseline_rv32im_iterative.bit) | [`results/cpu_baseline/rv32im_iterative/`](../results/cpu_baseline/rv32im_iterative/) |
-| RV32IM 快速 | [`vivado/cpu_baseline_rv32im_fast/cpu_baseline.xpr`](../vivado/cpu_baseline_rv32im_fast/cpu_baseline.xpr) | [`release/cpu_baseline_rv32im_fast/cpu_baseline_rv32im_fast.bit`](../release/cpu_baseline_rv32im_fast/cpu_baseline_rv32im_fast.bit) | [`results/cpu_baseline/rv32im_fast/`](../results/cpu_baseline/rv32im_fast/) |
+| RV32I | 由 `python scripts/cpu_baseline/build.py` 生成于 `vivado/cpu_baseline_rv32i/` | [`release/cpu_baseline_rv32i/cpu_baseline_rv32i.bit`](../release/cpu_baseline_rv32i/cpu_baseline_rv32i.bit) | [`results/cpu_baseline/rv32i/`](../results/cpu_baseline/rv32i/) |
+| RV32IM 迭代 | 由 `python scripts/cpu_baseline/build.py` 生成于 `vivado/cpu_baseline_rv32im_iterative/` | [`release/cpu_baseline_rv32im_iterative/cpu_baseline_rv32im_iterative.bit`](../release/cpu_baseline_rv32im_iterative/cpu_baseline_rv32im_iterative.bit) | [`results/cpu_baseline/rv32im_iterative/`](../results/cpu_baseline/rv32im_iterative/) |
+| RV32IM 快速 | 由 `python scripts/cpu_baseline/build.py` 生成于 `vivado/cpu_baseline_rv32im_fast/` | [`release/cpu_baseline_rv32im_fast/cpu_baseline_rv32im_fast.bit`](../release/cpu_baseline_rv32im_fast/cpu_baseline_rv32im_fast.bit) | [`results/cpu_baseline/rv32im_fast/`](../results/cpu_baseline/rv32im_fast/) |
+
+表中的 Vivado 工程和 `.mem` 镜像是脚本生成的本地文件，不随仓库提供；清洁克隆后先运行构建/仿真脚本，再从 Vivado 打开生成的工程。
 
 `results/cpu_baseline/cpu_benchmark_summary.json` 和 `cpu_benchmark_rows.csv` 是资源、
 时序、周期和配置的结构化汇总。实现报告只描述 CPU-only 设计，不能用作新 HLS 接入后的

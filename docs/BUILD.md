@@ -8,12 +8,12 @@
 
 - Vivado 2024.2，器件 `xc7z020clg400-1`
 - Vitis HLS 2024.2
-- Windows PowerShell、Python 3
-- RISC-V GCC 工具链（路径通过 `RISCV_TOOLCHAIN_BIN` 或脚本参数配置）
+- Windows PowerShell、Python 3.10 或更新版本
+- RISC-V GCC 工具链（通过 `PQC_RISCV_TOOL_DIR`、PATH 或脚本参数配置）
 
 ## K4 主线统一入口
 
-当前开发分支是 `default`。源码集中在 [mainline/k4](../mainline/k4/README.md)，
+当前发布分支是 `last`。源码集中在 [mainline/k4](../mainline/k4/README.md)，
 只维护 `flow.tcl` 和 `bd_axi.tcl` 两个 Tcl 入口。使用 Vivado/Vitis HLS 2024.2。
 工具从 PATH、AMD设置脚本的环境变量或 `PQC_VIVADO/PQC_VITIS_HLS/PQC_RISCV_TOOL_DIR`
 定位；脚本不固定开发者的安装盘符。
@@ -75,13 +75,15 @@ vivado -mode batch -notrace -source mainline/k4/bd_axi.tcl
 `BD_REUSE_SIM`仅允许复用输入哈希完全匹配的成功仿真。
 
 固定部署目录是 `release/mlkem1024_pynq/`，包含配套 `.bit/.hwh`、
-Notebook、驱动、145条向量及发布清单。现有包仍为20261005_psaxi06历史签核产物，
-100MHz setup/hold/pulse为+0.302/+0.026/+3.750ns，新overlay实板验证待完成。
-本次目录验证不自动替换已发布包。
+Notebook、驱动、145条向量及发布清单。该包对应20261005_psaxi06签核产物，
+100MHz setup/hold/pulse为+0.302/+0.026/+3.750ns；其后已在PYNQ-Z2完成
+官方145/145实板运行。配对CPU-only/Keccak实板对照及原始证据见
+`results/k4/paired_firmware/board_20261023/`，目录整理不改写这些冻结产物。
 
 上传整个包至PYNQ的 `/home/xilinx/jupyter_notebooks/mlkem1024/` 后打开Notebook。
 ARM负责装载、控制和结果校验，ML-KEM仍由PL的PicoRV32与Keccak执行。
-原始145/145与3.8028×属于核心RTL证据，不是新overlay实板结果。
+板上官方145/145是功能验收；同板API 3.802806×、PS整批2.297581×
+来自配对证据，不能外推为功耗或CAVP认证结论。
 
 ## CPU-only baseline（旧入口）
 
@@ -100,13 +102,9 @@ vivado -mode batch -source scripts/cpu_baseline/run.tcl -tclargs rv32im_fast
 ```
 
 每组日志保存到 `results/cpu_baseline/<config>/simulate.log`，testbench 必须报告
-`CPU_BASELINE_PASS cases=8 checks=4096`。可直接打开的入口是：
-
-```text
-vivado/cpu_baseline_rv32i/cpu_baseline.xpr
-vivado/cpu_baseline_rv32im_iterative/cpu_baseline.xpr
-vivado/cpu_baseline_rv32im_fast/cpu_baseline.xpr
-```
+`CPU_BASELINE_PASS cases=8 checks=4096`。工程在被忽略的 `vivado/` 本地目录中由脚本
+重建；源码仓库不提交含开发机绝对路径的 `.xpr` 快照。需要图形界面检查时，完成一次
+脚本构建后打开对应的本地工程即可。
 
 实现一组或全部配置：
 
@@ -181,8 +179,8 @@ vivado -mode batch -source scripts/mlkem512_basemul_k2/implement.tcl
 的 MMIO RTL 回归，并运行两次 PYNQ-Z2 BIST/时钟复位
 测试和一次结果故障注入；`implement.tcl` 生成 Vivado 2024.2 工程、布局布线报告和
 `release/mlkem512_basemul_k2/mlkem512_basemul_k2_validation.bit`。缓存、`.runs`、`.sim`
-和 `.cache` 目录由 `.gitignore` 排除，入口工程为
-`vivado/mlkem512_basemul_k2/basemul.xpr`。
+和 `.cache` 目录由 `.gitignore` 排除；工程由 `run.tcl` 或 `implement.tcl` 从源码生成，
+不会依赖仓库内保存的 `.xpr` 快照。
 
 当前独立验证结果位于 `results/accelerator_interface/rtl_sim/` 和
 `results/accelerator_interface/vivado_impl/`。RV32IM-fast CPU+PQC 官方 ML-KEM-512

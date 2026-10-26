@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "scope": "RTL subset; not a physical-board test",
+  "created_utc": "2026-10-23T14:03:54.857728+00:00",
+  "same_published_overlay_rtl_hls": true,
+  "bitstream_sha256": "8ecd6ba9f21fb6e3b51f5ea4c98c58090f85eb1002ee672a0d89bc151edf2cfb",
+  "official_indices": [
+    0,
+    1,
+    115
+  ],
+  "sequence": [
+    [
+      "accelerated",
+      [
+        0,
+        1,
+        115
+      ]
+    ],
+    [
+      "cpu_only",
+      [
+        0,
+        1,
+        115
+      ]
+    ],
+    [
+      "accelerated",
+      [
+        0
+      ]
+    ]
+  ],
+  "inputs": {
+    "ps.mem": {
+      "sha256": "673cc0933ec1ad275f83c35db7115d4ccd205f67e99ea39d7823aad70c624035",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\ps.mem"
+    },
+    "rtl/picorv32.v": {
+      "sha256": "fd142889e8178ef67f1cff17cb2d18b3adae56fcae2badf7cbcc4c4f5ac7960e",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\rtl\\picorv32.v"
+    },
+    "rtl/mlkem1024_keccak_system.sv": {
+      "sha256": "d1e3045e0ebbc15473e7051572a7b7ea80ce7f296f446dbb2ba52a17a9b981a6",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\rtl\\mlkem1024_keccak_system.sv"
+    },
+    "rtl/keccak_mmio_adapter.sv": {
+      "sha256": "e5994f3e83c1a5f34e6333ee8ad63d0ece8e325873209103eeba3cdaefa1100f",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\rtl\\keccak_mmio_adapter.sv"
+    },
+    "rtl/mlkem1024_keccak_axi.sv": {
+      "sha256": "e6c8abc40476270d545498b53f1bd8fc40576e4f9765fc6ebffd115444227313",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\rtl\\mlkem1024_keccak_axi.sv"
+    },
+    "hls/mlkem1024_keccak_accel.v": {
+      "sha256": "c706bac6ef2c11d10e203bcb5ea3e94251ade106b3247903b35d43b2ace22c44",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel.v"
+    },
+    "hls/mlkem1024_keccak_accel_control_s_axi.v": {
+      "sha256": "22719db071993d81d8554eb829eee7253dddb7517a36b9452edb2f843a0ac34d",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_control_s_axi.v"
+    },
+    "hls/mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v": {
+      "sha256": "da8f811f78c919dfbb33ee10a0a748f66932d4b962232cc73eefde996d1ffaaa",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_flow_control_loop_pipe_sequential_init.v"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v": {
+      "sha256": "268a1393abbdd198038c2e2727ba72a38c4c72f0298204cb8656af9d982ef418",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_ABSORB_WORDS.v"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v": {
+      "sha256": "82925738a3cba7793683935682f45b1a2bf993ce895f546bc098dfb4a361790e",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_CLEAR_CONTEXT.v"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v": {
+      "sha256": "ce88d5644a6bf4faf656cf70fa9e0a3e2ff142380041668a3649c71f401f2b06",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_LOAD_CONTEXT.v"
+    },
+    "hls/mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v": {
+      "sha256": "572e8805087f501c6b9d04caf1af959438baef206246a4dd4f761260dcca0ef0",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_mlkem1024_keccak_accel_Pipeline_SAVE_CONTEXT.v"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v": {
+      "sha256": "699c42ad6572376bdba27519755260b02abbdcf3a55d99a6bbc12ee0c049dbaa",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600.v"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat": {
+      "sha256": "3b4b573ffc2d6db21d0a68b35505b743d37ef13e63964258f3c380ff5099a3aa",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.dat"
+    },
+    "hls/mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v": {
+      "sha256": "263b10a21225708ca7a362f00ca6ba081c74228265c180ec29899372f8dcc94a",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_p_anonymous_namespace_keccak_f1600_p_anonymous_namespace_ROUND_CONSTANTS_ROM_bkb.v"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v": {
+      "sha256": "341ec804cb11ba85ac1546a6e562db3e76764043e9a5f68966ed262607a0f615",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_sparsemux_43_5_64_1_1.v"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v": {
+      "sha256": "a28c9ee9b4ac16fd7fec21af2850604cde49356aa215847094775d0bf3269acd",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_sparsemux_45_5_64_1_1.v"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v": {
+      "sha256": "dcb7a9915d32c24ba66f70bb48bd360b7d5ef1ef32d21a70f83411f5906a544f",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_sparsemux_49_5_24_1_1.v"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v": {
+      "sha256": "9e01d007176896d427ce883048f1b9175bb51bbac7eccbb6fb0fa6f0344dc4fd",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_sparsemux_51_5_64_1_1.v"
+    },
+    "hls/mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v": {
+      "sha256": "5b904d2aeede80e6c785db810e2aa2948fe42da224b71ef4adf0140e0f929511",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\hls\\mlkem1024_keccak_accel_sparsemux_9_5_64_1_1.v"
+    },
+    "board_input.mem": {
+      "sha256": "7e42aa6f249498ed8328e609ea19ec2b3da6e19ccd1779c76ff798730bd843b8",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\board_input.mem"
+    },
+    "board_expected.mem": {
+      "sha256": "d18ddb8d8e92b339532d2a95560b1cb69f2eaf4285024440f0a8d7631c0c1075",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\snapshot\\board_expected.mem"
+    },
+    "accelerated.mem": {
+      "sha256": "673cc0933ec1ad275f83c35db7115d4ccd205f67e99ea39d7823aad70c624035",
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\k4\\paired_20261023\\accelerated\\ps.mem"
+    },
+    "accelerated_build.json": {
+      "sha256": "f3cabe1f8ff3a0efd0f28a150ed60cc341c2248703c0f3342f9408ea1abb9372",
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\k4\\paired_20261023\\accelerated\\build.json"
+    },
+    "cpu_only.mem": {
+      "sha256": "3c3c1916d8a178414fdd8fdbd379f7bbe6807116dbf413c32b659256d41b985e",
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\k4\\paired_20261023\\cpu_only\\ps.mem"
+    },
+    "cpu_only_build.json": {
+      "sha256": "6603a6085ed3f1448f63f67eb24db27c845fc53f708d245d9b608a341cc46d63",
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\build\\k4\\paired_20261023\\cpu_only\\build.json"
+    },
+    "tb/tb_mlkem1024_keccak_axi.sv": {
+      "sha256": "f73c0327c8b2927684c7a7010a0872486a34cff4f32abf7b0d1d11db0db6aaa0",
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\mainline\\k4\\tb\\tb_mlkem1024_keccak_axi.sv"
+    },
+    "bd_axi.tcl": {
+      "sha256": "9fe7b9dbed99b09c9d7812b0f5ae4690e20fd126ce150581beddf1e4c77da852",
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\mainline\\k4\\bd_axi.tcl"
+    },
+    "paired_rtl.py": {
+      "sha256": "e8656eea6b366aee6d6a8cd3c3d0d3ebdea8d146b84de08156f90c738adf2fef",
+      "source": "E:\\pqc\\mlkem-polymul-rv32i-fpga\\mainline\\k4\\scripts\\paired_rtl.py"
+    },
+    "published_manifest.json": {
+      "sha256": "60715c4c8dc6397d51d89fd5c50a4c3ff6ad1d5a8a7dc84176fc8c05370cde4e",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\manifest.json"
+    },
+    "published_release_manifest.json": {
+      "sha256": "33f45b917a0999a7df03e80430fea4a85e8223be5e59fd6fe3cb91ed6dab0cd4",
+      "source": "E:\\hls\\k4pynq\\20261005_psaxi06\\bundle\\release_manifest.json"
+    }
+  }
+}

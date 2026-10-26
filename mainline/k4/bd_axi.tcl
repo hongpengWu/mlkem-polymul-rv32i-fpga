@@ -2,12 +2,20 @@
 # Example: vivado -mode batch -source mainline/k4/bd_axi.tcl
 # Override top switches with BD_<NAME>; RUN_DIR allows resuming frozen inputs.
 set CHECK_ONLY 1
+# Compile and elaborate the AXI testbench, then exit without simulating KAT.
+# This verifies tool/source/memory paths; it is not a functional PASS.
+set ELAB_ONLY 0
 set PREPARE 1
 set SIM 1
 set CREATE_BD 1
 set SYNTH 1
 set IMPL 1
 set EXPORT 1
+# PAIR_SIM is an isolated simulation-only firmware-switch validation path.
+# When enabled, it bypasses PREPARE/CREATE_BD/SYNTH/IMPL/EXPORT completely.
+set PAIR_SIM 0
+set PAIR_SOURCE_RUN ""
+set PAIR_FIRMWARE_DIR build/k4/paired_20261023
 set max_threads 8
 set PYTHON python
 set SHORT_ROOT build/k4/pynq
@@ -18,14 +26,14 @@ set SCRIPT_DIR [file normalize [file dirname [info script]]]
 set MAIN $SCRIPT_DIR
 set ROOT [file normalize [file join $MAIN ../..]]
 set CUR_DIR [pwd]
-foreach setting {CHECK_ONLY PREPARE SIM CREATE_BD SYNTH IMPL EXPORT} {
+foreach setting {CHECK_ONLY ELAB_ONLY PREPARE SIM CREATE_BD SYNTH IMPL EXPORT PAIR_SIM} {
     if {[info exists ::env(BD_$setting)]} {set $setting $::env(BD_$setting)}
     if {[set $setting] ni {0 1}} {error "$setting must be 0 or 1"}
 }
-foreach setting {PYTHON SHORT_ROOT RUN_DIR REUSE_SIM EVIDENCE_DIR} {
+foreach setting {PYTHON SHORT_ROOT RUN_DIR REUSE_SIM EVIDENCE_DIR PAIR_SOURCE_RUN PAIR_FIRMWARE_DIR} {
     if {[info exists ::env(BD_$setting)]} {set $setting $::env(BD_$setting)}
 }
-foreach setting {SHORT_ROOT RUN_DIR REUSE_SIM} {
+foreach setting {SHORT_ROOT RUN_DIR REUSE_SIM PAIR_SOURCE_RUN PAIR_FIRMWARE_DIR} {
     if {[set $setting] ne ""} {
         if {[file pathtype [set $setting]] ne "absolute"} {set $setting [file join $ROOT [set $setting]]}
         set $setting [file normalize [set $setting]]
@@ -35,16 +43,31 @@ if {[file pathtype $EVIDENCE_DIR] ne "absolute"} {set EVIDENCE_DIR [file join $R
 set EVIDENCE_DIR [file normalize $EVIDENCE_DIR]
 if {[info exists ::env(BD_THREADS)]} {set max_threads $::env(BD_THREADS)}
 if {![string is integer -strict $max_threads] || $max_threads<1 || $max_threads>8} {error "BD_THREADS must be 1..8"}
-foreach relative {scripts/pynq_overlay.py scripts/build_kat.py rtl/mlkem1024_keccak_axi.sv tb/tb_mlkem1024_keccak_axi.sv} {
+foreach relative {
+    scripts/pynq_overlay.py scripts/build_kat.py scripts/paths.py scripts/paired_rtl.py
+    rtl/mlkem1024_keccak_axi.sv rtl/mlkem1024_keccak_system.sv rtl/keccak_mmio_adapter.sv
+    tb/tb_mlkem1024_keccak_axi.sv firmware/ps_kat.c firmware/ps_link.ld
+    pynq/mlkem1024.py pynq/mlkem1024.ipynb
+} {
     if {![file isfile [file join $MAIN $relative]]} {error "Missing BD input/helper: $relative"}
 }
+foreach relative {
+    rtl/cpu/picorv32.v scripts/tool_paths.py scripts/kat/package_mlkem.py
+    scripts/kat/validate_acvp_json.py firmware/mlkem_baseline/startup.S
+    firmware/mlkem_baseline/runtime.c firmware/mlkem_baseline/kat_protocol.h
+    third_party/mlkem-native/SOURCE_MANIFEST.json
+    vectors/official_kat/acvp/SHA256SUMS tb/software/mlkem1024_suite/cases.json
+} {
+    if {![file isfile [file join $ROOT $relative]]} {error "Missing shared BD dependency: $relative"}
+}
+if {$ELAB_ONLY && !$SIM && !$PAIR_SIM} {error "ELAB_ONLY requires SIM=1 or PAIR_SIM=1"}
 if {$CHECK_ONLY} {
-    puts "BD_CHECK_ONLY: sources/helpers verified. PREPARE=$PREPARE SIM=$SIM CREATE_BD=$CREATE_BD SYNTH=$SYNTH IMPL=$IMPL EXPORT=$EXPORT"
+    puts "BD_CHECK_ONLY: sources/helpers verified. PREPARE=$PREPARE SIM=$SIM CREATE_BD=$CREATE_BD SYNTH=$SYNTH IMPL=$IMPL EXPORT=$EXPORT PAIR_SIM=$PAIR_SIM ELAB_ONLY=$ELAB_ONLY"
     puts "BD_BUILD_ROOT $SHORT_ROOT"
     return
 }
 if {[version -short] ne "2024.2"} {error "Use Vivado 2024.2"}
-if {$EXPORT && !$IMPL} {error "EXPORT requires IMPL (including physical signoff)"}
+if {!$PAIR_SIM && !$ELAB_ONLY && $EXPORT && !$IMPL} {error "EXPORT requires IMPL (including physical signoff)"}
 set_param general.maxThreads $max_threads
 if {$RUN_DIR eq ""} {
     set RUN_DIR [file join $SHORT_ROOT [clock format [clock seconds] -format %Y%m%d_%H%M%S]]
@@ -79,6 +102,43 @@ proc save_metrics {} {
     set f [open [file join $::run metrics.json] w]
     puts $f "\{[join $fields ",\n"]\}"
     close $f
+}
+proc check_elaboration {} {
+    # launch_simulation compiles and elaborates before executing this `quit`
+    # script. No testbench time is run, and the result is explicitly
+    # non-functional so it cannot be mistaken for KAT evidence.
+    launch_simulation -simset sim_1
+    set log_dir [file join $::run sim axi_sim.sim sim_1 behav xsim]
+    set copied 0
+    foreach name {xvlog.log xelab.log simulate.log} {
+        if {[file isfile [file join $log_dir $name]]} {
+            file copy -force [file join $log_dir $name] [file join $::reports $name]
+            incr copied
+        }
+    }
+    if {!$copied} {error "Missing compile/elaboration logs under $log_dir"}
+    foreach name {xvlog.log xelab.log} {
+        set path [file join $::reports $name]
+        if {[file isfile $path] && [regexp -nocase {ERROR:|FATAL:} [read_text $path]]} {
+            error "Compile/elaboration failed; see reports/$name"
+        }
+    }
+    set f [open [file join $::run startup.json] w]
+    puts $f {"status":"ELABORATION_ONLY","elaboration_completed":true,"functional_passed":false,"scope":"Compile and elaborate only; no KAT simulation or implementation executed"}
+    close $f
+    close_project
+    puts "PYNQ_ELABORATION_ONLY: compile/elaboration completed; KAT not executed. run=$::run"
+}
+proc use_frozen_board_preset {} {
+    # Use the preset captured for this run, even if the caller installed it in
+    # a custom directory. Never silently select another machine's preset.
+    set repo [file join $::run board_repo]
+    set version_dir [file join $repo pynq-z2 1.0]
+    file mkdir $version_dir
+    foreach name {board.xml preset.xml part0_pins.xml} {
+        file copy -force [file join $::snapshot board_preset $name] [file join $version_dir $name]
+    }
+    set_param board.repoPaths [list $repo]
 }
 proc repair_implicit_lut_pairs {} {
     # Same diagnosed Vivado 2024.2 recovery used by the standalone board flow:
@@ -130,6 +190,47 @@ proc repair_implicit_lut_pairs {} {
     close $moves
     route_design -preserve
 }
+if {$PAIR_SIM} {
+    if {$PAIR_SOURCE_RUN eq ""} {error "PAIR_SIM requires BD_PAIR_SOURCE_RUN naming the published frozen overlay run"}
+    set pair_helper [file join $MAIN scripts paired_rtl.py]
+    exec $PYTHON -E $pair_helper freeze $run --source $PAIR_SOURCE_RUN --firmware $PAIR_FIRMWARE_DIR >@ stdout 2>@ stderr
+    cd $run
+    puts "PYNQ_STAGE PAIRED_FIRMWARE_RTL_SUBSET"
+    create_project axi_sim [file join $run sim] -part xc7z020clg400-1
+    add_core
+    set_property top mlkem1024_keccak_axi [get_filesets sources_1]
+    set_property generic {FIRMWARE_INIT_FILE=ps.mem} [get_filesets sources_1]
+    add_files -fileset sim_1 -norecurse [file join $snapshot tb tb_mlkem1024_keccak_axi.sv]
+    foreach name {board_input.mem board_expected.mem accelerated.mem cpu_only.mem} {
+        set f [file join $snapshot $name]
+        add_files -fileset sim_1 -norecurse $f
+        set_property file_type {Memory Initialization Files} [get_files $f]
+    }
+    set_property top tb_mlkem1024_keccak_axi [get_filesets sim_1]
+    set_property generic {FIRMWARE_INIT_FILE=ps.mem PAIR_SIM=1} [get_filesets sim_1]
+    set_property xsim.simulate.runtime all [get_filesets sim_1]
+    set_property xsim.elaborate.debug_level off [get_filesets sim_1]
+    set f [open [file join $run sim.tcl] w]; puts $f "run all"; close $f
+    set_property xsim.simulate.custom_tcl [file join $run sim.tcl] [get_filesets sim_1]
+    update_compile_order -fileset sources_1
+    update_compile_order -fileset sim_1
+    if {$ELAB_ONLY} {
+        set f [open [file join $run sim.tcl] w]
+        puts $f "quit"
+        close $f
+        check_elaboration
+        cd $CUR_DIR
+        return
+    }
+    launch_simulation
+    close_sim
+    file copy [file join $run sim axi_sim.sim sim_1 behav xsim simulate.log] [file join $run simulate.log]
+    close_project
+    exec $PYTHON -E $pair_helper collect $run --evidence [file join $EVIDENCE_DIR [file tail $run]] >@ stdout 2>@ stderr
+    cd $CUR_DIR
+    return
+}
+
 set previous_metrics ""
 if {[file exists [file join $run metrics.json]]} {set previous_metrics [read_text [file join $run metrics.json]]}
 set metrics [dict create passed false rtl_subset_passed false bd_validated false physical_board_tested false]
@@ -163,6 +264,14 @@ set failed [catch {
         set_property xsim.simulate.custom_tcl [file join $run sim.tcl] [get_filesets sim_1]
         update_compile_order -fileset sources_1
         update_compile_order -fileset sim_1
+        if {$ELAB_ONLY} {
+            set f [open [file join $run sim.tcl] w]
+            puts $f "quit"
+            close $f
+            check_elaboration
+            cd $CUR_DIR
+            exit 0
+        }
         launch_simulation
         close_sim
         file copy -force [file join $run sim axi_sim.sim sim_1 behav xsim simulate.log] [file join $run simulate.log]
@@ -178,6 +287,7 @@ set failed [catch {
 
     if {$CREATE_BD} {
         puts "PYNQ_STAGE CREATE_BD"
+        use_frozen_board_preset
         create_project k4_pynq $project_dir -part xc7z020clg400-1
         set board [require_one [get_board_parts -quiet tul.com.tw:pynq-z2:part0:*] {PYNQ-Z2 board preset}]
         set_property board_part $board [current_project]

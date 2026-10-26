@@ -13,6 +13,8 @@ import hashlib
 import json
 from pathlib import Path
 import platform
+import re
+import statistics
 import struct
 import sys
 import time
@@ -34,6 +36,7 @@ COMPLETE = 0x4B415450
 FAILED = 0x4B415446
 OUTPUT_MAGIC = 0x4B34524F
 CASE_COUNT = 145
+MODES = ("cpu_only", "accelerated")
 OPERATIONS = {1: "keyGen", 2: "encapsulation", 3: "decapsulation",
               4: "decapsulationSeed", 5: "encapsulationKeyCheck",
               6: "decapsulationKeyCheck"}
@@ -212,6 +215,21 @@ def verify_bundle(manifest_path):
         digest = item.get("sha256") if isinstance(item, dict) else item
         require(path.is_file() and sha256(path) == digest, "Release SHA-256 mismatch: " + name)
         verified[name] = digest
+    paired = manifest.get("paired_firmware")
+    if paired is not None:
+        require(isinstance(paired, dict) and set(paired) == set(MODES),
+                "Paired release requires exactly cpu_only and accelerated firmware")
+        require("mlkem1024.py" in verified, "Paired release must hash its host driver")
+        require(sha256(__file__) == verified["mlkem1024.py"],
+                "Imported host driver does not match the paired release")
+        for mode in MODES:
+            item = paired[mode]
+            require(isinstance(item, dict) and item.get("file") in verified and
+                    item.get("sha256") == verified[item["file"]],
+                    "Paired firmware must match a release file hash: " + mode)
+            read_firmware(directory / item["file"])
+        require(paired["cpu_only"]["sha256"] != paired["accelerated"]["sha256"],
+                "Paired firmware images must differ")
     ranges = []
     for node in ET.parse(directory / hwh_name).iter():
         attrs = {key.upper(): value for key, value in node.attrib.items()}
@@ -226,6 +244,15 @@ def verify_bundle(manifest_path):
                           if key not in ("files", "overlay")})
 
 
+def read_firmware(path):
+    """A full 128-KiB readmemh image, one 32-bit hexadecimal word per line."""
+    words = Path(path).read_text(encoding="ascii").splitlines()
+    require(len(words) == RAM_BYTES // 4 and
+            all(re.fullmatch(r"[0-9a-fA-F]{8}", word.strip()) for word in words),
+            "Firmware must contain exactly 32768 hexadecimal 32-bit words")
+    return [int(word, 16) for word in words]
+
+
 class CaseFailure(RuntimeError):
     def __init__(self, message, record):
         super().__init__(message)
@@ -235,11 +262,16 @@ class CaseFailure(RuntimeError):
 class MLKEM1024:
     """One reset/run/verify transaction at a time; no concurrent callers."""
 
-    def __init__(self, mmio, vectors, artifacts=None, overlay=None):
+    def __init__(self, mmio, vectors, artifacts=None, overlay=None,
+                 paired_firmware=None, bundle_directory=None):
         self.mmio = mmio
         self.vectors = validate_vectors(vectors)
         self.artifacts = artifacts or {}
         self.overlay = overlay
+        self.paired_firmware = paired_firmware
+        self.bundle_directory = Path(bundle_directory) if bundle_directory is not None else None
+        self.firmware_mode = None if paired_firmware else "accelerated"
+        self.firmware_load = None
         self.loaded_at_utc = utc_now()
         self._verify_identity()
         self.reset()  # Explicit even immediately after Overlay.download().
@@ -255,7 +287,50 @@ class MLKEM1024:
         # HWH MEMRANGE plus the hardware identity is sufficient even when PYNQ
         # does not create an ip_dict entry for a Vivado module-reference IP.
         overlay.download()
-        return cls(MMIO(BASE, SPAN), vectors, artifacts=artifacts, overlay=overlay)
+        return cls(MMIO(BASE, SPAN), vectors, artifacts=artifacts, overlay=overlay,
+                   paired_firmware=manifest.get("paired_firmware"),
+                   bundle_directory=manifest_path.parent)
+
+    def select_firmware(self, mode):
+        """Stop CPU, clear all RAM, load the full image, hash all RAM before RUN."""
+        require(self.paired_firmware is not None and mode in MODES,
+                "Firmware switching requires a verified paired release")
+        started = time.perf_counter()
+        record = dict(kind="FIRMWARE_LOAD", mode=mode, started_at_utc=utc_now(),
+                      passed=False, ram_bytes=RAM_BYTES,
+                      excluded_from_case_and_speedup_timing=True)
+        self.firmware_mode, self.firmware_load = None, None
+        try:
+            self._verify_identity()
+            self.reset()
+            item = self.paired_firmware[mode]
+            path = self.bundle_directory / item["file"]
+            require(sha256(path) == item["sha256"], "Firmware file changed since release verification")
+            words = read_firmware(path)
+            expected = hashlib.sha256(struct.pack("<%dI" % len(words), *words)).hexdigest()
+            record.update(file=item["file"], file_sha256=item["sha256"],
+                          expected_ram_sha256=expected)
+            self._write_words(0, [0] * (RAM_BYTES // 4))
+            self._write_words(0, words)
+            actual = hashlib.sha256(self._read_bytes(0, RAM_BYTES)).hexdigest()
+            record["readback_ram_sha256"] = actual
+            require(actual == expected, "Full 128-KiB firmware RAM readback SHA-256 mismatch")
+            require(self._read(REG + 8) == 0, "CPU left reset during firmware upload")
+            require(all(self._read(REG + 0x80 + 4 * i) == 0 for i in range(4)),
+                    "Hardware counters did not clear on reset")
+            record["passed"] = True
+            self.firmware_mode = mode
+        except Exception as exc:
+            record.update(error_type=type(exc).__name__, error=str(exc))
+            try:
+                self.reset()
+            except Exception as reset_error:
+                record["reset_error"] = str(reset_error)
+            record["load_seconds"] = time.perf_counter() - started
+            raise CaseFailure(str(exc), record) from exc
+        record["load_seconds"] = time.perf_counter() - started
+        self.firmware_load = deepcopy(record)
+        return record
 
     def _read(self, offset):
         return int(self.mmio.read(offset)) & 0xFFFFFFFF
@@ -286,6 +361,7 @@ class MLKEM1024:
                         for word in range((count + 3) // 4))[:count]
 
     def run_case(self, index, timeout=10.0, poll_interval=0.001):
+        require(self.firmware_mode in MODES, "Select and verify paired firmware before running")
         require(type(index) is int and 0 <= index < CASE_COUNT, "Invalid official case index")
         require(timeout > 0 and poll_interval >= 0, "Invalid timeout or polling interval")
         case = self.vectors["cases"][index]
@@ -293,6 +369,9 @@ class MLKEM1024:
         record = dict(case_index=index, operation=case["operation"], op=case["op"],
             identity=deepcopy(case["identity"]), started_at_utc=utc_now(),
             measurement_kind="PYNQ_BOARD_AXI_LIVE", passed=False,
+            firmware_mode=self.firmware_mode,
+            input_sha256=hashlib.sha256(struct.pack("<%dI" % len(case["input_words"]),
+                                                    *case["input_words"])).hexdigest(),
             historical_rtl_cpu_only=deepcopy(case["historical_rtl_cpu_only"]))
         try:
             self._verify_identity()
@@ -340,7 +419,9 @@ class MLKEM1024:
             require(raw > empty > 0, "Invalid API rdcycle measurement")
             require(profile[3] == raw and profile[8] == empty and profile[9] == retword,
                     "Output/profile cycle or return mismatch")
-            require(all(hardware[name] == expected for name, expected in case["expected_hardware"].items()),
+            expected_hardware = (dict(starts=0, busy_cycles=0, buffer_writes=0, buffer_reads=0)
+                                 if self.firmware_mode == "cpu_only" else case["expected_hardware"])
+            require(all(hardware[name] == expected for name, expected in expected_hardware.items()),
                     "Hardware command or buffer transfer count mismatch")
             require((0 < hardware["busy_cycles"] < raw) if hardware["starts"] else
                     hardware["busy_cycles"] == 0, "Invalid hardware busy cycle count")
@@ -371,6 +452,7 @@ class MLKEM1024:
         report = dict(schema=1, status="INCOMPLETE", started_at_utc=utc_now(),
             measurement_kind="PYNQ_BOARD_AXI_LIVE", requested_indices=indices,
             artifacts=deepcopy(self.artifacts), overlay_loaded_at_utc=self.loaded_at_utc,
+            firmware_mode=self.firmware_mode, firmware_load=deepcopy(self.firmware_load),
             runtime=dict(python=sys.version, platform=platform.platform(), machine=platform.machine()),
             clock_hz=FREQUENCY, case_count_required_for_full_pass=CASE_COUNT,
             metric_notes=dict(
@@ -381,7 +463,8 @@ class MLKEM1024:
                 download_seconds="read output, profile and hardware counters",
                 wall_seconds="entire host case, including reset, transport, waiting and verification",
                 baseline="HISTORICAL_RTL_CPU_ONLY; not a live CPU-only board measurement",
-                speedup="No measured board speedup until both overlays are measured"), cases=[])
+                speedup="Compare matched live cpu_only and accelerated firmware on this same bitstream",
+                firmware_load="Full RAM clear, image transfer and full readback excluded; reported separately"), cases=[])
         begin = time.perf_counter()
         for index in indices:
             try:
@@ -406,6 +489,231 @@ class MLKEM1024:
         write_json(path, report)
         return path
 
+    def _save_stage(self, report, directory, label):
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
+        return self.export(report, Path(directory) / (stamp + "_" + label + ".json"))
+
+    def _reset_for_evidence(self, record):
+        try:
+            self.reset()
+        except Exception as exc:
+            record.update(passed=False, reset_error=str(exc))
+
+    def run_paired(self, indices, evidence_dir, timeout=20.0, label="paired"):
+        """Persist each load/run immediately; compare only two complete matched runs."""
+        require(self.paired_firmware is not None, "Paired firmware release required")
+        indices = list(indices)
+        report = dict(schema=1, kind="PAIRED_BOARD_RUN", started_at_utc=utc_now(),
+                      passed=False, status="FAIL", requested_indices=indices,
+                      artifacts=deepcopy(self.artifacts), runs={}, evidence_paths=[])
+        try:
+            for mode in MODES:
+                load = self.select_firmware(mode)
+                report["evidence_paths"].append(str(self._save_stage(load, evidence_dir, label + "_load_" + mode)))
+                run = self.run_cases(indices, timeout=timeout)
+                report["runs"][mode] = run
+                report["evidence_paths"].append(str(self._save_stage(run, evidence_dir, label + "_" + mode)))
+                require(run["passed"], mode + " official validation failed")
+            report["comparison"] = compare_paired(report["runs"]["cpu_only"], report["runs"]["accelerated"])
+            report.update(passed=True, status="PAIRED_FULL_PASS" if
+                          all(run["full_pass"] for run in report["runs"].values()) else "PAIRED_SUBSET_PASS")
+        except Exception as exc:
+            report.update(error_type=type(exc).__name__, error=str(exc))
+            if isinstance(exc, CaseFailure):
+                report["failure"] = exc.record
+                report["evidence_paths"].append(str(self._save_stage(exc.record, evidence_dir, label + "_failure")))
+            self._reset_for_evidence(report)
+        report["finished_at_utc"] = utc_now()
+        report["report_path"] = str(self._save_stage(report, evidence_dir, label))
+        return report
+
+    def run_repetitions(self, evidence_dir, indices=(0, 1, 115), repeats=10, timeout=20.0):
+        require(self.paired_firmware is not None and type(repeats) is int and repeats > 0,
+                "Repeated paired tests require a paired release and positive repeat count")
+        report = dict(schema=1, kind="REPEATED_BOARD_RUN", started_at_utc=utc_now(),
+                      passed=False, status="FAIL", repeats=repeats, requested_indices=list(indices),
+                      artifacts=deepcopy(self.artifacts), runs={}, evidence_paths=[],
+                      order_note="cpu_only block then accelerated block; no firmware loads inside case timing")
+        try:
+            for mode in MODES:
+                load = self.select_firmware(mode)
+                report["evidence_paths"].append(str(self._save_stage(load, evidence_dir, "repeat_load_" + mode)))
+                report["runs"][mode] = []
+                for repetition in range(repeats):
+                    run = self.run_cases(report["requested_indices"], timeout=timeout)
+                    run["repetition"] = repetition
+                    report["runs"][mode].append(run)
+                    report["evidence_paths"].append(str(self._save_stage(run, evidence_dir,
+                                                       "repeat_%s_%02d" % (mode, repetition))))
+                    require(run["passed"], "Repeated validation failed")
+            report["comparisons"] = [compare_paired(a, b) for a, b in
+                                     zip(report["runs"]["cpu_only"], report["runs"]["accelerated"])]
+            summary = []
+            for mode in MODES:
+                for index in report["requested_indices"]:
+                    rows = [next(row for row in run["cases"] if row["case_index"] == index)
+                            for run in report["runs"][mode]]
+                    summary.append(dict(mode=mode, case_index=index, operation=rows[0]["operation"],
+                        samples=len(rows), raw_cycles=distribution([row["raw_cycles"] for row in rows]),
+                        wall_seconds=distribution([row["wall_seconds"] for row in rows])))
+            report.update(passed=True, status="REPEAT_PASS", statistics=summary,
+                          percentile_definition="P95 = nearest rank ceil(0.95*n); with n=10, P95 is the maximum")
+        except Exception as exc:
+            report.update(error_type=type(exc).__name__, error=str(exc))
+            if isinstance(exc, CaseFailure):
+                report["failure"] = exc.record
+            self._reset_for_evidence(report)
+        report["finished_at_utc"] = utc_now()
+        report["report_path"] = str(self._save_stage(report, evidence_dir, "repetitions"))
+        return report
+
+    def _bad_magic(self, timeout, detail):
+        """Only mutate the input mailbox magic; require exact firmware ERR_MAGIC."""
+        self.reset()
+        words = list(self.vectors["cases"][0]["input_words"])
+        words[0] ^= 1
+        self._write_words(INPUT, [0] * (WINDOW_BYTES // 4))
+        self._write_words(OUTPUT, [0] * (WINDOW_BYTES // 4))
+        self._write_words(INPUT, words)
+        self.mmio.write(REG + 8, 1)
+        begin = time.perf_counter()
+        while True:
+            trap, status = self._read(REG + 0x10), self._read(REG + 0x0C)
+            detail.update(trap=trap, status=status, elapsed_seconds=time.perf_counter() - begin)
+            require(trap == 0 and status != COMPLETE, "Malformed input trapped or incorrectly completed")
+            if status == FAILED:
+                break
+            require(time.perf_counter() - begin < timeout, "Malformed input did not report protocol failure")
+            time.sleep(0.001)
+        detail.update(firmware_error_code=self._read(REG + 0x44), output_magic=self._read(OUTPUT),
+                      hardware=[self._read(REG + 0x80 + 4 * i) for i in range(4)])
+        require(detail["firmware_error_code"] == 2 and detail["output_magic"] == 0
+                and detail["hardware"] == [0, 0, 0, 0], "Malformed magic rejection evidence mismatch")
+        self.reset()
+        return detail
+
+    def run_recovery_checks(self, evidence_dir, timeout=20.0,
+                            checks=("reset", "bad_magic", "short_timeout")):
+        """Controlled mailbox-only fault injection, then verify a fresh official case."""
+        require(self.paired_firmware is not None, "Paired firmware release required")
+        require(checks and len(checks) == len(set(checks)) and
+                all(name in ("reset", "bad_magic", "short_timeout") for name in checks),
+                "Unknown or duplicate recovery check")
+        report = dict(schema=1, kind="CONTROLLED_RECOVERY", started_at_utc=utc_now(),
+                      passed=False, status="FAIL", tests=[], evidence_paths=[],
+                      artifacts=deepcopy(self.artifacts),
+                      scope="Reset, invalid mailbox magic and host deadline recovery; distinct from official key-check negatives")
+        try:
+            for mode in MODES:
+                load = self.select_firmware(mode)
+                report["evidence_paths"].append(str(self._save_stage(load, evidence_dir, "recovery_load_" + mode)))
+                for name in checks:
+                    test = dict(mode=mode, name=name, passed=False, started_at_utc=utc_now())
+                    report["tests"].append(test)
+                    try:
+                        if name == "reset":
+                            test["before"] = self.run_case(0, timeout=timeout)
+                            self.reset()
+                            require(self._read(REG + 8) == 0 and self._read(REG + 0x0C) == 0 and
+                                    all(self._read(REG + 0x80 + 4 * i) == 0 for i in range(4)),
+                                    "Reset failed to clear run/status/hardware counters")
+                        elif name == "bad_magic":
+                            test["injection"] = {}
+                            self._bad_magic(timeout, test["injection"])
+                        else:
+                            try:
+                                self.run_case(0, timeout=1e-9, poll_interval=0)
+                            except CaseFailure as exc:
+                                test["injection"] = exc.record
+                                require(exc.record.get("error_type") == "TimeoutError" and
+                                        exc.record.get("hardware_status") != COMPLETE and
+                                        self._read(REG + 8) == 0,
+                                        "Short timeout did not abort an incomplete job into reset")
+                            else:
+                                raise ValueError("Short timeout did not trigger")
+                        test["recovery"] = self.run_case(0, timeout=timeout)
+                        test["passed"] = True
+                    except Exception as exc:
+                        test.update(error_type=type(exc).__name__, error=str(exc))
+                        if isinstance(exc, CaseFailure):
+                            test["failure"] = exc.record
+                        raise
+                    finally:
+                        self._reset_for_evidence(test)
+                        report["evidence_paths"].append(str(self._save_stage(test, evidence_dir,
+                                                                           "recovery_" + mode + "_" + name)))
+                    require(test["passed"], "Failed to leave recovered device in reset")
+            report.update(passed=True, status="RECOVERY_PASS")
+        except Exception as exc:
+            report.update(error_type=type(exc).__name__, error=str(exc))
+            if isinstance(exc, CaseFailure):
+                report["failure"] = exc.record
+            self._reset_for_evidence(report)
+        report["finished_at_utc"] = utc_now()
+        report["report_path"] = str(self._save_stage(report, evidence_dir, "recovery"))
+        return report
+
+
+def distribution(values):
+    values = sorted(values)
+    require(bool(values), "Cannot summarize an empty distribution")
+    return dict(minimum=values[0], median=statistics.median(values),
+                p95=values[(95 * len(values) + 99) // 100 - 1], maximum=values[-1])
+
+
+def compare_paired(cpu, accelerated):
+    """Reject historical/unmatched/incomplete evidence before calculating ratios."""
+    require(cpu.get("passed") and accelerated.get("passed"), "Both paired runs must pass")
+    require(cpu.get("firmware_mode") == "cpu_only" and
+            accelerated.get("firmware_mode") == "accelerated", "Paired firmware modes mismatch")
+    for report in (cpu, accelerated):
+        require(report.get("measurement_kind") == "PYNQ_BOARD_AXI_LIVE" and
+                report.get("clock_hz") == FREQUENCY and report.get("firmware_load", {}).get("passed"),
+                "Paired comparison requires live verified firmware and clock")
+        rows = report["cases"]
+        require([row["case_index"] for row in rows] == report["requested_indices"] and
+                len(rows) == len(set(row["case_index"] for row in rows)) and
+                all(row["passed"] and row["firmware_mode"] == report["firmware_mode"] for row in rows),
+                "Incomplete, duplicate, or mixed-mode paired cases")
+        load = report["firmware_load"]
+        files = report["artifacts"]["files_sha256"]
+        require(load["mode"] == report["firmware_mode"] and files.get(load["file"]) == load["file_sha256"] and
+                load["expected_ram_sha256"] == load["readback_ram_sha256"], "Firmware load identity mismatch")
+    require(cpu["requested_indices"] == accelerated["requested_indices"] and
+            cpu["artifacts"]["manifest_sha256"] == accelerated["artifacts"]["manifest_sha256"] and
+            cpu["artifacts"]["files_sha256"] == accelerated["artifacts"]["files_sha256"] and
+            cpu["overlay_loaded_at_utc"] == accelerated["overlay_loaded_at_utc"],
+            "Paired overlay, vector manifest, session or case order mismatch")
+    require(cpu["firmware_load"]["file_sha256"] != accelerated["firmware_load"]["file_sha256"],
+            "CPU-only and accelerated firmware must differ")
+    rows = []
+    for a, b in zip(cpu["cases"], accelerated["cases"]):
+        require(all(a[key] == b[key] for key in
+                    ("case_index", "identity", "op", "input_sha256", "output_sha256", "return_code", "frequency_hz")),
+                "Paired case identity, input, output, return or clock mismatch")
+        require(a["hardware"] == dict(starts=0, busy_cycles=0, buffer_writes=0, buffer_reads=0),
+                "CPU-only hardware counters must all be zero")
+        rows.append(dict(case_index=a["case_index"], operation=a["operation"],
+                         cpu_raw_cycles=a["raw_cycles"], accelerated_raw_cycles=b["raw_cycles"],
+                         api_speedup=a["raw_cycles"] / b["raw_cycles"],
+                         cpu_wall_seconds=a["wall_seconds"], accelerated_wall_seconds=b["wall_seconds"],
+                         wall_speedup=a["wall_seconds"] / b["wall_seconds"]))
+    totals = {}
+    for mode, report in (("cpu_only", cpu), ("accelerated", accelerated)):
+        totals[mode] = dict(raw_cycles=sum(row["raw_cycles"] for row in report["cases"]),
+            net_cycles=sum(row["raw_cycles"] - row["empty_cycles"] for row in report["cases"]),
+            case_wall_seconds=sum(row["wall_seconds"] for row in report["cases"]),
+            batch_wall_seconds=report["total_wall_seconds"],
+            firmware_load_seconds=report["firmware_load"]["load_seconds"])
+    a, b = totals["cpu_only"], totals["accelerated"]
+    return dict(kind="SAME_BITSTREAM_LIVE_FIRMWARE_COMPARISON", cases=rows, totals=totals,
+        api_speedup=a["raw_cycles"] / b["raw_cycles"],
+        api_minus_empty_speedup=a["net_cycles"] / b["net_cycles"],
+        ps_wall_speedup=a["case_wall_seconds"] / b["case_wall_seconds"],
+        batch_wall_speedup=a["batch_wall_seconds"] / b["batch_wall_seconds"],
+        timing_note="API is raw rdcycle; PS wall includes reset, I/O, polling and exact verification. Firmware load/readback and JSON saving excluded.",
+        hardware_note="Same bitstream retains Keccak in both modes; CPU-only firmware does not call it. No area/power comparison.")
+
 
 def self_test():
     """Host protocol tests with a strict fake MMIO; this never touches hardware."""
@@ -424,7 +732,7 @@ def self_test():
             struct.pack_into("<I", self.data, offset, value & 0xFFFFFFFF)
 
         def read(self, offset):
-            if offset < RAM_BYTES and self.read(REG + 8) and self.read(REG + 12) != COMPLETE:
+            if offset < RAM_BYTES and self.read(REG + 8) and self.read(REG + 12) not in (COMPLETE, FAILED):
                 raise AssertionError("Host read RAM while CPU is active")
             return struct.unpack_from("<I", self.data, offset)[0]
 
@@ -440,6 +748,14 @@ def self_test():
             self.put(REG + 0x10, 0)
             self.put(REG + 12, 0)
             if not value:
+                for i in range(4):
+                    self.put(REG + 0x80 + 4 * i, 0)
+                for i in range(12):
+                    self.put(REG + 0x40 + 4 * i, 0)
+                return
+            if struct.unpack_from("<I", self.data, INPUT)[0] != 0x3254414B:
+                self.put(REG + 12, FAILED)
+                self.put(REG + 0x44, 2)
                 return
             if self.mode == "timeout":
                 self.put(REG + 12, RUNNING)
@@ -462,7 +778,8 @@ def self_test():
             self.data[OUTPUT:OUTPUT + len(body)] = body
             for index, word in ((3, 10000), (8, 4), (9, ret)):
                 self.put(REG + 0x40 + 4 * index, word)
-            hw = case["expected_hardware"]
+            hw = (dict(starts=0, buffer_writes=0, buffer_reads=0)
+                  if self.data[:4] == b"CPU0" else case["expected_hardware"])
             for i, value in enumerate((hw["starts"], 1 if hw["starts"] else 0,
                                        hw["buffer_writes"], hw["buffer_reads"])):
                 self.put(REG + 0x80 + 4 * i, value)
@@ -577,6 +894,144 @@ def self_test():
                 write_json(path, manifest)
                 with self.assertRaisesRegex(ValueError, "matching"):
                     verify_bundle(path)
+
+        def paired_device(self, directory, mode="ok"):
+            device, mmio = self.device(mode=mode)
+            firmware = {}
+            for name, prefix in (("cpu_only", b"CPU0"), ("accelerated", b"ACC0")):
+                words = [struct.unpack("<I", prefix)[0]] + [0] * (RAM_BYTES // 4 - 1)
+                path = directory / (name + ".mem")
+                path.write_text("".join("%08x\n" % word for word in words), encoding="ascii")
+                firmware[name] = dict(file=path.name, sha256=sha256(path))
+            artifacts = dict(manifest_sha256="test-manifest",
+                             files_sha256={item["file"]: item["sha256"] for item in firmware.values()})
+            device = MLKEM1024(mmio, self.vectors, artifacts=artifacts,
+                              paired_firmware=firmware, bundle_directory=directory)
+            return device, mmio
+
+        def test_paired_full_ram_clear_upload_readback_and_zero_counters(self):
+            with tempfile.TemporaryDirectory() as temp:
+                device, mmio = self.paired_device(Path(temp))
+                with self.assertRaisesRegex(ValueError, "Select"):
+                    device.run_case(0)
+                mmio.data[:RAM_BYTES] = b"\xff" * RAM_BYTES
+                load = device.select_firmware("cpu_only")
+                self.assertTrue(load["passed"])
+                self.assertEqual(len(mmio.chunks), 256)  # full clear plus full load
+                self.assertEqual(mmio.data[4:RAM_BYTES], bytes(RAM_BYTES - 4))
+                row = device.run_case(0)
+                self.assertEqual(set(row["hardware"].values()), {0})
+                mmio.mode = "wrong_count"
+                with self.assertRaises(CaseFailure):
+                    device.run_case(0)
+                mmio.mode = "ok"
+                device.select_firmware("accelerated")
+                self.assertGreater(device.run_case(0)["hardware"]["starts"], 0)
+
+        def test_readback_mismatch_blocks_run_and_preserves_failure(self):
+            with tempfile.TemporaryDirectory() as temp:
+                device, mmio = self.paired_device(Path(temp))
+                original = mmio.read
+                mmio.read = lambda offset: original(offset) ^ (1 if offset == 4 else 0)
+                result = device.run_paired([0], Path(temp) / "evidence")
+                self.assertFalse(result["passed"])
+                self.assertIn("readback", result["failure"]["error"])
+                self.assertTrue(Path(result["report_path"]).is_file())
+                self.assertEqual(mmio.read(REG + 8), 0)
+                with self.assertRaisesRegex(ValueError, "Select"):
+                    device.run_case(0)
+
+        def test_paired_identity_mismatch_and_failed_run_never_compared(self):
+            with tempfile.TemporaryDirectory() as temp:
+                device, mmio = self.paired_device(Path(temp))
+                result = device.run_paired([0], Path(temp) / "evidence")
+                self.assertTrue(result["passed"])
+                self.assertEqual(result["comparison"]["api_speedup"], 1)
+                a, b = result["runs"]["cpu_only"], result["runs"]["accelerated"]
+                for field, value in (("input_sha256", "changed"), ("identity", {}),
+                                     ("firmware_mode", "cpu_only")):
+                    altered = deepcopy(b)
+                    altered["cases"][0][field] = value
+                    with self.subTest(field=field), self.assertRaises(ValueError):
+                        compare_paired(a, altered)
+                altered = deepcopy(b)
+                altered["artifacts"]["manifest_sha256"] = "other"
+                with self.assertRaises(ValueError):
+                    compare_paired(a, altered)
+                mmio.mode = "wrong_output"
+                failure = device.run_paired([0], Path(temp) / "evidence")
+                self.assertFalse(failure["passed"])
+                self.assertNotIn("comparison", failure)
+                self.assertTrue(failure["runs"]["cpu_only"]["cases"][0]["error"])
+
+        def test_repetitions_and_recovery_evidence(self):
+            with tempfile.TemporaryDirectory() as temp:
+                device, mmio = self.paired_device(Path(temp))
+                result = device.run_repetitions(Path(temp) / "evidence", indices=[0], repeats=2)
+                self.assertTrue(result["passed"])
+                self.assertEqual(result["statistics"][0]["samples"], 2)
+                recovery = device.run_recovery_checks(Path(temp) / "evidence", checks=("reset", "bad_magic"))
+                self.assertTrue(recovery["passed"])
+                self.assertEqual(len(recovery["tests"]), 4)
+                self.assertEqual(mmio.read(REG + 8), 0)
+
+        def test_short_timeout_recovery_and_no_false_pass(self):
+            with tempfile.TemporaryDirectory() as temp:
+                device, mmio = self.paired_device(Path(temp))
+                original = device.run_case
+                def controlled(index, **kwargs):
+                    mmio.mode = "timeout" if kwargs.get("timeout", 1) < 1e-6 else "ok"
+                    return original(index, **kwargs)
+                device.run_case = controlled
+                report = device.run_recovery_checks(Path(temp) / "evidence", checks=("short_timeout",))
+                self.assertTrue(report["passed"])
+                for test in report["tests"]:
+                    self.assertEqual(test["injection"]["error_type"], "TimeoutError")
+                    self.assertTrue(test["recovery"]["passed"])
+                device.run_case = original  # instant fake completion must not count as an abort
+                mmio.mode = "ok"
+                rejected = device.run_recovery_checks(Path(temp) / "evidence", checks=("short_timeout",))
+                self.assertFalse(rejected["passed"])
+                self.assertTrue(Path(rejected["report_path"]).exists())
+
+        def test_paired_manifest_must_bind_both_images_and_driver(self):
+            with tempfile.TemporaryDirectory() as temp:
+                directory = Path(temp)
+                device, _ = self.paired_device(directory)
+                (directory / "test.bit").write_bytes(b"synthetic")
+                (directory / "test.hwh").write_text('<ROOT><MEMRANGE BASEVALUE="0x40000000" HIGHVALUE="0x4003ffff"/></ROOT>')
+                (directory / "mlkem1024.py").write_bytes(Path(__file__).read_bytes())
+                write_json(directory / "kat_vectors.json", self.vectors)
+                manifest = dict(schema=1, paired_firmware=device.paired_firmware,
+                    overlay=dict(bitstream="test.bit", base_address=BASE, address_range=SPAN,
+                                 id=HARDWARE_ID, abi=ABI, frequency_hz=FREQUENCY, ram_bytes=RAM_BYTES),
+                    files={file.name: sha256(file) for file in directory.iterdir()})
+                path = directory / "release_manifest.json"
+                write_json(path, manifest)
+                verify_bundle(path)
+                altered = deepcopy(manifest)
+                del altered["paired_firmware"]["accelerated"]
+                write_json(path, altered)
+                with self.assertRaisesRegex(ValueError, "exactly"):
+                    verify_bundle(path)
+                altered = deepcopy(manifest)
+                altered["paired_firmware"]["cpu_only"]["sha256"] = "wrong"
+                write_json(path, altered)
+                with self.assertRaisesRegex(ValueError, "firmware"):
+                    verify_bundle(path)
+                altered = deepcopy(manifest)
+                del altered["files"]["mlkem1024.py"]
+                write_json(path, altered)
+                with self.assertRaisesRegex(ValueError, "driver"):
+                    verify_bundle(path)
+
+        def test_firmware_parser_rejects_truncated_or_addressed_images(self):
+            with tempfile.TemporaryDirectory() as temp:
+                path = Path(temp) / "bad.mem"
+                for content in ("00000000\n", "@0\n" + "00000000\n" * 32767):
+                    path.write_text(content, encoding="ascii")
+                    with self.assertRaises(ValueError):
+                        read_firmware(path)
 
     result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(ProtocolTests))
     return 0 if result.wasSuccessful() else 1

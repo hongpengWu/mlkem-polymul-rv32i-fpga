@@ -86,7 +86,9 @@ python scripts/mlkem512_suite/collect.py
 `run.py` 默认并行启动三配置；使用 `--config rv32i`、`rv32im_iterative` 或 `rv32im_fast`
 可单独运行。`build.py --tool-dir` 和 `run.py --vivado` 可指定本机工具位置。
 常规长回归不记录波形，只保留逐例数据、完成标记和错误，减少无用仿真开销。
-每配置启动前保存输入 SHA-256，结束后复核；生成的 `.xpr` 与镜像可供检查，缓存留在本地。
+每配置启动前保存输入 SHA-256，结束后复核。运行 `run.py` 时，`run.tcl` 在 `vivado/mlkem512_<config>/`
+重新生成 `.xpr` 和拷贝后的固件 `.mem`；这两个本地工程输入不由 Git 跟踪。`build/mlkem512_suite/`
+保存 Python 调度器的日志，Vivado Tcl 则直接在 `vivado/` 生成工程和仿真输出；其他流程也可能把中间产物放在各自的 `build/` 目录。
 
 ### 关机断点与分批恢复
 
@@ -122,7 +124,9 @@ CPU RTL、固件、构建清单和完整官方 fixture 必须与保存版本一�
 XPR 及实际暂存文件的 SHA-256。最终汇总引用这些结果目录内的证据，不依赖被 Git 忽略的
 `build/` 路径。本地工程仍存在时继续严格检查实际暂存文件；删除缓存后则必须由完整归档
 通过相同的固件／fixture／日志哈希及 CPU／批长参数检查。归档 XPR 是来源证据，
-常规可打开的主套件工程仍为 `vivado/mlkem512_<config>/mlkem512.xpr`。
+运行上述 `python scripts/mlkem512_suite/run.py --config <config>` 后，可在 Vivado 中打开脚本生成的
+`vivado/mlkem512_<config>/mlkem512.xpr`。清洁克隆中没有可直接打开的跟踪版 `.xpr` 或 `.mem`；
+通过 Tcl 重建后再打开本地工程。归档到 `results/` 的批次 `project.xpr` 仅是复现证据。
 
 `resume.py` 重启后复用已有分批方案，只有通过重新验证的成功批次才跳过。
 默认并发为 4，本次确认内存余量后以 6 路完成；同一结果目录不得同时运行

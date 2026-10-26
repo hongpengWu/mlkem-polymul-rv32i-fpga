@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "generated_utc": "2026-10-23T14:17:54.860179+00:00",
+  "purpose": "Matched CPU-only / accelerated measurements, executed by the user in Jupyter",
+  "physical_board_tested": false,
+  "overlay": {
+    "bitstream": "k4_accel.bit",
+    "base_address": 1073741824,
+    "address_range": 262144,
+    "id": 1261715800,
+    "abi": 1,
+    "frequency_hz": 100000000,
+    "ram_bytes": 131072
+  },
+  "paired_firmware": {
+    "cpu_only": {
+      "file": "cpu_only.mem",
+      "sha256": "3c3c1916d8a178414fdd8fdbd379f7bbe6807116dbf413c32b659256d41b985e"
+    },
+    "accelerated": {
+      "file": "accelerated.mem",
+      "sha256": "673cc0933ec1ad275f83c35db7115d4ccd205f67e99ea39d7823aad70c624035"
+    }
+  },
+  "working_copy_of_manifest_sha256": "33f45b917a0999a7df03e80430fea4a85e8223be5e59fd6fe3cb91ed6dab0cd4",
+  "original_run_input_manifest_sha256": "60715c4c8dc6397d51d89fd5c50a4c3ff6ad1d5a8a7dc84176fc8c05370cde4e",
+  "local_validation": {
+    "host_self_test_passed": true,
+    "python36_syntax_passed": true,
+    "rtl_subset_passed": true,
+    "rtl_case_count": 7,
+    "rtl_firmware_switches": 3,
+    "result_sha256": "ce292ad7439052a384ea27e9fb52e3f8c9df4a702d12eed3a917dd9802edc1be",
+    "scope": "Local validation only; board paired results pending"
+  },
+  "notebook_template_sha256": {
+    "mlkem1024.ipynb": "da073314ebc638d049eddd4df8966d6d8abf9318adf6f8ffb224defb0a747731"
+  },
+  "files": {
+    "accelerated.mem": "673cc0933ec1ad275f83c35db7115d4ccd205f67e99ea39d7823aad70c624035",
+    "accelerated_build.json": "f3cabe1f8ff3a0efd0f28a150ed60cc341c2248703c0f3342f9408ea1abb9372",
+    "cpu_only.mem": "3c3c1916d8a178414fdd8fdbd379f7bbe6807116dbf413c32b659256d41b985e",
+    "cpu_only_build.json": "6603a6085ed3f1448f63f67eb24db27c845fc53f708d245d9b608a341cc46d63",
+    "host_checks.txt": "3f0d4c47176a21dc0223563ca219fd6f1758c180672dfead72fed0ea76f0069e",
+    "k4_accel.bit": "8ecd6ba9f21fb6e3b51f5ea4c98c58090f85eb1002ee672a0d89bc151edf2cfb",
+    "k4_accel.hwh": "83bbb0f97a5be6c32946a13a86151cabc03203e829e154e99df57933bfe738cf",
+    "kat_vectors.json": "1f5711b102676bd08aa16d70bec317b160a39bb2d15183bcaf67f08e0a88b464",
+    "mlkem1024.py": "4c167f4ccb524cfa4e535ce0b2a7daf65d05e8c31d76530f308039894df3532c",
+    "paired_rtl_manifest.json": "0ae1f3a9c2fe882ee059598824a5605a941ef40ae794d69e7d61c7499bd3e134",
+    "paired_rtl_result.json": "ce292ad7439052a384ea27e9fb52e3f8c9df4a702d12eed3a917dd9802edc1be",
+    "published_release_manifest.json": "33f45b917a0999a7df03e80430fea4a85e8223be5e59fd6fe3cb91ed6dab0cd4",
+    "README.txt": "7594ded11edab61b26173f8a375d28b540a42c7aa52bcff5f21801a028cc1cd5"
+  }
+}

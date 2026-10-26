@@ -1,0 +1,13 @@
+{
+  "kind": "FIRMWARE_LOAD",
+  "mode": "cpu_only",
+  "started_at_utc": "2026-10-23T14:22:45.778910+00:00",
+  "passed": true,
+  "ram_bytes": 131072,
+  "excluded_from_case_and_speedup_timing": true,
+  "file": "cpu_only.mem",
+  "file_sha256": "3c3c1916d8a178414fdd8fdbd379f7bbe6807116dbf413c32b659256d41b985e",
+  "expected_ram_sha256": "15727dba5565aadcb58d30a4c0daa41c6c920cc7e24d3840ff012c02ee94906b",
+  "readback_ram_sha256": "15727dba5565aadcb58d30a4c0daa41c6c920cc7e24d3840ff012c02ee94906b",
+  "load_seconds": 2.176437767999232
+}

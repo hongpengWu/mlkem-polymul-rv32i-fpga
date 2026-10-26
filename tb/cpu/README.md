@@ -67,14 +67,23 @@ all three metrics, in cycles. A successful run must contain
 
 ## Standalone Vivado 2024.2 reproduction
 
-Run these commands from a disposable simulation working directory, using
-absolute source paths as appropriate:
+Run these commands in PowerShell from the repository root. Make sure the
+Vivado 2024.2 `bin` directory is on `PATH`; do not hard-code its installation
+drive. The source paths below are relative to the repository root, and the
+simulation outputs are written to a disposable directory under `%TEMP%`:
 
 ```powershell
-& 'E:\Xilinx\Vivado\2024.2\bin\xvlog.bat' --sv <repo>/rtl/cpu/picorv32.v <repo>/tb/cpu/tb_picorv32_rv32im.sv
-& 'E:\Xilinx\Vivado\2024.2\bin\xelab.bat' tb_picorv32_rv32im --snapshot rv32im_iterative -debug typical
-& 'E:\Xilinx\Vivado\2024.2\bin\xsim.bat' rv32im_iterative --runall --log rv32im_iterative.log
+$repo = (git rev-parse --show-toplevel)
+$sim = Join-Path $env:TEMP 'picorv32-rv32im-sim'
+New-Item -ItemType Directory -Force -Path $sim | Out-Null
+Push-Location $sim
+xvlog --sv (Join-Path $repo 'rtl/cpu/picorv32.v') (Join-Path $repo 'tb/cpu/tb_picorv32_rv32im.sv')
+xelab tb_picorv32_rv32im --snapshot rv32im_iterative -debug typical
+xsim rv32im_iterative --runall --log rv32im_iterative.log
+Pop-Location
 ```
 
 For a fast-multiplier comparison, add `-generic_top FAST_MUL=1` to `xelab`
-and use a separate snapshot/output directory.
+and use a separate snapshot/output directory. If Vivado is installed but its
+`bin` directory is not on `PATH`, add that directory to the current PowerShell
+session's `PATH` before running these commands.

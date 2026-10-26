@@ -6,6 +6,9 @@ module tb_mlkem1024_keccak_axi;
     parameter FIRMWARE_INIT_FILE="ps_kat.mem";
     parameter INPUT_FIXTURE_FILE="board_input.mem";
     parameter EXPECTED_FIXTURE_FILE="board_expected.mem";
+    parameter PAIR_SIM=0;
+    parameter CPU_ONLY_FIRMWARE_FILE="cpu_only.mem";
+    parameter ACCELERATED_FIRMWARE_FILE="accelerated.mem";
     localparam [17:0] CONTROL=18'h20008, STATUS=18'h2000c, TRAP=18'h20010;
     localparam [31:0] KATR=32'h4b415452, KATP=32'h4b415450, KATF=32'h4b415446;
     localparam integer MAX_WORDS=16384, TIMEOUT_CYCLES=30000000;
@@ -142,10 +145,45 @@ module tb_mlkem1024_keccak_axi;
     integer input_offset[0:2], expected_offset[0:2], input_size[0:2], output_size[0:2];
     integer expected_starts[0:2], expected_writes[0:2], expected_reads[0:2];
     integer input_words=0, expected_words=0;
-    integer f, scan, i, j, pin, pout, case_index;
+    integer f, scan, i, j, pin, pout, case_index, test_index;
+    reg cpu_only_mode=0;
+    reg [31:0] switch_firmware[0:32767];
     reg [31:0] file_word, value, saved_instruction;
     reg [31:0] output_header[0:7], profiles[0:11], metrics[0:3];
     integer output_checks=0, total_starts=0, completed_cases=0, busy_aborts=0;
+
+    // Exercise the exact host-visible switch protocol on one unchanged DUT.
+    // No hierarchical RAM write is allowed, including executable code.
+    task automatic upload_firmware(input integer use_cpu_only);
+        integer handle, count, got, word_index;
+        reg [31:0] word_value, readback;
+        begin
+            core_reset();
+            handle=$fopen(use_cpu_only ? CPU_ONLY_FIRMWARE_FILE : ACCELERATED_FIRMWARE_FILE,"r");
+            if (!handle) $fatal(1,"AXI_KAT_FAIL missing switch firmware");
+            count=0;
+            while (!$feof(handle)) begin
+                got=$fscanf(handle,"%h",word_value);
+                if (got==1) begin
+                    if (count>=32768 || (^word_value)===1'bx) $fatal(1,"AXI_KAT_FAIL invalid switch firmware");
+                    switch_firmware[count]=word_value; count=count+1;
+                end else if (!$feof(handle)) $fatal(1,"AXI_KAT_FAIL malformed switch firmware");
+            end
+            $fclose(handle);
+            if (count!=32768) $fatal(1,"AXI_KAT_FAIL firmware must cover all 128 KiB");
+            for (word_index=0;word_index<count;word_index=word_index+1)
+                axi_write(4*word_index,switch_firmware[word_index],15,word_index%2,(word_index+1)%2,0,0);
+            for (word_index=0;word_index<count;word_index=word_index+1) begin
+                axi_read(4*word_index,0,0,readback);
+                if (readback!==switch_firmware[word_index])
+                    $fatal(1,"AXI_KAT_FAIL firmware readback word=%0d",word_index);
+            end
+            expect_read(CONTROL,0); expect_read(STATUS,0); expect_read(TRAP,0);
+            expect_read(18'h20080,0); expect_read(18'h20084,0);
+            expect_read(18'h20088,0); expect_read(18'h2008c,0);
+            $display("AXI_PAIR_IMAGE_PASS cpu_only=%0d words=%0d readback_words=%0d",use_cpu_only,count,count);
+        end
+    endtask
 
     task automatic load_case(input integer index);
         integer word_index, count_words;
@@ -346,7 +384,10 @@ module tb_mlkem1024_keccak_axi;
         expect_read(18'h10000,32'h3254414b); expect_read(18'h16000,32'h12bb56dd);
         $display("AXI_PROTOCOL_PASS checks=%0d stalled_responses=%0d busy_aborts=%0d",protocol_checks,stalled_responses,busy_aborts);
 
-        for (case_index=0;case_index<3;case_index=case_index+1) begin
+        for (test_index=0;test_index<(PAIR_SIM ? 7 : 3);test_index=test_index+1) begin
+            case_index=test_index%3;
+            cpu_only_mode=PAIR_SIM && test_index>=3 && test_index<6;
+            if (PAIR_SIM && case_index==0) upload_firmware(cpu_only_mode);
             load_case(case_index); axi_write(CONTROL,1,1,case_index%3,(case_index+1)%3,3,0);
             wait_status(KATP);
             if (led!==4'b0001) $fatal(1,"AXI_KAT_FAIL completion LED case=%0d",case_index);
@@ -365,7 +406,11 @@ module tb_mlkem1024_keccak_axi;
                 profiles[6]!==input_fixture[pin+4] || profiles[7]!==input_size[case_index] ||
                 profiles[8]!==output_header[7] || profiles[9]!==output_header[3])
                 $fatal(1,"AXI_KAT_FAIL output/profile header case=%0d cycles=%0d observed=%0d",case_index,output_header[6],observed_cycles);
-            if (cycle_samples!=2 || metrics[0]!==expected_starts[case_index] || metrics[0]!==hls_starts ||
+            if (cpu_only_mode) begin
+                if (cycle_samples!=2 || hls_starts!=0 || hls_dones!=0 || hash_calls!=0 || squeeze_calls!=0 ||
+                    metrics[0]!==0 || metrics[1]!==0 || metrics[2]!==0 || metrics[3]!==0 || dut.system_i.adapter_i.busy)
+                    $fatal(1,"AXI_KAT_FAIL CPU-only touched accelerator case=%0d",case_index);
+            end else if (cycle_samples!=2 || metrics[0]!==expected_starts[case_index] || metrics[0]!==hls_starts ||
                 hls_starts!=hls_dones || hash_calls!=26+case_index || squeeze_calls!=((case_index==2)?4:0) ||
                 metrics[1]==0 || metrics[1]>=output_header[6] || metrics[2]!==expected_writes[case_index] ||
                 metrics[3]!==expected_reads[case_index] || dut.system_i.adapter_i.busy)
@@ -381,7 +426,17 @@ module tb_mlkem1024_keccak_axi;
             $display("AXI_KAT_ROW case=%0d op=%0d return=%0d cycles=%0d empty=%0d starts=%0d busy=%0d writes=%0d reads=%0d input_bytes=%0d output_bytes=%0d",
                 case_index,output_header[2],$signed(output_header[3]),output_header[6],output_header[7],
                 metrics[0],metrics[1],metrics[2],metrics[3],input_size[case_index],output_size[case_index]);
+            if (PAIR_SIM)
+                $display("AXI_PAIR_ROW group=%0d cpu_only=%0d case=%0d official=%0d cycles=%0d empty=%0d starts=%0d done=%0d busy=%0d writes=%0d reads=%0d output_bytes=%0d",
+                    test_index/3,cpu_only_mode,case_index,(case_index==2)?115:case_index,
+                    output_header[6],output_header[7],hls_starts,hls_dones,metrics[1],metrics[2],metrics[3],output_size[case_index]);
             core_reset();
+        end
+        if (PAIR_SIM) begin
+            if (completed_cases!=7 || total_starts!=111 || output_checks!=17472 || busy_aborts!=1)
+                $fatal(1,"AXI_KAT_FAIL incomplete paired evidence");
+            $display("AXI_PAIR_PASS cases=7 starts=111 output_bytes=%0d firmware_switches=3 image_words=32768 readback_words=32768",output_checks);
+            $finish;
         end
         if (completed_cases!=3 || total_starts!=85 || output_checks!=6368 || busy_aborts!=1)
             $fatal(1,"AXI_KAT_FAIL incomplete evidence");

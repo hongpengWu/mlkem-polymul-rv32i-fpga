@@ -1,0 +1,19 @@
+test_bundle_hashes_hwh_mapping_and_pair (__main__.self_test.<locals>.ProtocolTests.test_bundle_hashes_hwh_mapping_and_pair) ... ok
+test_chunks_byte_order_and_exact_output (__main__.self_test.<locals>.ProtocolTests.test_chunks_byte_order_and_exact_output) ... ok
+test_firmware_parser_rejects_truncated_or_addressed_images (__main__.self_test.<locals>.ProtocolTests.test_firmware_parser_rejects_truncated_or_addressed_images) ... ok
+test_full_pass_requires_all_unique_cases (__main__.self_test.<locals>.ProtocolTests.test_full_pass_requires_all_unique_cases) ... ok
+test_katp_alone_cannot_pass (__main__.self_test.<locals>.ProtocolTests.test_katp_alone_cannot_pass) ... ok
+test_paired_full_ram_clear_upload_readback_and_zero_counters (__main__.self_test.<locals>.ProtocolTests.test_paired_full_ram_clear_upload_readback_and_zero_counters) ... ok
+test_paired_identity_mismatch_and_failed_run_never_compared (__main__.self_test.<locals>.ProtocolTests.test_paired_identity_mismatch_and_failed_run_never_compared) ... ok
+test_paired_manifest_must_bind_both_images_and_driver (__main__.self_test.<locals>.ProtocolTests.test_paired_manifest_must_bind_both_images_and_driver) ... ok
+test_readback_mismatch_blocks_run_and_preserves_failure (__main__.self_test.<locals>.ProtocolTests.test_readback_mismatch_blocks_run_and_preserves_failure) ... ok
+test_repetitions_and_recovery_evidence (__main__.self_test.<locals>.ProtocolTests.test_repetitions_and_recovery_evidence) ... ok
+test_short_timeout_recovery_and_no_false_pass (__main__.self_test.<locals>.ProtocolTests.test_short_timeout_recovery_and_no_false_pass) ... ok
+test_signed_negative_error_is_official_pass (__main__.self_test.<locals>.ProtocolTests.test_signed_negative_error_is_official_pass) ... ok
+test_timeout_trap_and_firmware_fail (__main__.self_test.<locals>.ProtocolTests.test_timeout_trap_and_firmware_fail) ... ok
+test_wrong_id (__main__.self_test.<locals>.ProtocolTests.test_wrong_id) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 2.189s
+
+OK

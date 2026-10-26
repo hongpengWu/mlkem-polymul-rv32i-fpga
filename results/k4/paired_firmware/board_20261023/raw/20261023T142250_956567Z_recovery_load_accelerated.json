@@ -1,0 +1,13 @@
+{
+  "kind": "FIRMWARE_LOAD",
+  "mode": "accelerated",
+  "started_at_utc": "2026-10-23T14:22:48.793337+00:00",
+  "passed": true,
+  "ram_bytes": 131072,
+  "excluded_from_case_and_speedup_timing": true,
+  "file": "accelerated.mem",
+  "file_sha256": "673cc0933ec1ad275f83c35db7115d4ccd205f67e99ea39d7823aad70c624035",
+  "expected_ram_sha256": "fbcf951a8de4c3d88d5fc3687d6f491033877f607d957d022f4d0e6dedbdb12e",
+  "readback_ram_sha256": "fbcf951a8de4c3d88d5fc3687d6f491033877f607d957d022f4d0e6dedbdb12e",
+  "load_seconds": 2.161066146999474
+}

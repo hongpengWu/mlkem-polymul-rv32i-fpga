@@ -1,0 +1,110 @@
+[
+  {
+    "mode": "cpu_only",
+    "case_index": 0,
+    "operation": "keyGen",
+    "samples": 10,
+    "raw_cycles": {
+      "minimum": 13046690,
+      "median": 13046690.0,
+      "p95": 13046690,
+      "maximum": 13046690
+    },
+    "wall_seconds": {
+      "minimum": 0.1935600050001085,
+      "median": 0.19398719650052954,
+      "p95": 0.19442514599995775,
+      "maximum": 0.19442514599995775
+    }
+  },
+  {
+    "mode": "cpu_only",
+    "case_index": 1,
+    "operation": "encapsulation",
+    "samples": 10,
+    "raw_cycles": {
+      "minimum": 13908285,
+      "median": 13908285.0,
+      "p95": 13908285,
+      "maximum": 13908285
+    },
+    "wall_seconds": {
+      "minimum": 0.1756585080001969,
+      "median": 0.17589168650010834,
+      "p95": 0.1761213370000405,
+      "maximum": 0.1761213370000405
+    }
+  },
+  {
+    "mode": "cpu_only",
+    "case_index": 115,
+    "operation": "decapsulation",
+    "samples": 10,
+    "raw_cycles": {
+      "minimum": 17088701,
+      "median": 17088701.0,
+      "p95": 17088701,
+      "maximum": 17088701
+    },
+    "wall_seconds": {
+      "minimum": 0.19782765399941127,
+      "median": 0.19800324649986578,
+      "p95": 0.19823568500032707,
+      "maximum": 0.19823568500032707
+    }
+  },
+  {
+    "mode": "accelerated",
+    "case_index": 0,
+    "operation": "keyGen",
+    "samples": 10,
+    "raw_cycles": {
+      "minimum": 3120941,
+      "median": 3120941.0,
+      "p95": 3120941,
+      "maximum": 3120941
+    },
+    "wall_seconds": {
+      "minimum": 0.09442742900046142,
+      "median": 0.09467698199978258,
+      "p95": 0.09522519900019688,
+      "maximum": 0.09522519900019688
+    }
+  },
+  {
+    "mode": "accelerated",
+    "case_index": 1,
+    "operation": "encapsulation",
+    "samples": 10,
+    "raw_cycles": {
+      "minimum": 3841521,
+      "median": 3841521.0,
+      "p95": 3841521,
+      "maximum": 3841521
+    },
+    "wall_seconds": {
+      "minimum": 0.07511947999955737,
+      "median": 0.07531589799964422,
+      "p95": 0.07551691699973162,
+      "maximum": 0.07551691699973162
+    }
+  },
+  {
+    "mode": "accelerated",
+    "case_index": 115,
+    "operation": "decapsulation",
+    "samples": 10,
+    "raw_cycles": {
+      "minimum": 4658615,
+      "median": 4658615.0,
+      "p95": 4658615,
+      "maximum": 4658615
+    },
+    "wall_seconds": {
+      "minimum": 0.07352415300010762,
+      "median": 0.0736110865000228,
+      "p95": 0.07378330099982122,
+      "maximum": 0.07378330099982122
+    }
+  }
+]

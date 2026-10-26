@@ -1,15 +1,20 @@
 """Freeze and archive the PS-controlled overlay; EDA stages live in bd_axi.tcl."""
 import argparse
+import ast
 from datetime import datetime, timezone
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
 import runpy
 import shutil
+import statistics
+import struct
 import subprocess
 import sys
+import zipfile
 
 from paths import ROOT, K4, BUILD as K4_BUILD, tool_path, repository_path, selected_hls_run, verified_hls, hls_input_pairs, verify_hls_snapshot, verified_firmware
 
@@ -348,8 +353,12 @@ def collect(run, evidence_root=None):
                 f"Original bitstream: {(bundle / 'k4_accel.bit').resolve()}\n"
                 f"Original hardware handoff: {(bundle / 'k4_accel.hwh').resolve()}\n",
                 encoding="utf-8")
-            files = {p.name: sha(p) for p in bundle.iterdir() if p.is_file() and p.name != "release_manifest.json"}
+            # Jupyter changes outputs/metadata on save. Record the distributed
+            # notebook hash as provenance, not as a runtime integrity gate.
+            files = {p.name: sha(p) for p in bundle.iterdir() if p.is_file()
+                     and p.name != "release_manifest.json" and p.suffix != ".ipynb"}
             release = dict(schema=1, files=files, generated_utc=datetime.now(timezone.utc).isoformat(),
+                notebook_template_sha256={p.name: sha(p) for p in bundle.glob("*.ipynb")},
                 run_dir=str(run), input_manifest_sha256=sha(run / "manifest.json"), physical_board_tested=False,
                 actual_collection_helper_sha256=helper_hash,
                 hwh_source_check=hwh_check,
@@ -380,14 +389,556 @@ def collect(run, evidence_root=None):
     return result
 
 
+def paired_bundle(output, source, firmware, rtl_evidence):
+    """Package matched firmware for user-run board measurements; no board access."""
+    def require(condition, message):
+        if not condition:
+            raise ValueError(message)
+
+    require(not output.exists(), "Use a new bundle directory; refusing overwrite")
+    published_path = source / "release_manifest.json"
+    published = json.loads(published_path.read_text(encoding="utf-8"))
+    result_path, manifest_path = rtl_evidence / "result.json", rtl_evidence / "manifest.json"
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    rtl = json.loads(manifest_path.read_text(encoding="utf-8"))
+    require(result.get("passed") is True and result.get("same_published_overlay_rtl_hls") is True
+            and len(result.get("rows", [])) == 7, "Matched firmware RTL subset has not passed")
+    require(result["manifest_sha256"] == sha(manifest_path)
+            and result["log_sha256"] == sha(rtl_evidence / "simulate.log"), "RTL evidence changed")
+    for name, record in rtl["inputs"].items():
+        require(sha(rtl_evidence / "snapshot" / name) == record["sha256"], "RTL snapshot changed: " + name)
+    require(sha(published_path) == rtl["inputs"]["published_release_manifest.json"]["sha256"],
+            "Published manifest differs from the RTL-bound release")
+    require(result["bitstream_sha256"] == published["files"]["k4_accel.bit"],
+            "RTL subset must refer to the deployed bitstream")
+    require(result.get("firmware_switches") == 3
+            and result.get("full_image_verified_words_per_switch") == 32768,
+            "RTL subset must verify every word across three firmware switches")
+    require([(row["group"], row["cpu_only"], row["official"]) for row in result["rows"]] ==
+            [(0, 0, 0), (0, 0, 1), (0, 0, 115), (1, 1, 0), (1, 1, 1), (1, 1, 115), (2, 0, 0)],
+            "Unexpected matched firmware RTL coverage")
+    copies = []
+    for name in ("k4_accel.bit", "k4_accel.hwh", "kat_vectors.json"):
+        require(sha(source / name) == published["files"][name], "Published artifact changed: " + name)
+        copies.append((source / name, name))
+    builds, images = {}, {}
+    for mode in ("cpu_only", "accelerated"):
+        folder = firmware / mode
+        build_path, image = folder / "build.json", folder / "ps.mem"
+        build = json.loads(build_path.read_text(encoding="utf-8"))
+        require(sha(image) == build["firmware_sha256"] == rtl["inputs"][mode + ".mem"]["sha256"],
+                "Firmware differs from verified RTL: " + mode)
+        require(sha(build_path) == rtl["inputs"][mode + "_build.json"]["sha256"],
+                "Build metadata differs from verified RTL: " + mode)
+        for name, digest in build["source_sha256"].items():
+            require(sha(ROOT / name) == digest, "Firmware source changed: " + name)
+        require(build["ram_bytes"] == 131072 and build["stack_reserved"] == 32768
+                and build["isa"] == "rv32im" and not build["embedded_vectors"]
+                and not build["expected_values_in_firmware"], "Incorrect paired firmware contract")
+        builds[mode] = build
+        images[mode] = dict(file=mode + ".mem", sha256=sha(image))
+        copies += [(image, mode + ".mem"), (build_path, mode + "_build.json")]
+    a, b = builds["cpu_only"], builds["accelerated"]
+    for key in ("compiler_sha256", "libgcc_sha256", "linker_sha256", "ram_bytes", "stack_reserved",
+                "stack_top", "stack_bottom", "shared_ram", "protocol"):
+        require(a[key] == b[key], "Unmatched build setting: " + key)
+    require([flag for flag in a["flags"] if flag != "-DPICO_K4_CPU_ONLY=1"] == b["flags"],
+            "Compiler flags differ beyond provider selection")
+    require(a["provider_limits"]["accelerator_access"] is False,
+            "CPU-only firmware must exclude accelerator access")
+    driver, notebook = K4 / "pynq/mlkem1024.py", K4 / "pynq/mlkem1024.ipynb"
+    ast.parse(driver.read_text(encoding="utf-8"), feature_version=(3, 6))
+    nb = json.loads(notebook.read_text(encoding="utf-8"))
+    for cell in nb["cells"]:
+        if cell["cell_type"] == "code":
+            ast.parse("".join(cell["source"]), feature_version=(3, 6))
+            require(not cell.get("outputs") and cell.get("execution_count") is None,
+                    "Distribute a clean Notebook without stale measured output")
+    check = subprocess.run([sys.executable, str(driver), "--self-test"],
+                           capture_output=True, text=True, cwd=ROOT)
+    require(check.returncode == 0, "Host self-tests failed:\n" + check.stdout + check.stderr)
+    output.mkdir(parents=True)
+    copies += [(driver, "mlkem1024.py"), (notebook, "mlkem1024.ipynb"),
+               (result_path, "paired_rtl_result.json"), (manifest_path, "paired_rtl_manifest.json"),
+               (published_path, "published_release_manifest.json")]
+    for path, name in copies:
+        shutil.copyfile(path, output / name)
+    (output / "host_checks.txt").write_text(check.stdout + check.stderr, encoding="utf-8")
+    (output / "README.txt").write_text(
+        "ML-KEM-1024 同板 CPU-only / CPU+Keccak 对照\n\n"
+        "在 Jupyter 打开本目录 mlkem1024.ipynb，选择 Kernel -> Restart & Run All。\n"
+        "默认执行两组各145条官方测试、三种操作各10次重复、复位/无效输入/超时恢复。\n"
+        "全部代码已写入Notebook，无需终端命令。每阶段立即保存独立JSON；最后下载汇总证据。\n"
+        "仅打开本目录一个Notebook运行，等待全部单元完成。Notebook可正常保存。\n\n"
+        "两组使用同一bitstream、RV32IM、100MHz、128KiB RAM/32KiB栈。CPU-only为软件FIPS202，\n"
+        "加速组为Keccak硬件服务。两组切换时CPU保持复位，全部RAM镜像写入并逐字读回核验。\n"
+        "固件装载/读回耗时单列，不计入API和用例墙钟；墙钟包含PS传输、等待和结果核对。\n"
+        "本包已通过本地主机测试与7例真实RTL切换测试；实板结论以本次运行JSON为准。\n"
+        "此对照不测移除加速器后的面积/功耗，也不将历史RTL数据作为实板对照。\n",
+        encoding="utf-8")
+    manifest = dict(schema=1, generated_utc=datetime.now(timezone.utc).isoformat(),
+        purpose="Matched CPU-only / accelerated measurements, executed by the user in Jupyter",
+        physical_board_tested=False, overlay=published["overlay"], paired_firmware=images,
+        working_copy_of_manifest_sha256=sha(published_path),
+        original_run_input_manifest_sha256=published["input_manifest_sha256"],
+        local_validation=dict(host_self_test_passed=True, python36_syntax_passed=True,
+            rtl_subset_passed=True, rtl_case_count=7, rtl_firmware_switches=3,
+            result_sha256=sha(result_path), scope="Local validation only; board paired results pending"),
+        notebook_template_sha256={"mlkem1024.ipynb": sha(output / "mlkem1024.ipynb")},
+        files={path.name: sha(path) for path in output.iterdir() if path.suffix != ".ipynb"})
+    dump(output / "release_manifest.json", manifest)
+    runpy.run_path(str(output / "mlkem1024.py"))["verify_bundle"](output / "release_manifest.json")
+    print("PAIRED_BUNDLE_PASS " + str(output))
+
+
+def collect_paired(run, archive, source, check_existing=False):
+    """Audit user-returned JSON against the uploaded bundle without executing it.
+
+    Raw members and the upload snapshot are retained byte-for-byte. The audit
+    deliberately does not import the deployed driver or trust its PASS flags.
+    """
+    def require(condition, message):
+        if not condition:
+            raise ValueError(message)
+
+    def digest(data):
+        return hashlib.sha256(data).hexdigest()
+
+    def unique_object(pairs):
+        result = {}
+        for key, value in pairs:
+            require(key not in result, "Duplicate JSON key: " + key)
+            result[key] = value
+        return result
+
+    def parse(data):
+        return json.loads(data.decode("utf-8"), object_pairs_hook=unique_object,
+                          parse_constant=lambda value: (_ for _ in ()).throw(ValueError(value)))
+
+    def numeric(value, positive=False):
+        return (type(value) in (int, float) and math.isfinite(value)
+                and (value > 0 if positive else value >= 0))
+
+    def equal(actual, expected, where):
+        if isinstance(expected, dict):
+            require(isinstance(actual, dict) and actual.keys() == expected.keys(), where + " keys differ")
+            for key in expected:
+                equal(actual[key], expected[key], where + "." + key)
+        elif isinstance(expected, list):
+            require(isinstance(actual, list) and len(actual) == len(expected), where + " length differs")
+            for index, value in enumerate(expected):
+                equal(actual[index], value, where + "." + str(index))
+        elif isinstance(expected, float):
+            require(type(actual) in (int, float) and math.isfinite(actual)
+                    and math.isclose(actual, expected, rel_tol=1e-12, abs_tol=1e-12), where + " differs")
+        else:
+            require(actual == expected, where + " differs")
+
+    if check_existing:
+        require((run / "verification.json").is_file(), "Existing verification record missing")
+    else:
+        require(not run.exists(), "Use a new archive directory; refusing overwrite")
+    require(archive.is_file() and archive.stat().st_size <= 64 * 1024 * 1024,
+            "ZIP missing or exceeds 64 MiB")
+    raw, documents = {}, {}
+    with zipfile.ZipFile(archive) as zipped:
+        entries = zipped.infolist()
+        require(0 < len(entries) <= 256, "Unexpected ZIP member count")
+        require(sum(item.file_size for item in entries) <= 64 * 1024 * 1024, "ZIP expands beyond 64 MiB")
+        seen = set()
+        for item in entries:
+            name = item.filename
+            require(re.fullmatch(r"[A-Za-z0-9_.-]+\.json", name) is not None
+                    and name.casefold() not in seen and not item.is_dir()
+                    and (item.external_attr >> 16) & 0o170000 != 0o120000,
+                    "Unsafe, duplicate or non-JSON ZIP member: " + name)
+            require(item.file_size <= 8 * 1024 * 1024, "JSON member exceeds 8 MiB: " + name)
+            seen.add(name.casefold())
+            raw[name] = zipped.read(item)
+            documents[name] = parse(raw[name])
+            require(isinstance(documents[name], dict), "JSON member must be an object: " + name)
+
+    if not check_existing:
+        run.mkdir(parents=True)
+        shutil.copyfile(archive, run / archive.name)
+    else:
+        require(sha(run / archive.name) == sha(archive), "Archived ZIP changed")
+    original = run / "raw"
+    if not check_existing:
+        original.mkdir()
+    for name, data in raw.items():
+        if check_existing:
+            require((original / name).read_bytes() == data, "Archived JSON bytes changed: " + name)
+        else:
+            (original / name).write_bytes(data)
+    require({p.name for p in original.iterdir()} == set(raw), "Archived JSON membership differs")
+    result = dict(schema=1, passed=False, status="INDEPENDENT_PAIRED_CHECK_FAIL",
+                  verified_utc=datetime.now(timezone.utc).isoformat(),
+                  archive=dict(file=archive.name, sha256=sha(archive), members=len(raw)),
+                  raw_json_sha256={name: digest(data) for name, data in raw.items()},
+                  verifier_sha256=sha(__file__), reasons=[])
+    try:
+        manifest_path = source / "release_manifest.json"
+        manifest = parse(manifest_path.read_bytes())
+        files = manifest["files"]
+        require(manifest["schema"] == 1 and set(manifest["paired_firmware"]) == {"cpu_only", "accelerated"},
+                "Source is not a paired release")
+        overlay = manifest["overlay"]
+        require(overlay["frequency_hz"] == 100000000 and overlay["ram_bytes"] == 131072,
+                "Unexpected paired clock or RAM")
+        snapshot = run / "upload_snapshot"
+        if not check_existing:
+            snapshot.mkdir()
+        copy_names = dict(files)
+        copy_names.update(manifest.get("notebook_template_sha256", {}))
+        copy_names["release_manifest.json"] = sha(manifest_path)
+        for name, expected in copy_names.items():
+            require(re.fullmatch(r"[A-Za-z0-9_.-]+", name) is not None, "Unsafe source file name")
+            require(sha(source / name) == expected, "Uploaded source changed: " + name)
+            if check_existing:
+                require(sha(snapshot / name) == expected, "Archived uploaded source changed: " + name)
+            else:
+                shutil.copyfile(source / name, snapshot / name)
+        result["upload_snapshot_sha256"] = copy_names
+        result["manifest_sha256"] = sha(manifest_path)
+        result["bitstream_sha256"] = files[overlay["bitstream"]]
+        receipt_path = run / "upload_receipt.json"
+        if receipt_path.is_file():
+            receipt = parse(receipt_path.read_bytes())
+            require(receipt["status"] == "UPLOADED_AND_SHA256_VERIFIED"
+                    and set(receipt["files"]) == set(copy_names), "Upload receipt membership differs")
+            for name, expected in copy_names.items():
+                item = receipt["files"][name]
+                require(item["sha256"] == expected and item["remote_readback_verified"] is True
+                        and item["bytes"] == (snapshot / name).stat().st_size,
+                        "Upload receipt differs from snapshot: " + name)
+            require(sum(item["bytes"] for item in receipt["files"].values()) == receipt["total_bytes"],
+                    "Upload receipt byte count differs")
+        vectors = parse((snapshot / "kat_vectors.json").read_bytes())["cases"]
+        require(len(vectors) == 145 and [v["case_index"] for v in vectors] == list(range(145)),
+                "Expected frozen ordered 145-case vector package")
+        ram_hash = {}
+        for mode, item in manifest["paired_firmware"].items():
+            require(files[item["file"]] == item["sha256"], "Firmware is not manifest-bound")
+            lines = (snapshot / item["file"]).read_text(encoding="ascii").split()
+            require(len(lines) == 32768 and all(re.fullmatch(r"[0-9a-fA-F]{8}", w) for w in lines),
+                    "Expected full 128 KiB firmware image")
+            ram_hash[mode] = digest(struct.pack("<32768I", *(int(w, 16) for w in lines)))
+        require(ram_hash["cpu_only"] != ram_hash["accelerated"], "Paired firmware must differ")
+
+        consumed, verified_cases, load_count = set(), [], [0]
+        modes = ("cpu_only", "accelerated")
+        artifacts_reference = None
+        sessions = set()
+        runtimes = []
+
+        def member(label):
+            matches = [name for name in documents if name.endswith("_" + label + ".json")]
+            require(len(matches) == 1, "Expected one member for " + label)
+            consumed.add(matches[0])
+            return documents[matches[0]], matches[0]
+
+        def artifacts(report):
+            nonlocal artifacts_reference
+            value = report["artifacts"]
+            require(value["manifest_sha256"] == result["manifest_sha256"]
+                    and value["files_sha256"] == files and value["bitstream"] == overlay["bitstream"],
+                    "Evidence does not match uploaded artifacts")
+            metadata = {k: v for k, v in manifest.items() if k not in ("files", "overlay")}
+            require(value["release_metadata"] == metadata, "Embedded release metadata differs")
+            if artifacts_reference is None:
+                artifacts_reference = value
+            require(value == artifacts_reference, "Artifact identity changed within session")
+
+        def load(record, mode):
+            item = manifest["paired_firmware"][mode]
+            require(record["kind"] == "FIRMWARE_LOAD" and record["mode"] == mode
+                    and record["passed"] is True and record["ram_bytes"] == 131072
+                    and record["excluded_from_case_and_speedup_timing"] is True
+                    and record["file"] == item["file"] and record["file_sha256"] == item["sha256"]
+                    and record["expected_ram_sha256"] == ram_hash[mode]
+                    and record["readback_ram_sha256"] == ram_hash[mode]
+                    and numeric(record["load_seconds"], True), "Firmware readback proof differs: " + mode)
+
+        def identity(row, mode):
+            index = row["case_index"]
+            require(type(index) is int and 0 <= index < 145, "Invalid official index")
+            vector = vectors[index]
+            for key in ("case_index", "op", "operation", "identity"):
+                require(row[key] == vector[key], "Official identity differs: " + key)
+            require(row["firmware_mode"] == mode and row["measurement_kind"] == "PYNQ_BOARD_AXI_LIVE",
+                    "Historical, mixed-mode or non-board case")
+            words = vector["input_words"]
+            require(row["input_sha256"] == digest(struct.pack("<%dI" % len(words), *words)),
+                    "Official input hash differs")
+            return vector
+
+        def case(row, mode):
+            vector = identity(row, mode)
+            payload = bytes.fromhex(row["output_hex"])
+            require(row["passed"] is True and row["trap"] == 0 and row["hardware_status"] == 0x4B415450,
+                    "Incomplete or trapped official case")
+            require(payload == bytes.fromhex(vector["expected_hex"])
+                    and digest(payload) == row["output_sha256"] == vector["expected_sha256"]
+                    and row["output_lengths"] == vector["output_lengths"]
+                    and len(payload) == sum(row["output_lengths"])
+                    and row["return_code"] == vector["expected_return"], "Official bytes/return differ")
+            cycles, empty = row["raw_cycles"], row["empty_cycles"]
+            require(type(cycles) is int and type(empty) is int and cycles > empty >= 0
+                    and row["frequency_hz"] == 100000000, "Invalid cycle measurement")
+            words = vector["input_words"]
+            expected_profile = [0x4B415450, 0, 0, cycles, vector["op"], vector["identity"]["dataset_id"],
+                                vector["identity"]["tcId"], sum(words[14:17]), empty,
+                                row["return_code"] & 0xFFFFFFFF, 0, 0]
+            require(row["profile_words"] == expected_profile, "Profile identity/cycles/return differ")
+            hardware = row["hardware"]
+            require(set(hardware) == {"starts", "busy_cycles", "buffer_writes", "buffer_reads"}
+                    and all(type(v) is int and v >= 0 for v in hardware.values()), "Invalid hardware counters")
+            expected = (dict(starts=0, buffer_writes=0, buffer_reads=0) if mode == "cpu_only"
+                        else vector["expected_hardware"])
+            require(all(hardware[k] == v for k, v in expected.items()), "Hardware access count differs")
+            require((0 < hardware["busy_cycles"] < cycles) if expected["starts"] else
+                    hardware["busy_cycles"] == 0, "Hardware busy cycles contradict access count")
+            for key in ("upload_seconds", "download_seconds", "run_wait_seconds", "verification_seconds", "wall_seconds"):
+                require(numeric(row[key]), "Invalid elapsed time: " + key)
+            require(row["run_wait_seconds"] >= cycles / 100000000
+                    and row["wall_seconds"] >= sum(row[k] for k in
+                    ("upload_seconds", "download_seconds", "run_wait_seconds", "verification_seconds")),
+                    "Elapsed boundaries contradict API/transport timing")
+            equal(row["algorithm_seconds"], cycles / 100000000, "API seconds")
+            equal(row["algorithm_seconds_minus_empty"], (cycles - empty) / 100000000, "Net API seconds")
+            verified_cases.append((mode, row))
+
+        def single(report, mode, indices, load_record):
+            artifacts(report)
+            require(report["requested_indices"] == indices and report["checked_indices"] == indices
+                    and [row["case_index"] for row in report["cases"]] == indices
+                    and len(set(indices)) == len(indices) and report["unique_checked_cases"] == len(indices),
+                    "Missing, duplicate or out-of-order official cases")
+            full = indices == list(range(145))
+            require(report["passed"] is True and report["full_pass"] is full
+                    and report["status"] == ("FULL_PASS" if full else "SUBSET_PASS")
+                    and report["clock_hz"] == 100000000 and report["firmware_mode"] == mode
+                    and report["measurement_kind"] == "PYNQ_BOARD_AXI_LIVE", "Invalid run metadata")
+            require(report["firmware_load"] == load_record, "Embedded load differs from standalone evidence")
+            load(load_record, mode)
+            sessions.add(report["overlay_loaded_at_utc"])
+            if report["runtime"] not in runtimes:
+                runtimes.append(report["runtime"])
+            for row in report["cases"]:
+                case(row, mode)
+            require(numeric(report["total_wall_seconds"], True)
+                    and report["total_wall_seconds"] >= sum(r["wall_seconds"] for r in report["cases"]),
+                    "Batch wall time is shorter than its cases")
+
+        def comparison(runs, supplied):
+            totals = {}
+            for mode in modes:
+                report = runs[mode]
+                rows = report["cases"]
+                totals[mode] = dict(raw_cycles=sum(r["raw_cycles"] for r in rows),
+                    net_cycles=sum(r["raw_cycles"] - r["empty_cycles"] for r in rows),
+                    case_wall_seconds=sum(r["wall_seconds"] for r in rows),
+                    batch_wall_seconds=report["total_wall_seconds"],
+                    firmware_load_seconds=report["firmware_load"]["load_seconds"])
+            expected_rows = []
+            for a, b in zip(runs["cpu_only"]["cases"], runs["accelerated"]["cases"]):
+                require(all(a[k] == b[k] for k in ("case_index", "identity", "input_sha256", "output_sha256",
+                                                  "return_code", "frequency_hz")), "Unmatched pair")
+                expected_rows.append(dict(case_index=a["case_index"], operation=a["operation"],
+                    cpu_raw_cycles=a["raw_cycles"], accelerated_raw_cycles=b["raw_cycles"],
+                    api_speedup=a["raw_cycles"] / b["raw_cycles"], cpu_wall_seconds=a["wall_seconds"],
+                    accelerated_wall_seconds=b["wall_seconds"], wall_speedup=a["wall_seconds"] / b["wall_seconds"]))
+            a, b = totals["cpu_only"], totals["accelerated"]
+            ratios = dict(api_speedup=a["raw_cycles"] / b["raw_cycles"],
+                          api_minus_empty_speedup=a["net_cycles"] / b["net_cycles"],
+                          ps_wall_speedup=a["case_wall_seconds"] / b["case_wall_seconds"],
+                          batch_wall_speedup=a["batch_wall_seconds"] / b["batch_wall_seconds"])
+            equal(supplied["totals"], totals, "comparison totals")
+            equal(supplied["cases"], expected_rows, "comparison rows")
+            for key, value in ratios.items():
+                equal(supplied[key], value, key)
+            return dict(totals=totals, cases=expected_rows, **ratios)
+
+        def referenced(report, expected):
+            names = [Path(p).name for p in report["evidence_paths"]]
+            require(names == expected, "Stage evidence references differ")
+
+        paired = {}
+        for label, indices in (("subset", [0, 1, 115]), ("full", list(range(145)))):
+            combined, _ = member(label)
+            artifacts(combined)
+            require(set(combined["runs"]) == set(modes) and combined["requested_indices"] == indices
+                    and combined["passed"] is True and combined["status"] ==
+                    ("PAIRED_FULL_PASS" if label == "full" else "PAIRED_SUBSET_PASS"), "Invalid paired stage")
+            refs = []
+            for mode in modes:
+                loaded, name = member(label + "_load_" + mode)
+                refs.append(name)
+                report, name = member(label + "_" + mode)
+                refs.append(name)
+                require(combined["runs"][mode] == report, "Embedded paired run differs from standalone JSON")
+                single(report, mode, indices, loaded)
+                load_count[0] += 1
+            referenced(combined, refs)
+            paired[label] = comparison(combined["runs"], combined["comparison"])
+
+        repeated, _ = member("repetitions")
+        artifacts(repeated)
+        require(repeated["passed"] is True and repeated["status"] == "REPEAT_PASS"
+                and repeated["repeats"] == 10 and repeated["requested_indices"] == [0, 1, 115]
+                and set(repeated["runs"]) == set(modes), "Incomplete repetition stage")
+        refs, statistics_rows = [], []
+        for mode in modes:
+            loaded, name = member("repeat_load_" + mode)
+            refs.append(name)
+            load_count[0] += 1
+            require(len(repeated["runs"][mode]) == 10, "Expected ten repeated runs per mode")
+            for index, report in enumerate(repeated["runs"][mode]):
+                standalone, name = member("repeat_%s_%02d" % (mode, index))
+                refs.append(name)
+                require(report == standalone and report["repetition"] == index, "Repeated run identity differs")
+                single(report, mode, [0, 1, 115], loaded)
+            for index in (0, 1, 115):
+                rows = [next(row for row in r["cases"] if row["case_index"] == index)
+                        for r in repeated["runs"][mode]]
+                stats = dict(mode=mode, case_index=index, operation=vectors[index]["operation"], samples=10)
+                for key in ("raw_cycles", "wall_seconds"):
+                    values = sorted(row[key] for row in rows)
+                    stats[key] = dict(minimum=values[0], median=statistics.median(values),
+                                      p95=values[math.ceil(0.95 * len(values)) - 1], maximum=values[-1])
+                statistics_rows.append(stats)
+        referenced(repeated, refs)
+        equal(repeated["statistics"], statistics_rows, "Repeat statistics")
+        require(len(repeated["comparisons"]) == 10, "Expected ten paired repeat comparisons")
+        for index in range(10):
+            comparison({mode: repeated["runs"][mode][index] for mode in modes}, repeated["comparisons"][index])
+
+        recovery, _ = member("recovery")
+        artifacts(recovery)
+        require(recovery["passed"] is True and recovery["status"] == "RECOVERY_PASS"
+                and [(t["mode"], t["name"]) for t in recovery["tests"]] ==
+                [(m, n) for m in modes for n in ("reset", "bad_magic", "short_timeout")], "Recovery coverage differs")
+        refs = []
+        for mode in modes:
+            loaded, name = member("recovery_load_" + mode)
+            refs.append(name)
+            load(loaded, mode)
+            load_count[0] += 1
+            for test in [t for t in recovery["tests"] if t["mode"] == mode]:
+                standalone, name = member("recovery_" + mode + "_" + test["name"])
+                refs.append(name)
+                require(test == standalone and test["passed"] is True, "Recovery standalone evidence differs")
+                require(test["recovery"]["case_index"] == 0, "Recovery must run the official KeyGen case")
+                case(test["recovery"], mode)
+                if test["name"] == "reset":
+                    require(test["before"]["case_index"] == 0, "Reset precondition case differs")
+                    case(test["before"], mode)
+                elif test["name"] == "bad_magic":
+                    injection = test["injection"]
+                    require(injection["trap"] == 0 and injection["status"] == 0x4B415446
+                            and injection["firmware_error_code"] == 2 and injection["output_magic"] == 0
+                            and injection["hardware"] == [0, 0, 0, 0], "Malformed mailbox rejection differs")
+                else:
+                    injection = test["injection"]
+                    identity(injection, mode)
+                    require(injection["case_index"] == 0 and injection["passed"] is False
+                            and injection["error_type"] == "TimeoutError" and injection["trap"] == 0
+                            and injection["hardware_status"] != 0x4B415450
+                            and "output_hex" not in injection, "Expected deadline injection was not observed")
+        referenced(recovery, refs)
+        require(consumed == set(documents), "Unexpected or unverified extra JSON files")
+        require(len(sessions) == 1 and len(runtimes) == 1 and runtimes[0]["machine"] == "armv7l",
+                "Board overlay session/runtime changed")
+        operations = []
+        full_report, _ = member("full")
+        for op in range(1, 7):
+            values = {}
+            for mode in modes:
+                rows = [row for row in full_report["runs"][mode]["cases"] if row["op"] == op]
+                values[mode] = dict(cases=len(rows), raw_cycles=sum(r["raw_cycles"] for r in rows),
+                    wall_seconds=sum(r["wall_seconds"] for r in rows),
+                    transport_seconds=sum(r["upload_seconds"] + r["download_seconds"] for r in rows),
+                    run_wait_seconds=sum(r["run_wait_seconds"] for r in rows),
+                    hardware={key: sum(r["hardware"][key] for r in rows) for key in
+                              ("starts", "busy_cycles", "buffer_writes", "buffer_reads")})
+            a, b = values["cpu_only"], values["accelerated"]
+            operations.append(dict(op=op, operation=rows[0]["operation"], cases=a["cases"],
+                measurements=values, api_speedup=a["raw_cycles"] / b["raw_cycles"],
+                ps_wall_speedup=a["wall_seconds"] / b["wall_seconds"]))
+        result.update(passed=True, status="INDEPENDENT_PAIRED_CHECK_PASS",
+            full_unique_cases_per_mode=145, full_case_executions=290,
+            subset_case_executions=6, repeated_case_executions=60, recovery_checks=6,
+            recovery_official_case_executions=8, independently_verified_successful_cases=len(verified_cases),
+            firmware_loads=load_count[0], runtime=runtimes[0], overlay_loaded_at_utc=next(iter(sessions)),
+            comparison=paired["full"], operations=operations, repetition_statistics=statistics_rows,
+            limitations=[
+                "One board session, fixed cpu_only block then accelerated block; repeats are three fixed vectors, not random workloads.",
+                "Both modes use the same bitstream; this measures software versus hardware Keccak service, not removed-core area or power.",
+                "API time excludes PS transfer; case wall time includes reset, transfer, polling and exact verification. Firmware load/readback and JSON saving are excluded.",
+                "Recovery JSON preserves successful official cases before/after reset, bad-magic rejection and expected timeout; intermediate reset-register reads were asserted by the hash-bound driver but not persisted individually.",
+                "Hardware counters and timestamps are board-driver observations, not independent physical instrumentation or cryptographically attested measurements.",
+                "Public official vectors passing is not CAVP or FIPS certification."])
+        if check_existing:
+            equal(parse((run / "operations.json").read_bytes()), operations, "Archived operations")
+            equal(parse((run / "repetitions.json").read_bytes()), statistics_rows, "Archived repetitions")
+        else:
+            dump(run / "operations.json", operations)
+            dump(run / "repetitions.json", statistics_rows)
+        lines = ["# Independent paired board evidence verification", "", result["status"], "",
+                 "- CPU-only and accelerated: 145/145 official cases each; 290 exact output/return checks.",
+                 "- Subset: 3 cases per mode. Repetitions: cases 0/1/115, 10 runs per mode (60 checks).",
+                 "- Recovery: reset, invalid mailbox magic and injected short timeout, each in both modes.",
+                 "- Firmware: 8 complete 128 KiB loads; expected/readback hashes independently recomputed.",
+                 "- Source ZIP and all JSON bytes are preserved; upload_snapshot retains the bound release.", "",
+                 "| Operation | Cases | CPU cycles | Accelerated cycles | API speedup | PS case-wall speedup |",
+                 "|---|---:|---:|---:|---:|---:|"]
+        for op in operations:
+            lines.append("| %s | %d | %d | %d | %.6fx | %.6fx |" % (op["operation"], op["cases"],
+                         op["measurements"]["cpu_only"]["raw_cycles"],
+                         op["measurements"]["accelerated"]["raw_cycles"], op["api_speedup"], op["ps_wall_speedup"]))
+        summary = paired["full"]
+        a, b = summary["totals"]["cpu_only"], summary["totals"]["accelerated"]
+        lines += ["| **All 145** | **145** | **%d** | **%d** | **%.6fx** | **%.6fx** |" %
+                  (a["raw_cycles"], b["raw_cycles"], summary["api_speedup"], summary["ps_wall_speedup"]), "",
+                  "At 100 MHz: API %.9f s versus %.9f s; summed PS case wall %.9f s versus %.9f s." %
+                  (a["raw_cycles"] / 1e8, b["raw_cycles"] / 1e8, a["case_wall_seconds"], b["case_wall_seconds"]),
+                  "Batch wall %.9f s versus %.9f s (%.6fx)." %
+                  (a["batch_wall_seconds"], b["batch_wall_seconds"], summary["batch_wall_speedup"]), "",
+                  "## Measurement scope", ""] + ["- " + text for text in result["limitations"]]
+        summary_text = "\n".join(lines) + "\n"
+        if check_existing:
+            require((run / "summary.md").read_text(encoding="utf-8") == summary_text, "Archived summary differs")
+        else:
+            (run / "summary.md").write_text(summary_text, encoding="utf-8")
+    except (ValueError, KeyError, TypeError, OSError, struct.error, ZeroDivisionError) as exc:
+        result["reasons"].append(type(exc).__name__ + ": " + str(exc))
+    if check_existing:
+        previous = parse((run / "verification.json").read_bytes())
+        for key in result:
+            if key not in ("verified_utc", "verifier_sha256"):
+                equal(previous[key], result[key], "Archived verification " + key)
+    else:
+        dump(run / "verification.json", result)
+    print(result["status"] + " " + str(run))
+    for reason in result["reasons"]:
+        print(reason, file=sys.stderr)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("stage", choices=["prepare", "verify", "check-bd", "collect"])
+    parser.add_argument("stage", choices=["prepare", "verify", "check-bd", "collect", "paired", "collect-paired"])
     parser.add_argument("run", type=Path)
     parser.add_argument("--reuse-sim", type=Path)
     parser.add_argument("--hls-run", type=Path, default=selected_hls_run())
     parser.add_argument("--board-dir", type=Path, help="PYNQ-Z2 preset directory (or PQC_BOARD_DIR)")
     parser.add_argument("--vivado", type=Path, help="Vivado executable used to locate board presets")
+    parser.add_argument("--source", type=repository_path, help="Published bundle for paired packaging")
+    parser.add_argument("--archive", type=repository_path, help="User-returned paired board evidence ZIP")
+    parser.add_argument("--check-existing", action="store_true", help="Read-only recheck of an existing paired archive")
+    parser.add_argument("--firmware", type=repository_path, help="Directory with cpu_only/accelerated builds")
+    parser.add_argument("--rtl-evidence", type=repository_path, help="Passed paired RTL archive")
     parser.add_argument("--evidence-dir", type=Path, default=ROOT / "results/k4/pynq",
                         help="Evidence archive root for collected overlay runs")
     args = parser.parse_args()
@@ -395,7 +946,22 @@ def main():
     if args.reuse_sim:
         args.reuse_sim = repository_path(args.reuse_sim)
     args.evidence_dir = repository_path(args.evidence_dir)
-    if args.stage == "prepare":
+    if args.stage == "collect-paired":
+        if args.check_existing:
+            if args.archive is None:
+                archived = list(args.run.glob("*.zip"))
+                if len(archived) != 1:
+                    parser.error("Expected one archived ZIP or explicit --archive")
+                args.archive = archived[0]
+            args.source = args.source or args.run / "upload_snapshot"
+        if not args.archive or not args.source:
+            parser.error("collect-paired requires --archive and --source")
+        return 0 if collect_paired(args.run, args.archive, args.source, args.check_existing)["passed"] else 1
+    elif args.stage == "paired":
+        if not all((args.source, args.firmware, args.rtl_evidence)):
+            parser.error("paired requires --source, --firmware and --rtl-evidence")
+        paired_bundle(args.run, args.source, args.firmware, args.rtl_evidence)
+    elif args.stage == "prepare":
         prepare(args.run.resolve(), args.reuse_sim, args.hls_run, args.board_dir, args.vivado)
     elif args.stage == "check-bd":
         result = bd_control_checks(args.run.resolve())

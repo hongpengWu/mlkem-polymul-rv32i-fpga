@@ -1,0 +1,22 @@
+Time resolution is 1 ps
+MLKEM512_HEADER,index,dataset,vsId,tgId,tcId,op,return_code,raw_cycles,empty_cycles,input_bytes,output_bytes,m_total,mul,mulh,mulhsu,mulhu,div,divu,rem,remu,min_sp
+MLKEM512_START cases=8 ram_bytes=65536 stack_bytes=16384 clock_mhz=100 mul=1 fast_mul=1 div=1 expect_m=1
+ACCEL_METRICS index=0 starts=6 done=6 loads=3840 reads=768 core_cycles=816 load_cycles=254202 read_cycles=35058
+MLKEM512_ROW,0,3,42,4,81,4,0,12216112,4,832,32,52736,52224,0,0,512,0,0,0,0,0x0000cd70
+ACCEL_METRICS index=1 starts=6 done=6 loads=3840 reads=768 core_cycles=816 load_cycles=254202 read_cycles=35058
+MLKEM512_ROW,1,3,42,4,82,4,0,12218920,4,832,32,52736,52224,0,0,512,0,0,0,0,0x0000cd70
+ACCEL_METRICS index=2 starts=6 done=6 loads=3840 reads=768 core_cycles=816 load_cycles=254202 read_cycles=35058
+MLKEM512_ROW,2,3,42,4,83,4,0,12215932,4,832,32,52736,52224,0,0,512,0,0,0,0,0x0000cd70
+ACCEL_METRICS index=3 starts=6 done=6 loads=3840 reads=768 core_cycles=816 load_cycles=254202 read_cycles=35058
+MLKEM512_ROW,3,3,42,4,84,4,0,12218458,4,832,32,52736,52224,0,0,512,0,0,0,0,0x0000cd70
+ACCEL_METRICS index=4 starts=6 done=6 loads=3840 reads=768 core_cycles=816 load_cycles=254202 read_cycles=35058
+MLKEM512_ROW,4,3,42,4,85,4,0,12218954,4,832,32,52736,52224,0,0,512,0,0,0,0,0x0000cd70
+ACCEL_METRICS index=5 starts=4 done=4 loads=2560 reads=512 core_cycles=544 load_cycles=169468 read_cycles=23372
+MLKEM512_ROW,5,3,42,5,86,3,0,6996512,4,2400,32,37632,37120,0,0,512,0,0,0,0,0x0000cd70
+ACCEL_METRICS index=6 starts=4 done=4 loads=2560 reads=512 core_cycles=544 load_cycles=169468 read_cycles=23372
+MLKEM512_ROW,6,3,42,5,87,3,0,6994385,4,2400,32,37632,37120,0,0,512,0,0,0,0,0x0000cd70
+ACCEL_METRICS index=7 starts=4 done=4 loads=2560 reads=512 core_cycles=544 load_cycles=169468 read_cycles=23372
+MLKEM512_ROW,7,3,42,5,88,3,0,6995121,4,2400,32,37632,37120,0,0,512,0,0,0,0,0x0000cd70
+MLKEM512_PASS cases=8 input_bytes=11360 output_bytes=256 cpu_mul=1 cpu_fast_mul=1 cpu_div=1 expect_m=1 cycles=83431419 all_m=376576 min_sp=0x0000cd70 stack_used=12928
+$finish called at time : 834314505 ns : File "E:/pqc/mlkem-polymul-rv32i-fpga/tb/accelerator/tb_mlkem512_kat_accel.sv" Line 333
+INFO: xsimkernel Simulation Memory Usage: 31320 KB (Peak: 31320 KB), Simulation CPU Usage: 1087390 ms

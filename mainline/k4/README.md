@@ -1,7 +1,14 @@
 # K4 主线：源码与复现入口
 
-`default` 分支集中维护 ML-KEM-1024 的 PicoRV32 + Keccak + PS–PL 系统。
+`last` 分支集中维护 ML-KEM-1024 的 PicoRV32 + Keccak + PS–PL 系统。
 这次整理改变目录和运行入口，不改变算法、RTL 和官方向量。
+
+2026-10-16：CPU+Keccak PS–PL overlay 已在 PYNQ-Z2 上完成官方 `FULL_PASS 145/145`，
+API总计446,852,439周期，PS批量墙钟约9.563秒。
+[原始证据与独立复核](../../results/keccak_cpu/board/20261016_full145/README.md)已归档。
+2026-10-23同板配对实测已通过：两组各145条，API加速3.8028×、PS整批加速2.2976×；
+代表例共60次重复及6项恢复检查通过。[实板配对证据](../../results/k4/paired_firmware/board_20261023/summary.md)
+独立于历史RTL记录保存，后续工作见[项目进度](../../docs/PROJECT_STATUS.md)。
 
 ```text
 mainline/k4/
@@ -22,7 +29,7 @@ mainline/k4/
 
 ## 工具与路径
 
-使用 Vivado / Vitis HLS **2024.2**、Python 3 和 Tcl；目标器件为 PYNQ-Z2 的
+使用 Vivado / Vitis HLS **2024.2**、Python **3.10 或更新版本**和 Tcl；目标器件为 PYNQ-Z2 的
 `xc7z020clg400-1`。RISC-V 固件使用 `riscv64-unknown-elf` 工具链。
 从已配置 AMD 工具环境的终端运行，或者设置：
 
@@ -32,6 +39,7 @@ mainline/k4/
 
 工具安装目录属于使用者环境，源码不固定盘符。
 项目内路径以脚本确定的仓库根目录解析，不依赖终端所在目录。
+仓库主机端 Python 工具要求 Python 3.10+；板上 PYNQ 驱动仍兼容本次验收环境的 Python 3.6.5。
 默认构建区为仓库 `build/k4/`；AMD 工具若受长路径限制，可用 `FLOW_SHORT_ROOT` /
 `HLS_BUILD_ROOT` / `BD_SHORT_ROOT` 指定短构建目录。源码仍维护在本目录。
 不要将旧生成工程复制回源码目录。
@@ -57,6 +65,41 @@ vivado -mode batch -source mainline/k4/bd_axi.tcl
 
 独立 HLS 的 `export_design -flow impl` 只实现 HLS IP；完整系统实现由系统/BD 阶段负责。
 工具运行中自动生成的 Tcl 是构建产物，不是第三个手写入口。
+
+## 同板配对测量包
+
+两组固件由同一构建入口产生，使用新的构建目录保留历史记录：
+
+```powershell
+python mainline/k4/scripts/build_kat.py --ps --output-dir build/k4/paired_20261023/accelerated
+python mainline/k4/scripts/build_kat.py --ps --cpu-only --output-dir build/k4/paired_20261023/cpu_only
+```
+
+以上是已执行构建的复现命令；已有非空目录会拒绝覆盖，复现时另选目录。
+`bd_axi.tcl` 的 `PAIR_SIM=1` 是独立仿真分支，指定 `PAIR_SOURCE_RUN` 为原发布overlay
+冻结工程、`PAIR_FIRMWARE_DIR` 为两组构建目录，并设置新的 `RUN_DIR` 和 `EVIDENCE_DIR`。
+它执行3例加速、3例CPU-only和1例切回加速，三次均完整写入/读回32768词。
+无需重新综合实现或重跑历史145条RTL。
+
+成功后通过原有打包工具的 `paired` 阶段生成新目录：
+
+```powershell
+python mainline/k4/scripts/pynq_overlay.py paired build/transfer/mlkem1024_paired_20261023 --source release/mlkem1024_pynq --firmware build/k4/paired_20261023 --rtl-evidence results/k4/paired_firmware/rtl_01
+```
+
+此阶段只读历史发布包和验证证据，验证两组条件与哈希、板上 Python 3.6 语法兼容性和主机测试。
+Notebook默认运行两组各145条、代表例各10次及三项恢复检查，自动计算同板API/PS墙钟
+比值并保存原始JSON。CPU-only模式保留硬件但不调用；不用于比较移除加速器的面积或功耗。
+
+2026-10-23回传实板证据已独立归档，复核现有归档无需重新连接板子或运行RTL：
+
+```powershell
+python mainline/k4/scripts/pynq_overlay.py collect-paired results/k4/paired_firmware/board_20261023 --check-existing
+```
+
+新一轮用户回传ZIP使用 `collect-paired <新的归档目录> --archive <ZIP> --source <对应上传包>`。
+校验直接比较官方字节/输入身份、固件及全RAM哈希、硬件计数并重新计算各比值，
+原ZIP与JSON逐字节保留；`--check-existing`只读复核。
 
 ## 测试与结果
 
