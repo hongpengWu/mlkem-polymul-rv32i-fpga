@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "measurement_kind": "offline-demo",
+  "warmup": 1,
+  "repeats": 5,
+  "timeout_seconds": 1.0,
+  "metadata": {
+    "operation": "uint8 saturated vector addition",
+    "board": "none; PC functional demo only"
+  },
+  "tolerance": {
+    "atol": 0,
+    "rtol": 0
+  },
+  "cases": [
+    {
+      "id": "ordinary",
+      "input": {
+        "a": [
+          1,
+          2,
+          3
+        ],
+        "b": [
+          4,
+          5,
+          6
+        ]
+      },
+      "expected": [
+        5,
+        7,
+        9
+      ]
+    },
+    {
+      "id": "saturation",
+      "input": {
+        "a": [
+          0,
+          255,
+          128
+        ],
+        "b": [
+          0,
+          1,
+          128
+        ]
+      },
+      "expected": [
+        0,
+        255,
+        255
+      ]
+    },
+    {
+      "id": "empty",
+      "input": {
+        "a": [],
+        "b": []
+      },
+      "expected": []
+    }
+  ]
+}

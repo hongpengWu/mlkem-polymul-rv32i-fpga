@@ -1,119 +1,91 @@
-# K4 主线：源码与复现入口
+# ML-KEM-1024 K4 AMD review package
 
-`last` 分支集中维护 ML-KEM-1024 的 PicoRV32 + Keccak + PS–PL 系统。
-这次整理改变目录和运行入口，不改变算法、RTL 和官方向量。
+This directory is the AMD-facing entry point for the ML-KEM-1024 hardware acceleration system. It contains the HLS kernel, RTL integration, RISC-V firmware, testbenches, PYNQ notebook, build Tcl files, board release files, and reproducible evidence.
 
-2026-10-16：CPU+Keccak PS–PL overlay 已在 PYNQ-Z2 上完成官方 `FULL_PASS 145/145`，
-API总计446,852,439周期，PS批量墙钟约9.563秒。
-[原始证据与独立复核](../../results/keccak_cpu/board/20261016_full145/README.md)已归档。
-2026-10-23同板配对实测已通过：两组各145条，API加速3.8028×、PS整批加速2.2976×；
-代表例共60次重复及6项恢复检查通过。[实板配对证据](../../results/k4/paired_firmware/board_20261023/summary.md)
-独立于历史RTL记录保存，后续工作见[项目进度](../../docs/PROJECT_STATUS.md)。
+## Directory map
 
 ```text
 mainline/k4/
-├── flow.tcl         HLS、CPU集成测试和独立PL实现
-├── bd_axi.tcl       PS–PL Block Design、AXI验证和overlay实现
-├── hls/             加速器C++、HLS测试和报告工具
-├── rtl/             CPU/RAM/加速器连接、MMIO、AXI和板级顶层
-├── firmware/        RISC-V固件、Keccak驱动和链接脚本
-├── tb/              系统、AXI、板级仿真测试平台
-├── constraints/     系统和板级时序/引脚约束
-├── pynq/            Notebook和Python驱动源码
-└── scripts/         固件构建、数据准备、证据核验等Python辅助工具
+├── flow.tcl              # HLS, firmware, RTL KAT and implementation switches
+├── bd_axi.tcl            # AXI/PS-PL build and overlay switches
+├── hls/                  # Keccak/SHAKE HLS source and local FIPS 202 testbench
+├── rtl/                  # AXI, MMIO, system and PYNQ-Z2 top level
+├── firmware/             # ML-KEM-1024 RISC-V firmware and drivers
+├── tb/                   # RTL and board-level testbenches
+├── pynq/                 # Python driver and Jupyter demonstration
+├── constraints/          # PYNQ-Z2 pin and timing constraints
+├── board/release/        # k4_accel.bit, k4_accel.hwh and board notebook bundle
+├── data/                 # pinned vectors and HLS fixture manifests
+├── evidence/             # board and HLS result summaries
+├── report/               # architecture figure and benchmark notes
+├── skill/                # board validation and overlay contract skills
+└── build/                # generated output location and build notes
 ```
 
-共用 CPU 位于 `../../rtl/cpu/`；标准 C 库在 `../../third_party/`；官方向量在
-`../../vectors/`；共用启动代码及 CPU-only 固件在 `../../firmware/`。
-共用组件只维护一份，不复制到主线。
+The K4 entry point depends only on the shared CPU, firmware, pinned ML-KEM implementation, official vectors and fixture files in the repository parent. These are required build inputs, not unrelated experiments.
 
-## 工具与路径
+## Reproduction
 
-使用 Vivado / Vitis HLS **2024.2**、Python **3.10 或更新版本**和 Tcl；目标器件为 PYNQ-Z2 的
-`xc7z020clg400-1`。RISC-V 固件使用 `riscv64-unknown-elf` 工具链。
-从已配置 AMD 工具环境的终端运行，或者设置：
-
-- `PQC_VIVADO`、`PQC_VITIS_HLS`：对应可执行文件。
-- `PQC_RISCV_TOOL_DIR`：RISC-V 编译器所在目录。
-- `PQC_BOARD_DIR`：PYNQ-Z2 板卡文件目录（含 `board.xml`、`preset.xml`、`part0_pins.xml`）。
-
-工具安装目录属于使用者环境，源码不固定盘符。
-项目内路径以脚本确定的仓库根目录解析，不依赖终端所在目录。
-仓库主机端 Python 工具要求 Python 3.10+；板上 PYNQ 驱动仍兼容本次验收环境的 Python 3.6.5。
-默认构建区为仓库 `build/k4/`；AMD 工具若受长路径限制，可用 `FLOW_SHORT_ROOT` /
-`HLS_BUILD_ROOT` / `BD_SHORT_ROOT` 指定短构建目录。源码仍维护在本目录。
-不要将旧生成工程复制回源码目录。
-
-## 两个 Tcl 入口
-
-从仓库根目录运行；从其他目录运行时，只需给入口 Tcl 的正确路径：
+Run from the repository root with Vivado/Vitis HLS 2024.2, Python 3.10 or newer, Tcl, and the RISC-V GCC toolchain available on `PATH` or configured through the project environment variables.
 
 ```powershell
 tclsh mainline/k4/flow.tcl
+```
+
+The top of `flow.tcl` controls `HLS`, `CSIM`, `CSYNTH`, `COSIM`, `VIVADO_SYN`, `VIVADO_IMPL`, `EXPORT`, `SMOKE`, `KAT_SUBSET`, `FULL_KAT`, and `CHECK_ONLY`. The default mode performs path and configuration checks and launches no EDA process. Set `FLOW_CHECK_ONLY=0` and enable only the stages required for the current reproduction.
+
+```powershell
+$env:FLOW_HLS=1
+$env:FLOW_CHECK_ONLY=0
+tclsh mainline/k4/flow.tcl
+```
+
+The AXI/PS-PL entry point is:
+
+```powershell
 vivado -mode batch -source mainline/k4/bd_axi.tcl
 ```
 
-先看顶部 0/1 开关。主流程保留 `CSIM / CSYNTH / COSIM / VIVADO_SYN / VIVADO_IMPL / EXPORT`，
-并提供 CPU smoke、KAT 子集/全量及独立板级阶段。BD 使用
-`PREPARE / SIM / CREATE_BD / SYNTH / IMPL / EXPORT`。
-`CHECK_ONLY=1` 用于路径/配置预检；实际执行需设为 0。
-环境变量 `FLOW_<名称>`、`BD_<名称>` 可覆盖对应选项。
+It uses the same top-level switch style. Generated projects and reports remain under the configured `build/k4` directory; source directories are not modified by a run.
 
-先完成 HLS 功能验证，再用 `FLOW_HLS_RUN` 指向成功运行目录；也可以通过
-`PQC_HLS_RUN` 给 Python 辅助工具选择该目录。选择时核对源码、测试、配置和运行证据，
-不直接依赖开发者旧电脑上的绝对路径；历史报告中的原始路径只作为溯源信息保留。
+## Direct PYNQ reproduction
 
-独立 HLS 的 `export_design -flow impl` 只实现 HLS IP；完整系统实现由系统/BD 阶段负责。
-工具运行中自动生成的 Tcl 是构建产物，不是第三个手写入口。
+Copy all files from `mainline/k4/board/release/` to one directory on the PYNQ-Z2, open `mlkem1024.ipynb` in Jupyter, and run the notebook. The default demonstration executes official vector indices `0`, `1`, and `115`. Set `RUN_FULL_145 = True` in the first code cell to execute all 145 cases.
 
-## 同板配对测量包
+Expected full-run marker:
 
-两组固件由同一构建入口产生，使用新的构建目录保留历史记录：
-
-```powershell
-python mainline/k4/scripts/build_kat.py --ps --output-dir build/k4/paired_20261023/accelerated
-python mainline/k4/scripts/build_kat.py --ps --cpu-only --output-dir build/k4/paired_20261023/cpu_only
+```text
+FULL_PASS 145 / 145
 ```
 
-以上是已执行构建的复现命令；已有非空目录会拒绝覆盖，复现时另选目录。
-`bd_axi.tcl` 的 `PAIR_SIM=1` 是独立仿真分支，指定 `PAIR_SOURCE_RUN` 为原发布overlay
-冻结工程、`PAIR_FIRMWARE_DIR` 为两组构建目录，并设置新的 `RUN_DIR` 和 `EVIDENCE_DIR`。
-它执行3例加速、3例CPU-only和1例切回加速，三次均完整写入/读回32768词。
-无需重新综合实现或重跑历史145条RTL。
+The notebook verifies the `.bit`, `.hwh`, Python driver, notebook, vector file and release manifest before loading the overlay. The board bundle is self-contained and does not require the host repository.
 
-成功后通过原有打包工具的 `paired` 阶段生成新目录：
+## Verified results
 
-```powershell
-python mainline/k4/scripts/pynq_overlay.py paired build/transfer/mlkem1024_paired_20261023 --source release/mlkem1024_pynq --firmware build/k4/paired_20261023 --rtl-evidence results/k4/paired_firmware/rtl_01
-```
+The same PYNQ-Z2 bitstream, 100 MHz clock, RV32IM-fast firmware configuration, 128 KiB RAM and 32 KiB stack were used for both modes.
 
-此阶段只读历史发布包和验证证据，验证两组条件与哈希、板上 Python 3.6 语法兼容性和主机测试。
-Notebook默认运行两组各145条、代表例各10次及三项恢复检查，自动计算同板API/PS墙钟
-比值并保存原始JSON。CPU-only模式保留硬件但不调用；不用于比较移除加速器的面积或功耗。
+| Metric | CPU-only | CPU + Keccak | Result |
+|---|---:|---:|---:|
+| Official records | 145/145 | 145/145 | exact output and return checks |
+| API cycles | 1,699,293,290 | 446,852,439 | 3.802806x |
+| API time at 100 MHz | 16.992932900 s | 4.468524390 s | 3.802806x |
+| PS batch wall time | 22.135448812 s | 9.634239928 s | 2.297581x |
 
-2026-10-23回传实板证据已独立归档，复核现有归档无需重新连接板子或运行RTL：
+The HLS local differential suite passed 109 FIPS 202 transactions. The official KAT and board evidence are archived under `evidence/`; public vector validation is an engineering verification result and is not CAVP or FIPS certification.
 
-```powershell
-python mainline/k4/scripts/pynq_overlay.py collect-paired results/k4/paired_firmware/board_20261023 --check-existing
-```
+## Evidence map
 
-新一轮用户回传ZIP使用 `collect-paired <新的归档目录> --archive <ZIP> --source <对应上传包>`。
-校验直接比较官方字节/输入身份、固件及全RAM哈希、硬件计数并重新计算各比值，
-原ZIP与JSON逐字节保留；`--check-existing`只读复核。
+- `evidence/board/summary.md`: independent paired-board summary and timing definition.
+- `evidence/board/verification.json`: independent verification record.
+- `evidence/hls/summary.md`: HLS functional and synthesis evidence.
+- `report/architecture.svg`: system architecture figure.
 
-## 测试与结果
+## Tools and scope
 
-日常使用组件 smoke 和官方索引 0、1、115 的子集；`FULL_KAT=1` 才执行 145 条完整回归。
-目录整理的验证与历史全量验收分开记录。只启动成功或完成 elaboration，不能记成测试 PASS。
-很长的路径检查运行可在已有输入加载和仿真启动证据后停止，结果须标明未完成。
+- Target: AMD/Xilinx PYNQ-Z2, `xc7z020-clg400-1`.
+- HLS top: `mlkem1024_keccak_accel`.
+- Interfaces: AXI-Lite control, packed BRAM data, PS-PL overlay through the PYNQ driver.
+- Clock target: 100 MHz.
+- Security target: ML-KEM-1024, NIST security category 5 parameter set.
 
-- [results/reorganization](../../results/reorganization/)：本次迁移映射和验证记录。
-- [results/keccak_cpu](../../results/keccak_cpu/)：历史核心、板级、PS–PL 证据。
-- [results/hls/mlkem1024_keccak](../../results/hls/mlkem1024_keccak/)：历史 HLS 性能证据。
-- [release/mlkem1024_pynq](../../release/mlkem1024_pynq/)：固定部署包。
-
-上述链接均相对于主线目录解析。部署包中的 `.bit/.hwh` 必须配套使用，
-其中 manifest 记录的历史构建路径不因为迁移而改写。
-
-已冻结的核心 145/145 和 3.8028×是历史 RTL 证据；PS–PL overlay 的实板验证状态见
-[项目进度](../../docs/PROJECT_STATUS.md)。迁移验证不增加算法覆盖或实板完成度。
+All paths in the entry scripts are resolved from the repository, so the project does not depend on the original development machine or an absolute Windows path.

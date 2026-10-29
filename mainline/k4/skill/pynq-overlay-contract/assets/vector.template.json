@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "bitstream": "vector_accel.bit",
+  "hwh": "vector_accel.hwh",
+  "files": {
+    "vector_accel.bit": "0000000000000000000000000000000000000000000000000000000000000000",
+    "vector_accel.hwh": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "ip": {
+    "name": "vector_accel_0",
+    "base_address": "0x40000000",
+    "address_range": "0x10000",
+    "allow_mmio_fallback": false
+  },
+  "registers": {
+    "id": {
+      "offset": "0x10",
+      "access": "ro",
+      "snapshot": true
+    },
+    "abi": {
+      "offset": "0x14",
+      "access": "ro",
+      "snapshot": true
+    },
+    "control": {
+      "offset": "0x00",
+      "access": "rc"
+    },
+    "length": {
+      "offset": "0x20",
+      "access": "rw"
+    }
+  },
+  "identity": [
+    {
+      "register": "id",
+      "equals": "0x56454331"
+    },
+    {
+      "register": "abi",
+      "equals": 1
+    }
+  ]
+}

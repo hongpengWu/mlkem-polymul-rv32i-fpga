@@ -1,0 +1,212 @@
+[
+  {
+    "op": 1,
+    "operation": "keyGen",
+    "cases": 25,
+    "measurements": {
+      "cpu_only": {
+        "cases": 25,
+        "raw_cycles": 329299932,
+        "wall_seconds": 4.877287558999342,
+        "transport_seconds": 1.4317278919997989,
+        "run_wait_seconds": 3.4087331719993017,
+        "hardware": {
+          "starts": 0,
+          "busy_cycles": 0,
+          "buffer_writes": 0,
+          "buffer_reads": 0
+        }
+      },
+      "accelerated": {
+        "cases": 25,
+        "raw_cycles": 78355067,
+        "wall_seconds": 2.365628978995119,
+        "transport_seconds": 1.4302627239976573,
+        "run_wait_seconds": 0.8993505659982475,
+        "hardware": {
+          "starts": 670,
+          "busy_cycles": 413245,
+          "buffer_writes": 50265,
+          "buffer_reads": 93080
+        }
+      }
+    },
+    "api_speedup": 4.202662885860336,
+    "ps_wall_speedup": 2.0617297142982816
+  },
+  {
+    "op": 2,
+    "operation": "encapsulation",
+    "cases": 50,
+    "measurements": {
+      "cpu_only": {
+        "cases": 50,
+        "raw_cycles": 700468526,
+        "wall_seconds": 8.846278665997488,
+        "transport_seconds": 1.6111573779971877,
+        "run_wait_seconds": 7.1661972820011215,
+        "hardware": {
+          "starts": 0,
+          "busy_cycles": 0,
+          "buffer_writes": 0,
+          "buffer_reads": 0
+        }
+      },
+      "accelerated": {
+        "cases": 50,
+        "raw_cycles": 192648502,
+        "wall_seconds": 3.7657565990002695,
+        "transport_seconds": 1.6103317499973855,
+        "run_wait_seconds": 2.09044345500115,
+        "hardware": {
+          "starts": 1382,
+          "busy_cycles": 838472,
+          "buffer_writes": 103514,
+          "buffer_reads": 189608
+        }
+      }
+    },
+    "api_speedup": 3.635992591315348,
+    "ps_wall_speedup": 2.349137134446234
+  },
+  {
+    "op": 3,
+    "operation": "decapsulation",
+    "cases": 20,
+    "measurements": {
+      "cpu_only": {
+        "cases": 20,
+        "raw_cycles": 331730752,
+        "wall_seconds": 3.866115632000401,
+        "transport_seconds": 0.44320430400148325,
+        "run_wait_seconds": 3.391617269998278,
+        "hardware": {
+          "starts": 0,
+          "busy_cycles": 0,
+          "buffer_writes": 0,
+          "buffer_reads": 0
+        }
+      },
+      "accelerated": {
+        "cases": 20,
+        "raw_cycles": 92092680,
+        "wall_seconds": 1.471720718997858,
+        "transport_seconds": 0.44269924600303057,
+        "run_wait_seconds": 0.99878733100104,
+        "hardware": {
+          "starts": 576,
+          "busy_cycles": 361856,
+          "buffer_writes": 50612,
+          "buffer_reads": 77344
+        }
+      }
+    },
+    "api_speedup": 3.602140278684473,
+    "ps_wall_speedup": 2.6269356557220744
+  },
+  {
+    "op": 4,
+    "operation": "decapsulationSeed",
+    "cases": 10,
+    "measurements": {
+      "cpu_only": {
+        "cases": 10,
+        "raw_cycles": 295059840,
+        "wall_seconds": 3.1788648499987175,
+        "transport_seconds": 0.19059586799903627,
+        "run_wait_seconds": 2.976056852997317,
+        "hardware": {
+          "starts": 0,
+          "busy_cycles": 0,
+          "buffer_writes": 0,
+          "buffer_reads": 0
+        }
+      },
+      "accelerated": {
+        "cases": 10,
+        "raw_cycles": 77103770,
+        "wall_seconds": 0.99915484200028,
+        "transport_seconds": 0.19074336999983643,
+        "run_wait_seconds": 0.7968585729995539,
+        "hardware": {
+          "starts": 540,
+          "busy_cycles": 341490,
+          "buffer_writes": 44580,
+          "buffer_reads": 74400
+        }
+      }
+    },
+    "api_speedup": 3.8267887549467425,
+    "ps_wall_speedup": 3.1815537656152664
+  },
+  {
+    "op": 5,
+    "operation": "encapsulationKeyCheck",
+    "cases": 20,
+    "measurements": {
+      "cpu_only": {
+        "cases": 20,
+        "raw_cycles": 5148150,
+        "wall_seconds": 0.4958606910004164,
+        "transport_seconds": 0.3746124539993616,
+        "run_wait_seconds": 0.09787550600412942,
+        "hardware": {
+          "starts": 0,
+          "busy_cycles": 0,
+          "buffer_writes": 0,
+          "buffer_reads": 0
+        }
+      },
+      "accelerated": {
+        "cases": 20,
+        "raw_cycles": 5148150,
+        "wall_seconds": 0.5175813349997043,
+        "transport_seconds": 0.37350699799844733,
+        "run_wait_seconds": 0.12152740100009396,
+        "hardware": {
+          "starts": 0,
+          "busy_cycles": 0,
+          "buffer_writes": 0,
+          "buffer_reads": 0
+        }
+      }
+    },
+    "api_speedup": 1.0,
+    "ps_wall_speedup": 0.9580343367689249
+  },
+  {
+    "op": 6,
+    "operation": "decapsulationKeyCheck",
+    "cases": 20,
+    "measurements": {
+      "cpu_only": {
+        "cases": 20,
+        "raw_cycles": 37586090,
+        "wall_seconds": 0.8638236910001069,
+        "transport_seconds": 0.4072378880009637,
+        "run_wait_seconds": 0.42984288100251433,
+        "hardware": {
+          "starts": 0,
+          "busy_cycles": 0,
+          "buffer_writes": 0,
+          "buffer_reads": 0
+        }
+      },
+      "accelerated": {
+        "cases": 20,
+        "raw_cycles": 1504270,
+        "wall_seconds": 0.5072059360018102,
+        "transport_seconds": 0.4069597759980752,
+        "run_wait_seconds": 0.07418420199974207,
+        "hardware": {
+          "starts": 20,
+          "busy_cycles": 25200,
+          "buffer_writes": 8880,
+          "buffer_reads": 1200
+        }
+      }
+    },
+    "api_speedup": 24.98626576346002,
+    "ps_wall_speedup": 1.7031024869492537
+  }
+]
